@@ -1,6 +1,8 @@
 package it.albertus.geofon.client;
 
 import it.albertus.geofon.client.model.GeofonData;
+import it.albertus.geofon.client.model.ItemDescription;
+import it.albertus.geofon.client.xml.Item;
 import it.albertus.geofon.client.xml.Rss;
 
 import java.io.IOException;
@@ -41,6 +43,9 @@ public class GeofonClient {
 			catch (final Exception e) {/* Ignore */}
 		}
 		System.out.println(geofonData);
+		for (Item item : geofonData.getRss().getChannel().getItem()) {
+			System.out.println(new ItemDescription(item.getDescription()));
+		}
 	}
 
 	private HttpURLConnection openConnection(final URL url, final int connectionTimeout, final int readTimeout) throws IOException {
