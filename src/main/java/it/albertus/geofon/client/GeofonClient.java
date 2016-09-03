@@ -1,7 +1,7 @@
 package it.albertus.geofon.client;
 
-import it.albertus.geofon.model.GeofonData;
-import it.albertus.geofon.xml.Rss;
+import it.albertus.geofon.client.model.GeofonData;
+import it.albertus.geofon.client.xml.Rss;
 
 import java.io.IOException;
 import java.io.InputStream;

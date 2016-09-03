@@ -1,6 +1,6 @@
-package it.albertus.geofon.model;
+package it.albertus.geofon.client.model;
 
-import it.albertus.geofon.xml.Rss;
+import it.albertus.geofon.client.xml.Rss;
 
 public class GeofonData {
 

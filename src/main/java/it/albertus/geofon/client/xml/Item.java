@@ -1,4 +1,4 @@
-package it.albertus.geofon.xml;
+package it.albertus.geofon.client.xml;
 
 public class Item {
 
