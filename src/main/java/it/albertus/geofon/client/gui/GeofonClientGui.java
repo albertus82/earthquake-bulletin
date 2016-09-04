@@ -3,7 +3,10 @@ package it.albertus.geofon.client.gui;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.window.ApplicationWindow;
@@ -12,11 +15,13 @@ import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.ImageLoader;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.Shell;
 
@@ -32,12 +37,28 @@ public class GeofonClientGui extends ApplicationWindow {
 
 	private ResultTable resultTable;
 
-	private SashForm sashForm;
+	private SashForm verticalSashForm;
+
+	private SashForm horizontalSashForm;
+
+	private Label imageLabel;
+
+	private Composite leftComposite;
+
+	private Composite rightComposite;
+
+	private final Map<String, Image> imageCache = new LinkedHashMap<String, Image>();
 
 	public GeofonClientGui(final Display display) {
 		super(null);
 
-		downloadIcon();
+		try {
+			mainIcon = downloadImage(new URL("http://www.gfz-potsdam.de/favicon.ico"));
+		}
+		catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		open();
 
@@ -53,11 +74,11 @@ public class GeofonClientGui extends ApplicationWindow {
 		//		release();
 	}
 
-	protected void downloadIcon() {
+	public Image downloadImage(final URL url) {
 		InputStream is = null;
+		Image image = null;
 		try {
-			URL faviconUrl = new URL("http://www.gfz-potsdam.de/favicon.ico");
-			final HttpURLConnection urlConnection = (HttpURLConnection) faviconUrl.openConnection();
+			final HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
 			urlConnection.setConnectTimeout(5000);
 			urlConnection.setReadTimeout(5000);
 			urlConnection.addRequestProperty("Accept", "image/*");
@@ -66,7 +87,7 @@ public class GeofonClientGui extends ApplicationWindow {
 			urlConnection.disconnect();
 
 			if (images.length > 0) {
-				mainIcon = new Image(Display.getCurrent(), images[0]);
+				image = new Image(Display.getCurrent(), images[0]);
 			}
 			urlConnection.disconnect();
 		}
@@ -79,6 +100,7 @@ public class GeofonClientGui extends ApplicationWindow {
 			}
 			catch (final Exception e) {/* Ignore */}
 		}
+		return image;
 	}
 
 	@Override
@@ -103,15 +125,27 @@ public class GeofonClientGui extends ApplicationWindow {
 	protected Control createContents(final Composite parent) {
 		searchForm = new SearchForm(this);
 
-		sashForm = new SashForm(parent, SWT.VERTICAL);
-		sashForm.setSashWidth((int) (sashForm.getSashWidth() * SASH_MAGNIFICATION_FACTOR));
-		sashForm.setLayout(new GridLayout());
-		sashForm.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 7, 1));
+		verticalSashForm = new SashForm(parent, SWT.VERTICAL);
+		verticalSashForm.setSashWidth((int) (verticalSashForm.getSashWidth() * SASH_MAGNIFICATION_FACTOR));
+		verticalSashForm.setLayout(new GridLayout());
+		verticalSashForm.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 7, 1));
 
-		resultTable = new ResultTable(sashForm, new GridData(SWT.FILL, SWT.FILL, true, true), this);
-		
-		Composite lowerPane = new Composite(sashForm, SWT.NULL);
-		lowerPane.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		resultTable = new ResultTable(verticalSashForm, new GridData(SWT.FILL, SWT.FILL, true, true), this);
+
+		horizontalSashForm = new SashForm(verticalSashForm, SWT.HORIZONTAL);
+		horizontalSashForm.setSashWidth((int) (horizontalSashForm.getSashWidth() * SASH_MAGNIFICATION_FACTOR));
+		horizontalSashForm.setLayout(new GridLayout());
+		horizontalSashForm.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+		leftComposite = new Composite(horizontalSashForm, SWT.BORDER);
+		leftComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		leftComposite.setLayout(new FillLayout());
+
+		rightComposite = new Composite(horizontalSashForm, SWT.BORDER);
+		rightComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		rightComposite.setLayout(new FillLayout());
+
+		imageLabel = new Label(leftComposite, SWT.NULL);
 
 		return parent;
 	}
@@ -138,6 +172,14 @@ public class GeofonClientGui extends ApplicationWindow {
 
 	public ResultTable getResultTable() {
 		return resultTable;
+	}
+
+	public Label getImageLabel() {
+		return imageLabel;
+	}
+
+	public Map<String, Image> getImageCache() {
+		return imageCache;
 	}
 
 }

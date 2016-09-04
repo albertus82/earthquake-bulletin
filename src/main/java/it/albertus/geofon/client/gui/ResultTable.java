@@ -3,10 +3,15 @@ package it.albertus.geofon.client.gui;
 import it.albertus.geofon.client.model.Earthquake;
 import it.albertus.jface.SwtThreadExecutor;
 
+import java.net.URL;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -32,12 +37,26 @@ public class ResultTable {
 	private volatile List<Earthquake> currentData;
 
 	public ResultTable(final Composite parent, final Object layoutData, final GeofonClientGui gui) {
-		tableViewer = new TableViewer(parent, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
+		tableViewer = new TableViewer(parent, SWT.BORDER | SWT.FULL_SELECTION);
 		tableViewer.setData(TableDataKey.INITIALIZED.toString(), false);
 		final Table table = tableViewer.getTable();
 		table.setLayoutData(layoutData);
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
+		table.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+				final Earthquake selectedItem = currentData.get(table.getSelectionIndex());
+				String guid = selectedItem.getGuid();
+				final Map<String, Image> imageCache = gui.getImageCache();
+				if (!imageCache.containsKey(guid)) {
+					URL url = selectedItem.getEnclosure();
+					final Image image = gui.downloadImage(url);
+					imageCache.put(guid, image);
+				}
+				gui.getImageLabel().setImage(imageCache.get(guid));
+			}
+		});
 	}
 
 	public void clear() {
