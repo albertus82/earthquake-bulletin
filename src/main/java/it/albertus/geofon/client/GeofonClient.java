@@ -1,14 +1,17 @@
 package it.albertus.geofon.client;
 
-import it.albertus.geofon.client.model.GeofonData;
-import it.albertus.geofon.client.model.ItemDescription;
-import it.albertus.geofon.client.xml.Item;
-import it.albertus.geofon.client.xml.Rss;
+import it.albertus.geofon.client.model.Earthquake;
+import it.albertus.geofon.client.rss.transformer.ItemTransformer;
+import it.albertus.geofon.client.rss.xml.Item;
+import it.albertus.geofon.client.rss.xml.Rss;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -21,17 +24,15 @@ public class GeofonClient {
 	}
 
 	private void run() {
-		GeofonData geofonData = null;
+		Rss rss = null;
 		InputStream is = null;
 		try {
 			URL url = new URL("http://geofon.gfz-potsdam.de/eqinfo/list.php?latmin=40&latmax=44&lonmin=10&lonmax=14&magmin=&fmt=rss");
 			HttpURLConnection urlConnection = openConnection(url, 5000, 5000);
 			is = urlConnection.getInputStream();
-			final JAXBContext jaxbContext = JAXBContext.newInstance(GeofonData.class);
+			final JAXBContext jaxbContext = JAXBContext.newInstance(Rss.class);
 			final Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-			final Rss rss = (Rss) jaxbUnmarshaller.unmarshal(is);
-			geofonData = new GeofonData();
-			geofonData.setRss(rss);
+			rss = (Rss) jaxbUnmarshaller.unmarshal(is);
 		}
 		catch (final IOException | JAXBException e) {
 			e.printStackTrace();
@@ -42,9 +43,16 @@ public class GeofonClient {
 			}
 			catch (final Exception e) {/* Ignore */}
 		}
-		System.out.println(geofonData);
-		for (Item item : geofonData.getRss().getChannel().getItem()) {
-			System.out.println(new ItemDescription(item.getDescription()));
+		System.out.println(rss);
+		
+		List<Earthquake> earthquakes = new ArrayList<>();
+		for (final Item item : rss.getChannel().getItem()) {
+			earthquakes.add(ItemTransformer.fromRss(item));
+		}
+
+		Collections.sort(earthquakes);
+		for (final Earthquake earthquake : earthquakes) {
+			System.out.println(earthquake);
 		}
 	}
 
