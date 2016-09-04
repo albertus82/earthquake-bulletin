@@ -56,9 +56,10 @@ public class ResultTable {
 			new SwtThreadExecutor(table) {
 				@Override
 				protected void run() {
+					clear();
+
 					// Disattivazione ridisegno automatico...
 					table.setRedraw(false);
-					clear();
 
 					// Header (una tantum)...
 					if (!(Boolean) table.getData(TableDataKey.INITIALIZED.toString())) {
@@ -78,17 +79,16 @@ public class ResultTable {
 						column.setText("Region");
 					}
 
-					int i = 0;
-					for (final Earthquake e : earthquakes) {
+					for (final Earthquake earthquake : earthquakes) {
 						final TableItem item = new TableItem(table, SWT.NONE);
-						item.setText(i++, String.valueOf(e.getTime()));
-						item.setText(i++, String.valueOf(e.getMagnitudo()));
-						item.setText(i++, String.valueOf(e.getLatitude()));
-						item.setText(i++, String.valueOf(e.getLongitude()));
-						item.setText(i++, String.valueOf(e.getDepth()));
-						item.setText(i++, String.valueOf(e.getStatus()));
-						item.setText(i++, String.valueOf(e.getRegion()));
-						i = 0;
+						int i = 0;
+						item.setText(i++, String.valueOf(earthquake.getTime()));
+						item.setText(i++, String.valueOf(earthquake.getMagnitudo()));
+						item.setText(i++, String.valueOf(earthquake.getLatitude()));
+						item.setText(i++, String.valueOf(earthquake.getLongitude()));
+						item.setText(i++, String.valueOf(earthquake.getDepth()));
+						item.setText(i++, String.valueOf(earthquake.getStatus()));
+						item.setText(i++, String.valueOf(earthquake.getRegion()));
 					}
 
 					// Dimensionamento delle colonne (una tantum)...
