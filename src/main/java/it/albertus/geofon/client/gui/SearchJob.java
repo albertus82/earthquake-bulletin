@@ -47,7 +47,8 @@ public class SearchJob extends Job {
 			urlConnection.disconnect();
 		}
 		catch (final IOException | JAXBException e) {
-			e.printStackTrace(); // Dare messaggio di errore e togliere cursore WAIT!
+			e.printStackTrace(); // Dare messaggio di errore
+			gui.getShell().setCursor(null);
 		}
 		finally {
 			try {

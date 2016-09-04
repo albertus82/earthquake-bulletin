@@ -5,7 +5,6 @@ import it.albertus.jface.SwtThreadExecutor;
 
 import java.net.URL;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
@@ -48,13 +47,13 @@ public class ResultTable {
 			public void widgetDefaultSelected(SelectionEvent e) {
 				final Earthquake selectedItem = currentData.get(table.getSelectionIndex());
 				String guid = selectedItem.getGuid();
-				final Map<String, Image> imageCache = gui.getImageCache();
-				if (!imageCache.containsKey(guid)) {
-					URL url = selectedItem.getEnclosure();
+				final MapCache cache = gui.getMapCanvas().getCache();
+				if (!cache.contains(guid)) {
+					final URL url = selectedItem.getEnclosure();
 					final Image image = gui.downloadImage(url);
-					imageCache.put(guid, image);
+					cache.put(guid, image);
 				}
-				gui.getImageLabel().setImage(imageCache.get(guid));
+				gui.getMapCanvas().setImage(cache.get(guid));
 			}
 		});
 	}

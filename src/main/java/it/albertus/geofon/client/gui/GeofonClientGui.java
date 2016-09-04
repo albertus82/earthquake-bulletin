@@ -5,8 +5,6 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.window.ApplicationWindow;
@@ -21,7 +19,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.Shell;
 
@@ -36,18 +33,16 @@ public class GeofonClientGui extends ApplicationWindow {
 	private volatile Job job;
 
 	private ResultTable resultTable;
+	
+	private MapCanvas mapCanvas;
 
 	private SashForm verticalSashForm;
 
 	private SashForm horizontalSashForm;
 
-	private Label imageLabel;
-
 	private Composite leftComposite;
 
 	private Composite rightComposite;
-
-	private final Map<String, Image> imageCache = new LinkedHashMap<String, Image>();
 
 	public GeofonClientGui(final Display display) {
 		super(null);
@@ -145,7 +140,7 @@ public class GeofonClientGui extends ApplicationWindow {
 		rightComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		rightComposite.setLayout(new FillLayout());
 
-		imageLabel = new Label(leftComposite, SWT.NULL);
+		mapCanvas = new MapCanvas(leftComposite);
 
 		return parent;
 	}
@@ -174,12 +169,8 @@ public class GeofonClientGui extends ApplicationWindow {
 		return resultTable;
 	}
 
-	public Label getImageLabel() {
-		return imageLabel;
-	}
-
-	public Map<String, Image> getImageCache() {
-		return imageCache;
+	public MapCanvas getMapCanvas() {
+		return mapCanvas;
 	}
 
 }
