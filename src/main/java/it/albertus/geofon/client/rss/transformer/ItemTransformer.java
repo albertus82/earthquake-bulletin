@@ -1,5 +1,6 @@
 package it.albertus.geofon.client.rss.transformer;
 
+import it.albertus.geofon.client.model.Depth;
 import it.albertus.geofon.client.model.Earthquake;
 import it.albertus.geofon.client.model.Latitude;
 import it.albertus.geofon.client.model.Longitude;
@@ -64,7 +65,7 @@ public class ItemTransformer {
 			}
 		}
 
-		return new Earthquake(rssItem.getGuid().getContent().trim(), time, magnitudo, new Latitude(latitude), new Longitude(longitude), depth, status, region, link, enclosure);
+		return new Earthquake(rssItem.getGuid().getContent().trim(), time, magnitudo, new Latitude(latitude), new Longitude(longitude), new Depth(depth), status, region, link, enclosure);
 	}
 
 	private static synchronized Date parseRssDate(final String source) {

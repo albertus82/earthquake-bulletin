@@ -25,7 +25,7 @@ public class FloatWrapper implements Serializable, Comparable<FloatWrapper> {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (this == obj) {
 			return true;
 		}
@@ -43,7 +43,7 @@ public class FloatWrapper implements Serializable, Comparable<FloatWrapper> {
 	}
 
 	@Override
-	public int compareTo(FloatWrapper o) {
+	public int compareTo(final FloatWrapper o) {
 		return Float.compare(this.value, o.value);
 	}
 

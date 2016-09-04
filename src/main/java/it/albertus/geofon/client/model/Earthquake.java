@@ -1,22 +1,25 @@
 package it.albertus.geofon.client.model;
 
+import java.io.Serializable;
 import java.net.URL;
 import java.util.Date;
 
-public class Earthquake implements Comparable<Earthquake> {
+public class Earthquake implements Serializable, Comparable<Earthquake> {
+
+	private static final long serialVersionUID = 3052012419295604392L;
 
 	private final String guid;
 	private final Date time;
 	private final float magnitudo;
 	private final Latitude latitude;
 	private final Longitude longitude;
-	private final int depth;
+	private final Depth depth;
 	private final Status status;
 	private final String region;
 	private final URL link;
 	private final URL enclosure;
 
-	public Earthquake(String guid, Date time, float magnitudo, Latitude latitude, Longitude longitude, int depth, Status status, String region, URL link, URL enclosure) {
+	public Earthquake(String guid, Date time, float magnitudo, Latitude latitude, Longitude longitude, Depth depth, Status status, String region, URL link, URL enclosure) {
 		this.guid = guid;
 		this.time = time;
 		this.magnitudo = magnitudo;
@@ -49,7 +52,7 @@ public class Earthquake implements Comparable<Earthquake> {
 		return longitude;
 	}
 
-	public int getDepth() {
+	public Depth getDepth() {
 		return depth;
 	}
 
@@ -83,7 +86,7 @@ public class Earthquake implements Comparable<Earthquake> {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (this == obj) {
 			return true;
 		}

@@ -4,6 +4,9 @@ import it.albertus.geofon.client.gui.job.DownloadMapJob;
 import it.albertus.geofon.client.model.Earthquake;
 import it.albertus.jface.SwtThreadExecutor;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import org.eclipse.core.runtime.jobs.Job;
@@ -17,6 +20,12 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 
 public class ResultTable {
+
+	private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
+
+	public static synchronized String formatDate(final Date date) {
+		return dateFormat.format(date);
+	}
 
 	enum TableDataKey {
 		INITIALIZED(Boolean.class);
@@ -107,7 +116,7 @@ public class ResultTable {
 					for (final Earthquake earthquake : earthquakes) {
 						final TableItem item = new TableItem(table, SWT.NONE);
 						int i = 0;
-						item.setText(i++, String.valueOf(earthquake.getTime()));
+						item.setText(i++, formatDate(earthquake.getTime()));
 						item.setText(i++, String.valueOf(earthquake.getMagnitudo()));
 						item.setText(i++, String.valueOf(earthquake.getLatitude()));
 						item.setText(i++, String.valueOf(earthquake.getLongitude()));
