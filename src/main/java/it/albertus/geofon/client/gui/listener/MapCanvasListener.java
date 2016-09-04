@@ -50,8 +50,8 @@ public class MapCanvasListener implements PaintListener {
 				newHeight = imageSize.height;
 			}
 
-			int top = (int) ((canvasSize.height - newHeight) / 2.0);
-			int left = (int) ((canvasSize.width - newWidth) / 2.0);
+			final int top = (int) ((canvasSize.height - newHeight) / 2.0);
+			final int left = (int) ((canvasSize.width - newWidth) / 2.0);
 
 			final GC gc = new GC(canvas);
 
