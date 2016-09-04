@@ -8,6 +8,7 @@ import java.net.URL;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.window.ApplicationWindow;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.ImageLoader;
@@ -21,6 +22,8 @@ import org.eclipse.swt.widgets.Shell;
 
 public class GeofonClientGui extends ApplicationWindow {
 
+	private static final float SASH_MAGNIFICATION_FACTOR = 1.5f;
+
 	private Image mainIcon;
 
 	private SearchForm searchForm;
@@ -28,6 +31,8 @@ public class GeofonClientGui extends ApplicationWindow {
 	private volatile Job job;
 
 	private ResultTable resultTable;
+
+	private SashForm sashForm;
 
 	public GeofonClientGui(final Display display) {
 		super(null);
@@ -91,16 +96,22 @@ public class GeofonClientGui extends ApplicationWindow {
 
 	@Override
 	protected Layout getLayout() {
-		return new GridLayout();
+		return new GridLayout(7, false);
 	}
 
 	@Override
 	protected Control createContents(final Composite parent) {
-		parent.setLayout(new GridLayout(7, false));
-
 		searchForm = new SearchForm(this);
 
-		resultTable = new ResultTable(parent, new GridData(SWT.FILL, SWT.FILL, true, true, 7, 1), this);
+		sashForm = new SashForm(parent, SWT.VERTICAL);
+		sashForm.setSashWidth((int) (sashForm.getSashWidth() * SASH_MAGNIFICATION_FACTOR));
+		sashForm.setLayout(new GridLayout());
+		sashForm.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 7, 1));
+
+		resultTable = new ResultTable(sashForm, new GridData(SWT.FILL, SWT.FILL, true, true), this);
+		
+		Composite lowerPane = new Composite(sashForm, SWT.NULL);
+		lowerPane.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 		return parent;
 	}

@@ -29,14 +29,15 @@ public class ResultTable {
 	}
 
 	private final TableViewer tableViewer;
+	private volatile List<Earthquake> currentData;
 
 	public ResultTable(final Composite parent, final Object layoutData, final GeofonClientGui gui) {
 		tableViewer = new TableViewer(parent, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
+		tableViewer.setData(TableDataKey.INITIALIZED.toString(), false);
 		final Table table = tableViewer.getTable();
 		table.setLayoutData(layoutData);
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
-		table.setData(TableDataKey.INITIALIZED.toString(), false);
 	}
 
 	public void clear() {
@@ -51,7 +52,8 @@ public class ResultTable {
 	}
 
 	public void showResults(final List<Earthquake> earthquakes) {
-		if (earthquakes != null && !earthquakes.isEmpty()) {
+		if (earthquakes != null && !earthquakes.isEmpty() && !earthquakes.equals(currentData)) {
+			currentData = earthquakes;
 			final Table table = tableViewer.getTable();
 			new SwtThreadExecutor(table) {
 				@Override
@@ -62,7 +64,7 @@ public class ResultTable {
 					table.setRedraw(false);
 
 					// Header (una tantum)...
-					if (!(Boolean) table.getData(TableDataKey.INITIALIZED.toString())) {
+					if (!(Boolean) tableViewer.getData(TableDataKey.INITIALIZED.toString())) {
 						TableColumn column = new TableColumn(table, SWT.NONE);
 						column.setText("Time");
 						column = new TableColumn(table, SWT.NONE);
@@ -92,7 +94,7 @@ public class ResultTable {
 					}
 
 					// Dimensionamento delle colonne (una tantum)...
-					if (!(Boolean) table.getData(TableDataKey.INITIALIZED.toString())) {
+					if (!(Boolean) tableViewer.getData(TableDataKey.INITIALIZED.toString())) {
 						for (int j = 0; j < table.getColumns().length; j++) {
 							table.getColumn(j).pack();
 						}
@@ -105,4 +107,5 @@ public class ResultTable {
 			}.start();
 		}
 	}
+
 }
