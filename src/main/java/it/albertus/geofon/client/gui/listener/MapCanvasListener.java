@@ -41,6 +41,12 @@ public class MapCanvasListener implements PaintListener {
 				newHeight = (int) (imageSize.height * (1.0 * canvasSize.width / imageSize.width));
 			}
 
+			// Allow reduction only
+			if (newWidth > imageSize.width || newHeight > imageSize.height) {
+				newWidth = imageSize.width;
+				newHeight = imageSize.height;
+			}
+
 			int top = (int) ((canvasSize.height - newHeight) / 2.0);
 			int left = (int) ((canvasSize.width - newWidth) / 2.0);
 

@@ -1,5 +1,7 @@
-package it.albertus.geofon.client.gui;
+package it.albertus.geofon.client.gui.job;
 
+import it.albertus.geofon.client.gui.GeofonClientGui;
+import it.albertus.geofon.client.gui.SearchResultPrinter;
 import it.albertus.geofon.client.model.Earthquake;
 import it.albertus.geofon.client.rss.transformer.ItemTransformer;
 import it.albertus.geofon.client.rss.xml.Item;

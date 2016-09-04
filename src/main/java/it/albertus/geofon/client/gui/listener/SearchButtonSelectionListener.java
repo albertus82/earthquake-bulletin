@@ -1,7 +1,7 @@
 package it.albertus.geofon.client.gui.listener;
 
 import it.albertus.geofon.client.gui.GeofonClientGui;
-import it.albertus.geofon.client.gui.SearchJob;
+import it.albertus.geofon.client.gui.job.SearchJob;
 
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.SWT;

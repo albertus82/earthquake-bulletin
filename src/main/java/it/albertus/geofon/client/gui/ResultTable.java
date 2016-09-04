@@ -1,5 +1,6 @@
 package it.albertus.geofon.client.gui;
 
+import it.albertus.geofon.client.gui.job.DownloadMapJob;
 import it.albertus.geofon.client.model.Earthquake;
 import it.albertus.jface.SwtThreadExecutor;
 
