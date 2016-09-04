@@ -2,14 +2,14 @@ package it.albertus.geofon.client.gui.listener;
 
 import it.albertus.geofon.client.gui.MapCanvas;
 
+import org.eclipse.swt.events.PaintEvent;
+import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Canvas;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 
-public class MapCanvasListener implements Listener {
+public class MapCanvasListener implements PaintListener {
 
 	private final MapCanvas mapCanvas;
 
@@ -18,11 +18,10 @@ public class MapCanvasListener implements Listener {
 	}
 
 	@Override
-	public void handleEvent(final Event event) {
+	public void paintControl(PaintEvent e) {
 		final Image image = mapCanvas.getImage();
 		if (image != null) {
 			final Canvas canvas = mapCanvas.getCanvas();
-
 			final Rectangle imageSize = image.getBounds();
 			double imageRatio = 1.0 * imageSize.width / imageSize.height;
 

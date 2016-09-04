@@ -17,7 +17,7 @@ public class MapCanvas {
 
 	public MapCanvas(final Composite parent) {
 		canvas = new Canvas(parent, SWT.NULL);
-		canvas.addListener(SWT.Paint, new MapCanvasListener(this));
+		canvas.addPaintListener(new MapCanvasListener(this));
 	}
 
 	public Image getImage() {
