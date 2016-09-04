@@ -1,19 +1,14 @@
 package it.albertus.geofon.client.gui;
 
+import it.albertus.geofon.client.gui.util.ImageDownloader;
+
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.window.ApplicationWindow;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.ImageData;
-import org.eclipse.swt.graphics.ImageLoader;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -30,30 +25,21 @@ public class GeofonClientGui extends ApplicationWindow {
 
 	private SearchForm searchForm;
 
-	private volatile Job job;
-
 	private ResultTable resultTable;
-	
+
 	private MapCanvas mapCanvas;
 
-	private SashForm verticalSashForm;
+	private SashForm sashForm;
 
-	private SashForm horizontalSashForm;
-
-	private Composite leftComposite;
-
-	private Composite rightComposite;
+	private volatile Job job;
 
 	public GeofonClientGui(final Display display) {
 		super(null);
 
 		try {
-			mainIcon = downloadImage(new URL("http://www.gfz-potsdam.de/favicon.ico"));
+			mainIcon = ImageDownloader.downloadImage("http://www.gfz-potsdam.de/favicon.ico");
 		}
-		catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		catch (final IOException ioe) {/* Ignore */}
 
 		open();
 
@@ -69,39 +55,10 @@ public class GeofonClientGui extends ApplicationWindow {
 		//		release();
 	}
 
-	public Image downloadImage(final URL url) {
-		InputStream is = null;
-		Image image = null;
-		try {
-			final HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-			urlConnection.setConnectTimeout(5000);
-			urlConnection.setReadTimeout(5000);
-			urlConnection.addRequestProperty("Accept", "image/*");
-			is = urlConnection.getInputStream();
-			final ImageData[] images = new ImageLoader().load(is);
-			urlConnection.disconnect();
-
-			if (images.length > 0) {
-				image = new Image(Display.getCurrent(), images[0]);
-			}
-			urlConnection.disconnect();
-		}
-		catch (final IOException e) {
-			e.printStackTrace();
-		}
-		finally {
-			try {
-				is.close();
-			}
-			catch (final Exception e) {/* Ignore */}
-		}
-		return image;
-	}
-
 	@Override
 	protected void configureShell(final Shell shell) {
 		super.configureShell(shell);
-		//		shell.setMinimized(configuration.getBoolean("gui.start.minimized", Defaults.GUI_START_MINIMIZED));
+		// shell.setMinimized(configuration.getBoolean("gui.start.minimized", Defaults.GUI_START_MINIMIZED));
 		shell.setText("Geofon Client");
 		if (mainIcon != null) {
 			shell.setImages(new Image[] { mainIcon });
@@ -109,38 +66,29 @@ public class GeofonClientGui extends ApplicationWindow {
 	}
 
 	@Override
+	protected void initializeBounds() {/* Do not pack the shell */}
+
+	@Override
 	protected void createTrimWidgets(final Shell shell) {/* Not needed */}
 
 	@Override
 	protected Layout getLayout() {
-		return new GridLayout(7, false);
+		return new GridLayout();
 	}
 
 	@Override
 	protected Control createContents(final Composite parent) {
 		searchForm = new SearchForm(this);
 
-		verticalSashForm = new SashForm(parent, SWT.VERTICAL);
-		verticalSashForm.setSashWidth((int) (verticalSashForm.getSashWidth() * SASH_MAGNIFICATION_FACTOR));
-		verticalSashForm.setLayout(new GridLayout());
-		verticalSashForm.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 7, 1));
+		sashForm = new SashForm(parent, SWT.HORIZONTAL);
+		sashForm.setSashWidth((int) (sashForm.getSashWidth() * SASH_MAGNIFICATION_FACTOR));
+		sashForm.setLayout(new GridLayout());
+		sashForm.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-		resultTable = new ResultTable(verticalSashForm, new GridData(SWT.FILL, SWT.FILL, true, true), this);
+		resultTable = new ResultTable(sashForm, new GridData(SWT.FILL, SWT.FILL, true, true), this);
 
-		horizontalSashForm = new SashForm(verticalSashForm, SWT.HORIZONTAL);
-		horizontalSashForm.setSashWidth((int) (horizontalSashForm.getSashWidth() * SASH_MAGNIFICATION_FACTOR));
-		horizontalSashForm.setLayout(new GridLayout());
-		horizontalSashForm.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-
-		leftComposite = new Composite(horizontalSashForm, SWT.BORDER);
-		leftComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		leftComposite.setLayout(new FillLayout());
-
-		rightComposite = new Composite(horizontalSashForm, SWT.BORDER);
-		rightComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		rightComposite.setLayout(new FillLayout());
-
-		mapCanvas = new MapCanvas(leftComposite);
+		mapCanvas = new MapCanvas(sashForm);
+		sashForm.setWeights(new int[] { 3, 2 });
 
 		return parent;
 	}

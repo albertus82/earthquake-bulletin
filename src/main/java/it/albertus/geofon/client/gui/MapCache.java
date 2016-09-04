@@ -21,4 +21,40 @@ public class MapCache {
 		return cache.containsKey(guid);
 	}
 
+	@Override
+	public String toString() {
+		return "MapCache [cache=" + cache + "]";
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((cache == null) ? 0 : cache.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof MapCache)) {
+			return false;
+		}
+		MapCache other = (MapCache) obj;
+		if (cache == null) {
+			if (other.cache != null) {
+				return false;
+			}
+		}
+		else if (!cache.equals(other.cache)) {
+			return false;
+		}
+		return true;
+	}
+
 }

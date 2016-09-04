@@ -8,8 +8,8 @@ public class Earthquake implements Comparable<Earthquake> {
 	private final String guid;
 	private final Date time;
 	private final float magnitudo;
-	private final float latitude;
-	private final float longitude;
+	private final float latitude; // TODO wrapper
+	private final float longitude; // TODO wrapper
 	private final int depth;
 	private final Status status;
 	private final String region;

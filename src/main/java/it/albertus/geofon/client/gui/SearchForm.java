@@ -5,6 +5,7 @@ import it.albertus.geofon.client.gui.listener.SearchButtonSelectionListener;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.RowLayout;
@@ -14,6 +15,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 public class SearchForm {
+
 	private Label periodLabel;
 	private Label periodFromLabel;
 	private Label periodToLabel;
@@ -46,55 +48,59 @@ public class SearchForm {
 	private Label resultsLabel;
 	private Text resultsText;
 	private Button searchButton;
+	private Composite composite;
 
 	public SearchForm(final GeofonClientGui gui) {
-		Composite parent = gui.getShell();
-		periodLabel = new Label(parent, SWT.NONE);
+		composite = new Composite(gui.getShell(), SWT.NONE);
+		GridLayoutFactory.swtDefaults().margins(0, 0).numColumns(7).applyTo(composite);
+		composite.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
+
+		periodLabel = new Label(composite, SWT.NONE);
 		periodLabel.setText("Time Period");
-		periodFromLabel = new Label(parent, SWT.NONE);
+		periodFromLabel = new Label(composite, SWT.NONE);
 		periodFromLabel.setText("from");
-		periodFromText = new Text(parent, SWT.BORDER);
-		periodFromNote = new Label(parent, SWT.NONE);
+		periodFromText = new Text(composite, SWT.BORDER);
+		periodFromNote = new Label(composite, SWT.NONE);
 		periodFromNote.setText("(yyyy-mm-dd)");
-		periodToLabel = new Label(parent, SWT.NONE);
+		periodToLabel = new Label(composite, SWT.NONE);
 		periodToLabel.setText("to");
-		periodToText = new Text(parent, SWT.BORDER);
-		periodToNote = new Label(parent, SWT.NONE);
+		periodToText = new Text(composite, SWT.BORDER);
+		periodToNote = new Label(composite, SWT.NONE);
 		periodToNote.setText("(yyyy-mm-dd)");
 
-		latitudeLabel = new Label(parent, SWT.NONE);
+		latitudeLabel = new Label(composite, SWT.NONE);
 		latitudeLabel.setText("Latitude range");
-		latitudeFromLabel = new Label(parent, SWT.NONE);
+		latitudeFromLabel = new Label(composite, SWT.NONE);
 		latitudeFromLabel.setText("from");
-		latitudeFromText = new Text(parent, SWT.BORDER);
-		latitudeFromNote = new Label(parent, SWT.NONE);
+		latitudeFromText = new Text(composite, SWT.BORDER);
+		latitudeFromNote = new Label(composite, SWT.NONE);
 		latitudeFromNote.setText("\u00B0 (southern limit)");
-		latitudeToLabel = new Label(parent, SWT.NONE);
+		latitudeToLabel = new Label(composite, SWT.NONE);
 		latitudeToLabel.setText("to");
-		latitudeToText = new Text(parent, SWT.BORDER);
-		latitudeToNote = new Label(parent, SWT.NONE);
+		latitudeToText = new Text(composite, SWT.BORDER);
+		latitudeToNote = new Label(composite, SWT.NONE);
 		latitudeToNote.setText("\u00B0 (northern limit)");
 
-		longitudeLabel = new Label(parent, SWT.NONE);
+		longitudeLabel = new Label(composite, SWT.NONE);
 		longitudeLabel.setText("Longitude range");
-		longitudeFromLabel = new Label(parent, SWT.NONE);
+		longitudeFromLabel = new Label(composite, SWT.NONE);
 		longitudeFromLabel.setText("from");
-		longitudeFromText = new Text(parent, SWT.BORDER);
-		longitudeFromNote = new Label(parent, SWT.NONE);
+		longitudeFromText = new Text(composite, SWT.BORDER);
+		longitudeFromNote = new Label(composite, SWT.NONE);
 		longitudeFromNote.setText("\u00B0 (western limit)");
-		longitudeToLabel = new Label(parent, SWT.NONE);
+		longitudeToLabel = new Label(composite, SWT.NONE);
 		longitudeToLabel.setText("to");
-		longitudeToText = new Text(parent, SWT.BORDER);
-		longitudeToNote = new Label(parent, SWT.NONE);
+		longitudeToText = new Text(composite, SWT.BORDER);
+		longitudeToNote = new Label(composite, SWT.NONE);
 		longitudeToNote.setText("\u00B0 (eastern limit)");
 
-		minimumMagnitudeLabel = new Label(parent, SWT.NONE);
+		minimumMagnitudeLabel = new Label(composite, SWT.NONE);
 		minimumMagnitudeLabel.setText("Minimum magnitude");
 		minimumMagnitudeLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 2, 1));
 		//		minimumMagnitudeFromLabel = new Label(parent, SWT.NONE);
-		minimumMagnitudeFromText = new Text(parent, SWT.BORDER);
+		minimumMagnitudeFromText = new Text(composite, SWT.BORDER);
 
-		Composite restrictComposite = new Composite(parent, SWT.NONE);
+		Composite restrictComposite = new Composite(composite, SWT.NONE);
 		restrictComposite.setLayout(new RowLayout(SWT.HORIZONTAL));
 		restrictButton = new Button(restrictComposite, SWT.CHECK);
 		restrictLabel = new Label(restrictComposite, SWT.NONE);
@@ -102,9 +108,9 @@ public class SearchForm {
 		//		GridDataFactory.swtDefaults().span(4, 1).applyTo(restrictComposite);
 		restrictComposite.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 4, 1));
 
-		outputFormatLabel = new Label(parent, SWT.NONE);
+		outputFormatLabel = new Label(composite, SWT.NONE);
 		outputFormatLabel.setText("Output format");
-		final Composite radioComposite = new Composite(parent, SWT.NONE);
+		final Composite radioComposite = new Composite(composite, SWT.NONE);
 		radioComposite.setLayout(new RowLayout(SWT.HORIZONTAL));
 		radioComposite.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 2, 1));
 		for (final String mode : new String[] { "RSS", "KML" }) {
@@ -114,14 +120,19 @@ public class SearchForm {
 			//			radio.addSelectionListener(new ModeRadioSelectionListener(this, radio, mode));
 			modeRadios.put(mode, radio);
 		}
-		resultsLabel = new Label(parent, SWT.NONE);
+		resultsLabel = new Label(composite, SWT.NONE);
 		resultsLabel.setText("Limit results to");
 		resultsLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 2, 1));
-		resultsText = new Text(parent, SWT.BORDER);
+		resultsText = new Text(composite, SWT.BORDER);
 
-		searchButton = new Button(parent, SWT.NULL);
+		searchButton = new Button(composite, SWT.NULL);
 		searchButton.setText("Search");
+		//		searchButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		searchButton.addSelectionListener(new SearchButtonSelectionListener(gui));
+	}
+
+	public Composite getComposite() {
+		return composite;
 	}
 
 	public Label getPeriodLabel() {
