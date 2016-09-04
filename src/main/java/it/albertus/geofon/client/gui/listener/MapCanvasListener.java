@@ -1,6 +1,7 @@
 package it.albertus.geofon.client.gui.listener;
 
 import it.albertus.geofon.client.gui.MapCanvas;
+import it.albertus.geofon.client.gui.util.HqImageResizer;
 
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
@@ -12,6 +13,8 @@ import org.eclipse.swt.widgets.Canvas;
 public class MapCanvasListener implements PaintListener {
 
 	private final MapCanvas mapCanvas;
+
+	private Image resized;
 
 	public MapCanvasListener(final MapCanvas mapCanvas) {
 		this.mapCanvas = mapCanvas;
@@ -51,7 +54,18 @@ public class MapCanvasListener implements PaintListener {
 			int left = (int) ((canvasSize.width - newWidth) / 2.0);
 
 			final GC gc = new GC(canvas);
-			gc.drawImage(image, 0, 0, imageSize.width, imageSize.height, left, top, newWidth, newHeight);
+
+			if (true) { // TODO configuration
+				final Image oldImage = resized;
+				resized = HqImageResizer.resize(image, newHeight / (float) imageSize.height);
+				gc.drawImage(resized, left, top);
+				if (oldImage != null) {
+					oldImage.dispose();
+				}
+			}
+			else {
+				gc.drawImage(image, 0, 0, imageSize.width, imageSize.height, left, top, newWidth, newHeight);
+			}
 		}
 	}
 
