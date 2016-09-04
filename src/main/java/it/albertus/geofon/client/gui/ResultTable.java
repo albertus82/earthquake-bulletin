@@ -2,6 +2,7 @@ package it.albertus.geofon.client.gui;
 
 import it.albertus.geofon.client.gui.job.DownloadMapJob;
 import it.albertus.geofon.client.model.Earthquake;
+import it.albertus.geofon.client.model.Status;
 import it.albertus.jface.SwtThreadExecutor;
 
 import java.text.DateFormat;
@@ -115,14 +116,14 @@ public class ResultTable {
 
 					for (final Earthquake earthquake : earthquakes) {
 						final TableItem item = new TableItem(table, SWT.NONE);
-						int i = 0;
-						item.setText(i++, formatDate(earthquake.getTime()));
-						item.setText(i++, String.valueOf(earthquake.getMagnitudo()));
-						item.setText(i++, String.valueOf(earthquake.getLatitude()));
-						item.setText(i++, String.valueOf(earthquake.getLongitude()));
-						item.setText(i++, String.valueOf(earthquake.getDepth()));
-						item.setText(i++, String.valueOf(earthquake.getStatus()));
-						item.setText(i++, String.valueOf(earthquake.getRegion()));
+						item.setText(0, formatDate(earthquake.getTime()));
+						item.setText(1, String.valueOf(earthquake.getMagnitudo()));
+						item.setText(2, String.valueOf(earthquake.getLatitude()));
+						item.setText(3, String.valueOf(earthquake.getLongitude()));
+						item.setText(4, String.valueOf(earthquake.getDepth()));
+						item.setText(5, String.valueOf(earthquake.getStatus()));
+						item.setText(6, String.valueOf(earthquake.getRegion()));
+						item.setForeground(5, table.getDisplay().getSystemColor(Status.A.equals(earthquake.getStatus()) ? SWT.COLOR_RED : SWT.COLOR_DARK_GREEN));
 					}
 
 					// Dimensionamento delle colonne (una tantum)...
