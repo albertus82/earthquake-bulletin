@@ -1,6 +1,7 @@
 package it.albertus.geofon.client.xml;
 
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlValue;
 
 public class Guid {
 
@@ -8,6 +9,7 @@ public class Guid {
 
 	private boolean permaLink;
 
+	@XmlValue
 	public String getContent() {
 		return content;
 	}
