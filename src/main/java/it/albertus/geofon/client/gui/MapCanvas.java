@@ -17,6 +17,7 @@ public class MapCanvas {
 
 	public MapCanvas(final Composite parent) {
 		canvas = new Canvas(parent, SWT.NULL);
+		canvas.setBackground(canvas.getDisplay().getSystemColor(SWT.COLOR_WHITE));
 		canvas.addPaintListener(new MapCanvasListener(this));
 	}
 

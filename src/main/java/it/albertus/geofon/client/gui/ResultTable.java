@@ -3,14 +3,13 @@ package it.albertus.geofon.client.gui;
 import it.albertus.geofon.client.model.Earthquake;
 import it.albertus.jface.SwtThreadExecutor;
 
-import java.net.URL;
 import java.util.List;
 
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -44,16 +43,21 @@ public class ResultTable {
 		table.setLinesVisible(true);
 		table.addSelectionListener(new SelectionAdapter() {
 			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {
+			public void widgetDefaultSelected(final SelectionEvent se) {
 				final Earthquake selectedItem = currentData.get(table.getSelectionIndex());
 				String guid = selectedItem.getGuid();
 				final MapCache cache = gui.getMapCanvas().getCache();
-				if (!cache.contains(guid)) {
-					final URL url = selectedItem.getEnclosure();
-					final Image image = gui.downloadImage(url);
-					cache.put(guid, image);
+				if (cache.contains(guid)) {
+					gui.getMapCanvas().setImage(cache.get(guid));
 				}
-				gui.getMapCanvas().setImage(cache.get(guid));
+				else {
+					if ((gui.getJob() == null || gui.getJob().getState() == Job.NONE)) {
+						// gui.disableControls(); // TODO
+						gui.getShell().setCursor(gui.getShell().getDisplay().getSystemCursor(SWT.CURSOR_WAIT));
+						gui.setJob(new DownloadMapJob(gui, selectedItem));
+						gui.getJob().schedule();
+					}
+				}
 			}
 		});
 	}

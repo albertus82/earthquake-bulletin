@@ -26,14 +26,14 @@ public class SearchJob extends Job {
 	private final GeofonClientGui gui;
 
 	public SearchJob(final GeofonClientGui gui) {
-		super("Geofon Search Job");
+		super("Search");
 		this.gui = gui;
 		this.setUser(true);
 	}
 
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
-		monitor.beginTask("Geofon search started...", 1);
+		monitor.beginTask("Search", 1);
 
 		Rss rss = null;
 		InputStream is = null;
