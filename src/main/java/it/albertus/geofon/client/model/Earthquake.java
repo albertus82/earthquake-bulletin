@@ -8,15 +8,15 @@ public class Earthquake implements Comparable<Earthquake> {
 	private final String guid;
 	private final Date time;
 	private final float magnitudo;
-	private final float latitude; // TODO wrapper
-	private final float longitude; // TODO wrapper
+	private final Latitude latitude;
+	private final Longitude longitude;
 	private final int depth;
 	private final Status status;
 	private final String region;
 	private final URL link;
 	private final URL enclosure;
 
-	public Earthquake(String guid, Date time, float magnitudo, float latitude, float longitude, int depth, Status status, String region, URL link, URL enclosure) {
+	public Earthquake(String guid, Date time, float magnitudo, Latitude latitude, Longitude longitude, int depth, Status status, String region, URL link, URL enclosure) {
 		this.guid = guid;
 		this.time = time;
 		this.magnitudo = magnitudo;
@@ -41,11 +41,11 @@ public class Earthquake implements Comparable<Earthquake> {
 		return magnitudo;
 	}
 
-	public float getLatitude() {
+	public Latitude getLatitude() {
 		return latitude;
 	}
 
-	public float getLongitude() {
+	public Longitude getLongitude() {
 		return longitude;
 	}
 
