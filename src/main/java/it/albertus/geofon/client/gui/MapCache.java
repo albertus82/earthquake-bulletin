@@ -7,9 +7,15 @@ import org.eclipse.swt.graphics.Image;
 
 public class MapCache {
 
-	private final Map<String, Image> cache = new LinkedHashMap<String, Image>();
+	private final Map<String, Image> cache = new LinkedHashMap<String, Image>(10);
 
 	public void put(final String guid, final Image map) {
+		if (cache.size() >= 10) { // TODO configure 
+			final String eldestGuid = cache.keySet().iterator().next();
+			final Image eldestImage = cache.get(eldestGuid);
+			cache.remove(eldestGuid);
+			eldestImage.dispose();
+		}
 		cache.put(guid, map);
 	}
 
