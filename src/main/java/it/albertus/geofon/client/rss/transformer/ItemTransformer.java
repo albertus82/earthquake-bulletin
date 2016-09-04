@@ -39,12 +39,30 @@ public class ItemTransformer {
 		final int depth = Integer.parseInt(descriptionTokens[4].trim());
 		final Status status = Status.valueOf(descriptionTokens[6].trim());
 
-		try {
-			return new Earthquake(rssItem.getGuid().getContent(), time, magnitudo, latitude, longitude, depth, status, region, new URL(rssItem.getLink()), new URL(rssItem.getEnclosure().getUrl()));
+		// Links
+		URL link = null;
+		final String pageUrl = rssItem.getLink();
+		if (pageUrl != null) {
+			try {
+				link = new URL(pageUrl.trim());
+			}
+			catch (final MalformedURLException mue) {
+				mue.printStackTrace();
+			}
 		}
-		catch (final MalformedURLException mue) {
-			throw new IllegalArgumentException(mue);
+
+		URL enclosure = null;
+		final String imageUrl = rssItem.getEnclosure() != null ? rssItem.getEnclosure().getUrl() : null;
+		if (imageUrl != null) {
+			try {
+				enclosure = new URL(imageUrl.trim());
+			}
+			catch (final MalformedURLException mue) {
+				mue.printStackTrace();
+			}
 		}
+
+		return new Earthquake(rssItem.getGuid().getContent().trim(), time, magnitudo, latitude, longitude, depth, status, region, link, enclosure);
 	}
 
 	private static synchronized Date parseRssDate(final String source) {
