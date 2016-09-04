@@ -1,5 +1,7 @@
 package it.albertus.geofon.client.gui;
 
+import it.albertus.geofon.client.gui.listener.SearchButtonSelectionListener;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -45,7 +47,8 @@ public class SearchForm {
 	private Text resultsText;
 	private Button searchButton;
 
-	public SearchForm(final Composite parent) {
+	public SearchForm(final GeofonClientGui gui) {
+		Composite parent = gui.getShell();
 		periodLabel = new Label(parent, SWT.NONE);
 		periodLabel.setText("Time Period");
 		periodFromLabel = new Label(parent, SWT.NONE);
@@ -118,6 +121,135 @@ public class SearchForm {
 
 		searchButton = new Button(parent, SWT.NULL);
 		searchButton.setText("Search");
+		searchButton.addSelectionListener(new SearchButtonSelectionListener(gui));
+	}
+
+	public Label getPeriodLabel() {
+		return periodLabel;
+	}
+
+	public Label getPeriodFromLabel() {
+		return periodFromLabel;
+	}
+
+	public Label getPeriodToLabel() {
+		return periodToLabel;
+	}
+
+	public Text getPeriodFromText() {
+		return periodFromText;
+	}
+
+	public Text getPeriodToText() {
+		return periodToText;
+	}
+
+	public Label getPeriodFromNote() {
+		return periodFromNote;
+	}
+
+	public Label getPeriodToNote() {
+		return periodToNote;
+	}
+
+	public Label getLatitudeLabel() {
+		return latitudeLabel;
+	}
+
+	public Label getLatitudeFromLabel() {
+		return latitudeFromLabel;
+	}
+
+	public Text getLatitudeFromText() {
+		return latitudeFromText;
+	}
+
+	public Label getLatitudeFromNote() {
+		return latitudeFromNote;
+	}
+
+	public Label getLatitudeToLabel() {
+		return latitudeToLabel;
+	}
+
+	public Text getLatitudeToText() {
+		return latitudeToText;
+	}
+
+	public Label getLatitudeToNote() {
+		return latitudeToNote;
+	}
+
+	public Label getLongitudeLabel() {
+		return longitudeLabel;
+	}
+
+	public Label getLongitudeFromLabel() {
+		return longitudeFromLabel;
+	}
+
+	public Text getLongitudeFromText() {
+		return longitudeFromText;
+	}
+
+	public Label getLongitudeFromNote() {
+		return longitudeFromNote;
+	}
+
+	public Label getLongitudeToLabel() {
+		return longitudeToLabel;
+	}
+
+	public Text getLongitudeToText() {
+		return longitudeToText;
+	}
+
+	public Label getLongitudeToNote() {
+		return longitudeToNote;
+	}
+
+	public Label getMinimumMagnitudeLabel() {
+		return minimumMagnitudeLabel;
+	}
+
+	public Label getMinimumMagnitudeFromLabel() {
+		return minimumMagnitudeFromLabel;
+	}
+
+	public Text getMinimumMagnitudeFromText() {
+		return minimumMagnitudeFromText;
+	}
+
+	public Label getMinimumMagnitudeToText() {
+		return minimumMagnitudeToText;
+	}
+
+	public Button getRestrictButton() {
+		return restrictButton;
+	}
+
+	public Label getRestrictLabel() {
+		return restrictLabel;
+	}
+
+	public Label getOutputFormatLabel() {
+		return outputFormatLabel;
+	}
+
+	public Map<String, Button> getModeRadios() {
+		return modeRadios;
+	}
+
+	public Label getResultsLabel() {
+		return resultsLabel;
+	}
+
+	public Text getResultsText() {
+		return resultsText;
+	}
+
+	public Button getSearchButton() {
+		return searchButton;
 	}
 
 }

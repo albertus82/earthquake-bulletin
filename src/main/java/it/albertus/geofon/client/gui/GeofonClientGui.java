@@ -5,10 +5,13 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.window.ApplicationWindow;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.ImageLoader;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -19,7 +22,12 @@ import org.eclipse.swt.widgets.Shell;
 public class GeofonClientGui extends ApplicationWindow {
 
 	private Image mainIcon;
+
 	private SearchForm searchForm;
+
+	private volatile Job job;
+
+	private ResultTable resultTable;
 
 	public GeofonClientGui(final Display display) {
 		super(null);
@@ -44,7 +52,10 @@ public class GeofonClientGui extends ApplicationWindow {
 		InputStream is = null;
 		try {
 			URL faviconUrl = new URL("http://www.gfz-potsdam.de/favicon.ico");
-			HttpURLConnection urlConnection = openConnection(faviconUrl, 5000, 5000);
+			final HttpURLConnection urlConnection = (HttpURLConnection) faviconUrl.openConnection();
+			urlConnection.setConnectTimeout(5000);
+			urlConnection.setReadTimeout(5000);
+			urlConnection.addRequestProperty("Accept", "image/*");
 			is = urlConnection.getInputStream();
 			final ImageData[] images = new ImageLoader().load(is);
 			urlConnection.disconnect();
@@ -87,17 +98,35 @@ public class GeofonClientGui extends ApplicationWindow {
 	protected Control createContents(final Composite parent) {
 		parent.setLayout(new GridLayout(7, false));
 
-		searchForm = new SearchForm(parent);
+		searchForm = new SearchForm(this);
+
+		resultTable = new ResultTable(parent, new GridData(SWT.FILL, SWT.FILL, true, true, 7, 1), this);
 
 		return parent;
 	}
 
-	private HttpURLConnection openConnection(final URL url, final int connectionTimeout, final int readTimeout) throws IOException {
-		final HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-		urlConnection.setConnectTimeout(connectionTimeout);
-		urlConnection.setReadTimeout(readTimeout);
-		urlConnection.addRequestProperty("Accept", "text/xml");
-		return urlConnection;
+	public Image getMainIcon() {
+		return mainIcon;
+	}
+
+	public void setMainIcon(Image mainIcon) {
+		this.mainIcon = mainIcon;
+	}
+
+	public SearchForm getSearchForm() {
+		return searchForm;
+	}
+
+	public Job getJob() {
+		return job;
+	}
+
+	public void setJob(Job job) {
+		this.job = job;
+	}
+
+	public ResultTable getResultTable() {
+		return resultTable;
 	}
 
 }
