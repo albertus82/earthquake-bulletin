@@ -1,5 +1,6 @@
 package it.albertus.geofon.client.gui;
 
+import it.albertus.geofon.client.gui.listener.FormatRadioSelectionListener;
 import it.albertus.geofon.client.gui.listener.SearchButtonSelectionListener;
 
 import java.util.LinkedHashMap;
@@ -47,7 +48,7 @@ public class SearchForm {
 	private final Button restrictButton;
 
 	private final Label outputFormatLabel;
-	private final Map<String, Button> modeRadios = new LinkedHashMap<String, Button>();
+	private final Map<String, Button> formatRadios = new LinkedHashMap<String, Button>();
 	private final Label resultsLabel;
 	private final Text resultsText;
 
@@ -106,7 +107,6 @@ public class SearchForm {
 		minimumMagnitudeLabel = new Label(composite, SWT.NONE);
 		minimumMagnitudeLabel.setText("Minimum magnitude");
 		minimumMagnitudeLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 2, 1));
-		//		minimumMagnitudeFromLabel = new Label(parent, SWT.NONE);
 		minimumMagnitudeText = new Text(composite, SWT.BORDER);
 		minimumMagnitudeText.setTextLimit(3);
 
@@ -121,10 +121,11 @@ public class SearchForm {
 		radioComposite.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 2, 1));
 		for (final String mode : new String[] { "RSS", "KML" }) {
 			final Button radio = new Button(radioComposite, SWT.RADIO);
-			radio.setSelection("RSS".equals(mode));
+			radio.addSelectionListener(new FormatRadioSelectionListener(this, radio, mode));
 			radio.setText(mode);
-			// radio.addSelectionListener(new ModeRadioSelectionListener(this, radio, mode));
-			modeRadios.put(mode, radio);
+			radio.setSelection("RSS".equals(mode));
+			radio.setEnabled("RSS".equals(mode));
+			formatRadios.put(mode, radio);
 		}
 		resultsLabel = new Label(composite, SWT.NONE);
 		resultsLabel.setText("Limit results to");
@@ -134,8 +135,23 @@ public class SearchForm {
 
 		searchButton = new Button(composite, SWT.NULL);
 		searchButton.setText("Search");
-		// searchButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		searchButton.addSelectionListener(new SearchButtonSelectionListener(gui));
+	}
+
+	public Composite getComposite() {
+		return composite;
+	}
+
+	public Label getPeriodLabel() {
+		return periodLabel;
+	}
+
+	public Label getPeriodFromLabel() {
+		return periodFromLabel;
+	}
+
+	public Label getPeriodToLabel() {
+		return periodToLabel;
 	}
 
 	public Text getPeriodFromText() {
@@ -146,20 +162,72 @@ public class SearchForm {
 		return periodToText;
 	}
 
+	public Label getPeriodFromNote() {
+		return periodFromNote;
+	}
+
+	public Label getPeriodToNote() {
+		return periodToNote;
+	}
+
+	public Label getLatitudeLabel() {
+		return latitudeLabel;
+	}
+
+	public Label getLatitudeFromLabel() {
+		return latitudeFromLabel;
+	}
+
 	public Text getLatitudeFromText() {
 		return latitudeFromText;
+	}
+
+	public Label getLatitudeFromNote() {
+		return latitudeFromNote;
+	}
+
+	public Label getLatitudeToLabel() {
+		return latitudeToLabel;
 	}
 
 	public Text getLatitudeToText() {
 		return latitudeToText;
 	}
 
+	public Label getLatitudeToNote() {
+		return latitudeToNote;
+	}
+
+	public Label getLongitudeLabel() {
+		return longitudeLabel;
+	}
+
+	public Label getLongitudeFromLabel() {
+		return longitudeFromLabel;
+	}
+
 	public Text getLongitudeFromText() {
 		return longitudeFromText;
 	}
 
+	public Label getLongitudeFromNote() {
+		return longitudeFromNote;
+	}
+
+	public Label getLongitudeToLabel() {
+		return longitudeToLabel;
+	}
+
 	public Text getLongitudeToText() {
 		return longitudeToText;
+	}
+
+	public Label getLongitudeToNote() {
+		return longitudeToNote;
+	}
+
+	public Label getMinimumMagnitudeLabel() {
+		return minimumMagnitudeLabel;
 	}
 
 	public Text getMinimumMagnitudeText() {
@@ -170,12 +238,24 @@ public class SearchForm {
 		return restrictButton;
 	}
 
-	public Map<String, Button> getModeRadios() {
-		return modeRadios;
+	public Label getOutputFormatLabel() {
+		return outputFormatLabel;
+	}
+
+	public Map<String, Button> getFormatRadios() {
+		return formatRadios;
+	}
+
+	public Label getResultsLabel() {
+		return resultsLabel;
 	}
 
 	public Text getResultsText() {
 		return resultsText;
+	}
+
+	public Button getSearchButton() {
+		return searchButton;
 	}
 
 }

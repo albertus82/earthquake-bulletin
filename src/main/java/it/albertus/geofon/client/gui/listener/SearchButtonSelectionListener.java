@@ -1,10 +1,9 @@
 package it.albertus.geofon.client.gui.listener;
 
 import it.albertus.geofon.client.gui.GeofonClientGui;
+import it.albertus.geofon.client.gui.SearchForm;
 import it.albertus.geofon.client.gui.job.SearchJob;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -13,9 +12,9 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 
-public class SearchButtonSelectionListener extends SelectionAdapter {
+import com.dmurph.URIEncoder;
 
-	private static final String CHARSET = "UTF-8";
+public class SearchButtonSelectionListener extends SelectionAdapter {
 
 	private final GeofonClientGui gui;
 
@@ -24,7 +23,7 @@ public class SearchButtonSelectionListener extends SelectionAdapter {
 	}
 
 	@Override
-	public void widgetSelected(SelectionEvent e) {
+	public void widgetSelected(final SelectionEvent se) {
 		if ((gui.getJob() == null || gui.getJob().getState() == Job.NONE)) {
 			// Disabilitazione controlli durante la ricerca
 			// gui.disableControls();
@@ -33,26 +32,23 @@ public class SearchButtonSelectionListener extends SelectionAdapter {
 			gui.getShell().setCursor(gui.getShell().getDisplay().getSystemCursor(SWT.CURSOR_WAIT));
 
 			// Parametri di ricerca
+			final SearchForm form = gui.getSearchForm();
 			final Map<String, String> params = new LinkedHashMap<String, String>();
 			params.put("fmt", "rss"); // TODO
-			params.put("mode", gui.getSearchForm().getRestrictButton().getSelection() ? "mt" : "");
-			try {
-				if (gui.getSearchForm().getPeriodFromText().isEnabled()) {
-					params.put("datemin", URLEncoder.encode(gui.getSearchForm().getPeriodFromText().getText(), CHARSET));
-				}
-				if (gui.getSearchForm().getPeriodFromText().isEnabled()) {
-					params.put("datemax", URLEncoder.encode(gui.getSearchForm().getPeriodFromText().getText(), CHARSET));
-				}
-				params.put("latmin", URLEncoder.encode(gui.getSearchForm().getLatitudeFromText().getText(), CHARSET));
-				params.put("latmax", URLEncoder.encode(gui.getSearchForm().getLatitudeToText().getText(), CHARSET));
-				params.put("lonmin", URLEncoder.encode(gui.getSearchForm().getLongitudeFromText().getText(), CHARSET));
-				params.put("lonmax", URLEncoder.encode(gui.getSearchForm().getLongitudeToText().getText(), CHARSET));
-				params.put("magmin", URLEncoder.encode(gui.getSearchForm().getMinimumMagnitudeText().getText(), CHARSET));
-				params.put("nmax", URLEncoder.encode(gui.getSearchForm().getResultsText().getText(), CHARSET));
+			params.put("mode", form.getRestrictButton().getSelection() ? "mt" : "");
+			if (form.getPeriodFromText().isEnabled()) {
+				params.put("datemin", URIEncoder.encodeURI(form.getPeriodFromText().getText()));
 			}
-			catch (final UnsupportedEncodingException use) {
-				use.printStackTrace();
+			if (form.getPeriodFromText().isEnabled()) {
+				params.put("datemax", URIEncoder.encodeURI(form.getPeriodFromText().getText()));
 			}
+			params.put("latmin", URIEncoder.encodeURI(form.getLatitudeFromText().getText()));
+			params.put("latmax", URIEncoder.encodeURI(form.getLatitudeToText().getText()));
+			params.put("lonmin", URIEncoder.encodeURI(form.getLongitudeFromText().getText()));
+			params.put("lonmax", URIEncoder.encodeURI(form.getLongitudeToText().getText()));
+			params.put("magmin", URIEncoder.encodeURI(form.getMinimumMagnitudeText().getText()));
+			params.put("nmax", URIEncoder.encodeURI(form.getResultsText().getText()));
+
 			// Avvio della ricerca
 			gui.setJob(new SearchJob(gui, params));
 			gui.getJob().schedule();

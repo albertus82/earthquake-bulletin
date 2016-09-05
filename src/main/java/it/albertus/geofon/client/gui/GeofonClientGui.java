@@ -11,6 +11,7 @@ import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -74,6 +75,18 @@ public class GeofonClientGui extends ApplicationWindow {
 	@Override
 	protected Layout getLayout() {
 		return new GridLayout();
+	}
+
+	@Override
+	public int open() {
+		int code = super.open();
+		for (final Button radio : getSearchForm().getFormatRadios().values()) {
+			if (radio.getSelection()) {
+				radio.notifyListeners(SWT.Selection, null);
+				break;
+			}
+		}
+		return code;
 	}
 
 	@Override
