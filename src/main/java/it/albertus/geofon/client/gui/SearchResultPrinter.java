@@ -16,15 +16,20 @@ public class SearchResultPrinter implements Runnable {
 
 	@Override
 	public void run() {
-		/* Stampa dei risultati */
+		// Stampa dei risultati
+		final Earthquake[] earthquakes;
 		if (itemsToPrint != null && !itemsToPrint.isEmpty()) {
-			gui.getResultTable().showResults(itemsToPrint);
+			earthquakes = itemsToPrint.toArray(new Earthquake[0]);
 		}
+		else {
+			earthquakes = new Earthquake[0];
+		}
+		gui.getResultTable().getTableViewer().setInput(earthquakes);
 
-		/* Riabilitazione controlli dopo la ricerca */
-		//		gui.enableControls();
+		// Riabilitazione controlli dopo la ricerca
+		// gui.enableControls();
 
-		/* Ripristino puntatore del mouse normale */
+		// Ripristino puntatore del mouse normale
 		gui.getShell().setCursor(null);
 	}
 

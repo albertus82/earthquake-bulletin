@@ -1,7 +1,7 @@
 package it.albertus.geofon.client.gui.listener;
 
 import it.albertus.geofon.client.gui.MapCanvas;
-import it.albertus.geofon.client.gui.util.HqImageResizer;
+import it.albertus.jface.HqImageResizer;
 
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
