@@ -29,13 +29,14 @@ public class DownloadMapJob extends Job {
 	protected IStatus run(final IProgressMonitor monitor) {
 		monitor.beginTask("Image download", 1);
 
-		Image downloadedImage;
-		try {
-			downloadedImage = ImageDownloader.downloadImage(earthquake.getEnclosure());
-		}
-		catch (final IOException ioe) {
-			ioe.printStackTrace(); // TODO warning: map unavaliable
-			downloadedImage = null;
+		Image downloadedImage = null;
+		if (earthquake.getEnclosure() != null) {
+			try {
+				downloadedImage = ImageDownloader.downloadImage(earthquake.getEnclosure());
+			}
+			catch (final IOException ioe) {
+				ioe.printStackTrace(); // TODO warning: map unavaliable
+			}
 		}
 		final Image image = downloadedImage;
 		if (image != null) {

@@ -77,8 +77,10 @@ public class SearchJob extends Job {
 		}
 
 		final List<Earthquake> earthquakes = new ArrayList<>();
-		for (final Item item : rss.getChannel().getItem()) {
-			earthquakes.add(ItemTransformer.fromRss(item));
+		if (rss.getChannel().getItem() != null) {
+			for (final Item item : rss.getChannel().getItem()) {
+				earthquakes.add(ItemTransformer.fromRss(item));
+			}
 		}
 
 		gui.getShell().getDisplay().syncExec(new SearchResultPrinter(gui, earthquakes));
