@@ -15,17 +15,23 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
-/* Item [guid=Guid [permaLink=false],
- *       title=M 4.3, Central Italy, 
- *       enclosure=Enclosure [length=52656, type=image/jpeg, url=http://geofon.gfz-potsdam.de//data/alerts/2016/gfz2016rige/gfz2016rige.jpg],
- *       description=2016-09-03 10:18:54  42.94   13.23    10 km    C,
- *       link=http://geofon.gfz-potsdam.de/eqinfo/event.php?from=rss&id=gfz2016rige] */
 public class ItemTransformer {
 
+	/** Use {@link #parseRssDate} method instead. */
+	@Deprecated
 	private static final DateFormat rssDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	static {
 		rssDateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+	}
+
+	private static synchronized Date parseRssDate(final String source) {
+		try {
+			return rssDateFormat.parse(source);
+		}
+		catch (final ParseException pe) {
+			throw new IllegalArgumentException(pe);
+		}
 	}
 
 	public static Earthquake fromRss(final Item rssItem) {
@@ -66,15 +72,6 @@ public class ItemTransformer {
 		}
 
 		return new Earthquake(rssItem.getGuid().getContent().trim(), time, magnitudo, new Latitude(latitude), new Longitude(longitude), new Depth(depth), status, region, link, enclosure);
-	}
-
-	private static synchronized Date parseRssDate(final String source) {
-		try {
-			return rssDateFormat.parse(source);
-		}
-		catch (final ParseException pe) {
-			throw new IllegalArgumentException(pe);
-		}
 	}
 
 }
