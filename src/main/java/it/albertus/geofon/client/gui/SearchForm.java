@@ -137,6 +137,14 @@ public class SearchForm {
 		searchButton.setText("Search");
 		searchButton.addSelectionListener(new SearchButtonSelectionListener(gui));
 	}
+	
+	public void disableControls() {
+		searchButton.setEnabled(false);
+	}
+	
+	public void enableControls() {
+		searchButton.setEnabled(true);
+	}
 
 	public Composite getComposite() {
 		return composite;

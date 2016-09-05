@@ -22,7 +22,22 @@ public class GeofonClientGui extends ApplicationWindow {
 
 	private static final float SASH_MAGNIFICATION_FACTOR = 1.5f;
 
-	private Image mainIcon;
+	public static void run() {
+		final Display display = Display.getDefault();
+		final GeofonClientGui gui = new GeofonClientGui(display);
+		gui.open();
+		// gui.connect();
+		final Shell shell = gui.getShell();
+		while (!shell.isDisposed()) {
+			if (!display.readAndDispatch()) {
+				Display.getCurrent().sleep();
+			}
+		}
+		// gui.release();
+		display.dispose();
+	}
+
+	private Image favicon;
 
 	private SearchForm searchForm;
 
@@ -36,57 +51,20 @@ public class GeofonClientGui extends ApplicationWindow {
 
 	public GeofonClientGui(final Display display) {
 		super(null);
-
 		try {
-			mainIcon = ImageDownloader.downloadImage("http://www.gfz-potsdam.de/favicon.ico");
+			favicon = ImageDownloader.downloadImage("http://www.gfz-potsdam.de/favicon.ico");
 		}
 		catch (final IOException ioe) {/* Ignore */}
-
-		open();
-
-		//		connect();
-
-		final Shell shell = getShell();
-		while (!shell.isDisposed()) {
-			if (!display.readAndDispatch()) {
-				Display.getCurrent().sleep();
-			}
-		}
-
-		//		release();
 	}
 
 	@Override
 	protected void configureShell(final Shell shell) {
 		super.configureShell(shell);
 		// shell.setMinimized(configuration.getBoolean("gui.start.minimized", Defaults.GUI_START_MINIMIZED));
-		shell.setText("Geofon Client");
-		if (mainIcon != null) {
-			shell.setImages(new Image[] { mainIcon });
+		shell.setText("GEOFON Program GFZ Potsdam - Earthquake Bulletin Client");
+		if (favicon != null) {
+			shell.setImages(new Image[] { favicon });
 		}
-	}
-
-	@Override
-	protected void initializeBounds() {/* Do not pack the shell */}
-
-	@Override
-	protected void createTrimWidgets(final Shell shell) {/* Not needed */}
-
-	@Override
-	protected Layout getLayout() {
-		return new GridLayout();
-	}
-
-	@Override
-	public int open() {
-		int code = super.open();
-		for (final Button radio : getSearchForm().getFormatRadios().values()) {
-			if (radio.getSelection()) {
-				radio.notifyListeners(SWT.Selection, null);
-				break;
-			}
-		}
-		return code;
 	}
 
 	@Override
@@ -106,24 +84,31 @@ public class GeofonClientGui extends ApplicationWindow {
 		return parent;
 	}
 
-	public Image getMainIcon() {
-		return mainIcon;
+	@Override
+	public int open() {
+		int code = super.open();
+		for (final Button radio : getSearchForm().getFormatRadios().values()) {
+			if (radio.getSelection()) {
+				radio.notifyListeners(SWT.Selection, null);
+				break;
+			}
+		}
+		return code;
 	}
 
-	public void setMainIcon(Image mainIcon) {
-		this.mainIcon = mainIcon;
+	@Override
+	protected void initializeBounds() {/* Do not pack the shell */}
+
+	@Override
+	protected void createTrimWidgets(final Shell shell) {/* Not needed */}
+
+	@Override
+	protected Layout getLayout() {
+		return new GridLayout();
 	}
 
 	public SearchForm getSearchForm() {
 		return searchForm;
-	}
-
-	public Job getJob() {
-		return job;
-	}
-
-	public void setJob(Job job) {
-		this.job = job;
 	}
 
 	public ResultTable getResultTable() {
@@ -132,6 +117,14 @@ public class GeofonClientGui extends ApplicationWindow {
 
 	public MapCanvas getMapCanvas() {
 		return mapCanvas;
+	}
+
+	public Job getJob() {
+		return job;
+	}
+
+	public void setJob(Job job) {
+		this.job = job;
 	}
 
 }

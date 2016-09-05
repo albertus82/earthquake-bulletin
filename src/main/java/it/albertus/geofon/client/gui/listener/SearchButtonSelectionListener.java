@@ -26,7 +26,7 @@ public class SearchButtonSelectionListener extends SelectionAdapter {
 	public void widgetSelected(final SelectionEvent se) {
 		if ((gui.getJob() == null || gui.getJob().getState() == Job.NONE)) {
 			// Disabilitazione controlli durante la ricerca
-			// gui.disableControls();
+			gui.getSearchForm().disableControls();
 
 			// Impostazione puntatore del mouse "Occupato"
 			gui.getShell().setCursor(gui.getShell().getDisplay().getSystemCursor(SWT.CURSOR_WAIT));

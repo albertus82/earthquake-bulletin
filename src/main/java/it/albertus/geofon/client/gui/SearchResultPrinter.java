@@ -27,7 +27,7 @@ public class SearchResultPrinter implements Runnable {
 		gui.getResultTable().getTableViewer().setInput(earthquakes);
 
 		// Riabilitazione controlli dopo la ricerca
-		// gui.enableControls();
+		gui.getSearchForm().enableControls();
 
 		// Ripristino puntatore del mouse normale
 		gui.getShell().setCursor(null);

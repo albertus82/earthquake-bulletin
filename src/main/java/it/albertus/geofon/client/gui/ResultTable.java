@@ -150,7 +150,6 @@ public class ResultTable {
 					}
 					else {
 						if ((gui.getJob() == null || gui.getJob().getState() == Job.NONE)) {
-							// gui.disableControls(); // TODO
 							gui.getShell().setCursor(gui.getShell().getDisplay().getSystemCursor(SWT.CURSOR_WAIT));
 							gui.setJob(new DownloadMapJob(gui, selectedItem));
 							gui.getJob().schedule();
