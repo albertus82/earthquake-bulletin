@@ -6,6 +6,7 @@ import it.albertus.geofon.client.model.Earthquake;
 import it.albertus.geofon.client.rss.transformer.ItemTransformer;
 import it.albertus.geofon.client.rss.xml.Item;
 import it.albertus.geofon.client.rss.xml.Rss;
+import it.albertus.jface.SwtThreadExecutor;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,6 +14,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -26,21 +29,30 @@ import org.eclipse.core.runtime.jobs.Job;
 public class SearchJob extends Job {
 
 	private final GeofonClientGui gui;
+	private final Map<String, String> params;
 
-	public SearchJob(final GeofonClientGui gui) {
+	public SearchJob(final GeofonClientGui gui, final Map<String, String> params) {
 		super("Search");
 		this.gui = gui;
+		this.params = params;
 		this.setUser(true);
 	}
 
 	@Override
-	protected IStatus run(IProgressMonitor monitor) {
+	protected IStatus run(final IProgressMonitor monitor) {
 		monitor.beginTask("Search", 1);
 
 		Rss rss = null;
 		InputStream is = null;
-		try { // TODO filters
-			URL url = new URL("http://geofon.gfz-potsdam.de/eqinfo/list.php?fmt=rss");//&latmin=40&latmax=44&lonmin=10&lonmax=14&magmin=");
+		try {
+			final StringBuilder urlSb = new StringBuilder("http://geofon.gfz-potsdam.de/eqinfo/list.php?fmt=").append(params.get("fmt"));
+			for (final Entry<String, String> param : params.entrySet()) {
+				if (param.getValue() != null && !param.getValue().isEmpty() && !param.getKey().equals("fmt")) {
+					urlSb.append("&").append(param.getKey()).append("=").append(param.getValue());
+				}
+			}
+
+			final URL url = new URL(urlSb.toString());
 			HttpURLConnection urlConnection = openConnection(url, 5000, 5000);
 			is = urlConnection.getInputStream();
 			final JAXBContext jaxbContext = JAXBContext.newInstance(Rss.class);
@@ -49,8 +61,13 @@ public class SearchJob extends Job {
 			urlConnection.disconnect();
 		}
 		catch (final IOException | JAXBException e) {
-			e.printStackTrace(); // Dare messaggio di errore
-			gui.getShell().setCursor(null);
+			e.printStackTrace(); // TODO error message
+			new SwtThreadExecutor(gui.getShell()) {
+				@Override
+				protected void run() {
+					gui.getShell().setCursor(null);
+				}
+			}.start();
 		}
 		finally {
 			try {
