@@ -34,7 +34,7 @@ public class DownloadMapJob extends Job {
 			downloadedImage = ImageDownloader.downloadImage(earthquake.getEnclosure());
 		}
 		catch (final IOException ioe) {
-			ioe.printStackTrace();
+			ioe.printStackTrace(); // TODO warning: map unavaliable
 			downloadedImage = null;
 		}
 		final Image image = downloadedImage;
