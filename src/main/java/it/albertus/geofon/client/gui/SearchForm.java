@@ -6,18 +6,22 @@ import it.albertus.geofon.client.gui.listener.SearchButtonSelectionListener;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 public class SearchForm {
 
-	private final Composite composite;
+	private final Composite formComposite;
 
 	private final Label periodLabel;
 	private final Label periodFromLabel;
@@ -52,102 +56,152 @@ public class SearchForm {
 	private final Label resultsLabel;
 	private final Text resultsText;
 
+	private final Composite buttonsComposite;
 	private final Button searchButton;
+	private final Label resultsNote;
+	private final Button autoRefreshButton;
+	private final Text autoRefreshText;
+	private final Button stopButton;
+	private final Button clearButton;
 
 	public SearchForm(final GeofonClientGui gui) {
-		composite = new Composite(gui.getShell(), SWT.NONE);
-		GridLayoutFactory.swtDefaults().margins(0, 0).numColumns(7).applyTo(composite);
-		composite.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
+		formComposite = new Composite(gui.getShell(), SWT.NONE);
+		GridLayoutFactory.swtDefaults().margins(0, 0).numColumns(9).applyTo(formComposite);
+		formComposite.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
 
-		periodLabel = new Label(composite, SWT.NONE);
+		periodLabel = new Label(formComposite, SWT.NONE);
 		periodLabel.setText("Time Period");
-		periodFromLabel = new Label(composite, SWT.NONE);
+		periodFromLabel = new Label(formComposite, SWT.NONE);
 		periodFromLabel.setText("from");
-		periodFromText = new Text(composite, SWT.BORDER);
+		periodFromText = new Text(formComposite, SWT.BORDER);
 		periodFromText.setTextLimit(10);
-		periodFromNote = new Label(composite, SWT.NONE);
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(periodFromText);
+		periodFromNote = new Label(formComposite, SWT.NONE);
 		periodFromNote.setText("(yyyy-mm-dd)");
-		periodToLabel = new Label(composite, SWT.NONE);
+		periodToLabel = new Label(formComposite, SWT.NONE);
 		periodToLabel.setText("to");
-		periodToText = new Text(composite, SWT.BORDER);
+		periodToText = new Text(formComposite, SWT.BORDER);
 		periodToText.setTextLimit(10);
-		periodToNote = new Label(composite, SWT.NONE);
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(periodToText);
+		periodToNote = new Label(formComposite, SWT.NONE);
 		periodToNote.setText("(yyyy-mm-dd)");
 
-		latitudeLabel = new Label(composite, SWT.NONE);
+		final Label separator = new Label(formComposite, SWT.SEPARATOR | SWT.VERTICAL);
+		GridDataFactory.fillDefaults().span(1, 5).applyTo(separator);
+
+		buttonsComposite = new Composite(formComposite, SWT.NONE);
+		GridLayoutFactory.swtDefaults().margins(0, 0).numColumns(1).applyTo(buttonsComposite);
+		buttonsComposite.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 1, 5));
+
+		latitudeLabel = new Label(formComposite, SWT.NONE);
 		latitudeLabel.setText("Latitude range");
-		latitudeFromLabel = new Label(composite, SWT.NONE);
+		latitudeFromLabel = new Label(formComposite, SWT.NONE);
 		latitudeFromLabel.setText("from");
-		latitudeFromText = new Text(composite, SWT.BORDER);
+		latitudeFromText = new Text(formComposite, SWT.BORDER);
 		latitudeFromText.setTextLimit(7);
-		latitudeFromNote = new Label(composite, SWT.NONE);
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(latitudeFromText);
+		latitudeFromNote = new Label(formComposite, SWT.NONE);
 		latitudeFromNote.setText("\u00B0 (southern limit)");
-		latitudeToLabel = new Label(composite, SWT.NONE);
+		latitudeToLabel = new Label(formComposite, SWT.NONE);
 		latitudeToLabel.setText("to");
-		latitudeToText = new Text(composite, SWT.BORDER);
+		latitudeToText = new Text(formComposite, SWT.BORDER);
 		latitudeToText.setTextLimit(7);
-		latitudeToNote = new Label(composite, SWT.NONE);
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(latitudeToText);
+		latitudeToNote = new Label(formComposite, SWT.NONE);
 		latitudeToNote.setText("\u00B0 (northern limit)");
 
-		longitudeLabel = new Label(composite, SWT.NONE);
+		longitudeLabel = new Label(formComposite, SWT.NONE);
 		longitudeLabel.setText("Longitude range");
-		longitudeFromLabel = new Label(composite, SWT.NONE);
+		longitudeFromLabel = new Label(formComposite, SWT.NONE);
 		longitudeFromLabel.setText("from");
-		longitudeFromText = new Text(composite, SWT.BORDER);
+		longitudeFromText = new Text(formComposite, SWT.BORDER);
 		longitudeFromText.setTextLimit(7);
-		longitudeFromNote = new Label(composite, SWT.NONE);
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(longitudeFromText);
+		longitudeFromNote = new Label(formComposite, SWT.NONE);
 		longitudeFromNote.setText("\u00B0 (western limit)");
-		longitudeToLabel = new Label(composite, SWT.NONE);
+		longitudeToLabel = new Label(formComposite, SWT.NONE);
 		longitudeToLabel.setText("to");
-		longitudeToText = new Text(composite, SWT.BORDER);
+		longitudeToText = new Text(formComposite, SWT.BORDER);
 		longitudeToText.setTextLimit(7);
-		longitudeToNote = new Label(composite, SWT.NONE);
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(longitudeToText);
+		longitudeToNote = new Label(formComposite, SWT.NONE);
 		longitudeToNote.setText("\u00B0 (eastern limit)");
 
-		minimumMagnitudeLabel = new Label(composite, SWT.NONE);
+		minimumMagnitudeLabel = new Label(formComposite, SWT.NONE);
 		minimumMagnitudeLabel.setText("Minimum magnitude");
 		minimumMagnitudeLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 2, 1));
-		minimumMagnitudeText = new Text(composite, SWT.BORDER);
+		minimumMagnitudeText = new Text(formComposite, SWT.BORDER);
 		minimumMagnitudeText.setTextLimit(3);
-
-		restrictButton = new Button(composite, SWT.CHECK);
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(minimumMagnitudeText);
+		restrictButton = new Button(formComposite, SWT.CHECK);
 		restrictButton.setText("Restrict to events with moment tensors");
 		restrictButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 4, 1));
 
-		outputFormatLabel = new Label(composite, SWT.NONE);
+		outputFormatLabel = new Label(formComposite, SWT.NONE);
 		outputFormatLabel.setText("Output format");
-		final Composite radioComposite = new Composite(composite, SWT.NONE);
+		final Composite radioComposite = new Composite(formComposite, SWT.NONE);
 		radioComposite.setLayout(new RowLayout(SWT.HORIZONTAL));
 		radioComposite.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 2, 1));
 		for (final String mode : new String[] { "RSS", "KML" }) {
 			final Button radio = new Button(radioComposite, SWT.RADIO);
 			radio.addSelectionListener(new FormatRadioSelectionListener(this, radio, mode));
 			radio.setText(mode);
-			radio.setSelection("RSS".equals(mode));
-			radio.setEnabled("RSS".equals(mode));
+			radio.setSelection("RSS".equalsIgnoreCase(mode));
+			radio.setEnabled("RSS".equalsIgnoreCase(mode));
 			formatRadios.put(mode, radio);
 		}
-		resultsLabel = new Label(composite, SWT.NONE);
+		resultsLabel = new Label(formComposite, SWT.NONE);
 		resultsLabel.setText("Limit results to");
 		resultsLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 2, 1));
-		resultsText = new Text(composite, SWT.BORDER);
+		resultsText = new Text(formComposite, SWT.BORDER);
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(resultsText);
 		resultsText.setTextLimit(3);
 
-		searchButton = new Button(composite, SWT.NULL);
-		searchButton.setText("Search");
+		resultsNote = new Label(formComposite, SWT.NONE);
+		resultsNote.setText("events");
+
+		autoRefreshButton = new Button(buttonsComposite, SWT.CHECK);
+		autoRefreshButton.setText("Auto refresh every (secs)");
+
+		autoRefreshText = new Text(buttonsComposite, SWT.BORDER);
+		autoRefreshText.setTextLimit(10);
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(autoRefreshText);
+
+		autoRefreshButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(final SelectionEvent se) {
+				autoRefreshText.setEnabled(((Button) se.widget).getSelection());
+			}
+		});
+		final Event selectionEvent = new Event();
+		selectionEvent.widget = autoRefreshButton;
+		autoRefreshButton.notifyListeners(SWT.Selection, selectionEvent);
+
+		searchButton = new Button(buttonsComposite, SWT.NONE);
+		searchButton.setText("Submit");
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(searchButton);
 		searchButton.addSelectionListener(new SearchButtonSelectionListener(gui));
+
+		stopButton = new Button(buttonsComposite, SWT.NONE);
+		stopButton.setText("Stop");
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(stopButton);
+
+		clearButton = new Button(buttonsComposite, SWT.NONE);
+		clearButton.setText("Clear");
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(clearButton);
+
 	}
-	
+
 	public void disableControls() {
 		searchButton.setEnabled(false);
 	}
-	
+
 	public void enableControls() {
 		searchButton.setEnabled(true);
 	}
 
-	public Composite getComposite() {
-		return composite;
+	public Composite getFormComposite() {
+		return formComposite;
 	}
 
 	public Label getPeriodLabel() {
