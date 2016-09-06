@@ -11,7 +11,6 @@ import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -67,7 +66,7 @@ public class SearchForm {
 	public SearchForm(final GeofonClientGui gui) {
 		formComposite = new Composite(gui.getShell(), SWT.NONE);
 		GridLayoutFactory.swtDefaults().margins(0, 0).numColumns(9).applyTo(formComposite);
-		formComposite.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
+		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.TOP).grab(true, false).applyTo(formComposite);
 
 		periodLabel = new Label(formComposite, SWT.NONE);
 		periodLabel.setText("Time Period");
@@ -91,7 +90,7 @@ public class SearchForm {
 
 		buttonsComposite = new Composite(formComposite, SWT.NONE);
 		GridLayoutFactory.swtDefaults().margins(0, 0).numColumns(2).applyTo(buttonsComposite);
-		buttonsComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 5));
+		GridDataFactory.fillDefaults().grab(true, true).span(1, 5).applyTo(buttonsComposite);
 
 		latitudeLabel = new Label(formComposite, SWT.NONE);
 		latitudeLabel.setText("Latitude range");
@@ -129,19 +128,19 @@ public class SearchForm {
 
 		minimumMagnitudeLabel = new Label(formComposite, SWT.NONE);
 		minimumMagnitudeLabel.setText("Minimum magnitude");
-		minimumMagnitudeLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 2, 1));
+		GridDataFactory.swtDefaults().grab(false, false).span(2, 1).applyTo(minimumMagnitudeLabel);
 		minimumMagnitudeText = new Text(formComposite, SWT.BORDER);
 		minimumMagnitudeText.setTextLimit(3);
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(minimumMagnitudeText);
 		restrictButton = new Button(formComposite, SWT.CHECK);
 		restrictButton.setText("Restrict to events with moment tensors");
-		restrictButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 4, 1));
+		GridDataFactory.swtDefaults().grab(false, false).span(4, 1).applyTo(restrictButton);
 
 		outputFormatLabel = new Label(formComposite, SWT.NONE);
 		outputFormatLabel.setText("Output format");
 		final Composite radioComposite = new Composite(formComposite, SWT.NONE);
 		radioComposite.setLayout(new RowLayout(SWT.HORIZONTAL));
-		radioComposite.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 2, 1));
+		GridDataFactory.swtDefaults().grab(false, false).span(2, 1).applyTo(radioComposite);
 		for (final String mode : new String[] { "RSS", "KML" }) {
 			final Button radio = new Button(radioComposite, SWT.RADIO);
 			radio.addSelectionListener(new FormatRadioSelectionListener(this, radio, mode));
@@ -152,7 +151,7 @@ public class SearchForm {
 		}
 		resultsLabel = new Label(formComposite, SWT.NONE);
 		resultsLabel.setText("Limit results to");
-		resultsLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 2, 1));
+		GridDataFactory.swtDefaults().grab(false, false).span(2, 1).applyTo(resultsLabel);
 		resultsText = new Text(formComposite, SWT.BORDER);
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(resultsText);
 		resultsText.setTextLimit(3);
@@ -191,7 +190,6 @@ public class SearchForm {
 		clearButton = new Button(buttonsComposite, SWT.NONE);
 		clearButton.setText("Clear");
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(clearButton);
-
 	}
 
 	public void disableControls() {
