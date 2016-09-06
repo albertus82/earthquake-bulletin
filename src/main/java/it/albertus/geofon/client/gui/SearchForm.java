@@ -90,8 +90,8 @@ public class SearchForm {
 		GridDataFactory.fillDefaults().span(1, 5).applyTo(separator);
 
 		buttonsComposite = new Composite(formComposite, SWT.NONE);
-		GridLayoutFactory.swtDefaults().margins(0, 0).numColumns(1).applyTo(buttonsComposite);
-		buttonsComposite.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 1, 5));
+		GridLayoutFactory.swtDefaults().margins(0, 0).numColumns(2).applyTo(buttonsComposite);
+		buttonsComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 5));
 
 		latitudeLabel = new Label(formComposite, SWT.NONE);
 		latitudeLabel.setText("Latitude range");
@@ -160,12 +160,14 @@ public class SearchForm {
 		resultsNote = new Label(formComposite, SWT.NONE);
 		resultsNote.setText("events");
 
+		// Buttons
 		autoRefreshButton = new Button(buttonsComposite, SWT.CHECK);
 		autoRefreshButton.setText("Auto refresh every (secs)");
+		GridDataFactory.swtDefaults().span(2, 1).applyTo(autoRefreshButton);
 
 		autoRefreshText = new Text(buttonsComposite, SWT.BORDER);
 		autoRefreshText.setTextLimit(10);
-		GridDataFactory.fillDefaults().grab(true, false).applyTo(autoRefreshText);
+		GridDataFactory.fillDefaults().span(2, 1).grab(true, false).applyTo(autoRefreshText);
 
 		autoRefreshButton.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -179,7 +181,7 @@ public class SearchForm {
 
 		searchButton = new Button(buttonsComposite, SWT.NONE);
 		searchButton.setText("Submit");
-		GridDataFactory.fillDefaults().grab(true, false).applyTo(searchButton);
+		GridDataFactory.fillDefaults().span(2, 2).grab(true, true).applyTo(searchButton);
 		searchButton.addSelectionListener(new SearchButtonSelectionListener(gui));
 
 		stopButton = new Button(buttonsComposite, SWT.NONE);
