@@ -1,5 +1,6 @@
 package it.albertus.geofon.client.gui;
 
+import it.albertus.geofon.client.gui.listener.ClearButtonSelectionListener;
 import it.albertus.geofon.client.gui.listener.FormatRadioSelectionListener;
 import it.albertus.geofon.client.gui.listener.SearchButtonSelectionListener;
 
@@ -190,6 +191,7 @@ public class SearchForm {
 		clearButton = new Button(buttonsComposite, SWT.NONE);
 		clearButton.setText("Clear");
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(clearButton);
+		clearButton.addSelectionListener(new ClearButtonSelectionListener(this));
 	}
 
 	public void disableControls() {
