@@ -1,5 +1,6 @@
 package it.albertus.geofon.client.gui;
 
+import it.albertus.geofon.client.gui.listener.CloseListener;
 import it.albertus.geofon.client.gui.util.ImageDownloader;
 
 import java.io.IOException;
@@ -14,6 +15,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.Shell;
 
@@ -26,9 +28,9 @@ public class GeofonClientGui extends ApplicationWindow {
 		final GeofonClientGui gui = new GeofonClientGui(display);
 		gui.open();
 
-//		if (true) {
-//			gui.getSearchForm().getSearchButton().notifyListeners(SWT.Selection, null);
-//		}
+		//		if (true) {
+		//			gui.getSearchForm().getSearchButton().notifyListeners(SWT.Selection, null);
+		//		}
 
 		final Shell shell = gui.getShell();
 		while (!shell.isDisposed()) {
@@ -40,14 +42,11 @@ public class GeofonClientGui extends ApplicationWindow {
 	}
 
 	private Image favicon;
-
 	private SearchForm searchForm;
-
 	private ResultTable resultTable;
-
 	private MapCanvas mapCanvas;
-
 	private SashForm sashForm;
+	private TrayIcon trayIcon;
 
 	public GeofonClientGui(final Display display) {
 		super(null);
@@ -69,6 +68,8 @@ public class GeofonClientGui extends ApplicationWindow {
 
 	@Override
 	protected Control createContents(final Composite parent) {
+		trayIcon = new TrayIcon(this);
+
 		searchForm = new SearchForm(this);
 
 		sashForm = new SashForm(parent, SWT.HORIZONTAL);
@@ -97,6 +98,15 @@ public class GeofonClientGui extends ApplicationWindow {
 	}
 
 	@Override
+	protected void handleShellCloseEvent() {
+		final Event event = new Event();
+		new CloseListener(this).handleEvent(event);
+		if (event.doit) {
+			super.handleShellCloseEvent();
+		}
+	}
+
+	@Override
 	protected void initializeBounds() {/* Do not pack the shell */}
 
 	@Override
@@ -117,6 +127,14 @@ public class GeofonClientGui extends ApplicationWindow {
 
 	public MapCanvas getMapCanvas() {
 		return mapCanvas;
+	}
+
+	public Image getFavicon() {
+		return favicon;
+	}
+
+	public TrayIcon getTrayIcon() {
+		return trayIcon;
 	}
 
 }
