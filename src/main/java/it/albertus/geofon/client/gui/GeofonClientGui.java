@@ -25,14 +25,17 @@ public class GeofonClientGui extends ApplicationWindow {
 		final Display display = Display.getDefault();
 		final GeofonClientGui gui = new GeofonClientGui(display);
 		gui.open();
-		// gui.connect();
+
+//		if (true) {
+//			gui.getSearchForm().getSearchButton().notifyListeners(SWT.Selection, null);
+//		}
+
 		final Shell shell = gui.getShell();
 		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch()) {
 				Display.getCurrent().sleep();
 			}
 		}
-		// gui.release();
 		display.dispose();
 	}
 

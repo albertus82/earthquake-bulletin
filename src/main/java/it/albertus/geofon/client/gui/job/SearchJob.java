@@ -46,6 +46,8 @@ public class SearchJob extends Job {
 	protected IStatus run(final IProgressMonitor monitor) {
 		monitor.beginTask("Search", 1);
 
+		final long[] waitTimeInMillis = new long[1];
+
 		final Map<String, String> params = new LinkedHashMap<>();
 
 		new SwtThreadExecutor(gui.getShell()) {
@@ -75,12 +77,11 @@ public class SearchJob extends Job {
 					try {
 						int waitTimeInSeconds = Integer.parseInt(gui.getSearchForm().getAutoRefreshText().getText());
 						if (waitTimeInSeconds > 0) {
+							waitTimeInMillis[0] = waitTimeInSeconds * 1000;
 							gui.getSearchForm().getStopButton().setEnabled(true);
 						}
 					}
-					catch (final RuntimeException re) {
-						re.printStackTrace();
-					}
+					catch (final RuntimeException re) {/* Ignore */}
 				}
 			}
 		}.start();
@@ -132,18 +133,8 @@ public class SearchJob extends Job {
 		new SwtThreadExecutor(gui.getShell()) {
 			@Override
 			protected void run() {
-				if (gui.getSearchForm().getAutoRefreshButton().getSelection()) {
-					try {
-						int waitTimeInSeconds = Integer.parseInt(gui.getSearchForm().getAutoRefreshText().getText());
-						if (waitTimeInSeconds > 0) {
-							schedule(waitTimeInSeconds * 1000);
-						}
-					}
-					catch (final RuntimeException re) {
-						re.printStackTrace();
-						gui.getSearchForm().getSearchButton().setEnabled(true);
-						gui.getSearchForm().getStopButton().setEnabled(false);
-					}
+				if (waitTimeInMillis[0] > 0) {
+					schedule(waitTimeInMillis[0]);
 				}
 				else {
 					gui.getSearchForm().getSearchButton().setEnabled(true);
@@ -175,11 +166,11 @@ public class SearchJob extends Job {
 		return shouldRun;
 	}
 
-	public void setShouldRun(boolean shouldRun) {
+	public void setShouldRun(final boolean shouldRun) {
 		this.shouldRun = shouldRun;
 	}
 
-	public void setShouldSchedule(boolean shouldSchedule) {
+	public void setShouldSchedule(final boolean shouldSchedule) {
 		this.shouldSchedule = shouldSchedule;
 	}
 

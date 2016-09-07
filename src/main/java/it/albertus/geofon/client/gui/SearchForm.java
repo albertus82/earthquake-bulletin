@@ -171,7 +171,7 @@ public class SearchForm {
 		GridDataFactory.swtDefaults().applyTo(autoRefreshButton);
 
 		autoRefreshText = new Text(buttonsComposite, SWT.BORDER);
-		autoRefreshText.setTextLimit(10);
+		autoRefreshText.setTextLimit(9);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(autoRefreshText);
 
 		searchButton = new Button(buttonsComposite, SWT.NONE);
