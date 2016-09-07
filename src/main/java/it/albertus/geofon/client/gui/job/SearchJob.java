@@ -1,7 +1,7 @@
 package it.albertus.geofon.client.gui.job;
 
 import it.albertus.geofon.client.gui.GeofonClientGui;
-import it.albertus.geofon.client.gui.SearchResultPrinter;
+import it.albertus.geofon.client.gui.SearchForm;
 import it.albertus.geofon.client.model.Earthquake;
 import it.albertus.geofon.client.rss.transformer.ItemTransformer;
 import it.albertus.geofon.client.rss.xml.Item;
@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -25,22 +26,64 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.swt.SWT;
+
+import com.dmurph.URIEncoder;
 
 public class SearchJob extends Job {
 
 	private final GeofonClientGui gui;
-	private final Map<String, String> params;
+	private boolean shouldRun = true;
+	private boolean shouldSchedule = true;
 
-	public SearchJob(final GeofonClientGui gui, final Map<String, String> params) {
+	public SearchJob(final GeofonClientGui gui) {
 		super("Search");
 		this.gui = gui;
-		this.params = params;
 		this.setUser(true);
 	}
 
 	@Override
 	protected IStatus run(final IProgressMonitor monitor) {
 		monitor.beginTask("Search", 1);
+
+		final Map<String, String> params = new LinkedHashMap<>();
+
+		new SwtThreadExecutor(gui.getShell()) {
+			@Override
+			protected void run() {
+				gui.getSearchForm().getSearchButton().setEnabled(false);
+				gui.getShell().setCursor(gui.getShell().getDisplay().getSystemCursor(SWT.CURSOR_WAIT));
+
+				// Parametri di ricerca
+				final SearchForm form = gui.getSearchForm();
+				params.put("fmt", "rss"); // TODO
+				params.put("mode", form.getRestrictButton().getSelection() ? "mt" : "");
+				if (form.getPeriodFromText().isEnabled()) {
+					params.put("datemin", URIEncoder.encodeURI(form.getPeriodFromText().getText()));
+				}
+				if (form.getPeriodFromText().isEnabled()) {
+					params.put("datemax", URIEncoder.encodeURI(form.getPeriodFromText().getText()));
+				}
+				params.put("latmin", URIEncoder.encodeURI(form.getLatitudeFromText().getText()));
+				params.put("latmax", URIEncoder.encodeURI(form.getLatitudeToText().getText()));
+				params.put("lonmin", URIEncoder.encodeURI(form.getLongitudeFromText().getText()));
+				params.put("lonmax", URIEncoder.encodeURI(form.getLongitudeToText().getText()));
+				params.put("magmin", URIEncoder.encodeURI(form.getMinimumMagnitudeText().getText()));
+				params.put("nmax", URIEncoder.encodeURI(form.getResultsText().getText()));
+
+				if (gui.getSearchForm().getAutoRefreshButton().getSelection()) {
+					try {
+						int waitTimeInSeconds = Integer.parseInt(gui.getSearchForm().getAutoRefreshText().getText());
+						if (waitTimeInSeconds > 0) {
+							gui.getSearchForm().getStopButton().setEnabled(true);
+						}
+					}
+					catch (final RuntimeException re) {
+						re.printStackTrace();
+					}
+				}
+			}
+		}.start();
 
 		Rss rss = null;
 		InputStream is = null;
@@ -62,13 +105,6 @@ public class SearchJob extends Job {
 		}
 		catch (final IOException | JAXBException e) {
 			e.printStackTrace(); // TODO error message
-			new SwtThreadExecutor(gui.getShell()) {
-				@Override
-				protected void run() {
-					gui.getSearchForm().enableControls();
-					gui.getShell().setCursor(null);
-				}
-			}.start();
 		}
 		finally {
 			try {
@@ -77,14 +113,43 @@ public class SearchJob extends Job {
 			catch (final Exception e) {/* Ignore */}
 		}
 
-		final List<Earthquake> earthquakes = new ArrayList<>();
-		if (rss.getChannel().getItem() != null) {
-			for (final Item item : rss.getChannel().getItem()) {
-				earthquakes.add(ItemTransformer.fromRss(item));
+		if (rss != null && rss.getChannel() != null) {
+			final List<Earthquake> earthquakes = new ArrayList<>();
+			if (rss.getChannel().getItem() != null) {
+				for (final Item item : rss.getChannel().getItem()) {
+					earthquakes.add(ItemTransformer.fromRss(item));
+				}
 			}
+			new SwtThreadExecutor(gui.getShell()) {
+				@Override
+				protected void run() {
+					gui.getResultTable().getTableViewer().setInput(earthquakes.toArray(new Earthquake[0]));
+				}
+			}.start();
+
 		}
 
-		gui.getShell().getDisplay().syncExec(new SearchResultPrinter(gui, earthquakes));
+		new SwtThreadExecutor(gui.getShell()) {
+			@Override
+			protected void run() {
+				if (gui.getSearchForm().getAutoRefreshButton().getSelection()) {
+					try {
+						int waitTimeInSeconds = Integer.parseInt(gui.getSearchForm().getAutoRefreshText().getText());
+						if (waitTimeInSeconds > 0) {
+							schedule(waitTimeInSeconds * 1000);
+						}
+					}
+					catch (final RuntimeException re) {
+						re.printStackTrace();
+						gui.getSearchForm().getSearchButton().setEnabled(true);
+					}
+				}
+				else {
+					gui.getSearchForm().getSearchButton().setEnabled(true);
+				}
+				gui.getShell().setCursor(null);
+			}
+		}.start();
 
 		monitor.done();
 		return Status.OK_STATUS;
@@ -96,6 +161,24 @@ public class SearchJob extends Job {
 		urlConnection.setReadTimeout(readTimeout);
 		urlConnection.addRequestProperty("Accept", "text/xml");
 		return urlConnection;
+	}
+
+	@Override
+	public boolean shouldSchedule() {
+		return shouldSchedule;
+	}
+
+	@Override
+	public boolean shouldRun() {
+		return shouldRun;
+	}
+
+	public void setShouldRun(boolean shouldRun) {
+		this.shouldRun = shouldRun;
+	}
+
+	public void setShouldSchedule(boolean shouldSchedule) {
+		this.shouldSchedule = shouldSchedule;
 	}
 
 }

@@ -149,10 +149,10 @@ public class ResultTable {
 						gui.getMapCanvas().setImage(cache.get(guid));
 					}
 					else {
-						if ((gui.getJob() == null || gui.getJob().getState() == Job.NONE)) {
+						if ((gui.getMapCanvas().getDownloadMapJob() == null || gui.getMapCanvas().getDownloadMapJob().getState() == Job.NONE)) {
 							gui.getShell().setCursor(gui.getShell().getDisplay().getSystemCursor(SWT.CURSOR_WAIT));
-							gui.setJob(new DownloadMapJob(gui, selectedItem));
-							gui.getJob().schedule();
+							gui.getMapCanvas().setDownloadMapJob(new DownloadMapJob(gui, selectedItem));
+							gui.getMapCanvas().getDownloadMapJob().schedule();
 						}
 					}
 				}

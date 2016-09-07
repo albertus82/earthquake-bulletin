@@ -1,5 +1,6 @@
 package it.albertus.geofon.client.gui;
 
+import it.albertus.geofon.client.gui.job.DownloadMapJob;
 import it.albertus.geofon.client.gui.listener.MapCanvasListener;
 
 import org.eclipse.swt.SWT;
@@ -11,9 +12,9 @@ import org.eclipse.swt.widgets.Event;
 public class MapCanvas {
 
 	private final MapCache cache = new MapCache();
-
-	private Canvas canvas;
+	private final Canvas canvas;
 	private Image image;
+	private DownloadMapJob downloadMapJob;
 
 	public MapCanvas(final Composite parent) {
 		canvas = new Canvas(parent, SWT.BORDER);
@@ -36,6 +37,14 @@ public class MapCanvas {
 
 	public MapCache getCache() {
 		return cache;
+	}
+
+	public DownloadMapJob getDownloadMapJob() {
+		return downloadMapJob;
+	}
+
+	public void setDownloadMapJob(DownloadMapJob downloadMapJob) {
+		this.downloadMapJob = downloadMapJob;
 	}
 
 }

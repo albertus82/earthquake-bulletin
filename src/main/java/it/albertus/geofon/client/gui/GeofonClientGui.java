@@ -4,7 +4,6 @@ import it.albertus.geofon.client.gui.util.ImageDownloader;
 
 import java.io.IOException;
 
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.window.ApplicationWindow;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
@@ -46,8 +45,6 @@ public class GeofonClientGui extends ApplicationWindow {
 	private MapCanvas mapCanvas;
 
 	private SashForm sashForm;
-
-	private volatile Job job;
 
 	public GeofonClientGui(final Display display) {
 		super(null);
@@ -117,14 +114,6 @@ public class GeofonClientGui extends ApplicationWindow {
 
 	public MapCanvas getMapCanvas() {
 		return mapCanvas;
-	}
-
-	public Job getJob() {
-		return job;
-	}
-
-	public void setJob(Job job) {
-		this.job = job;
 	}
 
 }

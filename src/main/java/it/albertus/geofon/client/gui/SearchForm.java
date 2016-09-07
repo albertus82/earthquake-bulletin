@@ -1,5 +1,6 @@
 package it.albertus.geofon.client.gui;
 
+import it.albertus.geofon.client.gui.job.SearchJob;
 import it.albertus.geofon.client.gui.listener.ClearButtonSelectionListener;
 import it.albertus.geofon.client.gui.listener.FormatRadioSelectionListener;
 import it.albertus.geofon.client.gui.listener.SearchButtonSelectionListener;
@@ -63,6 +64,8 @@ public class SearchForm {
 	private final Text autoRefreshText;
 	private final Button stopButton;
 	private final Button clearButton;
+
+	private SearchJob searchJob;
 
 	public SearchForm(final GeofonClientGui gui) {
 		formComposite = new Composite(gui.getShell(), SWT.NONE);
@@ -187,19 +190,24 @@ public class SearchForm {
 		stopButton = new Button(buttonsComposite, SWT.NONE);
 		stopButton.setText("Stop");
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(stopButton);
+		stopButton.setEnabled(false);
+		stopButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent se) {
+				stopButton.setEnabled(false);
+				if (searchJob != null) {
+					searchJob.setShouldRun(false);
+					searchJob.setShouldSchedule(false);
+					searchJob = null;
+					searchButton.setEnabled(true);
+				}
+			}
+		});
 
 		clearButton = new Button(buttonsComposite, SWT.NONE);
 		clearButton.setText("Clear");
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(clearButton);
 		clearButton.addSelectionListener(new ClearButtonSelectionListener(this));
-	}
-
-	public void disableControls() {
-		searchButton.setEnabled(false);
-	}
-
-	public void enableControls() {
-		searchButton.setEnabled(true);
 	}
 
 	public Composite getFormComposite() {
@@ -320,6 +328,38 @@ public class SearchForm {
 
 	public Button getSearchButton() {
 		return searchButton;
+	}
+
+	public Composite getButtonsComposite() {
+		return buttonsComposite;
+	}
+
+	public Label getResultsNote() {
+		return resultsNote;
+	}
+
+	public Button getAutoRefreshButton() {
+		return autoRefreshButton;
+	}
+
+	public Text getAutoRefreshText() {
+		return autoRefreshText;
+	}
+
+	public Button getStopButton() {
+		return stopButton;
+	}
+
+	public Button getClearButton() {
+		return clearButton;
+	}
+
+	public SearchJob getSearchJob() {
+		return searchJob;
+	}
+
+	public void setSearchJob(SearchJob searchJob) {
+		this.searchJob = searchJob;
 	}
 
 }
