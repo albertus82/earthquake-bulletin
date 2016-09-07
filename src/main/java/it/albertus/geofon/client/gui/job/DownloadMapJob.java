@@ -11,6 +11,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 
 public class DownloadMapJob extends Job {
@@ -28,6 +29,14 @@ public class DownloadMapJob extends Job {
 	@Override
 	protected IStatus run(final IProgressMonitor monitor) {
 		monitor.beginTask("Image download", 1);
+
+		new SwtThreadExecutor(gui.getShell()) {
+			@Override
+			protected void run() {
+				gui.getShell().setCursor(gui.getShell().getDisplay().getSystemCursor(SWT.CURSOR_WAIT));
+			}
+
+		}.start();
 
 		Image downloadedImage = null;
 		if (earthquake.getEnclosure() != null) {
@@ -50,7 +59,6 @@ public class DownloadMapJob extends Job {
 				}
 				gui.getShell().setCursor(null);
 			}
-
 		}.start();
 
 		monitor.done();

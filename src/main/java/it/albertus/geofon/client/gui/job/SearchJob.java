@@ -142,10 +142,12 @@ public class SearchJob extends Job {
 					catch (final RuntimeException re) {
 						re.printStackTrace();
 						gui.getSearchForm().getSearchButton().setEnabled(true);
+						gui.getSearchForm().getStopButton().setEnabled(false);
 					}
 				}
 				else {
 					gui.getSearchForm().getSearchButton().setEnabled(true);
+					gui.getSearchForm().getStopButton().setEnabled(false);
 				}
 				gui.getShell().setCursor(null);
 			}

@@ -150,7 +150,6 @@ public class ResultTable {
 					}
 					else {
 						if ((gui.getMapCanvas().getDownloadMapJob() == null || gui.getMapCanvas().getDownloadMapJob().getState() == Job.NONE)) {
-							gui.getShell().setCursor(gui.getShell().getDisplay().getSystemCursor(SWT.CURSOR_WAIT));
 							gui.getMapCanvas().setDownloadMapJob(new DownloadMapJob(gui, selectedItem));
 							gui.getMapCanvas().getDownloadMapJob().schedule();
 						}

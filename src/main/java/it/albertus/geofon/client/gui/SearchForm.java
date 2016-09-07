@@ -1,9 +1,11 @@
 package it.albertus.geofon.client.gui;
 
 import it.albertus.geofon.client.gui.job.SearchJob;
+import it.albertus.geofon.client.gui.listener.AutoRefreshButtonSelectionListener;
 import it.albertus.geofon.client.gui.listener.ClearButtonSelectionListener;
 import it.albertus.geofon.client.gui.listener.FormatRadioSelectionListener;
 import it.albertus.geofon.client.gui.listener.SearchButtonSelectionListener;
+import it.albertus.geofon.client.gui.listener.StopButtonSelectionListener;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -11,12 +13,9 @@ import java.util.Map;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
@@ -53,9 +52,12 @@ public class SearchForm {
 	private final Button restrictButton;
 
 	private final Label outputFormatLabel;
+	private final Composite radioComposite;
 	private final Map<String, Button> formatRadios = new LinkedHashMap<String, Button>();
 	private final Label resultsLabel;
 	private final Text resultsText;
+
+	private final Label separator;
 
 	private final Composite buttonsComposite;
 	private final Button searchButton;
@@ -89,7 +91,7 @@ public class SearchForm {
 		periodToNote = new Label(formComposite, SWT.NONE);
 		periodToNote.setText("(yyyy-mm-dd)");
 
-		final Label separator = new Label(formComposite, SWT.SEPARATOR | SWT.VERTICAL);
+		separator = new Label(formComposite, SWT.SEPARATOR | SWT.VERTICAL);
 		GridDataFactory.fillDefaults().span(1, 5).applyTo(separator);
 
 		buttonsComposite = new Composite(formComposite, SWT.NONE);
@@ -142,7 +144,7 @@ public class SearchForm {
 
 		outputFormatLabel = new Label(formComposite, SWT.NONE);
 		outputFormatLabel.setText("Output format");
-		final Composite radioComposite = new Composite(formComposite, SWT.NONE);
+		radioComposite = new Composite(formComposite, SWT.NONE);
 		radioComposite.setLayout(new RowLayout(SWT.HORIZONTAL));
 		GridDataFactory.swtDefaults().grab(false, false).span(2, 1).applyTo(radioComposite);
 		for (final String mode : new String[] { "RSS", "KML" }) {
@@ -172,42 +174,33 @@ public class SearchForm {
 		autoRefreshText.setTextLimit(10);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(autoRefreshText);
 
-		autoRefreshButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(final SelectionEvent se) {
-				autoRefreshText.setEnabled(((Button) se.widget).getSelection());
-			}
-		});
-		final Event selectionEvent = new Event();
-		selectionEvent.widget = autoRefreshButton;
-		autoRefreshButton.notifyListeners(SWT.Selection, selectionEvent);
-
 		searchButton = new Button(buttonsComposite, SWT.NONE);
 		searchButton.setText("Submit");
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(searchButton);
-		searchButton.addSelectionListener(new SearchButtonSelectionListener(gui));
 
 		stopButton = new Button(buttonsComposite, SWT.NONE);
 		stopButton.setText("Stop");
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(stopButton);
 		stopButton.setEnabled(false);
-		stopButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent se) {
-				stopButton.setEnabled(false);
-				if (searchJob != null) {
-					searchJob.setShouldRun(false);
-					searchJob.setShouldSchedule(false);
-					searchJob = null;
-					searchButton.setEnabled(true);
-				}
-			}
-		});
 
 		clearButton = new Button(buttonsComposite, SWT.NONE);
 		clearButton.setText("Clear");
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(clearButton);
+
+		// Listeners
+		searchButton.addSelectionListener(new SearchButtonSelectionListener(gui));
+		stopButton.addSelectionListener(new StopButtonSelectionListener(this));
 		clearButton.addSelectionListener(new ClearButtonSelectionListener(this));
+		autoRefreshButton.addSelectionListener(new AutoRefreshButtonSelectionListener(this));
+		autoRefreshButton.notifyListeners(SWT.Selection, null);
+	}
+
+	public SearchJob getSearchJob() {
+		return searchJob;
+	}
+
+	public void setSearchJob(SearchJob searchJob) {
+		this.searchJob = searchJob;
 	}
 
 	public Composite getFormComposite() {
@@ -314,6 +307,10 @@ public class SearchForm {
 		return outputFormatLabel;
 	}
 
+	public Composite getRadioComposite() {
+		return radioComposite;
+	}
+
 	public Map<String, Button> getFormatRadios() {
 		return formatRadios;
 	}
@@ -326,12 +323,16 @@ public class SearchForm {
 		return resultsText;
 	}
 
-	public Button getSearchButton() {
-		return searchButton;
+	public Label getSeparator() {
+		return separator;
 	}
 
 	public Composite getButtonsComposite() {
 		return buttonsComposite;
+	}
+
+	public Button getSearchButton() {
+		return searchButton;
 	}
 
 	public Label getResultsNote() {
@@ -352,14 +353,6 @@ public class SearchForm {
 
 	public Button getClearButton() {
 		return clearButton;
-	}
-
-	public SearchJob getSearchJob() {
-		return searchJob;
-	}
-
-	public void setSearchJob(SearchJob searchJob) {
-		this.searchJob = searchJob;
 	}
 
 }
