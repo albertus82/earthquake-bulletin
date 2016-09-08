@@ -271,4 +271,8 @@ public class ResultTable {
 		return tableViewer;
 	}
 
+	public void updateTexts() {
+		// TODO Auto-generated method stub
+	}
+
 }

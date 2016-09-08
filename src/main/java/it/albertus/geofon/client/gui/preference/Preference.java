@@ -1,20 +1,26 @@
 package it.albertus.geofon.client.gui.preference;
 
 import it.albertus.geofon.client.resources.Messages;
+import it.albertus.geofon.client.resources.Messages.Language;
 import it.albertus.jface.preference.FieldEditorDetails;
+import it.albertus.jface.preference.FieldEditorDetails.FieldEditorDetailsBuilder;
 import it.albertus.jface.preference.IPreference;
+import it.albertus.jface.preference.LocalizedLabelsAndValues;
 import it.albertus.jface.preference.PreferenceDetails;
+import it.albertus.jface.preference.PreferenceDetails.PreferenceDetailsBuilder;
 import it.albertus.jface.preference.page.IPageDefinition;
 import it.albertus.util.Localized;
 
 import java.util.EnumSet;
+import java.util.Locale;
 import java.util.Set;
 
+import org.eclipse.jface.preference.ComboFieldEditor;
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.swt.widgets.Composite;
 
-public enum Preference implements IPreference{
-	;
+public enum Preference implements IPreference {
+	LANGUAGE(new PreferenceDetailsBuilder(PageDefinition.GENERAL).defaultValue(Locale.getDefault().getLanguage()).build(), new FieldEditorDetailsBuilder(ComboFieldEditor.class).labelsAndValues(Preference.getLanguageComboOptions()).build());
 
 	private static final String LABEL_KEY_PREFIX = "lbl.preferences.";
 
@@ -97,6 +103,23 @@ public enum Preference implements IPreference{
 			}
 		}
 		return null;
+	}
+
+	public static LocalizedLabelsAndValues getLanguageComboOptions() {
+		final Language[] values = Messages.Language.values();
+		final LocalizedLabelsAndValues options = new LocalizedLabelsAndValues(values.length);
+		for (final Language language : values) {
+			final Locale locale = language.getLocale();
+			final String value = locale.getLanguage();
+			final Localized name = new Localized() {
+				@Override
+				public String getString() {
+					return locale.getDisplayLanguage(locale);
+				}
+			};
+			options.put(name, value);
+		}
+		return options;
 	}
 
 }
