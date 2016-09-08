@@ -1,7 +1,9 @@
 package it.albertus.geofon.client.gui;
 
+import it.albertus.geofon.client.GeofonClient;
 import it.albertus.geofon.client.gui.listener.CloseListener;
 import it.albertus.geofon.client.gui.util.ImageDownloader;
+import it.albertus.util.Configuration;
 
 import java.io.IOException;
 
@@ -20,6 +22,10 @@ import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.Shell;
 
 public class GeofonClientGui extends ApplicationWindow {
+
+	public interface Defaults {
+		boolean GUI_START_MINIMIZED = false;
+	}
 
 	private static final float SASH_MAGNIFICATION_FACTOR = 1.5f;
 
@@ -41,12 +47,15 @@ public class GeofonClientGui extends ApplicationWindow {
 		display.dispose();
 	}
 
+	private Configuration configuration = GeofonClient.configuration;
+
 	private Image favicon;
 	private SearchForm searchForm;
 	private ResultTable resultTable;
 	private MapCanvas mapCanvas;
 	private SashForm sashForm;
 	private TrayIcon trayIcon;
+	private MenuBar menuBar;
 
 	public GeofonClientGui(final Display display) {
 		super(null);
@@ -59,7 +68,7 @@ public class GeofonClientGui extends ApplicationWindow {
 	@Override
 	protected void configureShell(final Shell shell) {
 		super.configureShell(shell);
-		// shell.setMinimized(configuration.getBoolean("gui.start.minimized", Defaults.GUI_START_MINIMIZED));
+		shell.setMinimized(configuration.getBoolean("gui.start.minimized", Defaults.GUI_START_MINIMIZED));
 		shell.setText("GEOFON Program GFZ Potsdam - Earthquake Bulletin Client");
 		if (favicon != null) {
 			shell.setImages(new Image[] { favicon });
@@ -69,6 +78,8 @@ public class GeofonClientGui extends ApplicationWindow {
 	@Override
 	protected Control createContents(final Composite parent) {
 		trayIcon = new TrayIcon(this);
+
+		menuBar = new MenuBar(this);
 
 		searchForm = new SearchForm(this);
 
@@ -135,6 +146,14 @@ public class GeofonClientGui extends ApplicationWindow {
 
 	public TrayIcon getTrayIcon() {
 		return trayIcon;
+	}
+
+	public SashForm getSashForm() {
+		return sashForm;
+	}
+
+	public MenuBar getMenuBar() {
+		return menuBar;
 	}
 
 }
