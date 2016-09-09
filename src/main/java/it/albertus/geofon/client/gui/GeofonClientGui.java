@@ -3,9 +3,11 @@ package it.albertus.geofon.client.gui;
 import it.albertus.geofon.client.GeofonClient;
 import it.albertus.geofon.client.gui.listener.CloseListener;
 import it.albertus.geofon.client.gui.util.ImageDownloader;
+import it.albertus.geofon.client.resources.Messages;
 import it.albertus.util.Configuration;
 
 import java.io.IOException;
+import java.util.Locale;
 
 import org.eclipse.jface.window.ApplicationWindow;
 import org.eclipse.swt.SWT;
@@ -24,7 +26,8 @@ import org.eclipse.swt.widgets.Shell;
 public class GeofonClientGui extends ApplicationWindow {
 
 	public interface Defaults {
-		boolean GUI_START_MINIMIZED = false;
+		boolean START_MINIMIZED = false;
+		String LANGUAGE = Locale.getDefault().getLanguage();
 	}
 
 	private static final float SASH_MAGNIFICATION_FACTOR = 1.5f;
@@ -68,8 +71,8 @@ public class GeofonClientGui extends ApplicationWindow {
 	@Override
 	protected void configureShell(final Shell shell) {
 		super.configureShell(shell);
-		shell.setMinimized(configuration.getBoolean("gui.start.minimized", Defaults.GUI_START_MINIMIZED));
-		shell.setText("GEOFON Program GFZ Potsdam - Earthquake Bulletin Client");
+		shell.setMinimized(configuration.getBoolean("start.minimized", Defaults.START_MINIMIZED));
+		shell.setText(Messages.get("lbl.window.title"));
 		if (favicon != null) {
 			shell.setImages(new Image[] { favicon });
 		}

@@ -10,7 +10,7 @@ import it.albertus.util.Localized;
 import org.eclipse.jface.resource.ImageDescriptor;
 
 public enum PageDefinition implements IPageDefinition {
-	GENERAL();
+	GENERAL;
 
 	private static final String LABEL_KEY_PREFIX = "lbl.preferences.";
 

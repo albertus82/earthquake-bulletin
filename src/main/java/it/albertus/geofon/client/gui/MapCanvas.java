@@ -1,7 +1,7 @@
 package it.albertus.geofon.client.gui;
 
 import it.albertus.geofon.client.gui.job.DownloadMapJob;
-import it.albertus.geofon.client.gui.listener.MapCanvasListener;
+import it.albertus.geofon.client.gui.listener.MapCanvasPaintListener;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -19,7 +19,7 @@ public class MapCanvas {
 	public MapCanvas(final Composite parent) {
 		canvas = new Canvas(parent, SWT.BORDER);
 		canvas.setBackground(canvas.getDisplay().getSystemColor(SWT.COLOR_WHITE));
-		canvas.addPaintListener(new MapCanvasListener(this));
+		canvas.addPaintListener(new MapCanvasPaintListener(this));
 	}
 
 	public Image getImage() {

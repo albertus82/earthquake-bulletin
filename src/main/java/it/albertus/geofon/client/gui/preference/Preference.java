@@ -1,5 +1,10 @@
 package it.albertus.geofon.client.gui.preference;
 
+import it.albertus.geofon.client.gui.CloseMessageBox;
+import it.albertus.geofon.client.gui.GeofonClientGui;
+import it.albertus.geofon.client.gui.MapCache;
+import it.albertus.geofon.client.gui.TrayIcon;
+import it.albertus.geofon.client.gui.listener.MapCanvasPaintListener;
 import it.albertus.geofon.client.resources.Messages;
 import it.albertus.geofon.client.resources.Messages.Language;
 import it.albertus.jface.preference.FieldEditorDetails;
@@ -8,6 +13,8 @@ import it.albertus.jface.preference.IPreference;
 import it.albertus.jface.preference.LocalizedLabelsAndValues;
 import it.albertus.jface.preference.PreferenceDetails;
 import it.albertus.jface.preference.PreferenceDetails.PreferenceDetailsBuilder;
+import it.albertus.jface.preference.field.DefaultBooleanFieldEditor;
+import it.albertus.jface.preference.field.ScaleIntegerFieldEditor;
 import it.albertus.jface.preference.page.IPageDefinition;
 import it.albertus.util.Localized;
 
@@ -20,8 +27,17 @@ import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.swt.widgets.Composite;
 
 public enum Preference implements IPreference {
-	LANGUAGE(new PreferenceDetailsBuilder(PageDefinition.GENERAL).defaultValue(Locale.getDefault().getLanguage()).build(), new FieldEditorDetailsBuilder(ComboFieldEditor.class).labelsAndValues(Preference.getLanguageComboOptions()).build());
 
+	LANGUAGE(new PreferenceDetailsBuilder(PageDefinition.GENERAL).defaultValue(GeofonClientGui.Defaults.LANGUAGE).build(), new FieldEditorDetailsBuilder(ComboFieldEditor.class).labelsAndValues(Preference.getLanguageComboOptions()).build()),
+
+	START_MINIMIZED(new PreferenceDetailsBuilder(PageDefinition.GENERAL).defaultValue(GeofonClientGui.Defaults.START_MINIMIZED).separate().build(), new FieldEditorDetailsBuilder(DefaultBooleanFieldEditor.class).build()),
+	MINIMIZE_TRAY(new PreferenceDetailsBuilder(PageDefinition.GENERAL).defaultValue(TrayIcon.Defaults.MINIMIZE_TRAY).build(), new FieldEditorDetailsBuilder(DefaultBooleanFieldEditor.class).build()),
+	CONFIRM_CLOSE(new PreferenceDetailsBuilder(PageDefinition.GENERAL).defaultValue(CloseMessageBox.Defaults.CONFIRM_CLOSE).build(), new FieldEditorDetailsBuilder(DefaultBooleanFieldEditor.class).build()),
+
+	MAP_RESIZE_HQ(new PreferenceDetailsBuilder(PageDefinition.GENERAL).defaultValue(MapCanvasPaintListener.Defaults.MAP_RESIZE_HQ).separate().build(), new FieldEditorDetailsBuilder(DefaultBooleanFieldEditor.class).build()),
+	MAP_CACHE_SIZE(new PreferenceDetailsBuilder(PageDefinition.GENERAL).defaultValue(MapCache.Defaults.CACHE_SIZE).build(), new FieldEditorDetailsBuilder(ScaleIntegerFieldEditor.class).scaleMinimum(0).scaleMaximum(Byte.MAX_VALUE).scalePageIncrement(8).build()),
+
+	;
 	private static final String LABEL_KEY_PREFIX = "lbl.preferences.";
 
 	private final PreferenceDetails preferenceDetails;

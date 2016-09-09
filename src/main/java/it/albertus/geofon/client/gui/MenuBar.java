@@ -2,6 +2,7 @@ package it.albertus.geofon.client.gui;
 
 import it.albertus.geofon.client.gui.listener.CloseListener;
 import it.albertus.geofon.client.gui.listener.PreferencesSelectionListener;
+import it.albertus.geofon.client.resources.Messages;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Menu;
@@ -36,21 +37,21 @@ public class MenuBar {
 		/* File */
 		fileMenu = new Menu(gui.getShell(), SWT.DROP_DOWN);
 		fileMenuHeader = new MenuItem(bar, SWT.CASCADE);
-		fileMenuHeader.setText("&File");//Messages.get("lbl.menu.header.file"));
+		fileMenuHeader.setText(Messages.get("lbl.menu.header.file"));
 		fileMenuHeader.setMenu(fileMenu);
 
 		fileExitItem = new MenuItem(fileMenu, SWT.PUSH);
-		fileExitItem.setText("&Exit");//Messages.get("lbl.menu.item.exit"));
+		fileExitItem.setText(Messages.get("lbl.menu.item.exit"));
 		fileExitItem.addSelectionListener(new CloseListener(gui));
 
 		/* Tools */
 		toolsMenu = new Menu(gui.getShell(), SWT.DROP_DOWN);
 		toolsMenuHeader = new MenuItem(bar, SWT.CASCADE);
-		toolsMenuHeader.setText("&Tools");//Messages.get("lbl.menu.header.tools"));
+		toolsMenuHeader.setText(Messages.get("lbl.menu.header.tools"));
 		toolsMenuHeader.setMenu(toolsMenu);
 
 		toolsPreferencesMenuItem = new MenuItem(toolsMenu, SWT.PUSH);
-		toolsPreferencesMenuItem.setText("&Preferences");//Messages.get("lbl.menu.item.preferences"));
+		toolsPreferencesMenuItem.setText(Messages.get("lbl.menu.item.preferences"));
 		toolsPreferencesMenuItem.addSelectionListener(new PreferencesSelectionListener(gui));
 
 		/* Help */
@@ -67,10 +68,10 @@ public class MenuBar {
 	}
 
 	public void updateTexts() {
-		//		fileMenuHeader.setText(Messages.get("lbl.menu.header.file"));
-		//		fileExitItem.setText(Messages.get("lbl.menu.item.exit"));
-		//		toolsMenuHeader.setText(Messages.get("lbl.menu.header.tools"));
-		//		toolsPreferencesMenuItem.setText(Messages.get("lbl.menu.item.preferences"));
+		fileMenuHeader.setText(Messages.get("lbl.menu.header.file"));
+		fileExitItem.setText(Messages.get("lbl.menu.item.exit"));
+		toolsMenuHeader.setText(Messages.get("lbl.menu.header.tools"));
+		toolsPreferencesMenuItem.setText(Messages.get("lbl.menu.item.preferences"));
 	}
 
 	public Menu getBar() {

@@ -1,5 +1,8 @@
 package it.albertus.geofon.client.gui;
 
+import it.albertus.geofon.client.GeofonClient;
+import it.albertus.util.Configuration;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -7,10 +10,15 @@ import org.eclipse.swt.graphics.Image;
 
 public class MapCache {
 
-	private final Map<String, Image> cache = new LinkedHashMap<String, Image>(10);
+	public interface Defaults {
+		byte CACHE_SIZE = 20;
+	}
+
+	private final Configuration configuration = GeofonClient.configuration;
+	private final Map<String, Image> cache = new LinkedHashMap<>(configuration.getByte("map.cache.size", Defaults.CACHE_SIZE));
 
 	public void put(final String guid, final Image map) {
-		if (cache.size() >= 20) { // TODO configure 
+		while (cache.size() > 0 && cache.size() >= configuration.getByte("map.cache.size", Defaults.CACHE_SIZE)) {
 			final String eldestGuid = cache.keySet().iterator().next();
 			final Image eldestImage = cache.get(eldestGuid);
 			cache.remove(eldestGuid);
