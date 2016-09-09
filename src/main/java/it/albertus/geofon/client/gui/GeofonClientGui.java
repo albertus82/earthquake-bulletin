@@ -7,7 +7,6 @@ import it.albertus.geofon.client.resources.Messages;
 import it.albertus.util.Configuration;
 
 import java.io.IOException;
-import java.util.Locale;
 
 import org.eclipse.jface.window.ApplicationWindow;
 import org.eclipse.swt.SWT;
@@ -27,7 +26,6 @@ public class GeofonClientGui extends ApplicationWindow {
 
 	public interface Defaults {
 		boolean START_MINIMIZED = false;
-		String LANGUAGE = Locale.getDefault().getLanguage();
 	}
 
 	private static final float SASH_MAGNIFICATION_FACTOR = 1.5f;

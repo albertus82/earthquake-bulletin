@@ -37,7 +37,7 @@ public class PreferencesSelectionListener extends SelectionAdapter {
 		}
 
 		// Update language...
-		final String updatedLanguageCode = configuration.getString("language", GeofonClientGui.Defaults.LANGUAGE);
+		final String updatedLanguageCode = configuration.getString("language", GeofonClient.Defaults.LANGUAGE);
 		Messages.setLanguage(updatedLanguageCode);
 		JFaceMessages.setLanguage(updatedLanguageCode);
 

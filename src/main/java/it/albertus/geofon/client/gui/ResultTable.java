@@ -3,10 +3,13 @@ package it.albertus.geofon.client.gui;
 import it.albertus.geofon.client.gui.job.DownloadMapJob;
 import it.albertus.geofon.client.model.Earthquake;
 import it.albertus.geofon.client.model.Status;
+import it.albertus.geofon.client.resources.Messages;
+import it.albertus.util.Localized;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -112,6 +115,7 @@ public class ResultTable {
 
 	private final TableViewer tableViewer;
 	private final EarthquakeViewerComparator comparator;
+	private final HashMap<Integer, Localized> labelsMap = new HashMap<>(7);
 
 	public ResultTable(final Composite parent, final Object layoutData, final GeofonClientGui gui) {
 		tableViewer = new TableViewer(parent, SWT.BORDER | SWT.FULL_SELECTION) {
@@ -163,9 +167,50 @@ public class ResultTable {
 	}
 
 	private void createColumns(final Composite parent, final TableViewer viewer) {
-		final String[] titles = { "Time", "Magnitudo", "Latitude", "Longitude", "Depth", "Status", "Region" };
+		labelsMap.put(0, new Localized() {
+			@Override
+			public String getString() {
+				return Messages.get("lbl.table.time");
+			}
+		});
+		labelsMap.put(1, new Localized() {
+			@Override
+			public String getString() {
+				return Messages.get("lbl.table.magnitudo");
+			}
+		});
+		labelsMap.put(2, new Localized() {
+			@Override
+			public String getString() {
+				return Messages.get("lbl.table.latitude");
+			}
+		});
+		labelsMap.put(3, new Localized() {
+			@Override
+			public String getString() {
+				return Messages.get("lbl.table.longitude");
+			}
+		});
+		labelsMap.put(4, new Localized() {
+			@Override
+			public String getString() {
+				return Messages.get("lbl.table.depth");
+			}
+		});
+		labelsMap.put(5, new Localized() {
+			@Override
+			public String getString() {
+				return Messages.get("lbl.table.status");
+			}
+		});
+		labelsMap.put(6, new Localized() {
+			@Override
+			public String getString() {
+				return Messages.get("lbl.table.region");
+			}
+		});
 
-		TableViewerColumn col = createTableViewerColumn(titles[0], 0);
+		TableViewerColumn col = createTableViewerColumn(labelsMap.get(0).getString(), 0);
 		col.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(final Object element) {
@@ -174,7 +219,7 @@ public class ResultTable {
 			}
 		});
 
-		col = createTableViewerColumn(titles[1], 1);
+		col = createTableViewerColumn(labelsMap.get(1).getString(), 1);
 		col.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(final Object element) {
@@ -184,7 +229,7 @@ public class ResultTable {
 
 		});
 
-		col = createTableViewerColumn(titles[2], 2);
+		col = createTableViewerColumn(labelsMap.get(2).getString(), 2);
 		col.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(final Object element) {
@@ -193,7 +238,7 @@ public class ResultTable {
 			}
 		});
 
-		col = createTableViewerColumn(titles[3], 3);
+		col = createTableViewerColumn(labelsMap.get(3).getString(), 3);
 		col.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(final Object element) {
@@ -202,7 +247,7 @@ public class ResultTable {
 			}
 		});
 
-		col = createTableViewerColumn(titles[4], 4);
+		col = createTableViewerColumn(labelsMap.get(4).getString(), 4);
 		col.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(final Object element) {
@@ -211,7 +256,7 @@ public class ResultTable {
 			}
 		});
 
-		col = createTableViewerColumn(titles[5], 5);
+		col = createTableViewerColumn(labelsMap.get(5).getString(), 5);
 		col.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(final Object element) {
@@ -226,7 +271,7 @@ public class ResultTable {
 			}
 		});
 
-		col = createTableViewerColumn(titles[6], 6);
+		col = createTableViewerColumn(labelsMap.get(6).getString(), 6);
 		col.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(final Object element) {
@@ -267,12 +312,15 @@ public class ResultTable {
 		return selectionAdapter;
 	}
 
-	public TableViewer getTableViewer() {
-		return tableViewer;
+	public void updateTexts() {
+		final Table table = tableViewer.getTable();
+		for (final int i : labelsMap.keySet()) {
+			table.getColumn(i).setText(labelsMap.get(i).getString());
+		}
 	}
 
-	public void updateTexts() {
-		// TODO Auto-generated method stub
+	public TableViewer getTableViewer() {
+		return tableViewer;
 	}
 
 }

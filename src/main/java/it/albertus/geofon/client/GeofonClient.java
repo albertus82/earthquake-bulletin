@@ -1,11 +1,18 @@
 package it.albertus.geofon.client;
 
 import it.albertus.geofon.client.gui.GeofonClientGui;
+import it.albertus.geofon.client.resources.Messages;
+import it.albertus.jface.JFaceMessages;
 import it.albertus.util.Configuration;
 
 import java.io.File;
+import java.util.Locale;
 
 public class GeofonClient {
+
+	public interface Defaults {
+		String LANGUAGE = Locale.getDefault().getLanguage();
+	}
 
 	public static final String CFG_FILE_NAME = "geofon-client.cfg";
 	public static final Configuration configuration;
@@ -20,6 +27,9 @@ public class GeofonClient {
 			config = new File(CFG_FILE_NAME);
 		}
 		configuration = new Configuration(config.getPath());
+		final String language = configuration.getString("language", Defaults.LANGUAGE);
+		Messages.setLanguage(language);
+		JFaceMessages.setLanguage(language);
 	}
 
 	public static void main(final String[] args) {

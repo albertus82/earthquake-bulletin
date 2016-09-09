@@ -1,5 +1,6 @@
 package it.albertus.geofon.client.gui.preference;
 
+import it.albertus.geofon.client.GeofonClient;
 import it.albertus.geofon.client.gui.CloseMessageBox;
 import it.albertus.geofon.client.gui.GeofonClientGui;
 import it.albertus.geofon.client.gui.MapCache;
@@ -28,7 +29,7 @@ import org.eclipse.swt.widgets.Composite;
 
 public enum Preference implements IPreference {
 
-	LANGUAGE(new PreferenceDetailsBuilder(PageDefinition.GENERAL).defaultValue(GeofonClientGui.Defaults.LANGUAGE).build(), new FieldEditorDetailsBuilder(ComboFieldEditor.class).labelsAndValues(Preference.getLanguageComboOptions()).build()),
+	LANGUAGE(new PreferenceDetailsBuilder(PageDefinition.GENERAL).defaultValue(GeofonClient.Defaults.LANGUAGE).build(), new FieldEditorDetailsBuilder(ComboFieldEditor.class).labelsAndValues(Preference.getLanguageComboOptions()).build()),
 
 	START_MINIMIZED(new PreferenceDetailsBuilder(PageDefinition.GENERAL).defaultValue(GeofonClientGui.Defaults.START_MINIMIZED).separate().build(), new FieldEditorDetailsBuilder(DefaultBooleanFieldEditor.class).build()),
 	MINIMIZE_TRAY(new PreferenceDetailsBuilder(PageDefinition.GENERAL).defaultValue(TrayIcon.Defaults.MINIMIZE_TRAY).build(), new FieldEditorDetailsBuilder(DefaultBooleanFieldEditor.class).build()),
