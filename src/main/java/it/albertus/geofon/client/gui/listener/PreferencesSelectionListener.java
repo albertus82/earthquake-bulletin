@@ -45,6 +45,7 @@ public class PreferencesSelectionListener extends SelectionAdapter {
 		if (gui != null && !language.equals(Messages.getLanguage())) {
 			gui.getMenuBar().updateTexts();
 			gui.getResultTable().updateTexts();
+			gui.getSearchForm().updateTexts();
 		}
 		if (preferences.isRestartRequired()) {
 			final MessageBox messageBox = new MessageBox(gui.getShell(), SWT.ICON_INFORMATION);

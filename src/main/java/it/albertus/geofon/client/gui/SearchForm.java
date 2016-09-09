@@ -6,6 +6,7 @@ import it.albertus.geofon.client.gui.listener.ClearButtonSelectionListener;
 import it.albertus.geofon.client.gui.listener.FormatRadioSelectionListener;
 import it.albertus.geofon.client.gui.listener.SearchButtonSelectionListener;
 import it.albertus.geofon.client.gui.listener.StopButtonSelectionListener;
+import it.albertus.geofon.client.resources.Messages;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -76,73 +77,73 @@ public class SearchForm {
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.TOP).grab(true, false).applyTo(formComposite);
 
 		criteriaGroup = new Group(formComposite, SWT.NONE);
-		criteriaGroup.setText("Search criteria");
+		criteriaGroup.setText(Messages.get("lbl.form.criteria.group"));
 		GridLayoutFactory.swtDefaults().numColumns(7).applyTo(criteriaGroup);
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(criteriaGroup);
 
 		periodLabel = new Label(criteriaGroup, SWT.NONE);
-		periodLabel.setText("Time Period");
+		periodLabel.setText(Messages.get("lbl.form.criteria.period"));
 		periodFromLabel = new Label(criteriaGroup, SWT.NONE);
-		periodFromLabel.setText("from");
+		periodFromLabel.setText(Messages.get("lbl.form.criteria.period.from"));
 		periodFromText = new Text(criteriaGroup, SWT.BORDER);
 		periodFromText.setTextLimit(10);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(periodFromText);
 		periodFromNote = new Label(criteriaGroup, SWT.NONE);
-		periodFromNote.setText("(yyyy-mm-dd)");
+		periodFromNote.setText(Messages.get("lbl.form.criteria.period.from.note"));
 		periodToLabel = new Label(criteriaGroup, SWT.NONE);
-		periodToLabel.setText("to");
+		periodToLabel.setText(Messages.get("lbl.form.criteria.period.to"));
 		periodToText = new Text(criteriaGroup, SWT.BORDER);
 		periodToText.setTextLimit(10);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(periodToText);
 		periodToNote = new Label(criteriaGroup, SWT.NONE);
-		periodToNote.setText("(yyyy-mm-dd)");
+		periodToNote.setText(Messages.get("lbl.form.criteria.period.to.note"));
 
 		latitudeLabel = new Label(criteriaGroup, SWT.NONE);
-		latitudeLabel.setText("Latitude range");
+		latitudeLabel.setText(Messages.get("lbl.form.criteria.latitude"));
 		latitudeFromLabel = new Label(criteriaGroup, SWT.NONE);
-		latitudeFromLabel.setText("from");
+		latitudeFromLabel.setText(Messages.get("lbl.form.criteria.latitude.from"));
 		latitudeFromText = new Text(criteriaGroup, SWT.BORDER);
 		latitudeFromText.setTextLimit(7);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(latitudeFromText);
 		latitudeFromNote = new Label(criteriaGroup, SWT.NONE);
-		latitudeFromNote.setText("\u00B0 (southern limit)");
+		latitudeFromNote.setText(Messages.get("lbl.form.criteria.latitude.from.note"));
 		latitudeToLabel = new Label(criteriaGroup, SWT.NONE);
-		latitudeToLabel.setText("to");
+		latitudeToLabel.setText(Messages.get("lbl.form.criteria.latitude.to"));
 		latitudeToText = new Text(criteriaGroup, SWT.BORDER);
 		latitudeToText.setTextLimit(7);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(latitudeToText);
 		latitudeToNote = new Label(criteriaGroup, SWT.NONE);
-		latitudeToNote.setText("\u00B0 (northern limit)");
+		latitudeToNote.setText(Messages.get("lbl.form.criteria.latitude.to.note"));
 
 		longitudeLabel = new Label(criteriaGroup, SWT.NONE);
-		longitudeLabel.setText("Longitude range");
+		longitudeLabel.setText(Messages.get("lbl.form.criteria.longitude"));
 		longitudeFromLabel = new Label(criteriaGroup, SWT.NONE);
-		longitudeFromLabel.setText("from");
+		longitudeFromLabel.setText(Messages.get("lbl.form.criteria.longitude.from"));
 		longitudeFromText = new Text(criteriaGroup, SWT.BORDER);
 		longitudeFromText.setTextLimit(7);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(longitudeFromText);
 		longitudeFromNote = new Label(criteriaGroup, SWT.NONE);
-		longitudeFromNote.setText("\u00B0 (western limit)");
+		longitudeFromNote.setText(Messages.get("lbl.form.criteria.longitude.from.note"));
 		longitudeToLabel = new Label(criteriaGroup, SWT.NONE);
-		longitudeToLabel.setText("to");
+		longitudeToLabel.setText(Messages.get("lbl.form.criteria.longitude.to"));
 		longitudeToText = new Text(criteriaGroup, SWT.BORDER);
 		longitudeToText.setTextLimit(7);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(longitudeToText);
 		longitudeToNote = new Label(criteriaGroup, SWT.NONE);
-		longitudeToNote.setText("\u00B0 (eastern limit)");
+		longitudeToNote.setText(Messages.get("lbl.form.criteria.longitude.to.note"));
 
 		minimumMagnitudeLabel = new Label(criteriaGroup, SWT.NONE);
-		minimumMagnitudeLabel.setText("Minimum magnitude");
+		minimumMagnitudeLabel.setText(Messages.get("lbl.form.criteria.magnitude"));
 		GridDataFactory.swtDefaults().span(2, 1).applyTo(minimumMagnitudeLabel);
 		minimumMagnitudeText = new Text(criteriaGroup, SWT.BORDER);
 		minimumMagnitudeText.setTextLimit(3);
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(minimumMagnitudeText);
 		restrictButton = new Button(criteriaGroup, SWT.CHECK);
-		restrictButton.setText("Restrict to events with moment tensors");
+		restrictButton.setText(Messages.get("lbl.form.criteria.restrict"));
 		GridDataFactory.swtDefaults().span(4, 1).applyTo(restrictButton);
 
 		outputFormatLabel = new Label(criteriaGroup, SWT.NONE);
-		outputFormatLabel.setText("Output format");
+		outputFormatLabel.setText(Messages.get("lbl.form.format"));
 		radioComposite = new Composite(criteriaGroup, SWT.NONE);
 		radioComposite.setLayout(new RowLayout(SWT.HORIZONTAL));
 		GridDataFactory.swtDefaults().grab(false, false).span(2, 1).applyTo(radioComposite);
@@ -155,14 +156,13 @@ public class SearchForm {
 			formatRadios.put(mode, radio);
 		}
 		resultsLabel = new Label(criteriaGroup, SWT.NONE);
-		resultsLabel.setText("Limit results to");
+		resultsLabel.setText(Messages.get("lbl.form.limit"));
 		GridDataFactory.swtDefaults().grab(false, false).span(2, 1).applyTo(resultsLabel);
 		resultsText = new Text(criteriaGroup, SWT.BORDER);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(resultsText);
 		resultsText.setTextLimit(3);
-
 		resultsNote = new Label(criteriaGroup, SWT.NONE);
-		resultsNote.setText("events");
+		resultsNote.setText(Messages.get("lbl.form.limit.note"));
 
 		// Buttons
 		buttonsComposite = new Composite(formComposite, SWT.NONE);
@@ -170,7 +170,7 @@ public class SearchForm {
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(buttonsComposite);
 
 		autoRefreshButton = new Button(buttonsComposite, SWT.CHECK);
-		autoRefreshButton.setText("Auto refresh every (secs)");
+		autoRefreshButton.setText(Messages.get("lbl.form.button.autorefresh"));
 		GridDataFactory.swtDefaults().applyTo(autoRefreshButton);
 
 		autoRefreshText = new Text(buttonsComposite, SWT.BORDER);
@@ -178,16 +178,16 @@ public class SearchForm {
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(autoRefreshText);
 
 		searchButton = new Button(buttonsComposite, SWT.NONE);
-		searchButton.setText("Submit");
+		searchButton.setText(Messages.get("lbl.form.button.submit"));
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(searchButton);
 
 		stopButton = new Button(buttonsComposite, SWT.NONE);
-		stopButton.setText("Stop");
+		stopButton.setText(Messages.get("lbl.form.button.stop"));
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(stopButton);
 		stopButton.setEnabled(false);
 
 		clearButton = new Button(buttonsComposite, SWT.NONE);
-		clearButton.setText("Clear");
+		clearButton.setText(Messages.get("lbl.form.button.clear"));
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(clearButton);
 
 		// Listeners
@@ -196,6 +196,34 @@ public class SearchForm {
 		clearButton.addSelectionListener(new ClearButtonSelectionListener(this));
 		autoRefreshButton.addSelectionListener(new AutoRefreshButtonSelectionListener(this));
 		autoRefreshButton.notifyListeners(SWT.Selection, null);
+	}
+
+	public void updateTexts() {
+		criteriaGroup.setText(Messages.get("lbl.form.criteria.group"));
+		periodLabel.setText(Messages.get("lbl.form.criteria.period"));
+		periodFromLabel.setText(Messages.get("lbl.form.criteria.period.from"));
+		periodFromNote.setText(Messages.get("lbl.form.criteria.period.from.note"));
+		periodToLabel.setText(Messages.get("lbl.form.criteria.period.to"));
+		periodToNote.setText(Messages.get("lbl.form.criteria.period.to.note"));
+		latitudeLabel.setText(Messages.get("lbl.form.criteria.latitude"));
+		latitudeFromLabel.setText(Messages.get("lbl.form.criteria.latitude.from"));
+		latitudeFromNote.setText(Messages.get("lbl.form.criteria.latitude.from.note"));
+		latitudeToLabel.setText(Messages.get("lbl.form.criteria.latitude.to"));
+		latitudeToNote.setText(Messages.get("lbl.form.criteria.latitude.to.note"));
+		longitudeLabel.setText(Messages.get("lbl.form.criteria.longitude"));
+		longitudeFromLabel.setText(Messages.get("lbl.form.criteria.longitude.from"));
+		longitudeFromNote.setText(Messages.get("lbl.form.criteria.longitude.from.note"));
+		longitudeToLabel.setText(Messages.get("lbl.form.criteria.longitude.to"));
+		longitudeToNote.setText(Messages.get("lbl.form.criteria.longitude.to.note"));
+		minimumMagnitudeLabel.setText(Messages.get("lbl.form.criteria.magnitude"));
+		restrictButton.setText(Messages.get("lbl.form.criteria.restrict"));
+		outputFormatLabel.setText(Messages.get("lbl.form.format"));
+		resultsLabel.setText(Messages.get("lbl.form.limit"));
+		resultsNote.setText(Messages.get("lbl.form.limit.note"));
+		autoRefreshButton.setText(Messages.get("lbl.form.button.autorefresh"));
+		searchButton.setText(Messages.get("lbl.form.button.submit"));
+		stopButton.setText(Messages.get("lbl.form.button.stop"));
+		clearButton.setText(Messages.get("lbl.form.button.clear"));
 	}
 
 	public SearchJob getSearchJob() {
