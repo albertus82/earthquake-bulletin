@@ -108,13 +108,14 @@ public class Earthquake implements Serializable, Comparable<Earthquake> {
 		return true;
 	}
 
+	/** The natural order is by time descending */
 	@Override
 	public int compareTo(final Earthquake o) {
 		if (this.equals(o)) {
 			return 0;
 		}
 		else {
-			return this.time.compareTo(o.time);
+			return o.time.compareTo(this.time);
 		}
 	}
 

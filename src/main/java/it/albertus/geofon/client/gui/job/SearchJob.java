@@ -12,11 +12,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -115,7 +116,7 @@ public class SearchJob extends Job {
 		}
 
 		if (rss != null && rss.getChannel() != null) {
-			final List<Earthquake> earthquakes = new ArrayList<>();
+			final Set<Earthquake> earthquakes = new TreeSet<>();
 			if (rss.getChannel().getItem() != null) {
 				for (final Item item : rss.getChannel().getItem()) {
 					earthquakes.add(ItemTransformer.fromRss(item));
@@ -124,10 +125,14 @@ public class SearchJob extends Job {
 			new SwtThreadExecutor(gui.getShell()) {
 				@Override
 				protected void run() {
-					gui.getResultTable().getTableViewer().setInput(earthquakes.toArray(new Earthquake[0]));
+					final Earthquake[] newData = earthquakes.toArray(new Earthquake[0]);
+					final Earthquake[] oldData = (Earthquake[]) gui.getResultTable().getTableViewer().getInput();
+					gui.getResultTable().getTableViewer().setInput(newData);
+					if (oldData != null && !Arrays.equals(newData, oldData) && newData[0] != null) {
+						gui.getTrayIcon().showBalloonToolTip(newData[0]);
+					}
 				}
 			}.start();
-
 		}
 
 		new SwtThreadExecutor(gui.getShell()) {
