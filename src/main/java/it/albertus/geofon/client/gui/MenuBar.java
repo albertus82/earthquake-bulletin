@@ -1,5 +1,6 @@
 package it.albertus.geofon.client.gui;
 
+import it.albertus.geofon.client.gui.listener.AboutSelectionListener;
 import it.albertus.geofon.client.gui.listener.CloseListener;
 import it.albertus.geofon.client.gui.listener.PreferencesSelectionListener;
 import it.albertus.geofon.client.resources.Messages;
@@ -27,14 +28,14 @@ public class MenuBar {
 	private final MenuItem toolsMenuHeader;
 	private final MenuItem toolsPreferencesMenuItem;
 
-	//	private final Menu helpMenu;
-	//	private final MenuItem helpMenuHeader;
-	//	private final MenuItem helpAboutItem;
+	private final Menu helpMenu;
+	private final MenuItem helpMenuHeader;
+	private final MenuItem helpAboutItem;
 
 	public MenuBar(final GeofonClientGui gui) {
-		bar = new Menu(gui.getShell(), SWT.BAR); // Barra
+		bar = new Menu(gui.getShell(), SWT.BAR); // Bar
 
-		/* File */
+		// File
 		fileMenu = new Menu(gui.getShell(), SWT.DROP_DOWN);
 		fileMenuHeader = new MenuItem(bar, SWT.CASCADE);
 		fileMenuHeader.setText(Messages.get("lbl.menu.header.file"));
@@ -44,7 +45,7 @@ public class MenuBar {
 		fileExitItem.setText(Messages.get("lbl.menu.item.exit"));
 		fileExitItem.addSelectionListener(new CloseListener(gui));
 
-		/* Tools */
+		// Tools
 		toolsMenu = new Menu(gui.getShell(), SWT.DROP_DOWN);
 		toolsMenuHeader = new MenuItem(bar, SWT.CASCADE);
 		toolsMenuHeader.setText(Messages.get("lbl.menu.header.tools"));
@@ -54,15 +55,15 @@ public class MenuBar {
 		toolsPreferencesMenuItem.setText(Messages.get("lbl.menu.item.preferences"));
 		toolsPreferencesMenuItem.addSelectionListener(new PreferencesSelectionListener(gui));
 
-		/* Help */
-		//		helpMenu = new Menu(gui.getShell(), SWT.DROP_DOWN);
-		//		helpMenuHeader = new MenuItem(bar, SWT.CASCADE);
-		//		helpMenuHeader.setText("&Help");//Messages.get("lbl.menu.header.help"));
-		//		helpMenuHeader.setMenu(helpMenu);
-		//
-		//		helpAboutItem = new MenuItem(helpMenu, SWT.PUSH);
-		//		helpAboutItem.setText("&About");//Messages.get("lbl.menu.item.about"));
-		//		helpAboutItem.addSelectionListener(new AboutSelectionListener(gui));
+		// Help
+		helpMenu = new Menu(gui.getShell(), SWT.DROP_DOWN);
+		helpMenuHeader = new MenuItem(bar, SWT.CASCADE);
+		helpMenuHeader.setText(Messages.get("lbl.menu.header.help"));
+		helpMenuHeader.setMenu(helpMenu);
+
+		helpAboutItem = new MenuItem(helpMenu, SWT.PUSH);
+		helpAboutItem.setText(Messages.get("lbl.menu.item.about"));
+		helpAboutItem.addSelectionListener(new AboutSelectionListener(gui));
 
 		gui.getShell().setMenuBar(bar);
 	}
@@ -72,6 +73,8 @@ public class MenuBar {
 		fileExitItem.setText(Messages.get("lbl.menu.item.exit"));
 		toolsMenuHeader.setText(Messages.get("lbl.menu.header.tools"));
 		toolsPreferencesMenuItem.setText(Messages.get("lbl.menu.item.preferences"));
+		helpMenuHeader.setText(Messages.get("lbl.menu.header.help"));
+		helpAboutItem.setText(Messages.get("lbl.menu.item.about"));
 	}
 
 	public Menu getBar() {
@@ -100,6 +103,18 @@ public class MenuBar {
 
 	public MenuItem getToolsPreferencesMenuItem() {
 		return toolsPreferencesMenuItem;
+	}
+
+	public Menu getHelpMenu() {
+		return helpMenu;
+	}
+
+	public MenuItem getHelpMenuHeader() {
+		return helpMenuHeader;
+	}
+
+	public MenuItem getHelpAboutItem() {
+		return helpAboutItem;
 	}
 
 }

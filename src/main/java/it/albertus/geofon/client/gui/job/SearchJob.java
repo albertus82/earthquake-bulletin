@@ -75,9 +75,9 @@ public class SearchJob extends Job {
 
 				if (gui.getSearchForm().getAutoRefreshButton().getSelection()) {
 					try {
-						int waitTimeInSeconds = Integer.parseInt(gui.getSearchForm().getAutoRefreshText().getText());
-						if (waitTimeInSeconds > 0) {
-							waitTimeInMillis[0] = waitTimeInSeconds * 1000;
+						int waitTimeInMinutes = Integer.parseInt(gui.getSearchForm().getAutoRefreshText().getText());
+						if (waitTimeInMinutes > 0) {
+							waitTimeInMillis[0] = waitTimeInMinutes * 60 * 1000;
 							gui.getSearchForm().getStopButton().setEnabled(true);
 						}
 					}
