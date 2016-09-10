@@ -26,10 +26,15 @@ public class GeofonClient {
 		catch (final Exception e) {
 			config = new File(CFG_FILE_NAME);
 		}
-		configuration = new Configuration(config.getPath());
-		final String language = configuration.getString("language", Defaults.LANGUAGE);
-		Messages.setLanguage(language);
-		JFaceMessages.setLanguage(language);
+		configuration = new Configuration(config.getPath()) {
+			@Override
+			protected void load() {
+				super.load();
+				final String language = getString("language", Defaults.LANGUAGE);
+				Messages.setLanguage(language);
+				JFaceMessages.setLanguage(language);
+			};
+		};
 	}
 
 	public static void main(final String[] args) {

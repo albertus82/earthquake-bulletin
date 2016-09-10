@@ -6,7 +6,6 @@ import it.albertus.geofon.client.gui.preference.PageDefinition;
 import it.albertus.geofon.client.gui.preference.Preference;
 import it.albertus.geofon.client.resources.Messages;
 import it.albertus.geofon.client.resources.Messages.Language;
-import it.albertus.jface.JFaceMessages;
 import it.albertus.jface.preference.Preferences;
 import it.albertus.util.Configuration;
 
@@ -35,11 +34,6 @@ public class PreferencesSelectionListener extends SelectionAdapter {
 		catch (final Exception e) {
 			e.printStackTrace();
 		}
-
-		// Update language...
-		final String updatedLanguageCode = configuration.getString("language", GeofonClient.Defaults.LANGUAGE);
-		Messages.setLanguage(updatedLanguageCode);
-		JFaceMessages.setLanguage(updatedLanguageCode);
 
 		// Check if must update texts...
 		if (gui != null && !language.equals(Messages.getLanguage())) {
