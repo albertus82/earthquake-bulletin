@@ -65,15 +65,15 @@ public class AboutDialog extends Dialog {
 		linkProject.setLayoutData(gridData);
 		linkProject.addSelectionListener(new LinkSelectionListener());
 
-		final Label acknowledgements1 = new Label(shell, SWT.WRAP);
+		final Label acknowledgementsLocations = new Label(shell, SWT.WRAP);
 		gridData = new GridData(SWT.CENTER, SWT.CENTER, true, false);
-		acknowledgements1.setLayoutData(gridData);
-		acknowledgements1.setText("Locations were obtained from the GEOFON programme of the GFZ German Research Centre for Geosciences using data from the GEVN partner networks.");
+		acknowledgementsLocations.setLayoutData(gridData);
+		acknowledgementsLocations.setText(Messages.get("lbl.about.acknowledgements.locations"));
 
-		final Label acknowledgements2 = new Label(shell, SWT.WRAP);
+		final Label acknowledgementsData = new Label(shell, SWT.WRAP);
 		gridData = new GridData(SWT.CENTER, SWT.CENTER, true, false);
-		acknowledgements2.setLayoutData(gridData);
-		acknowledgements2.setText("Seismic data were obtained from the GEOFON data centre of the GFZ German Research Centre for Geosciences.");
+		acknowledgementsData.setLayoutData(gridData);
+		acknowledgementsData.setText(Messages.get("lbl.about.acknowledgements.data"));
 
 		//		final Link linkIcon = new Link(shell, SWT.NONE);
 		//		String url = getIconUrl().startsWith("http") ? getIconUrl() : "http://" + getIconUrl();
