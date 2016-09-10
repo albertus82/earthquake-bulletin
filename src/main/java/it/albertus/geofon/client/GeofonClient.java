@@ -14,6 +14,7 @@ public class GeofonClient {
 		String LANGUAGE = Locale.getDefault().getLanguage();
 	}
 
+	public static final String CFG_KEY_LANGUAGE = "language";
 	public static final String CFG_FILE_NAME = "geofon-client.cfg";
 	public static final Configuration configuration;
 
@@ -30,7 +31,7 @@ public class GeofonClient {
 			@Override
 			protected void load() {
 				super.load();
-				final String language = getString("language", Defaults.LANGUAGE);
+				final String language = getString(CFG_KEY_LANGUAGE, Defaults.LANGUAGE);
 				Messages.setLanguage(language);
 				JFaceMessages.setLanguage(language);
 			};
