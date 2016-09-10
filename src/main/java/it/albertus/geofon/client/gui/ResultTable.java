@@ -1,6 +1,8 @@
 package it.albertus.geofon.client.gui;
 
 import it.albertus.geofon.client.gui.job.DownloadMapJob;
+import it.albertus.geofon.client.gui.listener.OpenInBrowserSelectionListener;
+import it.albertus.geofon.client.gui.listener.ResultTableContextMenuDetectListener;
 import it.albertus.geofon.client.model.Earthquake;
 import it.albertus.geofon.client.model.Status;
 import it.albertus.geofon.client.resources.Messages;
@@ -23,6 +25,8 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
@@ -116,6 +120,8 @@ public class ResultTable {
 	private final TableViewer tableViewer;
 	private final EarthquakeViewerComparator comparator;
 	private final HashMap<Integer, Localized> labelsMap = new HashMap<>(7);
+	private final Menu contextMenu;
+	private final MenuItem openInBrowserMenuItem;
 
 	public ResultTable(final Composite parent, final Object layoutData, final GeofonClientGui gui) {
 		tableViewer = new TableViewer(parent, SWT.BORDER | SWT.FULL_SELECTION) {
@@ -164,6 +170,15 @@ public class ResultTable {
 		tableViewer.setContentProvider(new ArrayContentProvider());
 		comparator = new EarthquakeViewerComparator();
 		tableViewer.setComparator(comparator);
+
+		contextMenu = new Menu(table);
+
+		// Open in browser...
+		openInBrowserMenuItem = new MenuItem(contextMenu, SWT.PUSH);
+		openInBrowserMenuItem.setText(Messages.get("lbl.menu.item.open.in.browser"));
+		openInBrowserMenuItem.addSelectionListener(new OpenInBrowserSelectionListener(this));
+
+		table.addMenuDetectListener(new ResultTableContextMenuDetectListener(this));
 	}
 
 	private void createColumns(final Composite parent, final TableViewer viewer) {
@@ -317,10 +332,19 @@ public class ResultTable {
 		for (final int i : labelsMap.keySet()) {
 			table.getColumn(i).setText(labelsMap.get(i).getString());
 		}
+		openInBrowserMenuItem.setText(Messages.get("lbl.menu.item.open.in.browser"));
 	}
 
 	public TableViewer getTableViewer() {
 		return tableViewer;
+	}
+
+	public Menu getContextMenu() {
+		return contextMenu;
+	}
+
+	public MenuItem getOpenInBrowserMenuItem() {
+		return openInBrowserMenuItem;
 	}
 
 }
