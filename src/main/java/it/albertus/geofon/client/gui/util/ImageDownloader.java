@@ -2,35 +2,35 @@ package it.albertus.geofon.client.gui.util;
 
 import it.albertus.geofon.client.HttpConnector;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.ImageData;
-import org.eclipse.swt.graphics.ImageLoader;
-import org.eclipse.swt.widgets.Display;
-
 public class ImageDownloader {
 
-	public static Image downloadImage(final URL url) throws IOException {
+	public static byte[] downloadImage(final URL url) throws IOException {
 		InputStream is = null;
-		Image image = null;
+		ByteArrayOutputStream buffer = null;
 		HttpURLConnection urlConnection = null;
 		try {
 			urlConnection = HttpConnector.openConnection(url);
 			urlConnection.addRequestProperty("Accept", "image/*");
 			is = urlConnection.getInputStream();
-			final ImageData[] images = new ImageLoader().load(is);
-			urlConnection.disconnect();
-
-			if (images.length > 0) {
-				image = new Image(Display.getCurrent(), images[0]);
+			buffer = new ByteArrayOutputStream();
+			int nRead;
+			byte[] data = new byte[8192];
+			while ((nRead = is.read(data, 0, data.length)) != -1) {
+				buffer.write(data, 0, nRead);
 			}
 		}
 		finally {
+			try {
+				buffer.close();
+			}
+			catch (final Exception e) {/* Ignore */}
 			try {
 				is.close();
 			}
@@ -40,10 +40,10 @@ public class ImageDownloader {
 			}
 			catch (final Exception e) {/* Ignore */}
 		}
-		return image;
+		return buffer.toByteArray();
 	}
 
-	public static Image downloadImage(final String url) throws MalformedURLException, IOException {
+	public static byte[] downloadImage(final String url) throws MalformedURLException, IOException {
 		return downloadImage(new URL(url));
 	}
 

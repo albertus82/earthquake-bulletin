@@ -332,6 +332,8 @@ public class ResultTable {
 		for (final int i : labelsMap.keySet()) {
 			table.getColumn(i).setText(labelsMap.get(i).getString());
 		}
+		showMapMenuItem.setText(Messages.get("lbl.menu.item.show.map"));
+		googleMapsMenuItem.setText(Messages.get("lbl.menu.item.google.maps"));
 		openInBrowserMenuItem.setText(Messages.get("lbl.menu.item.open.in.browser"));
 	}
 

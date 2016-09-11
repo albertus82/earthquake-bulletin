@@ -27,7 +27,7 @@ public class ShowMapListener implements Listener {
 				final String guid = selectedItem.getGuid();
 				final MapCache cache = gui.getMapCanvas().getCache();
 				if (cache.contains(guid)) {
-					gui.getMapCanvas().setImage(cache.get(guid));
+					gui.getMapCanvas().setImage(guid, cache.get(guid));
 				}
 				else {
 					if ((gui.getMapCanvas().getDownloadMapJob() == null || gui.getMapCanvas().getDownloadMapJob().getState() == Job.NONE)) {

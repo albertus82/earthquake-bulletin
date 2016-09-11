@@ -40,6 +40,7 @@ public class PreferencesSelectionListener extends SelectionAdapter {
 			gui.getMenuBar().updateTexts();
 			gui.getResultTable().updateTexts();
 			gui.getSearchForm().updateTexts();
+			gui.getMapCanvas().updateTexts();
 			gui.getShell().layout(true, true);
 		}
 		if (preferences.isRestartRequired()) {

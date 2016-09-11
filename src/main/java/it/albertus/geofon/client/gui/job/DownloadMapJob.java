@@ -10,7 +10,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Image;
 
 public class DownloadMapJob extends Job {
 
@@ -36,7 +35,7 @@ public class DownloadMapJob extends Job {
 
 		}.start();
 
-		Image downloadedImage = null;
+		byte[] downloadedImage = null;
 		if (earthquake.getEnclosure() != null) {
 			try {
 				downloadedImage = ImageDownloader.downloadImage(earthquake.getEnclosure());
@@ -45,15 +44,12 @@ public class DownloadMapJob extends Job {
 				e.printStackTrace(); // TODO warning: map unavaliable
 			}
 		}
-		final Image image = downloadedImage;
-		if (image != null) {
-			gui.getMapCanvas().getCache().put(earthquake.getGuid(), image);
-		}
+		final byte[] image = downloadedImage;
 		new SwtThreadExecutor(gui.getMapCanvas().getCanvas()) {
 			@Override
 			protected void run() {
 				if (image != null) {
-					gui.getMapCanvas().setImage(image);
+					gui.getMapCanvas().setImage(earthquake.getGuid(), image);
 				}
 				gui.getShell().setCursor(null);
 			}

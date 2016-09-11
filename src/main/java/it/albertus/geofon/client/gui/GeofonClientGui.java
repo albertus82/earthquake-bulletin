@@ -6,6 +6,8 @@ import it.albertus.geofon.client.gui.util.ImageDownloader;
 import it.albertus.geofon.client.resources.Messages;
 import it.albertus.util.Configuration;
 
+import java.io.ByteArrayInputStream;
+
 import org.eclipse.jface.window.ApplicationWindow;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
@@ -33,12 +35,12 @@ public class GeofonClientGui extends ApplicationWindow {
 		final GeofonClientGui gui = new GeofonClientGui(display);
 		gui.open();
 
-//		if (true) {
-//			gui.getSearchForm().getAutoRefreshButton().setSelection(true);
-//			gui.getSearchForm().getAutoRefreshButton().notifyListeners(SWT.Selection, null);
-//			gui.getSearchForm().getAutoRefreshText().setText("1");
-//			gui.getSearchForm().getSearchButton().notifyListeners(SWT.Selection, null);
-//		}
+		//		if (true) {
+		//			gui.getSearchForm().getAutoRefreshButton().setSelection(true);
+		//			gui.getSearchForm().getAutoRefreshButton().notifyListeners(SWT.Selection, null);
+		//			gui.getSearchForm().getAutoRefreshText().setText("1");
+		//			gui.getSearchForm().getSearchButton().notifyListeners(SWT.Selection, null);
+		//		}
 
 		final Shell shell = gui.getShell();
 		while (!shell.isDisposed()) {
@@ -61,8 +63,8 @@ public class GeofonClientGui extends ApplicationWindow {
 
 	public GeofonClientGui(final Display display) {
 		super(null);
-		try {
-			favicon = ImageDownloader.downloadImage("http://www.gfz-potsdam.de/favicon.ico");
+		try (final ByteArrayInputStream bais = new ByteArrayInputStream(ImageDownloader.downloadImage("http://www.gfz-potsdam.de/favicon.ico"))) {
+			favicon = new Image(display, bais);
 		}
 		catch (final Exception e) {
 			favicon = display.getSystemImage(SWT.ICON_WARNING);

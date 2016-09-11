@@ -6,8 +6,6 @@ import it.albertus.util.Configuration;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.eclipse.swt.graphics.Image;
-
 public class MapCache {
 
 	public interface Defaults {
@@ -15,24 +13,28 @@ public class MapCache {
 	}
 
 	private final Configuration configuration = GeofonClient.configuration;
-	private final Map<String, Image> cache = new LinkedHashMap<>(configuration.getByte("map.cache.size", Defaults.CACHE_SIZE));
+	private final Map<String, byte[]> cache = new LinkedHashMap<>(configuration.getByte("map.cache.size", Defaults.CACHE_SIZE));
 
-	public void put(final String guid, final Image map) {
-		while (cache.size() > 0 && cache.size() >= configuration.getByte("map.cache.size", Defaults.CACHE_SIZE)) {
-			final String eldestGuid = cache.keySet().iterator().next();
-			final Image eldestImage = cache.get(eldestGuid);
-			cache.remove(eldestGuid);
-			eldestImage.dispose();
+	public void put(final String guid, final byte[] map) {
+		if (!cache.containsKey(guid)) {
+			cache.put(guid, map);
 		}
-		cache.put(guid, map);
+		while (cache.size() > 0 && cache.size() > configuration.getByte("map.cache.size", Defaults.CACHE_SIZE)) {
+			final String eldestGuid = cache.keySet().iterator().next();
+			cache.remove(eldestGuid);
+		}
 	}
 
-	public Image get(final String guid) {
+	public byte[] get(final String guid) {
 		return cache.get(guid);
 	}
 
 	public boolean contains(final String guid) {
 		return cache.containsKey(guid);
+	}
+
+	public int size() {
+		return cache.size();
 	}
 
 	@Override
