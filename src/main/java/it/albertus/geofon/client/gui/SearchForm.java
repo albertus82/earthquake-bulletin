@@ -33,6 +33,11 @@ public class SearchForm {
 	public static final int RESULTS_TEXT_LIMIT = 3;
 	public static final int AUTO_REFRESH_TEXT_LIMIT = 4;
 
+	public interface Defaults {
+		boolean AUTOREFRESH_ENABLED = false;
+		boolean CRITERIA_RESTRICT = false;
+	}
+
 	private final Configuration configuration = GeofonClient.configuration;
 
 	private final Composite formComposite;
@@ -168,7 +173,7 @@ public class SearchForm {
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(minimumMagnitudeText);
 		restrictButton = new Button(criteriaGroup, SWT.CHECK);
 		restrictButton.setText(Messages.get("lbl.form.criteria.restrict"));
-		restrictButton.setSelection(configuration.getBoolean("criteria.restrict", false));
+		restrictButton.setSelection(configuration.getBoolean("criteria.restrict", Defaults.CRITERIA_RESTRICT));
 		GridDataFactory.swtDefaults().span(4, 1).applyTo(restrictButton);
 
 		outputFormatLabel = new Label(criteriaGroup, SWT.NONE);
@@ -202,7 +207,7 @@ public class SearchForm {
 
 		autoRefreshButton = new Button(buttonsComposite, SWT.CHECK);
 		autoRefreshButton.setText(Messages.get("lbl.form.button.autorefresh"));
-		autoRefreshButton.setSelection(configuration.getBoolean("autorefresh.enabled", false));
+		autoRefreshButton.setSelection(configuration.getBoolean("autorefresh.enabled", Defaults.AUTOREFRESH_ENABLED));
 		GridDataFactory.swtDefaults().applyTo(autoRefreshButton);
 
 		autoRefreshText = new Text(buttonsComposite, SWT.BORDER);

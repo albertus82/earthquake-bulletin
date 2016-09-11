@@ -39,7 +39,7 @@ public enum Preference implements IPreference {
 	MINIMIZE_TRAY(new PreferenceDetailsBuilder(PageDefinition.GENERAL).defaultValue(TrayIcon.Defaults.MINIMIZE_TRAY).build(), new FieldEditorDetailsBuilder(DefaultBooleanFieldEditor.class).build()),
 	CONFIRM_CLOSE(new PreferenceDetailsBuilder(PageDefinition.GENERAL).defaultValue(CloseMessageBox.Defaults.CONFIRM_CLOSE).build(), new FieldEditorDetailsBuilder(DefaultBooleanFieldEditor.class).build()),
 	SEARCH_ON_START(new PreferenceDetailsBuilder(PageDefinition.GENERAL).defaultValue(GeofonClientGui.Defaults.SEARCH_ON_START).build(), new FieldEditorDetailsBuilder(DefaultBooleanFieldEditor.class).build()),
-	
+
 	MAP_RESIZE_HQ(new PreferenceDetailsBuilder(PageDefinition.GENERAL).defaultValue(MapCanvasPaintListener.Defaults.MAP_RESIZE_HQ).separate().build(), new FieldEditorDetailsBuilder(DefaultBooleanFieldEditor.class).build()),
 	MAP_CACHE_SIZE(new PreferenceDetailsBuilder(PageDefinition.GENERAL).defaultValue(MapCache.Defaults.CACHE_SIZE).build(), new FieldEditorDetailsBuilder(ScaleIntegerFieldEditor.class).scaleMinimum(1).scaleMaximum(Byte.MAX_VALUE).scalePageIncrement(8).build()),
 
@@ -94,13 +94,13 @@ public enum Preference implements IPreference {
 			return Messages.get("lbl.form.limit") + " " + Messages.get("lbl.form.limit.note");
 		};
 	}).build(), new FieldEditorDetailsBuilder(StringFieldEditor.class).textLimit(SearchForm.RESULTS_TEXT_LIMIT).build()),
-	CRITERIA_RESTRICT(new PreferenceDetailsBuilder(PageDefinition.CRITERIA).label(new Localized() {
+	CRITERIA_RESTRICT(new PreferenceDetailsBuilder(PageDefinition.CRITERIA).defaultValue(SearchForm.Defaults.CRITERIA_RESTRICT).label(new Localized() {
 		@Override
 		public String getString() {
 			return Messages.get("lbl.form.criteria.restrict");
 		};
 	}).build(), new FieldEditorDetailsBuilder(DefaultBooleanFieldEditor.class).build()),
-	AUTOREFRESH_ENABLED(new PreferenceDetailsBuilder(PageDefinition.CRITERIA).build(), new FieldEditorDetailsBuilder(DefaultBooleanFieldEditor.class).build()),
+	AUTOREFRESH_ENABLED(new PreferenceDetailsBuilder(PageDefinition.CRITERIA).defaultValue(SearchForm.Defaults.AUTOREFRESH_ENABLED).build(), new FieldEditorDetailsBuilder(DefaultBooleanFieldEditor.class).build()),
 	AUTOREFRESH_MINS(new PreferenceDetailsBuilder(PageDefinition.CRITERIA).parent(AUTOREFRESH_ENABLED).label(new Localized() {
 		@Override
 		public String getString() {
