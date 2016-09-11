@@ -9,15 +9,15 @@ import org.eclipse.swt.program.Program;
 
 public class GoogleMapsSelectionListener extends SelectionAdapter {
 
-	private final ResultsTable resultTable;
+	private final ResultsTable resultsTable;
 
-	public GoogleMapsSelectionListener(final ResultsTable resultTable) {
-		this.resultTable = resultTable;
+	public GoogleMapsSelectionListener(final ResultsTable resultsTable) {
+		this.resultsTable = resultsTable;
 	}
 
 	@Override
 	public void widgetSelected(final SelectionEvent se) {
-		final Earthquake selection = (Earthquake) resultTable.getTableViewer().getStructuredSelection().getFirstElement();
+		final Earthquake selection = (Earthquake) resultsTable.getTableViewer().getStructuredSelection().getFirstElement();
 		if (selection != null) {
 			Program.launch(selection.getGoogleMapsUrl());
 		}
