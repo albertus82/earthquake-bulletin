@@ -55,7 +55,7 @@ public class GeofonClientGui extends ApplicationWindow {
 
 	private Image favicon;
 	private SearchForm searchForm;
-	private ResultTable resultTable;
+	private ResultsTable resultsTable;
 	private MapCanvas mapCanvas;
 	private SashForm sashForm;
 	private TrayIcon trayIcon;
@@ -94,7 +94,7 @@ public class GeofonClientGui extends ApplicationWindow {
 		sashForm.setLayout(new GridLayout());
 		sashForm.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-		resultTable = new ResultTable(sashForm, new GridData(SWT.FILL, SWT.FILL, true, true), this);
+		resultsTable = new ResultsTable(sashForm, new GridData(SWT.FILL, SWT.FILL, true, true), this);
 
 		mapCanvas = new MapCanvas(sashForm);
 		sashForm.setWeights(new int[] { 3, 2 });
@@ -138,8 +138,8 @@ public class GeofonClientGui extends ApplicationWindow {
 		return searchForm;
 	}
 
-	public ResultTable getResultTable() {
-		return resultTable;
+	public ResultsTable getResultsTable() {
+		return resultsTable;
 	}
 
 	public MapCanvas getMapCanvas() {

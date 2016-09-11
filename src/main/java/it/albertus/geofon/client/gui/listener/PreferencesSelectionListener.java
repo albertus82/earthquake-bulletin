@@ -38,7 +38,7 @@ public class PreferencesSelectionListener extends SelectionAdapter {
 		// Check if must update texts...
 		if (gui != null && !language.equals(Messages.getLanguage())) {
 			gui.getMenuBar().updateTexts();
-			gui.getResultTable().updateTexts();
+			gui.getResultsTable().updateTexts();
 			gui.getSearchForm().updateTexts();
 			gui.getMapCanvas().updateTexts();
 			gui.getShell().layout(true, true);

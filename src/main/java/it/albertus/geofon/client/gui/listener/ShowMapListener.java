@@ -20,7 +20,7 @@ public class ShowMapListener implements Listener {
 
 	@Override
 	public void handleEvent(final Event event) {
-		final TableViewer tableViewer = gui.getResultTable().getTableViewer();
+		final TableViewer tableViewer = gui.getResultsTable().getTableViewer();
 		if (tableViewer != null && !tableViewer.getTable().isDisposed() && tableViewer.getStructuredSelection() != null) {
 			final Earthquake selectedItem = (Earthquake) tableViewer.getStructuredSelection().getFirstElement();
 			if (selectedItem != null) {

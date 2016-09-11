@@ -2,7 +2,7 @@ package it.albertus.geofon.client.gui;
 
 import it.albertus.geofon.client.gui.listener.GoogleMapsSelectionListener;
 import it.albertus.geofon.client.gui.listener.OpenInBrowserSelectionListener;
-import it.albertus.geofon.client.gui.listener.ResultTableContextMenuDetectListener;
+import it.albertus.geofon.client.gui.listener.ResultsTableContextMenuDetectListener;
 import it.albertus.geofon.client.gui.listener.ShowMapListener;
 import it.albertus.geofon.client.model.Earthquake;
 import it.albertus.geofon.client.model.Status;
@@ -30,7 +30,7 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
-public class ResultTable {
+public class ResultsTable {
 
 	private static final int NUMBER_OF_COLUMNS = 7;
 
@@ -128,7 +128,7 @@ public class ResultTable {
 	private final MenuItem openInBrowserMenuItem;
 	private final MenuItem googleMapsMenuItem;
 
-	public ResultTable(final Composite parent, final Object layoutData, final GeofonClientGui gui) {
+	public ResultsTable(final Composite parent, final Object layoutData, final GeofonClientGui gui) {
 		tableViewer = new TableViewer(parent, SWT.BORDER | SWT.FULL_SELECTION) {
 			@Override
 			protected void inputChanged(Object input, Object oldInput) {
@@ -178,7 +178,7 @@ public class ResultTable {
 		googleMapsMenuItem.setText(Messages.get("lbl.menu.item.google.maps"));
 		googleMapsMenuItem.addSelectionListener(new GoogleMapsSelectionListener(this));
 
-		table.addMenuDetectListener(new ResultTableContextMenuDetectListener(this));
+		table.addMenuDetectListener(new ResultsTableContextMenuDetectListener(this));
 	}
 
 	private void createColumns(final Composite parent, final TableViewer viewer) {

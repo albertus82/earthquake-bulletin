@@ -1,6 +1,6 @@
 package it.albertus.geofon.client.gui.listener;
 
-import it.albertus.geofon.client.gui.ResultTable;
+import it.albertus.geofon.client.gui.ResultsTable;
 import it.albertus.geofon.client.model.Earthquake;
 
 import org.eclipse.swt.events.SelectionAdapter;
@@ -9,9 +9,9 @@ import org.eclipse.swt.program.Program;
 
 public class GoogleMapsSelectionListener extends SelectionAdapter {
 
-	private final ResultTable resultTable;
+	private final ResultsTable resultTable;
 
-	public GoogleMapsSelectionListener(final ResultTable resultTable) {
+	public GoogleMapsSelectionListener(final ResultsTable resultTable) {
 		this.resultTable = resultTable;
 	}
 

@@ -1,6 +1,6 @@
 package it.albertus.geofon.client.gui.listener;
 
-import it.albertus.geofon.client.gui.ResultTable;
+import it.albertus.geofon.client.gui.ResultsTable;
 import it.albertus.geofon.client.model.Earthquake;
 
 import org.eclipse.swt.events.SelectionAdapter;
@@ -9,9 +9,9 @@ import org.eclipse.swt.program.Program;
 
 public class OpenInBrowserSelectionListener extends SelectionAdapter {
 
-	private final ResultTable resultTable;
+	private final ResultsTable resultTable;
 
-	public OpenInBrowserSelectionListener(final ResultTable resultTable) {
+	public OpenInBrowserSelectionListener(final ResultsTable resultTable) {
 		this.resultTable = resultTable;
 	}
 

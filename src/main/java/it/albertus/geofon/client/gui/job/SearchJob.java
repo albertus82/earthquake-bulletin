@@ -133,8 +133,8 @@ public class SearchJob extends Job {
 				@Override
 				protected void run() {
 					final Earthquake[] newData = earthquakes.toArray(new Earthquake[0]);
-					final Earthquake[] oldData = (Earthquake[]) gui.getResultTable().getTableViewer().getInput();
-					gui.getResultTable().getTableViewer().setInput(newData);
+					final Earthquake[] oldData = (Earthquake[]) gui.getResultsTable().getTableViewer().getInput();
+					gui.getResultsTable().getTableViewer().setInput(newData);
 					if (oldData != null && !Arrays.equals(newData, oldData) && newData[0] != null) {
 						gui.getMapCanvas().clear();
 						gui.getTrayIcon().showBalloonToolTip(newData[0]);
