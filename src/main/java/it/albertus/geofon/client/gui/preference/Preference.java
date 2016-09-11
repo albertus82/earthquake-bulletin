@@ -220,11 +220,11 @@ public enum Preference implements IPreference {
 		final Format[] values = Format.values();
 		final LocalizedLabelsAndValues options = new LocalizedLabelsAndValues(values.length);
 		for (final Format format : values) {
-			final String value = format.toString();
+			final String value = format.name();
 			final Localized name = new Localized() {
 				@Override
 				public String getString() {
-					return Messages.get("lbl.form.format." + format.toString().toLowerCase());
+					return format.getDescription();
 				}
 			};
 			options.put(name, value);
