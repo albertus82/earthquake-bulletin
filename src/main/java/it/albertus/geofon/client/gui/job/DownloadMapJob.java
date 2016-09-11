@@ -5,8 +5,6 @@ import it.albertus.geofon.client.gui.util.ImageDownloader;
 import it.albertus.geofon.client.model.Earthquake;
 import it.albertus.jface.SwtThreadExecutor;
 
-import java.io.IOException;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -43,8 +41,8 @@ public class DownloadMapJob extends Job {
 			try {
 				downloadedImage = ImageDownloader.downloadImage(earthquake.getEnclosure());
 			}
-			catch (final IOException ioe) {
-				ioe.printStackTrace(); // TODO warning: map unavaliable
+			catch (final Exception e) {
+				e.printStackTrace(); // TODO warning: map unavaliable
 			}
 		}
 		final Image image = downloadedImage;

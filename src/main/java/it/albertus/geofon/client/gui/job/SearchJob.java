@@ -21,7 +21,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -106,7 +105,7 @@ public class SearchJob extends Job {
 			rss = (Rss) jaxbUnmarshaller.unmarshal(is);
 			urlConnection.disconnect();
 		}
-		catch (final IOException | JAXBException e) {
+		catch (final Exception e) {
 			e.printStackTrace(); // TODO error message
 		}
 		finally {
