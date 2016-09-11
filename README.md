@@ -5,7 +5,7 @@ Geofon Client
 
 Java desktop client for **GEOFON Program GFZ Potsdam Earthquake Bulletin**.
 
-## Acknowledgments
+## Acknowledgements
 
 Locations were obtained from the GEOFON programme of the GFZ German Research Centre for Geosciences using data from the GEVN partner networks.
 
