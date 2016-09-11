@@ -156,7 +156,7 @@ public class SearchJob extends Job {
 
 	private HttpURLConnection openConnection(final URL url) throws IOException {
 		final HttpURLConnection urlConnection = HttpConnector.openConnection(url);
-		urlConnection.addRequestProperty("Accept", "text/xml");
+		urlConnection.addRequestProperty("Accept", "*/xml");
 		return urlConnection;
 	}
 
