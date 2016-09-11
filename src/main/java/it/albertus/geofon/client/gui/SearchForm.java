@@ -182,12 +182,12 @@ public class SearchForm {
 		radioComposite = new Composite(criteriaGroup, SWT.NONE);
 		radioComposite.setLayout(new RowLayout(SWT.HORIZONTAL));
 		GridDataFactory.swtDefaults().grab(false, false).span(2, 1).applyTo(radioComposite);
-		for (final Format mode : Format.values()) {
+		for (final Format format : Format.values()) {
 			final Button radio = new Button(radioComposite, SWT.RADIO);
-			radio.addSelectionListener(new FormatRadioSelectionListener(this, radio, mode));
-			radio.setText(mode.toString());
-			radio.setSelection(mode.toString().equalsIgnoreCase(configuration.getString("criteria.format", Defaults.FORMAT)));
-			formatRadios.put(mode, radio);
+			radio.addSelectionListener(new FormatRadioSelectionListener(this, radio, format));
+			radio.setText(Messages.get("lbl.form.format." + format.toString().toLowerCase()));
+			radio.setSelection(format.toString().equalsIgnoreCase(configuration.getString("criteria.format", Defaults.FORMAT)));
+			formatRadios.put(format, radio);
 		}
 		resultsLabel = new Label(criteriaGroup, SWT.NONE);
 		resultsLabel.setText(Messages.get("lbl.form.limit"));
