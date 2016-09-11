@@ -17,7 +17,9 @@ public class ResultTableContextMenuDetectListener implements MenuDetectListener 
 	@Override
 	public void menuDetected(final MenuDetectEvent mde) {
 		final Earthquake selection = (Earthquake) resultTable.getTableViewer().getStructuredSelection().getFirstElement();
+		resultTable.getShowMapMenuItem().setEnabled(selection != null && selection.getEnclosure() != null);
 		resultTable.getOpenInBrowserMenuItem().setEnabled(selection != null && selection.getLink() != null);
+		resultTable.getGoogleMapsMenuItem().setEnabled(selection != null);
 		resultTable.getContextMenu().setVisible(true);
 	}
 

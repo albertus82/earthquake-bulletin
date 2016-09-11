@@ -72,6 +72,10 @@ public class Earthquake implements Serializable, Comparable<Earthquake> {
 		return enclosure;
 	}
 
+	public String getGoogleMapsUrl() {
+		return "http://maps.google.com/maps?q=" + Float.toString(Math.abs(latitude.getValue())) + (latitude.getValue() > 0 ? 'N' : 'S') + "," + Float.toString(Math.abs(longitude.getValue())) + (longitude.getValue() > 0 ? 'E' : 'W');
+	}
+
 	@Override
 	public String toString() {
 		return "Earthquake [guid=" + guid + ", time=" + time + ", magnitudo=" + magnitudo + ", latitude=" + latitude + ", longitude=" + longitude + ", depth=" + depth + ", status=" + status + ", region=" + region + ", link=" + link + ", enclosure=" + enclosure + "]";

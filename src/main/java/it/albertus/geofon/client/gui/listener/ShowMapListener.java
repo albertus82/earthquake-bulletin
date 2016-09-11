@@ -1,5 +1,7 @@
-package it.albertus.geofon.client.gui;
+package it.albertus.geofon.client.gui.listener;
 
+import it.albertus.geofon.client.gui.GeofonClientGui;
+import it.albertus.geofon.client.gui.MapCache;
 import it.albertus.geofon.client.gui.job.DownloadMapJob;
 import it.albertus.geofon.client.model.Earthquake;
 
@@ -21,15 +23,17 @@ public class ShowMapListener implements Listener {
 		final TableViewer tableViewer = gui.getResultTable().getTableViewer();
 		if (tableViewer != null && !tableViewer.getTable().isDisposed() && tableViewer.getStructuredSelection() != null) {
 			final Earthquake selectedItem = (Earthquake) tableViewer.getStructuredSelection().getFirstElement();
-			String guid = selectedItem.getGuid();
-			final MapCache cache = gui.getMapCanvas().getCache();
-			if (cache.contains(guid)) {
-				gui.getMapCanvas().setImage(cache.get(guid));
-			}
-			else {
-				if ((gui.getMapCanvas().getDownloadMapJob() == null || gui.getMapCanvas().getDownloadMapJob().getState() == Job.NONE)) {
-					gui.getMapCanvas().setDownloadMapJob(new DownloadMapJob(gui, selectedItem));
-					gui.getMapCanvas().getDownloadMapJob().schedule();
+			if (selectedItem != null) {
+				final String guid = selectedItem.getGuid();
+				final MapCache cache = gui.getMapCanvas().getCache();
+				if (cache.contains(guid)) {
+					gui.getMapCanvas().setImage(cache.get(guid));
+				}
+				else {
+					if ((gui.getMapCanvas().getDownloadMapJob() == null || gui.getMapCanvas().getDownloadMapJob().getState() == Job.NONE)) {
+						gui.getMapCanvas().setDownloadMapJob(new DownloadMapJob(gui, selectedItem));
+						gui.getMapCanvas().getDownloadMapJob().schedule();
+					}
 				}
 			}
 		}

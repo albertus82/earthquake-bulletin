@@ -1,7 +1,9 @@
 package it.albertus.geofon.client.gui;
 
+import it.albertus.geofon.client.gui.listener.GoogleMapsSelectionListener;
 import it.albertus.geofon.client.gui.listener.OpenInBrowserSelectionListener;
 import it.albertus.geofon.client.gui.listener.ResultTableContextMenuDetectListener;
+import it.albertus.geofon.client.gui.listener.ShowMapListener;
 import it.albertus.geofon.client.model.Earthquake;
 import it.albertus.geofon.client.model.Status;
 import it.albertus.geofon.client.resources.Messages;
@@ -29,6 +31,8 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
 public class ResultTable {
+
+	private static final int NUMBER_OF_COLUMNS = 7;
 
 	/** Use {@link #formatDate} method instead. */
 	@Deprecated
@@ -117,10 +121,12 @@ public class ResultTable {
 
 	private final TableViewer tableViewer;
 	private final EarthquakeViewerComparator comparator;
-	private final HashMap<Integer, Localized> labelsMap = new HashMap<>(7);
+	private final HashMap<Integer, Localized> labelsMap = new HashMap<>(NUMBER_OF_COLUMNS);
+
 	private final Menu contextMenu;
 	private final MenuItem showMapMenuItem;
 	private final MenuItem openInBrowserMenuItem;
+	private final MenuItem googleMapsMenuItem;
 
 	public ResultTable(final Composite parent, final Object layoutData, final GeofonClientGui gui) {
 		tableViewer = new TableViewer(parent, SWT.BORDER | SWT.FULL_SELECTION) {
@@ -148,25 +154,6 @@ public class ResultTable {
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
 		table.addListener(SWT.DefaultSelection, new ShowMapListener(gui));
-		//		table.addSelectionListener(new SelectionAdapter() {
-		//			@Override
-		//			public void widgetDefaultSelected(final SelectionEvent se) {
-		//				if (!table.isDisposed() && tableViewer.getStructuredSelection() != null) {
-		//					final Earthquake selectedItem = (Earthquake) tableViewer.getStructuredSelection().getFirstElement();
-		//					String guid = selectedItem.getGuid();
-		//					final MapCache cache = gui.getMapCanvas().getCache();
-		//					if (cache.contains(guid)) {
-		//						gui.getMapCanvas().setImage(cache.get(guid));
-		//					}
-		//					else {
-		//						if ((gui.getMapCanvas().getDownloadMapJob() == null || gui.getMapCanvas().getDownloadMapJob().getState() == Job.NONE)) {
-		//							gui.getMapCanvas().setDownloadMapJob(new DownloadMapJob(gui, selectedItem));
-		//							gui.getMapCanvas().getDownloadMapJob().schedule();
-		//						}
-		//					}
-		//				}
-		//			}
-		//		});
 		tableViewer.setContentProvider(new ArrayContentProvider());
 		comparator = new EarthquakeViewerComparator();
 		tableViewer.setComparator(comparator);
@@ -179,10 +166,17 @@ public class ResultTable {
 		showMapMenuItem.addListener(SWT.Selection, new ShowMapListener(gui));
 		contextMenu.setDefaultItem(showMapMenuItem);
 
+		new MenuItem(contextMenu, SWT.SEPARATOR);
+
 		// Open in browser...
 		openInBrowserMenuItem = new MenuItem(contextMenu, SWT.PUSH);
 		openInBrowserMenuItem.setText(Messages.get("lbl.menu.item.open.in.browser"));
 		openInBrowserMenuItem.addSelectionListener(new OpenInBrowserSelectionListener(this));
+
+		// Google Maps...
+		googleMapsMenuItem = new MenuItem(contextMenu, SWT.PUSH);
+		googleMapsMenuItem.setText(Messages.get("lbl.menu.item.google.maps"));
+		googleMapsMenuItem.addSelectionListener(new GoogleMapsSelectionListener(this));
 
 		table.addMenuDetectListener(new ResultTableContextMenuDetectListener(this));
 	}
@@ -351,6 +345,14 @@ public class ResultTable {
 
 	public MenuItem getOpenInBrowserMenuItem() {
 		return openInBrowserMenuItem;
+	}
+
+	public MenuItem getShowMapMenuItem() {
+		return showMapMenuItem;
+	}
+
+	public MenuItem getGoogleMapsMenuItem() {
+		return googleMapsMenuItem;
 	}
 
 }
