@@ -12,7 +12,8 @@ import org.eclipse.jface.resource.ImageDescriptor;
 public enum PageDefinition implements IPageDefinition {
 
 	GENERAL,
-	CONNECTION;
+	CONNECTION,
+	CRITERIA;
 
 	private static final String LABEL_KEY_PREFIX = "lbl.preferences.";
 

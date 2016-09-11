@@ -7,9 +7,10 @@ import it.albertus.geofon.client.gui.listener.FormTextTraverseListener;
 import it.albertus.geofon.client.gui.listener.FormatRadioSelectionListener;
 import it.albertus.geofon.client.gui.listener.SearchButtonSelectionListener;
 import it.albertus.geofon.client.gui.listener.StopButtonSelectionListener;
+import it.albertus.geofon.client.model.Format;
 import it.albertus.geofon.client.resources.Messages;
 
-import java.util.LinkedHashMap;
+import java.util.EnumMap;
 import java.util.Map;
 
 import org.eclipse.jface.layout.GridDataFactory;
@@ -23,6 +24,12 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 public class SearchForm {
+
+	public static final int COORDINATES_TEXT_LIMIT = 7;
+	public static final int MAGNITUDE_TEXT_LIMIT = 3;
+	public static final int PERIOD_TEXT_LIMIT = 10;
+	public static final int RESULTS_TEXT_LIMIT = 3;
+	public static final int AUTO_REFRESH_TEXT_LIMIT = 4;
 
 	private final Composite formComposite;
 
@@ -56,7 +63,7 @@ public class SearchForm {
 
 	private final Label outputFormatLabel;
 	private final Composite radioComposite;
-	private final Map<String, Button> formatRadios = new LinkedHashMap<String, Button>();
+	private final Map<Format, Button> formatRadios = new EnumMap<>(Format.class);
 	private final Label resultsLabel;
 	private final Text resultsText;
 
@@ -70,7 +77,7 @@ public class SearchForm {
 	private final Button stopButton;
 	private final Button clearButton;
 
-	private final FormTextTraverseListener formTextTraverselistener = new FormTextTraverseListener(this);
+	private final FormTextTraverseListener formTextTraverseListener = new FormTextTraverseListener(this);
 
 	private SearchJob searchJob;
 
@@ -89,16 +96,16 @@ public class SearchForm {
 		periodFromLabel = new Label(criteriaGroup, SWT.NONE);
 		periodFromLabel.setText(Messages.get("lbl.form.criteria.period.from"));
 		periodFromText = new Text(criteriaGroup, SWT.BORDER);
-		periodFromText.setTextLimit(10);
-		periodFromText.addTraverseListener(formTextTraverselistener);
+		periodFromText.setTextLimit(PERIOD_TEXT_LIMIT);
+		periodFromText.addTraverseListener(formTextTraverseListener);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(periodFromText);
 		periodFromNote = new Label(criteriaGroup, SWT.NONE);
 		periodFromNote.setText(Messages.get("lbl.form.criteria.period.from.note"));
 		periodToLabel = new Label(criteriaGroup, SWT.NONE);
 		periodToLabel.setText(Messages.get("lbl.form.criteria.period.to"));
 		periodToText = new Text(criteriaGroup, SWT.BORDER);
-		periodToText.setTextLimit(10);
-		periodToText.addTraverseListener(formTextTraverselistener);
+		periodToText.setTextLimit(PERIOD_TEXT_LIMIT);
+		periodToText.addTraverseListener(formTextTraverseListener);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(periodToText);
 		periodToNote = new Label(criteriaGroup, SWT.NONE);
 		periodToNote.setText(Messages.get("lbl.form.criteria.period.to.note"));
@@ -108,16 +115,16 @@ public class SearchForm {
 		latitudeFromLabel = new Label(criteriaGroup, SWT.NONE);
 		latitudeFromLabel.setText(Messages.get("lbl.form.criteria.latitude.from"));
 		latitudeFromText = new Text(criteriaGroup, SWT.BORDER);
-		latitudeFromText.setTextLimit(7);
-		latitudeFromText.addTraverseListener(formTextTraverselistener);
+		latitudeFromText.setTextLimit(COORDINATES_TEXT_LIMIT);
+		latitudeFromText.addTraverseListener(formTextTraverseListener);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(latitudeFromText);
 		latitudeFromNote = new Label(criteriaGroup, SWT.NONE);
 		latitudeFromNote.setText(Messages.get("lbl.form.criteria.latitude.from.note"));
 		latitudeToLabel = new Label(criteriaGroup, SWT.NONE);
 		latitudeToLabel.setText(Messages.get("lbl.form.criteria.latitude.to"));
 		latitudeToText = new Text(criteriaGroup, SWT.BORDER);
-		latitudeToText.setTextLimit(7);
-		latitudeToText.addTraverseListener(formTextTraverselistener);
+		latitudeToText.setTextLimit(COORDINATES_TEXT_LIMIT);
+		latitudeToText.addTraverseListener(formTextTraverseListener);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(latitudeToText);
 		latitudeToNote = new Label(criteriaGroup, SWT.NONE);
 		latitudeToNote.setText(Messages.get("lbl.form.criteria.latitude.to.note"));
@@ -127,16 +134,16 @@ public class SearchForm {
 		longitudeFromLabel = new Label(criteriaGroup, SWT.NONE);
 		longitudeFromLabel.setText(Messages.get("lbl.form.criteria.longitude.from"));
 		longitudeFromText = new Text(criteriaGroup, SWT.BORDER);
-		longitudeFromText.setTextLimit(7);
-		longitudeFromText.addTraverseListener(formTextTraverselistener);
+		longitudeFromText.setTextLimit(COORDINATES_TEXT_LIMIT);
+		longitudeFromText.addTraverseListener(formTextTraverseListener);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(longitudeFromText);
 		longitudeFromNote = new Label(criteriaGroup, SWT.NONE);
 		longitudeFromNote.setText(Messages.get("lbl.form.criteria.longitude.from.note"));
 		longitudeToLabel = new Label(criteriaGroup, SWT.NONE);
 		longitudeToLabel.setText(Messages.get("lbl.form.criteria.longitude.to"));
 		longitudeToText = new Text(criteriaGroup, SWT.BORDER);
-		longitudeToText.setTextLimit(7);
-		longitudeToText.addTraverseListener(formTextTraverselistener);
+		longitudeToText.setTextLimit(COORDINATES_TEXT_LIMIT);
+		longitudeToText.addTraverseListener(formTextTraverseListener);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(longitudeToText);
 		longitudeToNote = new Label(criteriaGroup, SWT.NONE);
 		longitudeToNote.setText(Messages.get("lbl.form.criteria.longitude.to.note"));
@@ -145,8 +152,8 @@ public class SearchForm {
 		minimumMagnitudeLabel.setText(Messages.get("lbl.form.criteria.magnitude"));
 		GridDataFactory.swtDefaults().span(2, 1).applyTo(minimumMagnitudeLabel);
 		minimumMagnitudeText = new Text(criteriaGroup, SWT.BORDER);
-		minimumMagnitudeText.setTextLimit(3);
-		minimumMagnitudeText.addTraverseListener(formTextTraverselistener);
+		minimumMagnitudeText.setTextLimit(MAGNITUDE_TEXT_LIMIT);
+		minimumMagnitudeText.addTraverseListener(formTextTraverseListener);
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(minimumMagnitudeText);
 		restrictButton = new Button(criteriaGroup, SWT.CHECK);
 		restrictButton.setText(Messages.get("lbl.form.criteria.restrict"));
@@ -157,12 +164,12 @@ public class SearchForm {
 		radioComposite = new Composite(criteriaGroup, SWT.NONE);
 		radioComposite.setLayout(new RowLayout(SWT.HORIZONTAL));
 		GridDataFactory.swtDefaults().grab(false, false).span(2, 1).applyTo(radioComposite);
-		for (final String mode : new String[] { "RSS", "KML" }) {
+		for (final Format mode : Format.values()) {
 			final Button radio = new Button(radioComposite, SWT.RADIO);
 			radio.addSelectionListener(new FormatRadioSelectionListener(this, radio, mode));
-			radio.setText(mode);
-			radio.setSelection("RSS".equalsIgnoreCase(mode));
-			radio.setEnabled("RSS".equalsIgnoreCase(mode));
+			radio.setText(mode.toString());
+			radio.setSelection(Format.RSS.equals(mode));
+			radio.setEnabled(Format.RSS.equals(mode));
 			formatRadios.put(mode, radio);
 		}
 		resultsLabel = new Label(criteriaGroup, SWT.NONE);
@@ -170,8 +177,8 @@ public class SearchForm {
 		GridDataFactory.swtDefaults().grab(false, false).span(2, 1).applyTo(resultsLabel);
 		resultsText = new Text(criteriaGroup, SWT.BORDER);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(resultsText);
-		resultsText.setTextLimit(3);
-		resultsText.addTraverseListener(formTextTraverselistener);
+		resultsText.setTextLimit(RESULTS_TEXT_LIMIT);
+		resultsText.addTraverseListener(formTextTraverseListener);
 		resultsNote = new Label(criteriaGroup, SWT.NONE);
 		resultsNote.setText(Messages.get("lbl.form.limit.note"));
 
@@ -185,8 +192,8 @@ public class SearchForm {
 		GridDataFactory.swtDefaults().applyTo(autoRefreshButton);
 
 		autoRefreshText = new Text(buttonsComposite, SWT.BORDER);
-		autoRefreshText.setTextLimit(9);
-		autoRefreshText.addTraverseListener(formTextTraverselistener);
+		autoRefreshText.setTextLimit(AUTO_REFRESH_TEXT_LIMIT);
+		autoRefreshText.addTraverseListener(formTextTraverseListener);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(autoRefreshText);
 
 		searchButton = new Button(buttonsComposite, SWT.NONE);
@@ -242,7 +249,7 @@ public class SearchForm {
 		return searchJob;
 	}
 
-	public void setSearchJob(SearchJob searchJob) {
+	public void setSearchJob(final SearchJob searchJob) {
 		this.searchJob = searchJob;
 	}
 
@@ -354,7 +361,7 @@ public class SearchForm {
 		return radioComposite;
 	}
 
-	public Map<String, Button> getFormatRadios() {
+	public Map<Format, Button> getFormatRadios() {
 		return formatRadios;
 	}
 

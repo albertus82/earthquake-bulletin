@@ -1,6 +1,7 @@
 package it.albertus.geofon.client.gui.listener;
 
 import it.albertus.geofon.client.gui.SearchForm;
+import it.albertus.geofon.client.model.Format;
 
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -9,10 +10,10 @@ import org.eclipse.swt.widgets.Button;
 public class FormatRadioSelectionListener extends SelectionAdapter {
 
 	private final SearchForm form;
-	private final String format;
+	private final Format format;
 	private final Button radio;
 
-	public FormatRadioSelectionListener(final SearchForm form, final Button radio, final String format) {
+	public FormatRadioSelectionListener(final SearchForm form, final Button radio, final Format format) {
 		this.form = form;
 		this.radio = radio;
 		this.format = format;
@@ -21,7 +22,7 @@ public class FormatRadioSelectionListener extends SelectionAdapter {
 	@Override
 	public void widgetSelected(final SelectionEvent se) {
 		if (radio.getSelection()) {
-			if (format.equalsIgnoreCase("rss")) {
+			if (Format.RSS.equals(format)) {
 				form.getPeriodFromText().setEnabled(false);
 				form.getPeriodToText().setEnabled(false);
 				form.getResultsText().setEnabled(false);
@@ -43,7 +44,6 @@ public class FormatRadioSelectionListener extends SelectionAdapter {
 				form.getPeriodToNote().setEnabled(true);
 				form.getResultsLabel().setEnabled(true);
 				form.getPeriodLabel().setEnabled(true);
-
 			}
 		}
 	}

@@ -4,6 +4,7 @@ import it.albertus.geofon.client.GeofonClient;
 import it.albertus.geofon.client.gui.CloseMessageBox;
 import it.albertus.geofon.client.gui.GeofonClientGui;
 import it.albertus.geofon.client.gui.MapCache;
+import it.albertus.geofon.client.gui.SearchForm;
 import it.albertus.geofon.client.gui.TrayIcon;
 import it.albertus.geofon.client.gui.listener.MapCanvasPaintListener;
 import it.albertus.geofon.client.net.HttpConnector;
@@ -27,6 +28,7 @@ import java.util.Set;
 
 import org.eclipse.jface.preference.ComboFieldEditor;
 import org.eclipse.jface.preference.FieldEditor;
+import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.swt.widgets.Composite;
 
 public enum Preference implements IPreference {
@@ -41,7 +43,69 @@ public enum Preference implements IPreference {
 	MAP_CACHE_SIZE(new PreferenceDetailsBuilder(PageDefinition.GENERAL).defaultValue(MapCache.Defaults.CACHE_SIZE).build(), new FieldEditorDetailsBuilder(ScaleIntegerFieldEditor.class).scaleMinimum(1).scaleMaximum(Byte.MAX_VALUE).scalePageIncrement(8).build()),
 
 	HTTP_CONNECTION_TIMEOUT_MS(new PreferenceDetailsBuilder(PageDefinition.CONNECTION).defaultValue(HttpConnector.Defaults.CONNECTION_TIMEOUT_IN_MILLIS).build(), new FieldEditorDetailsBuilder(DefaultIntegerFieldEditor.class).build()),
-	HTTP_READ_TIMEOUT_MS(new PreferenceDetailsBuilder(PageDefinition.CONNECTION).defaultValue(HttpConnector.Defaults.READ_TIMEOUT_IN_MILLIS).build(), new FieldEditorDetailsBuilder(DefaultIntegerFieldEditor.class).build());
+	HTTP_READ_TIMEOUT_MS(new PreferenceDetailsBuilder(PageDefinition.CONNECTION).defaultValue(HttpConnector.Defaults.READ_TIMEOUT_IN_MILLIS).build(), new FieldEditorDetailsBuilder(DefaultIntegerFieldEditor.class).build()),
+
+	CRITERIA_PERIOD_FROM(new PreferenceDetailsBuilder(PageDefinition.CRITERIA).label(new Localized() {
+		@Override
+		public String getString() {
+			return Messages.get("lbl.form.criteria.period") + " " + Messages.get("lbl.form.criteria.period.from") + " " + Messages.get("lbl.form.criteria.period.from.note");
+		};
+	}).build(), new FieldEditorDetailsBuilder(StringFieldEditor.class).textLimit(SearchForm.PERIOD_TEXT_LIMIT).build()),
+	CRITERIA_PERIOD_TO(new PreferenceDetailsBuilder(PageDefinition.CRITERIA).label(new Localized() {
+		@Override
+		public String getString() {
+			return Messages.get("lbl.form.criteria.period") + " " + Messages.get("lbl.form.criteria.period.to") + " " + Messages.get("lbl.form.criteria.period.to.note");
+		};
+	}).build(), new FieldEditorDetailsBuilder(StringFieldEditor.class).textLimit(SearchForm.PERIOD_TEXT_LIMIT).build()),
+	CRITERIA_LATITUDE_FROM(new PreferenceDetailsBuilder(PageDefinition.CRITERIA).label(new Localized() {
+		@Override
+		public String getString() {
+			return Messages.get("lbl.form.criteria.latitude") + " " + Messages.get("lbl.form.criteria.latitude.from") + " " + Messages.get("lbl.form.criteria.latitude.from.note");
+		};
+	}).build(), new FieldEditorDetailsBuilder(StringFieldEditor.class).textLimit(SearchForm.COORDINATES_TEXT_LIMIT).build()),
+	CRITERIA_LATITUDE_TO(new PreferenceDetailsBuilder(PageDefinition.CRITERIA).label(new Localized() {
+		@Override
+		public String getString() {
+			return Messages.get("lbl.form.criteria.latitude") + " " + Messages.get("lbl.form.criteria.latitude.to") + " " + Messages.get("lbl.form.criteria.latitude.to.note");
+		};
+	}).build(), new FieldEditorDetailsBuilder(StringFieldEditor.class).textLimit(SearchForm.COORDINATES_TEXT_LIMIT).build()),
+	CRITERIA_LONGITUDE_FROM(new PreferenceDetailsBuilder(PageDefinition.CRITERIA).label(new Localized() {
+		@Override
+		public String getString() {
+			return Messages.get("lbl.form.criteria.longitude") + " " + Messages.get("lbl.form.criteria.longitude.from") + " " + Messages.get("lbl.form.criteria.longitude.from.note");
+		};
+	}).build(), new FieldEditorDetailsBuilder(StringFieldEditor.class).textLimit(SearchForm.COORDINATES_TEXT_LIMIT).build()),
+	CRITERIA_LONGITUDE_TO(new PreferenceDetailsBuilder(PageDefinition.CRITERIA).label(new Localized() {
+		@Override
+		public String getString() {
+			return Messages.get("lbl.form.criteria.longitude") + " " + Messages.get("lbl.form.criteria.longitude.to") + " " + Messages.get("lbl.form.criteria.longitude.to.note");
+		};
+	}).build(), new FieldEditorDetailsBuilder(StringFieldEditor.class).textLimit(SearchForm.COORDINATES_TEXT_LIMIT).build()),
+	CRITERIA_MAGNITUDE(new PreferenceDetailsBuilder(PageDefinition.CRITERIA).label(new Localized() {
+		@Override
+		public String getString() {
+			return Messages.get("lbl.form.criteria.magnitude");
+		};
+	}).build(), new FieldEditorDetailsBuilder(StringFieldEditor.class).textLimit(SearchForm.MAGNITUDE_TEXT_LIMIT).build()),
+	CRITERIA_LIMIT(new PreferenceDetailsBuilder(PageDefinition.CRITERIA).label(new Localized() {
+		@Override
+		public String getString() {
+			return Messages.get("lbl.form.limit") + " " + Messages.get("lbl.form.limit.note");
+		};
+	}).build(), new FieldEditorDetailsBuilder(StringFieldEditor.class).textLimit(SearchForm.RESULTS_TEXT_LIMIT).build()),
+	CRITERIA_RESTRICT(new PreferenceDetailsBuilder(PageDefinition.CRITERIA).label(new Localized() {
+		@Override
+		public String getString() {
+			return Messages.get("lbl.form.criteria.restrict");
+		};
+	}).build(), new FieldEditorDetailsBuilder(DefaultBooleanFieldEditor.class).build()),
+	AUTOREFRESH_ENABLED(new PreferenceDetailsBuilder(PageDefinition.CRITERIA).build(), new FieldEditorDetailsBuilder(DefaultBooleanFieldEditor.class).build()),
+	AUTOREFRESH_SECS(new PreferenceDetailsBuilder(PageDefinition.CRITERIA).parent(AUTOREFRESH_ENABLED).label(new Localized() {
+		@Override
+		public String getString() {
+			return Messages.get("lbl.form.button.autorefresh");
+		};
+	}).build(), new FieldEditorDetailsBuilder(StringFieldEditor.class).textLimit(SearchForm.AUTO_REFRESH_TEXT_LIMIT).build());
 
 	private static final String LABEL_KEY_PREFIX = "lbl.preferences.";
 

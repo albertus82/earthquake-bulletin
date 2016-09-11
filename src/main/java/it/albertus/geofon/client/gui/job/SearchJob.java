@@ -3,6 +3,7 @@ package it.albertus.geofon.client.gui.job;
 import it.albertus.geofon.client.gui.GeofonClientGui;
 import it.albertus.geofon.client.gui.SearchForm;
 import it.albertus.geofon.client.model.Earthquake;
+import it.albertus.geofon.client.model.Format;
 import it.albertus.geofon.client.net.HttpConnector;
 import it.albertus.geofon.client.rss.transformer.ItemTransformer;
 import it.albertus.geofon.client.rss.xml.Item;
@@ -28,6 +29,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Button;
 
 import com.dmurph.URIEncoder;
 
@@ -59,7 +61,12 @@ public class SearchJob extends Job {
 
 				// Parametri di ricerca
 				final SearchForm form = gui.getSearchForm();
-				params.put("fmt", "rss"); // TODO
+				for (final Entry<Format, Button> entry : form.getFormatRadios().entrySet()) {
+					if (entry.getValue().getSelection()) {
+						params.put("fmt", entry.getKey().toString().toLowerCase());
+						break;
+					}
+				}
 				params.put("mode", form.getRestrictButton().getSelection() ? "mt" : "");
 				if (form.getPeriodFromText().isEnabled()) {
 					params.put("datemin", URIEncoder.encodeURI(form.getPeriodFromText().getText()));
@@ -76,9 +83,9 @@ public class SearchJob extends Job {
 
 				if (gui.getSearchForm().getAutoRefreshButton().getSelection()) {
 					try {
-						int waitTimeInMinutes = Integer.parseInt(gui.getSearchForm().getAutoRefreshText().getText());
+						short waitTimeInMinutes = Short.parseShort(gui.getSearchForm().getAutoRefreshText().getText());
 						if (waitTimeInMinutes > 0) {
-							waitTimeInMillis[0] = waitTimeInMinutes * 60 * 1000;
+							waitTimeInMillis[0] = waitTimeInMinutes * 1000 * 60;
 							gui.getSearchForm().getStopButton().setEnabled(true);
 						}
 					}
