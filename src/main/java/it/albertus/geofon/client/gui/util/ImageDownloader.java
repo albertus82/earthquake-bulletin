@@ -1,6 +1,6 @@
 package it.albertus.geofon.client.gui.util;
 
-import it.albertus.geofon.client.HttpConnector;
+import it.albertus.geofon.client.net.HttpConnector;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

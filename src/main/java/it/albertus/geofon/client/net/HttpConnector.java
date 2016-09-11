@@ -1,5 +1,6 @@
-package it.albertus.geofon.client;
+package it.albertus.geofon.client.net;
 
+import it.albertus.geofon.client.GeofonClient;
 import it.albertus.util.Configuration;
 
 import java.io.IOException;

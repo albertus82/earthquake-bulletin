@@ -53,10 +53,10 @@ public class MapCanvas {
 		return guid;
 	}
 
-	public void setImage(final String guid, final byte[] image) {
-		if (image != null && image.length > 0) {
-			cache.put(guid, image);
-			try (final ByteArrayInputStream bais = new ByteArrayInputStream(image)) {
+	public void setImage(final String guid, final byte[] imageBytes) {
+		if (imageBytes != null && imageBytes.length > 0) {
+			cache.put(guid, imageBytes);
+			try (final ByteArrayInputStream bais = new ByteArrayInputStream(imageBytes)) {
 				final Image oldImage = this.image;
 				this.image = new Image(canvas.getDisplay(), bais);
 				this.guid = guid;
@@ -75,8 +75,11 @@ public class MapCanvas {
 		final Rectangle canvasBounds = canvas.getBounds();
 		gc.fillRectangle(0, 0, canvasBounds.width, canvasBounds.height);
 		gc.dispose();
-		image.dispose();
-		image = null;
+		if (image != null) {
+			image.dispose();
+			image = null;
+		}
+		guid = null;
 	}
 
 	public void updateTexts() {

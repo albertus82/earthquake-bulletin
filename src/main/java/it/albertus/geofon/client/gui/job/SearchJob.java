@@ -1,9 +1,9 @@
 package it.albertus.geofon.client.gui.job;
 
-import it.albertus.geofon.client.HttpConnector;
 import it.albertus.geofon.client.gui.GeofonClientGui;
 import it.albertus.geofon.client.gui.SearchForm;
 import it.albertus.geofon.client.model.Earthquake;
+import it.albertus.geofon.client.net.HttpConnector;
 import it.albertus.geofon.client.rss.transformer.ItemTransformer;
 import it.albertus.geofon.client.rss.xml.Item;
 import it.albertus.geofon.client.rss.xml.Rss;

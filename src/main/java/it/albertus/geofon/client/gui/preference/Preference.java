@@ -1,12 +1,12 @@
 package it.albertus.geofon.client.gui.preference;
 
 import it.albertus.geofon.client.GeofonClient;
-import it.albertus.geofon.client.HttpConnector;
 import it.albertus.geofon.client.gui.CloseMessageBox;
 import it.albertus.geofon.client.gui.GeofonClientGui;
 import it.albertus.geofon.client.gui.MapCache;
 import it.albertus.geofon.client.gui.TrayIcon;
 import it.albertus.geofon.client.gui.listener.MapCanvasPaintListener;
+import it.albertus.geofon.client.net.HttpConnector;
 import it.albertus.geofon.client.resources.Messages;
 import it.albertus.geofon.client.resources.Messages.Language;
 import it.albertus.jface.preference.FieldEditorDetails;
