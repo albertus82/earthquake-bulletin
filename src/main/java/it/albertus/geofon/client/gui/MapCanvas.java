@@ -4,7 +4,10 @@ import it.albertus.geofon.client.gui.job.DownloadMapJob;
 import it.albertus.geofon.client.gui.listener.MapCanvasPaintListener;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
@@ -18,7 +21,7 @@ public class MapCanvas {
 
 	public MapCanvas(final Composite parent) {
 		canvas = new Canvas(parent, SWT.BORDER);
-		canvas.setBackground(canvas.getDisplay().getSystemColor(SWT.COLOR_WHITE));
+		canvas.setBackground(getBackgroundColor());
 		canvas.addPaintListener(new MapCanvasPaintListener(this));
 	}
 
@@ -29,6 +32,19 @@ public class MapCanvas {
 	public void setImage(final Image image) {
 		this.image = image;
 		canvas.notifyListeners(SWT.Paint, new Event());
+	}
+
+	public void clear() {
+		final GC gc = new GC(canvas);
+		gc.setBackground(getBackgroundColor());
+		final Rectangle canvasBounds = canvas.getBounds();
+		gc.fillRectangle(0, 0, canvasBounds.width, canvasBounds.height);
+		gc.dispose();
+		image = null;
+	}
+
+	protected Color getBackgroundColor() {
+		return canvas.getDisplay().getSystemColor(SWT.COLOR_WHITE);
 	}
 
 	public Canvas getCanvas() {

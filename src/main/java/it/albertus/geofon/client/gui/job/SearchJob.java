@@ -129,6 +129,7 @@ public class SearchJob extends Job {
 					final Earthquake[] oldData = (Earthquake[]) gui.getResultTable().getTableViewer().getInput();
 					gui.getResultTable().getTableViewer().setInput(newData);
 					if (oldData != null && !Arrays.equals(newData, oldData) && newData[0] != null) {
+						gui.getMapCanvas().clear();
 						gui.getTrayIcon().showBalloonToolTip(newData[0]);
 					}
 				}

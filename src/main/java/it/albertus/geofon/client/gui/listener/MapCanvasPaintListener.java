@@ -76,6 +76,7 @@ public class MapCanvasPaintListener implements PaintListener {
 					gc.drawImage(image, 0, 0, imageSize.width, imageSize.height, left, top, newWidth, newHeight);
 				}
 			}
+			gc.dispose();
 		}
 	}
 
