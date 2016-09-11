@@ -7,6 +7,7 @@ import it.albertus.geofon.client.gui.MapCache;
 import it.albertus.geofon.client.gui.SearchForm;
 import it.albertus.geofon.client.gui.TrayIcon;
 import it.albertus.geofon.client.gui.listener.MapCanvasPaintListener;
+import it.albertus.geofon.client.model.Format;
 import it.albertus.geofon.client.net.HttpConnector;
 import it.albertus.geofon.client.resources.Messages;
 import it.albertus.geofon.client.resources.Messages.Language;
@@ -18,6 +19,7 @@ import it.albertus.jface.preference.PreferenceDetails;
 import it.albertus.jface.preference.PreferenceDetails.PreferenceDetailsBuilder;
 import it.albertus.jface.preference.field.DefaultBooleanFieldEditor;
 import it.albertus.jface.preference.field.DefaultIntegerFieldEditor;
+import it.albertus.jface.preference.field.DefaultRadioGroupFieldEditor;
 import it.albertus.jface.preference.field.ScaleIntegerFieldEditor;
 import it.albertus.jface.preference.page.IPageDefinition;
 import it.albertus.util.Localized;
@@ -88,6 +90,12 @@ public enum Preference implements IPreference {
 			return Messages.get("lbl.form.criteria.magnitude");
 		};
 	}).build(), new FieldEditorDetailsBuilder(StringFieldEditor.class).textLimit(SearchForm.MAGNITUDE_TEXT_LIMIT).build()),
+	CRITERIA_FORMAT(new PreferenceDetailsBuilder(PageDefinition.CRITERIA).label(new Localized() {
+		@Override
+		public String getString() {
+			return Messages.get("lbl.form.format");
+		};
+	}).defaultValue(SearchForm.Defaults.FORMAT).build(), new FieldEditorDetailsBuilder(DefaultRadioGroupFieldEditor.class).labelsAndValues(getFormatRadioOptions()).radioNumColumns(2).radioUseGroup(true).build()),
 	CRITERIA_LIMIT(new PreferenceDetailsBuilder(PageDefinition.CRITERIA).label(new Localized() {
 		@Override
 		public String getString() {
@@ -201,6 +209,22 @@ public enum Preference implements IPreference {
 				@Override
 				public String getString() {
 					return locale.getDisplayLanguage(locale);
+				}
+			};
+			options.put(name, value);
+		}
+		return options;
+	}
+
+	public static LocalizedLabelsAndValues getFormatRadioOptions() {
+		final Format[] values = Format.values();
+		final LocalizedLabelsAndValues options = new LocalizedLabelsAndValues(values.length);
+		for (final Format format : values) {
+			final String value = format.toString();
+			final Localized name = new Localized() {
+				@Override
+				public String getString() {
+					return Messages.get("lbl.form.format." + format.toString().toLowerCase());
 				}
 			};
 			options.put(name, value);

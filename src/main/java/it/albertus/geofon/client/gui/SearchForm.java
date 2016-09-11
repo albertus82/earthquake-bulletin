@@ -36,6 +36,7 @@ public class SearchForm {
 	public interface Defaults {
 		boolean AUTOREFRESH_ENABLED = false;
 		boolean CRITERIA_RESTRICT = false;
+		String FORMAT = Format.RSS.toString();
 	}
 
 	private final Configuration configuration = GeofonClient.configuration;
@@ -185,8 +186,7 @@ public class SearchForm {
 			final Button radio = new Button(radioComposite, SWT.RADIO);
 			radio.addSelectionListener(new FormatRadioSelectionListener(this, radio, mode));
 			radio.setText(mode.toString());
-			radio.setSelection(Format.RSS.equals(mode));
-			radio.setEnabled(Format.RSS.equals(mode));
+			radio.setSelection(mode.toString().equalsIgnoreCase(configuration.getString("criteria.format", Defaults.FORMAT)));
 			formatRadios.put(mode, radio);
 		}
 		resultsLabel = new Label(criteriaGroup, SWT.NONE);
