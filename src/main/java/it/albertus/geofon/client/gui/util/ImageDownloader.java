@@ -1,5 +1,7 @@
 package it.albertus.geofon.client.gui.util;
 
+import it.albertus.geofon.client.HttpConnector;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -18,9 +20,7 @@ public class ImageDownloader {
 		Image image = null;
 		HttpURLConnection urlConnection = null;
 		try {
-			urlConnection = (HttpURLConnection) url.openConnection();
-			urlConnection.setConnectTimeout(5000);
-			urlConnection.setReadTimeout(5000);
+			urlConnection = HttpConnector.openConnection(url);
 			urlConnection.addRequestProperty("Accept", "image/*");
 			is = urlConnection.getInputStream();
 			final ImageData[] images = new ImageLoader().load(is);

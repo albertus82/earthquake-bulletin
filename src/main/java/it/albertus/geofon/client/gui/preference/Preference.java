@@ -1,6 +1,7 @@
 package it.albertus.geofon.client.gui.preference;
 
 import it.albertus.geofon.client.GeofonClient;
+import it.albertus.geofon.client.HttpConnector;
 import it.albertus.geofon.client.gui.CloseMessageBox;
 import it.albertus.geofon.client.gui.GeofonClientGui;
 import it.albertus.geofon.client.gui.MapCache;
@@ -15,6 +16,7 @@ import it.albertus.jface.preference.LocalizedLabelsAndValues;
 import it.albertus.jface.preference.PreferenceDetails;
 import it.albertus.jface.preference.PreferenceDetails.PreferenceDetailsBuilder;
 import it.albertus.jface.preference.field.DefaultBooleanFieldEditor;
+import it.albertus.jface.preference.field.DefaultIntegerFieldEditor;
 import it.albertus.jface.preference.field.ScaleIntegerFieldEditor;
 import it.albertus.jface.preference.page.IPageDefinition;
 import it.albertus.util.Localized;
@@ -38,7 +40,9 @@ public enum Preference implements IPreference {
 	MAP_RESIZE_HQ(new PreferenceDetailsBuilder(PageDefinition.GENERAL).defaultValue(MapCanvasPaintListener.Defaults.MAP_RESIZE_HQ).separate().build(), new FieldEditorDetailsBuilder(DefaultBooleanFieldEditor.class).build()),
 	MAP_CACHE_SIZE(new PreferenceDetailsBuilder(PageDefinition.GENERAL).defaultValue(MapCache.Defaults.CACHE_SIZE).build(), new FieldEditorDetailsBuilder(ScaleIntegerFieldEditor.class).scaleMinimum(0).scaleMaximum(Byte.MAX_VALUE).scalePageIncrement(8).build()),
 
-	;
+	HTTP_CONNECTION_TIMEOUT_MS(new PreferenceDetailsBuilder(PageDefinition.CONNECTION).defaultValue(HttpConnector.Defaults.CONNECTION_TIMEOUT_IN_MILLIS).build(), new FieldEditorDetailsBuilder(DefaultIntegerFieldEditor.class).build()),
+	HTTP_READ_TIMEOUT_MS(new PreferenceDetailsBuilder(PageDefinition.CONNECTION).defaultValue(HttpConnector.Defaults.READ_TIMEOUT_IN_MILLIS).build(), new FieldEditorDetailsBuilder(DefaultIntegerFieldEditor.class).build());
+
 	private static final String LABEL_KEY_PREFIX = "lbl.preferences.";
 
 	private final PreferenceDetails preferenceDetails;

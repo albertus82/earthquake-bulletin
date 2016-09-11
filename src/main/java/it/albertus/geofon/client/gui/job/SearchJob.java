@@ -1,5 +1,6 @@
 package it.albertus.geofon.client.gui.job;
 
+import it.albertus.geofon.client.HttpConnector;
 import it.albertus.geofon.client.gui.GeofonClientGui;
 import it.albertus.geofon.client.gui.SearchForm;
 import it.albertus.geofon.client.model.Earthquake;
@@ -98,7 +99,7 @@ public class SearchJob extends Job {
 			}
 
 			final URL url = new URL(urlSb.toString());
-			HttpURLConnection urlConnection = openConnection(url, 5000, 5000);
+			HttpURLConnection urlConnection = openConnection(url);
 			is = urlConnection.getInputStream();
 			final JAXBContext jaxbContext = JAXBContext.newInstance(Rss.class);
 			final Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
@@ -153,10 +154,8 @@ public class SearchJob extends Job {
 		return Status.OK_STATUS;
 	}
 
-	private HttpURLConnection openConnection(final URL url, final int connectionTimeout, final int readTimeout) throws IOException {
-		final HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-		urlConnection.setConnectTimeout(connectionTimeout);
-		urlConnection.setReadTimeout(readTimeout);
+	private HttpURLConnection openConnection(final URL url) throws IOException {
+		final HttpURLConnection urlConnection = HttpConnector.openConnection(url);
 		urlConnection.addRequestProperty("Accept", "text/xml");
 		return urlConnection;
 	}
