@@ -1,6 +1,5 @@
 package it.albertus.geofon.client.gui;
 
-import it.albertus.geofon.client.gui.job.DownloadMapJob;
 import it.albertus.geofon.client.gui.listener.OpenInBrowserSelectionListener;
 import it.albertus.geofon.client.gui.listener.ResultTableContextMenuDetectListener;
 import it.albertus.geofon.client.model.Earthquake;
@@ -13,7 +12,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
@@ -121,6 +119,7 @@ public class ResultTable {
 	private final EarthquakeViewerComparator comparator;
 	private final HashMap<Integer, Localized> labelsMap = new HashMap<>(7);
 	private final Menu contextMenu;
+	private final MenuItem showMapMenuItem;
 	private final MenuItem openInBrowserMenuItem;
 
 	public ResultTable(final Composite parent, final Object layoutData, final GeofonClientGui gui) {
@@ -148,30 +147,37 @@ public class ResultTable {
 		table.setLayoutData(layoutData);
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
-		table.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetDefaultSelected(final SelectionEvent se) {
-				if (!table.isDisposed() && tableViewer.getStructuredSelection() != null) {
-					final Earthquake selectedItem = (Earthquake) tableViewer.getStructuredSelection().getFirstElement();
-					String guid = selectedItem.getGuid();
-					final MapCache cache = gui.getMapCanvas().getCache();
-					if (cache.contains(guid)) {
-						gui.getMapCanvas().setImage(cache.get(guid));
-					}
-					else {
-						if ((gui.getMapCanvas().getDownloadMapJob() == null || gui.getMapCanvas().getDownloadMapJob().getState() == Job.NONE)) {
-							gui.getMapCanvas().setDownloadMapJob(new DownloadMapJob(gui, selectedItem));
-							gui.getMapCanvas().getDownloadMapJob().schedule();
-						}
-					}
-				}
-			}
-		});
+		table.addListener(SWT.DefaultSelection, new ShowMapListener(gui));
+		//		table.addSelectionListener(new SelectionAdapter() {
+		//			@Override
+		//			public void widgetDefaultSelected(final SelectionEvent se) {
+		//				if (!table.isDisposed() && tableViewer.getStructuredSelection() != null) {
+		//					final Earthquake selectedItem = (Earthquake) tableViewer.getStructuredSelection().getFirstElement();
+		//					String guid = selectedItem.getGuid();
+		//					final MapCache cache = gui.getMapCanvas().getCache();
+		//					if (cache.contains(guid)) {
+		//						gui.getMapCanvas().setImage(cache.get(guid));
+		//					}
+		//					else {
+		//						if ((gui.getMapCanvas().getDownloadMapJob() == null || gui.getMapCanvas().getDownloadMapJob().getState() == Job.NONE)) {
+		//							gui.getMapCanvas().setDownloadMapJob(new DownloadMapJob(gui, selectedItem));
+		//							gui.getMapCanvas().getDownloadMapJob().schedule();
+		//						}
+		//					}
+		//				}
+		//			}
+		//		});
 		tableViewer.setContentProvider(new ArrayContentProvider());
 		comparator = new EarthquakeViewerComparator();
 		tableViewer.setComparator(comparator);
 
 		contextMenu = new Menu(table);
+
+		// Show map...
+		showMapMenuItem = new MenuItem(contextMenu, SWT.PUSH);
+		showMapMenuItem.setText(Messages.get("lbl.menu.item.show.map"));
+		showMapMenuItem.addListener(SWT.Selection, new ShowMapListener(gui));
+		contextMenu.setDefaultItem(showMapMenuItem);
 
 		// Open in browser...
 		openInBrowserMenuItem = new MenuItem(contextMenu, SWT.PUSH);

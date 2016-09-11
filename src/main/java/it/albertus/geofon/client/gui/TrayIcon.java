@@ -8,7 +8,6 @@ import it.albertus.geofon.client.resources.Messages;
 import it.albertus.util.Configuration;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.MenuDetectEvent;
 import org.eclipse.swt.events.MenuDetectListener;
 import org.eclipse.swt.events.ShellAdapter;
@@ -109,27 +108,29 @@ public class TrayIcon {
 	}
 
 	public void showBalloonToolTip(final Earthquake earthquake) {
-		final StringBuilder text = new StringBuilder();
-		text.append("M ").append(earthquake.getMagnitudo()).append(", ").append(earthquake.getRegion());
+		if (trayItem != null && !trayItem.isDisposed()) {
+			final StringBuilder text = new StringBuilder();
+			text.append("M ").append(earthquake.getMagnitudo()).append(", ").append(earthquake.getRegion());
 
-		final StringBuilder message = new StringBuilder();
-		message.append(ResultTable.formatDate(earthquake.getTime())).append(" ");
-		message.append(earthquake.getLatitude()).append(" ");
-		message.append(earthquake.getLongitude()).append(" ");
-		message.append(earthquake.getDepth()).append(" ");
-		message.append(earthquake.getStatus());
+			final StringBuilder message = new StringBuilder();
+			message.append(ResultTable.formatDate(earthquake.getTime())).append(" ");
+			message.append(earthquake.getLatitude()).append(" ");
+			message.append(earthquake.getLongitude()).append(" ");
+			message.append(earthquake.getDepth()).append(" ");
+			message.append(earthquake.getStatus());
 
-		try {
-			trayItem.getDisplay().syncExec(new Runnable() {
-				@Override
-				public void run() {
-					toolTip.setText(text.toString().trim());
-					toolTip.setMessage(message.toString().trim());
-					toolTip.setVisible(true);
-				}
-			});
+			try {
+				trayItem.getDisplay().syncExec(new Runnable() {
+					@Override
+					public void run() {
+						toolTip.setText(text.toString().trim());
+						toolTip.setMessage(message.toString().trim());
+						toolTip.setVisible(true);
+					}
+				});
+			}
+			catch (final Exception e) {/* Ignore */}
 		}
-		catch (SWTException se) {}
 	}
 
 	public Tray getTray() {
