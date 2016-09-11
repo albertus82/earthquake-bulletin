@@ -5,6 +5,7 @@ import it.albertus.geofon.client.gui.SearchForm;
 import it.albertus.geofon.client.model.Earthquake;
 import it.albertus.geofon.client.model.Format;
 import it.albertus.geofon.client.net.HttpConnector;
+import it.albertus.geofon.client.resources.Messages;
 import it.albertus.geofon.client.rss.transformer.ItemTransformer;
 import it.albertus.geofon.client.rss.xml.Item;
 import it.albertus.geofon.client.rss.xml.Rss;
@@ -30,10 +31,13 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.MessageBox;
 
 import com.dmurph.URIEncoder;
 
 public class SearchJob extends Job {
+
+	private static final String BASE_URL = "http://geofon.gfz-potsdam.de";
 
 	private final GeofonClientGui gui;
 	private boolean shouldRun = true;
@@ -97,7 +101,7 @@ public class SearchJob extends Job {
 		Rss rss = null;
 		InputStream is = null;
 		try {
-			final StringBuilder urlSb = new StringBuilder("http://geofon.gfz-potsdam.de/eqinfo/list.php?fmt=").append(params.get("fmt"));
+			final StringBuilder urlSb = new StringBuilder(BASE_URL).append("/eqinfo/list.php?fmt=").append(params.get("fmt"));
 			for (final Entry<String, String> param : params.entrySet()) {
 				if (param.getValue() != null && !param.getValue().isEmpty() && !param.getKey().equals("fmt")) {
 					urlSb.append("&").append(param.getKey()).append("=").append(param.getValue());
@@ -113,7 +117,16 @@ public class SearchJob extends Job {
 			urlConnection.disconnect();
 		}
 		catch (final Exception e) {
-			e.printStackTrace(); // TODO error message
+			e.printStackTrace();
+			new SwtThreadExecutor(gui.getShell()) {
+				@Override
+				protected void run() {
+					final MessageBox dialog = new MessageBox(gui.getShell(), SWT.ICON_WARNING);
+					dialog.setText(Messages.get("lbl.window.title"));
+					dialog.setMessage(Messages.get("err.job.search"));
+					dialog.open();
+				}
+			}.start();
 		}
 		finally {
 			try {
