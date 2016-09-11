@@ -26,7 +26,10 @@ public class GeofonClientGui extends ApplicationWindow {
 
 	public interface Defaults {
 		boolean START_MINIMIZED = false;
+		boolean SEARCH_ON_START = false;
 	}
+
+	private static final Configuration configuration = GeofonClient.configuration;
 
 	private static final float SASH_MAGNIFICATION_FACTOR = 1.5f;
 
@@ -35,12 +38,9 @@ public class GeofonClientGui extends ApplicationWindow {
 		final GeofonClientGui gui = new GeofonClientGui(display);
 		gui.open();
 
-		//		if (true) {
-		//			gui.getSearchForm().getAutoRefreshButton().setSelection(true);
-		//			gui.getSearchForm().getAutoRefreshButton().notifyListeners(SWT.Selection, null);
-		//			gui.getSearchForm().getAutoRefreshText().setText("1");
-		//			gui.getSearchForm().getSearchButton().notifyListeners(SWT.Selection, null);
-		//		}
+		if (configuration.getBoolean("search.on.start", Defaults.SEARCH_ON_START)) {
+			gui.getSearchForm().getSearchButton().notifyListeners(SWT.Selection, null);
+		}
 
 		final Shell shell = gui.getShell();
 		while (!shell.isDisposed()) {
@@ -50,8 +50,6 @@ public class GeofonClientGui extends ApplicationWindow {
 		}
 		display.dispose();
 	}
-
-	private Configuration configuration = GeofonClient.configuration;
 
 	private Image favicon;
 	private SearchForm searchForm;
