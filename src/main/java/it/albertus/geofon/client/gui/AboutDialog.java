@@ -32,6 +32,7 @@ public class AboutDialog extends Dialog {
 	public void open() {
 		final Shell shell = new Shell(getParent(), getStyle());
 		shell.setText(getText());
+		shell.setImage(shell.getDisplay().getSystemImage(SWT.ICON_INFORMATION));
 		createContents(shell);
 		shell.pack();
 		shell.open();
