@@ -121,10 +121,12 @@ public class SearchJob extends Job {
 			new SwtThreadExecutor(gui.getShell()) {
 				@Override
 				protected void run() {
-					final MessageBox dialog = new MessageBox(gui.getShell(), SWT.ICON_WARNING);
-					dialog.setText(Messages.get("lbl.window.title"));
-					dialog.setMessage(Messages.get("err.job.search"));
-					dialog.open();
+					if (gui.getTrayIcon() != null && gui.getTrayIcon().getTrayItem() != null && !gui.getTrayIcon().getTrayItem().getVisible()) {
+						final MessageBox dialog = new MessageBox(gui.getShell(), SWT.ICON_WARNING);
+						dialog.setText(Messages.get("lbl.window.title"));
+						dialog.setMessage(Messages.get("err.job.search"));
+						dialog.open();
+					}
 				}
 			}.start();
 		}
