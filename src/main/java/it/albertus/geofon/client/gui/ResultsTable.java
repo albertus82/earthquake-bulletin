@@ -1,5 +1,6 @@
 package it.albertus.geofon.client.gui;
 
+import it.albertus.geofon.client.gui.listener.CopyLinkSelectionListener;
 import it.albertus.geofon.client.gui.listener.GoogleMapsSelectionListener;
 import it.albertus.geofon.client.gui.listener.OpenInBrowserSelectionListener;
 import it.albertus.geofon.client.gui.listener.ResultsTableContextMenuDetectListener;
@@ -126,6 +127,7 @@ public class ResultsTable {
 	private final Menu contextMenu;
 	private final MenuItem showMapMenuItem;
 	private final MenuItem openInBrowserMenuItem;
+	private final MenuItem copyLinkMenuItem;
 	private final MenuItem googleMapsMenuItem;
 
 	public ResultsTable(final Composite parent, final Object layoutData, final GeofonClientGui gui) {
@@ -172,6 +174,11 @@ public class ResultsTable {
 		openInBrowserMenuItem = new MenuItem(contextMenu, SWT.PUSH);
 		openInBrowserMenuItem.setText(Messages.get("lbl.menu.item.open.in.browser"));
 		openInBrowserMenuItem.addSelectionListener(new OpenInBrowserSelectionListener(this));
+
+		// Copy link...
+		copyLinkMenuItem = new MenuItem(contextMenu, SWT.PUSH);
+		copyLinkMenuItem.setText(Messages.get("lbl.menu.item.copy.link"));
+		copyLinkMenuItem.addSelectionListener(new CopyLinkSelectionListener(this));
 
 		// Google Maps...
 		googleMapsMenuItem = new MenuItem(contextMenu, SWT.PUSH);
@@ -345,12 +352,16 @@ public class ResultsTable {
 		return contextMenu;
 	}
 
-	public MenuItem getOpenInBrowserMenuItem() {
-		return openInBrowserMenuItem;
-	}
-
 	public MenuItem getShowMapMenuItem() {
 		return showMapMenuItem;
+	}
+
+	public MenuItem getCopyLinkMenuItem() {
+		return copyLinkMenuItem;
+	}
+
+	public MenuItem getOpenInBrowserMenuItem() {
+		return openInBrowserMenuItem;
 	}
 
 	public MenuItem getGoogleMapsMenuItem() {
