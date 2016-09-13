@@ -52,7 +52,7 @@ public class TrayIcon {
 	}
 
 	private Image getTrayIcon() {
-		return gui.getFavicon();
+		return Images.MAIN_ICONS[1];
 	}
 
 	private void iconify() {

@@ -2,6 +2,7 @@ package it.albertus.geofon.client.gui.listener;
 
 import it.albertus.geofon.client.GeofonClient;
 import it.albertus.geofon.client.gui.GeofonClientGui;
+import it.albertus.geofon.client.gui.Images;
 import it.albertus.geofon.client.gui.preference.PageDefinition;
 import it.albertus.geofon.client.gui.preference.Preference;
 import it.albertus.geofon.client.resources.Messages;
@@ -12,7 +13,6 @@ import it.albertus.util.Configuration;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.MessageBox;
 
 public class PreferencesSelectionListener extends SelectionAdapter {
@@ -27,7 +27,7 @@ public class PreferencesSelectionListener extends SelectionAdapter {
 	@Override
 	public void widgetSelected(final SelectionEvent se) {
 		final Language language = Messages.getLanguage();
-		final Preferences preferences = new Preferences(PageDefinition.values(), Preference.values(), configuration, gui.getFavicon() != null ? new Image[] { gui.getFavicon() } : null);
+		final Preferences preferences = new Preferences(PageDefinition.values(), Preference.values(), configuration, Images.MAIN_ICONS);
 		try {
 			preferences.openDialog(gui.getShell());
 		}

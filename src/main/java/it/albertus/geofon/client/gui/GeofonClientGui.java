@@ -2,17 +2,13 @@ package it.albertus.geofon.client.gui;
 
 import it.albertus.geofon.client.GeofonClient;
 import it.albertus.geofon.client.gui.listener.CloseListener;
-import it.albertus.geofon.client.gui.util.ImageDownloader;
 import it.albertus.geofon.client.model.Format;
 import it.albertus.geofon.client.resources.Messages;
 import it.albertus.util.Configuration;
 
-import java.io.ByteArrayInputStream;
-
 import org.eclipse.jface.window.ApplicationWindow;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -56,7 +52,6 @@ public class GeofonClientGui extends ApplicationWindow {
 		display.dispose();
 	}
 
-	private Image favicon;
 	private SearchForm searchForm;
 	private ResultsTable resultsTable;
 	private MapCanvas mapCanvas;
@@ -66,22 +61,14 @@ public class GeofonClientGui extends ApplicationWindow {
 
 	public GeofonClientGui(final Display display) {
 		super(null);
-		try (final ByteArrayInputStream bais = new ByteArrayInputStream(ImageDownloader.downloadImage("http://www.gfz-potsdam.de/favicon.ico"))) {
-			favicon = new Image(display, bais);
-		}
-		catch (final Exception e) {
-			favicon = display.getSystemImage(SWT.ICON_WARNING);
-		}
 	}
 
 	@Override
 	protected void configureShell(final Shell shell) {
 		super.configureShell(shell);
+		shell.setImages(Images.MAIN_ICONS);
 		shell.setMinimized(configuration.getBoolean("start.minimized", Defaults.START_MINIMIZED));
 		shell.setText(Messages.get("lbl.window.title"));
-		if (favicon != null) {
-			shell.setImages(new Image[] { favicon });
-		}
 	}
 
 	@Override
@@ -147,10 +134,6 @@ public class GeofonClientGui extends ApplicationWindow {
 
 	public MapCanvas getMapCanvas() {
 		return mapCanvas;
-	}
-
-	public Image getFavicon() {
-		return favicon;
 	}
 
 	public TrayIcon getTrayIcon() {
