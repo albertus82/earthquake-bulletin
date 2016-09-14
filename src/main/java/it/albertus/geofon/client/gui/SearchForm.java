@@ -10,6 +10,8 @@ import it.albertus.geofon.client.gui.listener.SearchButtonSelectionListener;
 import it.albertus.geofon.client.gui.listener.StopButtonSelectionListener;
 import it.albertus.geofon.client.model.Format;
 import it.albertus.geofon.client.resources.Messages;
+import it.albertus.jface.listener.FloatVerifyListener;
+import it.albertus.jface.listener.IntegerVerifyListener;
 import it.albertus.util.Configuration;
 
 import java.util.EnumMap;
@@ -88,6 +90,7 @@ public class SearchForm {
 	private final Button clearButton;
 
 	private final FormTextTraverseListener formTextTraverseListener = new FormTextTraverseListener(this);
+	private final FloatVerifyListener coordinatesVerifyListener = new FloatVerifyListener(true);
 
 	private SearchJob searchJob;
 
@@ -130,6 +133,7 @@ public class SearchForm {
 		latitudeFromText.setTextLimit(COORDINATES_TEXT_LIMIT);
 		latitudeFromText.setText(configuration.getString("criteria.latitude.from", ""));
 		latitudeFromText.addTraverseListener(formTextTraverseListener);
+		latitudeFromText.addVerifyListener(coordinatesVerifyListener);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(latitudeFromText);
 		latitudeFromNote = new Label(criteriaGroup, SWT.NONE);
 		latitudeFromNote.setText(Messages.get("lbl.form.criteria.latitude.from.note"));
@@ -139,6 +143,7 @@ public class SearchForm {
 		latitudeToText.setTextLimit(COORDINATES_TEXT_LIMIT);
 		latitudeToText.setText(configuration.getString("criteria.latitude.to", ""));
 		latitudeToText.addTraverseListener(formTextTraverseListener);
+		latitudeToText.addVerifyListener(coordinatesVerifyListener);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(latitudeToText);
 		latitudeToNote = new Label(criteriaGroup, SWT.NONE);
 		latitudeToNote.setText(Messages.get("lbl.form.criteria.latitude.to.note"));
@@ -151,6 +156,7 @@ public class SearchForm {
 		longitudeFromText.setTextLimit(COORDINATES_TEXT_LIMIT);
 		longitudeFromText.setText(configuration.getString("criteria.longitude.from", ""));
 		longitudeFromText.addTraverseListener(formTextTraverseListener);
+		longitudeFromText.addVerifyListener(coordinatesVerifyListener);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(longitudeFromText);
 		longitudeFromNote = new Label(criteriaGroup, SWT.NONE);
 		longitudeFromNote.setText(Messages.get("lbl.form.criteria.longitude.from.note"));
@@ -160,6 +166,7 @@ public class SearchForm {
 		longitudeToText.setTextLimit(COORDINATES_TEXT_LIMIT);
 		longitudeToText.setText(configuration.getString("criteria.longitude.to", ""));
 		longitudeToText.addTraverseListener(formTextTraverseListener);
+		longitudeToText.addVerifyListener(coordinatesVerifyListener);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(longitudeToText);
 		longitudeToNote = new Label(criteriaGroup, SWT.NONE);
 		longitudeToNote.setText(Messages.get("lbl.form.criteria.longitude.to.note"));
@@ -171,6 +178,7 @@ public class SearchForm {
 		minimumMagnitudeText.setTextLimit(MAGNITUDE_TEXT_LIMIT);
 		minimumMagnitudeText.setText(configuration.getString("criteria.magnitude", ""));
 		minimumMagnitudeText.addTraverseListener(formTextTraverseListener);
+		minimumMagnitudeText.addVerifyListener(new FloatVerifyListener(false));
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(minimumMagnitudeText);
 		restrictButton = new Button(criteriaGroup, SWT.CHECK);
 		restrictButton.setText(Messages.get("lbl.form.criteria.restrict"));
@@ -197,6 +205,7 @@ public class SearchForm {
 		resultsText.setTextLimit(RESULTS_TEXT_LIMIT);
 		resultsText.setText(configuration.getString("criteria.limit", ""));
 		resultsText.addTraverseListener(formTextTraverseListener);
+		resultsText.addVerifyListener(new IntegerVerifyListener(false));
 		resultsNote = new Label(criteriaGroup, SWT.NONE);
 		resultsNote.setText(Messages.get("lbl.form.limit.note"));
 
@@ -214,6 +223,7 @@ public class SearchForm {
 		autoRefreshText.setTextLimit(AUTO_REFRESH_TEXT_LIMIT);
 		autoRefreshText.addTraverseListener(formTextTraverseListener);
 		autoRefreshText.setText(configuration.getString("autorefresh.mins", ""));
+		autoRefreshText.addVerifyListener(new IntegerVerifyListener(false));
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(autoRefreshText);
 
 		searchButton = new Button(buttonsComposite, SWT.NONE);
