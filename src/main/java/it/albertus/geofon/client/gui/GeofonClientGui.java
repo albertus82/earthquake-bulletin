@@ -29,6 +29,7 @@ public class GeofonClientGui extends ApplicationWindow {
 	private static final Configuration configuration = GeofonClient.configuration;
 
 	private static final float SASH_MAGNIFICATION_FACTOR = 1.5f;
+	private static final int[] SASH_WEIGHTS = { 3, 2 };
 
 	public static void run() {
 		final Display display = Display.getDefault();
@@ -87,7 +88,7 @@ public class GeofonClientGui extends ApplicationWindow {
 		resultsTable = new ResultsTable(sashForm, new GridData(SWT.FILL, SWT.FILL, true, true), this);
 
 		mapCanvas = new MapCanvas(sashForm);
-		sashForm.setWeights(new int[] { 3, 2 });
+		sashForm.setWeights(SASH_WEIGHTS);
 
 		return parent;
 	}
