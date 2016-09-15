@@ -12,14 +12,16 @@ public class MapCache {
 		byte CACHE_SIZE = 20;
 	}
 
+	private static final String CFG_KEY_MAP_CACHE_SIZE = "map.cache.size";
+
 	private final Configuration configuration = GeofonClient.configuration;
-	private final Map<String, byte[]> cache = new LinkedHashMap<>(configuration.getByte("map.cache.size", Defaults.CACHE_SIZE));
+	private final Map<String, byte[]> cache = new LinkedHashMap<>(configuration.getByte(CFG_KEY_MAP_CACHE_SIZE, Defaults.CACHE_SIZE));
 
 	public void put(final String guid, final byte[] map) {
 		if (!cache.containsKey(guid)) {
 			cache.put(guid, map);
 		}
-		while (cache.size() > 0 && cache.size() > configuration.getByte("map.cache.size", Defaults.CACHE_SIZE)) {
+		while (cache.size() > 0 && cache.size() > configuration.getByte(CFG_KEY_MAP_CACHE_SIZE, Defaults.CACHE_SIZE)) {
 			final String eldestGuid = cache.keySet().iterator().next();
 			cache.remove(eldestGuid);
 		}
