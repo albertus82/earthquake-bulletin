@@ -30,10 +30,17 @@ import org.eclipse.swt.widgets.Text;
 public class SearchForm {
 
 	public static final int COORDINATES_TEXT_LIMIT = 7;
-	public static final int MAGNITUDE_TEXT_LIMIT = 3;
+	public static final int MAGNITUDE_TEXT_LIMIT = 4;
 	public static final int PERIOD_TEXT_LIMIT = 10;
 	public static final int RESULTS_TEXT_LIMIT = 3;
 	public static final int AUTO_REFRESH_TEXT_LIMIT = 4;
+
+	public static final float LATITUDE_MIN_VALUE = -90;
+	public static final float LATITUDE_MAX_VALUE = 90;
+	public static final float LONGITUDE_MIN_VALUE = -180;
+	public static final float LONGITUDE_MAX_VALUE = 180;
+	public static final float MAGNITUDE_MIN_VALUE = 0;
+	public static final float MAGNITUDE_MAX_VALUE = 10;
 
 	public interface Defaults {
 		boolean AUTOREFRESH_ENABLED = false;

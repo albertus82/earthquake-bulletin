@@ -66,31 +66,31 @@ public enum Preference implements IPreference {
 		public String getString() {
 			return Messages.get("lbl.form.criteria.latitude") + " " + Messages.get("lbl.form.criteria.latitude.from") + " " + Messages.get("lbl.form.criteria.latitude.from.note");
 		};
-	}).build(), new FieldEditorDetailsBuilder(DefaultFloatFieldEditor.class).emptyStringAllowed(true).textLimit(SearchForm.COORDINATES_TEXT_LIMIT).build()),
+	}).build(), new FieldEditorDetailsBuilder(DefaultFloatFieldEditor.class).numberValidRange(SearchForm.LATITUDE_MIN_VALUE, SearchForm.LATITUDE_MAX_VALUE).emptyStringAllowed(true).textLimit(SearchForm.COORDINATES_TEXT_LIMIT).build()),
 	CRITERIA_LATITUDE_TO(new PreferenceDetailsBuilder(PageDefinition.CRITERIA).label(new Localized() {
 		@Override
 		public String getString() {
 			return Messages.get("lbl.form.criteria.latitude") + " " + Messages.get("lbl.form.criteria.latitude.to") + " " + Messages.get("lbl.form.criteria.latitude.to.note");
 		};
-	}).build(), new FieldEditorDetailsBuilder(DefaultFloatFieldEditor.class).emptyStringAllowed(true).textLimit(SearchForm.COORDINATES_TEXT_LIMIT).build()),
+	}).build(), new FieldEditorDetailsBuilder(DefaultFloatFieldEditor.class).numberValidRange(SearchForm.LATITUDE_MIN_VALUE, SearchForm.LATITUDE_MAX_VALUE).emptyStringAllowed(true).textLimit(SearchForm.COORDINATES_TEXT_LIMIT).build()),
 	CRITERIA_LONGITUDE_FROM(new PreferenceDetailsBuilder(PageDefinition.CRITERIA).label(new Localized() {
 		@Override
 		public String getString() {
 			return Messages.get("lbl.form.criteria.longitude") + " " + Messages.get("lbl.form.criteria.longitude.from") + " " + Messages.get("lbl.form.criteria.longitude.from.note");
 		};
-	}).build(), new FieldEditorDetailsBuilder(DefaultFloatFieldEditor.class).emptyStringAllowed(true).textLimit(SearchForm.COORDINATES_TEXT_LIMIT).build()),
+	}).build(), new FieldEditorDetailsBuilder(DefaultFloatFieldEditor.class).numberValidRange(SearchForm.LONGITUDE_MIN_VALUE, SearchForm.LONGITUDE_MAX_VALUE).emptyStringAllowed(true).textLimit(SearchForm.COORDINATES_TEXT_LIMIT).build()),
 	CRITERIA_LONGITUDE_TO(new PreferenceDetailsBuilder(PageDefinition.CRITERIA).label(new Localized() {
 		@Override
 		public String getString() {
 			return Messages.get("lbl.form.criteria.longitude") + " " + Messages.get("lbl.form.criteria.longitude.to") + " " + Messages.get("lbl.form.criteria.longitude.to.note");
 		};
-	}).build(), new FieldEditorDetailsBuilder(DefaultFloatFieldEditor.class).emptyStringAllowed(true).textLimit(SearchForm.COORDINATES_TEXT_LIMIT).build()),
+	}).build(), new FieldEditorDetailsBuilder(DefaultFloatFieldEditor.class).numberValidRange(SearchForm.LONGITUDE_MIN_VALUE, SearchForm.LONGITUDE_MAX_VALUE).emptyStringAllowed(true).textLimit(SearchForm.COORDINATES_TEXT_LIMIT).build()),
 	CRITERIA_MAGNITUDE(new PreferenceDetailsBuilder(PageDefinition.CRITERIA).label(new Localized() {
 		@Override
 		public String getString() {
 			return Messages.get("lbl.form.criteria.magnitude");
 		};
-	}).build(), new FieldEditorDetailsBuilder(DefaultFloatFieldEditor.class).emptyStringAllowed(true).textLimit(SearchForm.MAGNITUDE_TEXT_LIMIT).build()),
+	}).build(), new FieldEditorDetailsBuilder(DefaultFloatFieldEditor.class).numberValidRange(SearchForm.MAGNITUDE_MIN_VALUE, SearchForm.MAGNITUDE_MAX_VALUE).emptyStringAllowed(true).textLimit(SearchForm.MAGNITUDE_TEXT_LIMIT).build()),
 	CRITERIA_FORMAT(new PreferenceDetailsBuilder(PageDefinition.CRITERIA).label(new Localized() {
 		@Override
 		public String getString() {

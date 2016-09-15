@@ -150,9 +150,11 @@ public class SearchJob extends Job {
 					final Earthquake[] newData = earthquakes.toArray(new Earthquake[0]);
 					final Earthquake[] oldData = (Earthquake[]) gui.getResultsTable().getTableViewer().getInput();
 					gui.getResultsTable().getTableViewer().setInput(newData);
-					if (oldData != null && !Arrays.equals(newData, oldData) && newData[0] != null) {
+					if (oldData != null && !Arrays.equals(newData, oldData)) {
 						gui.getMapCanvas().clear();
-						gui.getTrayIcon().showBalloonToolTip(newData[0]);
+						if (newData.length > 0 && newData[0] != null) {
+							gui.getTrayIcon().showBalloonToolTip(newData[0]);
+						}
 					}
 				}
 			}.start();
