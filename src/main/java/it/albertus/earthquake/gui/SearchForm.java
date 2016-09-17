@@ -97,6 +97,7 @@ public class SearchForm {
 	private final Text autoRefreshText;
 	private final Button stopButton;
 	private final Button clearButton;
+	private final Button openMap;
 
 	private final TraverseListener formTextTraverseListener = new FormTextTraverseListener(this);
 	private final VerifyListener periodVerifyListener = new IntegerVerifyListener(true);
@@ -223,20 +224,20 @@ public class SearchForm {
 
 		// Buttons
 		buttonsComposite = new Composite(formComposite, SWT.NONE);
-		GridLayoutFactory.swtDefaults().numColumns(1).applyTo(buttonsComposite);
+		GridLayoutFactory.swtDefaults().numColumns(2).equalWidth(true).applyTo(buttonsComposite);
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(buttonsComposite);
 
 		autoRefreshButton = new Button(buttonsComposite, SWT.CHECK);
 		autoRefreshButton.setText(Messages.get("lbl.form.button.autorefresh"));
 		autoRefreshButton.setSelection(configuration.getBoolean("autorefresh.enabled", Defaults.AUTOREFRESH_ENABLED));
-		GridDataFactory.swtDefaults().applyTo(autoRefreshButton);
+		GridDataFactory.swtDefaults().span(2, 1).applyTo(autoRefreshButton);
 
 		autoRefreshText = new Text(buttonsComposite, SWT.BORDER);
 		autoRefreshText.setTextLimit(AUTO_REFRESH_TEXT_LIMIT);
 		autoRefreshText.addTraverseListener(formTextTraverseListener);
 		autoRefreshText.setText(configuration.getString("autorefresh.mins", ""));
 		autoRefreshText.addVerifyListener(new IntegerVerifyListener(false));
-		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(autoRefreshText);
+		GridDataFactory.swtDefaults().span(2, 1).align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(autoRefreshText);
 
 		searchButton = new Button(buttonsComposite, SWT.NONE);
 		searchButton.setText(Messages.get("lbl.form.button.submit"));
@@ -247,9 +248,13 @@ public class SearchForm {
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(stopButton);
 		stopButton.setEnabled(false);
 
+		openMap = new Button(buttonsComposite, SWT.NONE);
+		openMap.setText(Messages.get("lbl.form.button.map"));
+		GridDataFactory.fillDefaults().span(2, 1).grab(true, false).applyTo(openMap);
+
 		clearButton = new Button(buttonsComposite, SWT.NONE);
 		clearButton.setText(Messages.get("lbl.form.button.clear"));
-		GridDataFactory.fillDefaults().grab(true, false).applyTo(clearButton);
+		GridDataFactory.fillDefaults().span(2, 1).grab(true, false).applyTo(clearButton);
 
 		// Listeners
 		searchButton.addSelectionListener(new SearchButtonSelectionListener(gui));
@@ -445,6 +450,10 @@ public class SearchForm {
 
 	public Button getClearButton() {
 		return clearButton;
+	}
+
+	public Button getOpenMap() {
+		return openMap;
 	}
 
 }
