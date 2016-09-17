@@ -12,8 +12,8 @@ import java.net.URL;
 public class ImageDownloader {
 
 	public static byte[] downloadImage(final URL url) throws IOException {
-		InputStream is = null;
 		ByteArrayOutputStream buffer = null;
+		InputStream is = null;
 		HttpURLConnection urlConnection = null;
 		try {
 			urlConnection = HttpConnector.openConnection(url);

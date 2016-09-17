@@ -7,15 +7,18 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.net.URL;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -29,6 +32,9 @@ import org.eclipse.swt.widgets.Shell;
 public class MapDialog extends Dialog {
 
 	public static final int DEFAULT_ZOOM = 1;
+
+	private static final String HTML_FILE_NAME = "map.html";
+	private static final int BUTTON_WIDTH = 90;
 
 	private static double centerLat;
 	private static double centerLng;
@@ -74,51 +80,18 @@ public class MapDialog extends Dialog {
 			@Override
 			public void controlResized(final ControlEvent ce) {
 				try {
-					browser.execute("document.getElementById('map_canvas').style.width= " + (browser.getSize().x - 20) + ";");
-					browser.execute("document.getElementById('map_canvas').style.height= " + (browser.getSize().y - 20) + ";");
+					final Point browserSize = browser.getSize();
+					browser.execute("document.getElementById('map_canvas').style.width= " + (browserSize.x - 20) + ";");
+					browser.execute("document.getElementById('map_canvas').style.height= " + (browserSize.y - 20) + ";");
 				}
-				catch (Exception e) {
+				catch (final Exception e) {
 					e.printStackTrace();
 				}
 			}
 		});
 
-		File tempFile = null;
-		String pageFileName;
-		BufferedReader br = null;
-		BufferedWriter bw = null;
-		try {
-			br = new BufferedReader(new FileReader(new File(getClass().getResource("map.html").toURI())));
-			tempFile = File.createTempFile("map", null);
-			bw = new BufferedWriter(new FileWriter(tempFile));
-			String line;
-			while ((line = br.readLine()) != null) {
-				if (line.contains("center : new google.maps.LatLng(0, 0)")) {
-					line = line.replace("0, 0", centerLat + ", " + centerLng);
-				}
-				else if (line.contains("zoom : 1")) {
-					line = line.replace("1", Integer.toString(zoom));
-				}
-				bw.write(line);
-				bw.newLine();
-			}
-			pageFileName = tempFile.getPath();
-		}
-		catch (final Exception e) {
-			e.printStackTrace();
-			pageFileName = getClass().getResource("map.html").toString();
-		}
-		finally {
-			try {
-				bw.close();
-			}
-			catch (final Exception e) {/* Ignore */}
-			try {
-				br.close();
-			}
-			catch (final Exception e) {/* Ignore */}
-		}
-		browser.setUrl(pageFileName);
+		final URL pageUrl = getMapPage(shell);
+		browser.setUrl(pageUrl.toString());
 
 		final Composite buttonComposite = new Composite(shell, SWT.NONE);
 		buttonComposite.setLayout(new GridLayout(2, false));
@@ -127,7 +100,7 @@ public class MapDialog extends Dialog {
 		final Button okButton = new Button(buttonComposite, SWT.PUSH);
 		okButton.setText(Messages.get("lbl.button.ok"));
 		GridData gridData = new GridData(SWT.CENTER, SWT.FILL, true, false);
-		gridData.minimumWidth = 90;
+		gridData.minimumWidth = BUTTON_WIDTH;
 		okButton.setLayoutData(gridData);
 		okButton.setFocus();
 		okButton.addSelectionListener(new SelectionAdapter() {
@@ -143,6 +116,7 @@ public class MapDialog extends Dialog {
 					southWestLng = (Double) browser.evaluate("return map.getBounds().getSouthWest().lng();");
 					returnCode = SWT.OK;
 				}
+				catch (final SWTException swte) {/* Ignore */}
 				catch (final Exception e) {
 					e.printStackTrace();
 				}
@@ -155,7 +129,7 @@ public class MapDialog extends Dialog {
 		final Button cancelButton = new Button(buttonComposite, SWT.PUSH);
 		cancelButton.setText(Messages.get("lbl.button.cancel"));
 		gridData = new GridData(SWT.CENTER, SWT.FILL, true, false);
-		gridData.minimumWidth = 90;
+		gridData.minimumWidth = BUTTON_WIDTH;
 		cancelButton.setLayoutData(gridData);
 		cancelButton.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -164,8 +138,45 @@ public class MapDialog extends Dialog {
 			}
 		});
 		shell.setDefaultButton(okButton);
+	}
 
-		// Delete temp file immediately
+	private URL getMapPage(final Shell shell) {
+		URL pageUrl;
+		File tempFile = null;
+		BufferedReader reader = null;
+		BufferedWriter writer = null;
+		try {
+			reader = new BufferedReader(new FileReader(new File(getClass().getResource(HTML_FILE_NAME).toURI())));
+			tempFile = File.createTempFile("map", null);
+			writer = new BufferedWriter(new FileWriter(tempFile));
+			String line;
+			while ((line = reader.readLine()) != null) {
+				if (line.contains("center : new google.maps.LatLng(0, 0)")) {
+					line = line.replace("0, 0", centerLat + ", " + centerLng);
+				}
+				else if (line.contains("zoom : 1")) {
+					line = line.replace("1", Integer.toString(zoom));
+				}
+				writer.write(line);
+				writer.newLine();
+			}
+			pageUrl = tempFile.toURI().toURL();
+		}
+		catch (final Exception e) {
+			e.printStackTrace();
+			pageUrl = getClass().getResource(HTML_FILE_NAME);
+		}
+		finally {
+			try {
+				writer.close();
+			}
+			catch (final Exception e) {/* Ignore */}
+			try {
+				reader.close();
+			}
+			catch (final Exception e) {/* Ignore */}
+		}
+
 		if (tempFile != null) {
 			final File fileToDelete = tempFile;
 			shell.addListener(SWT.Close, new Listener() {
@@ -180,6 +191,7 @@ public class MapDialog extends Dialog {
 				}
 			});
 		}
+		return pageUrl;
 	}
 
 	public Double getNorthEastLat() {
@@ -202,7 +214,7 @@ public class MapDialog extends Dialog {
 		return images;
 	}
 
-	public void setImages(Image[] images) {
+	public void setImages(final Image[] images) {
 		this.images = images;
 	}
 
