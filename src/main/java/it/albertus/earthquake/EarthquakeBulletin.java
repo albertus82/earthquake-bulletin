@@ -16,7 +16,7 @@ public class EarthquakeBulletin {
 
 	public static final String BASE_URL = "http://geofon.gfz-potsdam.de";
 	public static final String CFG_KEY_LANGUAGE = "language";
-	public static final String CFG_FILE_NAME = "geofon-client.cfg";
+	public static final String CFG_FILE_NAME = "earthquake-bulletin.cfg";
 	public static final Configuration configuration;
 
 	static {
