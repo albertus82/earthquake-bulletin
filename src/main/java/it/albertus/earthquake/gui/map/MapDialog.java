@@ -1,6 +1,5 @@
 package it.albertus.earthquake.gui.map;
 
-import it.albertus.earthquake.gui.Images;
 import it.albertus.earthquake.resources.Messages;
 
 import java.io.BufferedReader;
@@ -16,6 +15,7 @@ import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -41,7 +41,7 @@ public class MapDialog extends Dialog {
 
 	private volatile int returnCode = SWT.CANCEL;
 
-	private Browser browser;
+	private Image[] images;
 
 	public MapDialog(final Shell shell) {
 		super(shell, SWT.SHEET | SWT.RESIZE | SWT.WRAP | SWT.MAX);
@@ -50,7 +50,10 @@ public class MapDialog extends Dialog {
 	public int open() {
 		final Shell shell = new Shell(getParent(), getStyle());
 		shell.setText(getText());
-		shell.setImages(Images.MAIN_ICONS);
+		final Image[] images = getImages();
+		if (images != null && images.length > 0) {
+			shell.setImages(images);
+		}
 		createContents(shell);
 		shell.open();
 		final Display display = getParent().getDisplay();
@@ -65,7 +68,7 @@ public class MapDialog extends Dialog {
 	private void createContents(final Shell shell) {
 		shell.setLayout(new GridLayout(1, false));
 
-		browser = new Browser(shell, SWT.NONE);
+		final Browser browser = new Browser(shell, SWT.NONE);
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(browser);
 		browser.addControlListener(new ControlAdapter() {
 			@Override
@@ -193,6 +196,14 @@ public class MapDialog extends Dialog {
 
 	public Double getSouthWestLng() {
 		return southWestLng;
+	}
+
+	public Image[] getImages() {
+		return images;
+	}
+
+	public void setImages(Image[] images) {
+		this.images = images;
 	}
 
 	public static double getCenterLat() {
