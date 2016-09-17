@@ -6,6 +6,7 @@ import it.albertus.earthquake.gui.listener.AutoRefreshButtonSelectionListener;
 import it.albertus.earthquake.gui.listener.ClearButtonSelectionListener;
 import it.albertus.earthquake.gui.listener.FormTextTraverseListener;
 import it.albertus.earthquake.gui.listener.FormatRadioSelectionListener;
+import it.albertus.earthquake.gui.listener.MapButtonSelectionListener;
 import it.albertus.earthquake.gui.listener.SearchButtonSelectionListener;
 import it.albertus.earthquake.gui.listener.StopButtonSelectionListener;
 import it.albertus.earthquake.model.Format;
@@ -20,6 +21,8 @@ import java.util.Map;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.layout.RowLayout;
@@ -251,6 +254,7 @@ public class SearchForm {
 		openMap = new Button(buttonsComposite, SWT.NONE);
 		openMap.setText(Messages.get("lbl.form.button.map"));
 		GridDataFactory.fillDefaults().span(2, 1).grab(true, false).applyTo(openMap);
+		openMap.addSelectionListener(new MapButtonSelectionListener(this));
 
 		clearButton = new Button(buttonsComposite, SWT.NONE);
 		clearButton.setText(Messages.get("lbl.form.button.clear"));
