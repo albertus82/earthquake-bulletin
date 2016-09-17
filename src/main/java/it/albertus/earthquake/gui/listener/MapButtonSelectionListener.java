@@ -1,13 +1,32 @@
 package it.albertus.earthquake.gui.listener;
 
 import it.albertus.earthquake.gui.SearchForm;
-import it.albertus.earthquake.map.MapDialog;
+import it.albertus.earthquake.gui.map.MapDialog;
+
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 
 public class MapButtonSelectionListener extends SelectionAdapter {
+
+	/** Use {@link #formatCoordinate} method instead. */
+	@Deprecated
+	private static final DecimalFormat decimalFormat = new DecimalFormat();;
+
+	static {
+		final DecimalFormatSymbols decimalFormatSymbols = DecimalFormatSymbols.getInstance();
+		decimalFormatSymbols.setDecimalSeparator('.');
+		decimalFormat.setDecimalFormatSymbols(decimalFormatSymbols);
+		decimalFormat.setMaximumFractionDigits(2);
+		decimalFormat.setGroupingUsed(false);
+	}
+
+	private static synchronized String formatCoordinate(final double number) {
+		return decimalFormat.format(number);
+	}
 
 	private final SearchForm form;
 
@@ -20,16 +39,16 @@ public class MapButtonSelectionListener extends SelectionAdapter {
 		final MapDialog mapDialog = new MapDialog(form.getFormComposite().getShell());
 		if (mapDialog.open() == SWT.OK) {
 			if (mapDialog.getSouthWestLat() != null) {
-				form.getLatitudeFromText().setText(mapDialog.getSouthWestLat().toString());
+				form.getLatitudeFromText().setText(formatCoordinate(mapDialog.getSouthWestLat()));
 			}
 			if (mapDialog.getNorthEastLat() != null) {
-				form.getLatitudeToText().setText(mapDialog.getNorthEastLat().toString());
+				form.getLatitudeToText().setText(formatCoordinate(mapDialog.getNorthEastLat()));
 			}
 			if (mapDialog.getSouthWestLng() != null) {
-				form.getLongitudeFromText().setText(mapDialog.getSouthWestLng().toString());
+				form.getLongitudeFromText().setText(formatCoordinate(mapDialog.getSouthWestLng()));
 			}
 			if (mapDialog.getNorthEastLng() != null) {
-				form.getLongitudeToText().setText(mapDialog.getNorthEastLng().toString());
+				form.getLongitudeToText().setText(formatCoordinate(mapDialog.getNorthEastLng()));
 			}
 		}
 	}

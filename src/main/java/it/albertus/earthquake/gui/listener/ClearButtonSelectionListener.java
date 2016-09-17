@@ -22,6 +22,7 @@ public class ClearButtonSelectionListener extends SelectionAdapter {
 		form.getMinimumMagnitudeText().setText("");
 		form.getPeriodFromText().setText("");
 		form.getPeriodToText().setText("");
+		form.getResultsText().setText("");
 		form.getRestrictButton().setSelection(false);
 	}
 

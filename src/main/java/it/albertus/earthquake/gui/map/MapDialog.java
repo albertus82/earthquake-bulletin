@@ -1,6 +1,13 @@
-package it.albertus.earthquake.map;
+package it.albertus.earthquake.gui.map;
 
+import it.albertus.earthquake.gui.Images;
 import it.albertus.earthquake.resources.Messages;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
@@ -15,9 +22,17 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 
 public class MapDialog extends Dialog {
+
+	public static final int DEFAULT_ZOOM = 1;
+
+	private static double centerLat;
+	private static double centerLng;
+	private static int zoom = DEFAULT_ZOOM;
 
 	private Double northEastLat;
 	private Double southWestLat;
@@ -35,6 +50,7 @@ public class MapDialog extends Dialog {
 	public int open() {
 		final Shell shell = new Shell(getParent(), getStyle());
 		shell.setText(getText());
+		shell.setImages(Images.MAIN_ICONS);
 		createContents(shell);
 		shell.open();
 		final Display display = getParent().getDisplay();
@@ -64,7 +80,42 @@ public class MapDialog extends Dialog {
 			}
 		});
 
-		browser.setUrl(_MapDialog.class.getResource("map.html").toString());//f.toURI().toString());
+		File tempFile = null;
+		String pageFileName;
+		BufferedReader br = null;
+		BufferedWriter bw = null;
+		try {
+			br = new BufferedReader(new FileReader(new File(getClass().getResource("map.html").toURI())));
+			tempFile = File.createTempFile("map", null);
+			bw = new BufferedWriter(new FileWriter(tempFile));
+			String line;
+			while ((line = br.readLine()) != null) {
+				if (line.contains("center : new google.maps.LatLng(0, 0)")) {
+					line = line.replace("0, 0", centerLat + ", " + centerLng);
+				}
+				else if (line.contains("zoom : 1")) {
+					line = line.replace("1", Integer.toString(zoom));
+				}
+				bw.write(line);
+				bw.newLine();
+			}
+			pageFileName = tempFile.getPath();
+		}
+		catch (final Exception e) {
+			e.printStackTrace();
+			pageFileName = getClass().getResource("map.html").toString();
+		}
+		finally {
+			try {
+				bw.close();
+			}
+			catch (final Exception e) {/* Ignore */}
+			try {
+				br.close();
+			}
+			catch (final Exception e) {/* Ignore */}
+		}
+		browser.setUrl(pageFileName);
 
 		final Composite buttonComposite = new Composite(shell, SWT.NONE);
 		buttonComposite.setLayout(new GridLayout(2, false));
@@ -80,15 +131,20 @@ public class MapDialog extends Dialog {
 			@Override
 			public void widgetSelected(final SelectionEvent se) {
 				try {
+					centerLat = (double) browser.evaluate("return map.getCenter().lat();");
+					centerLng = (double) browser.evaluate("return map.getCenter().lng();");
+					zoom = ((Number) browser.evaluate("return map.getZoom();")).intValue();
 					northEastLat = (Double) browser.evaluate("return map.getBounds().getNorthEast().lat();");
 					southWestLat = (Double) browser.evaluate("return map.getBounds().getSouthWest().lat();");
 					northEastLng = (Double) browser.evaluate("return map.getBounds().getNorthEast().lng();");
 					southWestLng = (Double) browser.evaluate("return map.getBounds().getSouthWest().lng();");
 					returnCode = SWT.OK;
-					shell.close();
 				}
 				catch (final Exception e) {
 					e.printStackTrace();
+				}
+				finally {
+					shell.close();
 				}
 			}
 		});
@@ -100,11 +156,27 @@ public class MapDialog extends Dialog {
 		cancelButton.setLayoutData(gridData);
 		cancelButton.addSelectionListener(new SelectionAdapter() {
 			@Override
-			public void widgetSelected(SelectionEvent event) {
+			public void widgetSelected(final SelectionEvent se) {
 				shell.close();
 			}
 		});
 		shell.setDefaultButton(okButton);
+
+		// Delete temp file immediately
+		if (tempFile != null) {
+			final File fileToDelete = tempFile;
+			shell.addListener(SWT.Close, new Listener() {
+				@Override
+				public void handleEvent(Event event) {
+					try {
+						fileToDelete.delete();
+					}
+					catch (final Exception e) {
+						e.printStackTrace();
+					}
+				}
+			});
+		}
 	}
 
 	public Double getNorthEastLat() {
@@ -121,6 +193,18 @@ public class MapDialog extends Dialog {
 
 	public Double getSouthWestLng() {
 		return southWestLng;
+	}
+
+	public static double getCenterLat() {
+		return centerLat;
+	}
+
+	public static double getCenterLng() {
+		return centerLng;
+	}
+
+	public static int getZoom() {
+		return zoom;
 	}
 
 }
