@@ -1,5 +1,5 @@
-Geofon Client
-=============
+Earthquake Bulletin
+===================
 
 [![Build Status](https://travis-ci.org/Albertus82/GeofonClient.svg?branch=master)](https://travis-ci.org/Albertus82/GeofonClient)
 
