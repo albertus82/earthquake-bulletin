@@ -5,8 +5,8 @@ import it.albertus.earthquake.resources.Messages;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.InputStreamReader;
 import java.net.URL;
 
 import org.eclipse.jface.layout.GridDataFactory;
@@ -91,7 +91,7 @@ public class MapDialog extends Dialog {
 		});
 
 		final URL pageUrl = getMapPage(shell);
-		browser.setUrl(pageUrl.toString());
+		browser.setUrl(pageUrl != null ? pageUrl.toString() : "");
 
 		final Composite buttonComposite = new Composite(shell, SWT.NONE);
 		buttonComposite.setLayout(new GridLayout(2, false));
@@ -141,12 +141,12 @@ public class MapDialog extends Dialog {
 	}
 
 	private URL getMapPage(final Shell shell) {
-		URL pageUrl;
+		URL pageUrl = null;
 		File tempFile = null;
 		BufferedReader reader = null;
 		BufferedWriter writer = null;
 		try {
-			reader = new BufferedReader(new FileReader(new File(getClass().getResource(HTML_FILE_NAME).toURI())));
+			reader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(HTML_FILE_NAME)));
 			tempFile = File.createTempFile("map", null);
 			writer = new BufferedWriter(new FileWriter(tempFile));
 			String line;
@@ -164,7 +164,6 @@ public class MapDialog extends Dialog {
 		}
 		catch (final Exception e) {
 			e.printStackTrace();
-			pageUrl = getClass().getResource(HTML_FILE_NAME);
 		}
 		finally {
 			try {
@@ -181,7 +180,7 @@ public class MapDialog extends Dialog {
 			final File fileToDelete = tempFile;
 			shell.addListener(SWT.Close, new Listener() {
 				@Override
-				public void handleEvent(Event event) {
+				public void handleEvent(final Event event) {
 					try {
 						fileToDelete.delete();
 					}
