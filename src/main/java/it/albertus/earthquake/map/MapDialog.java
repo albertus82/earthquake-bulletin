@@ -1,6 +1,5 @@
 package it.albertus.earthquake.map;
 
-import it.albertus.earthquake.gui.SearchForm;
 import it.albertus.earthquake.resources.Messages;
 
 import org.eclipse.jface.layout.GridDataFactory;
@@ -20,15 +19,20 @@ import org.eclipse.swt.widgets.Shell;
 
 public class MapDialog extends Dialog {
 
-	private final SearchForm form;
+	private Double northEastLat;
+	private Double southWestLat;
+	private Double northEastLng;
+	private Double southWestLng;
+
+	private volatile int returnCode = SWT.CANCEL;
+
 	private Browser browser;
 
-	public MapDialog(final SearchForm form) {
-		super(form.getFormComposite().getShell(), SWT.SHEET | SWT.RESIZE | SWT.WRAP | SWT.MAX);
-		this.form = form;
+	public MapDialog(final Shell shell) {
+		super(shell, SWT.SHEET | SWT.RESIZE | SWT.WRAP | SWT.MAX);
 	}
 
-	public void open() {
+	public int open() {
 		final Shell shell = new Shell(getParent(), getStyle());
 		shell.setText(getText());
 		createContents(shell);
@@ -39,6 +43,7 @@ public class MapDialog extends Dialog {
 				display.sleep();
 			}
 		}
+		return returnCode;
 	}
 
 	private void createContents(final Shell shell) {
@@ -48,9 +53,14 @@ public class MapDialog extends Dialog {
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(browser);
 		browser.addControlListener(new ControlAdapter() {
 			@Override
-			public void controlResized(ControlEvent e) {
-				browser.execute("document.getElementById('map_canvas').style.width= " + (browser.getSize().x - 20) + ";");
-				browser.execute("document.getElementById('map_canvas').style.height= " + (browser.getSize().y - 20) + ";");
+			public void controlResized(final ControlEvent ce) {
+				try {
+					browser.execute("document.getElementById('map_canvas').style.width= " + (browser.getSize().x - 20) + ";");
+					browser.execute("document.getElementById('map_canvas').style.height= " + (browser.getSize().y - 20) + ";");
+				}
+				catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 		});
 
@@ -68,11 +78,18 @@ public class MapDialog extends Dialog {
 		okButton.setFocus();
 		okButton.addSelectionListener(new SelectionAdapter() {
 			@Override
-			public void widgetSelected(SelectionEvent event) {
-				System.out.println(browser.evaluate("return map.getBounds().getNorthEast().lat();"));
-				System.out.println(browser.evaluate("return map.getBounds().getSouthWest().lat();"));
-				System.out.println(browser.evaluate("return map.getBounds().getNorthEast().lng();"));
-				System.out.println(browser.evaluate("return map.getBounds().getSouthWest().lng();"));
+			public void widgetSelected(final SelectionEvent se) {
+				try {
+					northEastLat = (Double) browser.evaluate("return map.getBounds().getNorthEast().lat();");
+					southWestLat = (Double) browser.evaluate("return map.getBounds().getSouthWest().lat();");
+					northEastLng = (Double) browser.evaluate("return map.getBounds().getNorthEast().lng();");
+					southWestLng = (Double) browser.evaluate("return map.getBounds().getSouthWest().lng();");
+					returnCode = SWT.OK;
+					shell.close();
+				}
+				catch (final Exception e) {
+					e.printStackTrace();
+				}
 			}
 		});
 
@@ -88,6 +105,22 @@ public class MapDialog extends Dialog {
 			}
 		});
 		shell.setDefaultButton(okButton);
+	}
+
+	public Double getNorthEastLat() {
+		return northEastLat;
+	}
+
+	public Double getSouthWestLat() {
+		return southWestLat;
+	}
+
+	public Double getNorthEastLng() {
+		return northEastLng;
+	}
+
+	public Double getSouthWestLng() {
+		return southWestLng;
 	}
 
 }
