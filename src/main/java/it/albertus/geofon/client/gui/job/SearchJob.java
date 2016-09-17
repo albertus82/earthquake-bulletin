@@ -10,7 +10,7 @@ import it.albertus.geofon.client.resources.Messages;
 import it.albertus.geofon.client.rss.transformer.RssItemTransformer;
 import it.albertus.geofon.client.rss.xml.Rss;
 import it.albertus.geofon.client.xhtml.TableData;
-import it.albertus.geofon.client.xhtml.XhtmlTableDataTransformer;
+import it.albertus.geofon.client.xhtml.transformer.XhtmlTableDataTransformer;
 import it.albertus.jface.SwtThreadExecutor;
 import it.albertus.util.NewLine;
 
@@ -148,7 +148,7 @@ public class SearchJob extends Job {
 			new SwtThreadExecutor(gui.getShell()) {
 				@Override
 				protected void run() {
-					if (gui.getTrayIcon() != null && gui.getTrayIcon().getTrayItem() != null && !gui.getTrayIcon().getTrayItem().getVisible()) {
+					if (gui.getTrayIcon() == null || gui.getTrayIcon().getTrayItem() == null || !gui.getTrayIcon().getTrayItem().getVisible()) {
 						final MessageBox dialog = new MessageBox(gui.getShell(), SWT.ICON_WARNING);
 						dialog.setText(Messages.get("lbl.window.title"));
 						dialog.setMessage(Messages.get("err.job.search"));
@@ -180,7 +180,7 @@ public class SearchJob extends Job {
 			new SwtThreadExecutor(gui.getShell()) {
 				@Override
 				protected void run() {
-					if (gui.getTrayIcon() != null && gui.getTrayIcon().getTrayItem() != null && !gui.getTrayIcon().getTrayItem().getVisible()) {
+					if (gui.getTrayIcon() == null || gui.getTrayIcon().getTrayItem() == null || !gui.getTrayIcon().getTrayItem().getVisible()) {
 						final MessageBox dialog = new MessageBox(gui.getShell(), SWT.ICON_WARNING);
 						dialog.setText(Messages.get("lbl.window.title"));
 						dialog.setMessage(Messages.get("err.job.decode"));

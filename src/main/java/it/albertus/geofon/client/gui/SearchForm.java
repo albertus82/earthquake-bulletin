@@ -20,6 +20,8 @@ import java.util.Map;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.TraverseListener;
+import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -32,7 +34,7 @@ public class SearchForm {
 	public static final int COORDINATES_TEXT_LIMIT = 7;
 	public static final int MAGNITUDE_TEXT_LIMIT = 4;
 	public static final int PERIOD_TEXT_LIMIT = 10;
-	public static final int RESULTS_TEXT_LIMIT = 3;
+	public static final int RESULTS_TEXT_LIMIT = 4;
 	public static final int AUTO_REFRESH_TEXT_LIMIT = 4;
 
 	public static final float LATITUDE_MIN_VALUE = -90;
@@ -96,8 +98,9 @@ public class SearchForm {
 	private final Button stopButton;
 	private final Button clearButton;
 
-	private final FormTextTraverseListener formTextTraverseListener = new FormTextTraverseListener(this);
-	private final FloatVerifyListener coordinatesVerifyListener = new FloatVerifyListener(true);
+	private final TraverseListener formTextTraverseListener = new FormTextTraverseListener(this);
+	private final VerifyListener periodVerifyListener = new IntegerVerifyListener(true);
+	private final VerifyListener coordinatesVerifyListener = new FloatVerifyListener(true);
 
 	private SearchJob searchJob;
 
@@ -118,6 +121,7 @@ public class SearchForm {
 		periodFromText = new Text(criteriaGroup, SWT.BORDER);
 		periodFromText.setTextLimit(PERIOD_TEXT_LIMIT);
 		periodFromText.setText(configuration.getString("criteria.period.from", ""));
+		periodFromText.addVerifyListener(periodVerifyListener);
 		periodFromText.addTraverseListener(formTextTraverseListener);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(periodFromText);
 		periodFromNote = new Label(criteriaGroup, SWT.NONE);
@@ -127,6 +131,7 @@ public class SearchForm {
 		periodToText = new Text(criteriaGroup, SWT.BORDER);
 		periodToText.setTextLimit(PERIOD_TEXT_LIMIT);
 		periodToText.setText(configuration.getString("criteria.period.to", ""));
+		periodToText.addVerifyListener(periodVerifyListener);
 		periodToText.addTraverseListener(formTextTraverseListener);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(periodToText);
 		periodToNote = new Label(criteriaGroup, SWT.NONE);

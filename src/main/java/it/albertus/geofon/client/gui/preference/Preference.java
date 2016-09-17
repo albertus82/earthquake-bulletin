@@ -102,7 +102,7 @@ public enum Preference implements IPreference {
 		public String getString() {
 			return Messages.get("lbl.form.limit") + " " + Messages.get("lbl.form.limit.note");
 		};
-	}).build(), new FieldEditorDetailsBuilder(DefaultIntegerFieldEditor.class).emptyStringAllowed(true).textLimit(SearchForm.RESULTS_TEXT_LIMIT).build()),
+	}).build(), new FieldEditorDetailsBuilder(DefaultIntegerFieldEditor.class).emptyStringAllowed(true).numberValidRange(0, 1000).build()),
 	CRITERIA_RESTRICT(new PreferenceDetailsBuilder(PageDefinition.CRITERIA).defaultValue(SearchForm.Defaults.CRITERIA_RESTRICT).label(new Localized() {
 		@Override
 		public String getString() {

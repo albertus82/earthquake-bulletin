@@ -1,4 +1,4 @@
-package it.albertus.geofon.client.xhtml;
+package it.albertus.geofon.client.xhtml.transformer;
 
 import it.albertus.geofon.client.GeofonClient;
 import it.albertus.geofon.client.model.Depth;
@@ -6,9 +6,9 @@ import it.albertus.geofon.client.model.Earthquake;
 import it.albertus.geofon.client.model.Latitude;
 import it.albertus.geofon.client.model.Longitude;
 import it.albertus.geofon.client.model.Status;
+import it.albertus.geofon.client.xhtml.TableData;
 import it.albertus.util.NewLine;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -25,6 +25,15 @@ public class XhtmlTableDataTransformer {
 	private static final String guidSuffix = "'>";
 	private static final String timePrefix = guidSuffix;
 	private static final String timeSuffix = "</a";
+	private static final String magnitudePrefix = ">";
+	private static final String magnitudeSuffix = "</";
+	private static final String coordinatesPrefix = magnitudePrefix;
+	private static final String coordinatesSuffix = "&deg;";
+	private static final String depthSuffix = magnitudeSuffix;
+	private static final String statusPrefix = guidSuffix;
+	private static final String statusSuffix = magnitudeSuffix;
+	private static final String regionPrefix = statusPrefix;
+	private static final String regionSuffix = magnitudeSuffix;
 
 	/** Use {@link #parseRssDate} method instead. */
 	@Deprecated
@@ -43,7 +52,7 @@ public class XhtmlTableDataTransformer {
 		}
 	}
 
-	public static Set<Earthquake> fromXhtml(final TableData tableData) throws MalformedURLException {
+	public static Set<Earthquake> fromXhtml(final TableData tableData) throws IllegalArgumentException {
 		final Set<Earthquake> earthquakes = new TreeSet<>();
 		if (tableData != null && tableData.getItems().size() > 1) {
 			// Discards first and last <td>
@@ -57,18 +66,18 @@ public class XhtmlTableDataTransformer {
 		return earthquakes;
 	}
 
-	private static Earthquake fromXhtml(final String td) throws MalformedURLException {
+	private static Earthquake fromXhtml(final String td) throws IllegalArgumentException {
 		try {
 			final String lines[] = td.split(NewLine.SYSTEM_LINE_SEPARATOR);
 			final Calendar time = Calendar.getInstance();
 			time.setTime(parseXhtmlDate(lines[0].substring(lines[0].lastIndexOf(timePrefix) + timePrefix.length(), lines[0].indexOf(timeSuffix)).trim()));
 			final String guid = lines[0].substring(lines[0].indexOf(guidPrefix) + guidPrefix.length(), lines[0].lastIndexOf(guidSuffix)).trim();
-			final float magnitude = Float.parseFloat(lines[1].substring(lines[1].indexOf(">") + 1, lines[1].indexOf("</")).trim());
-			final float latitude = Float.parseFloat(lines[2].substring(lines[2].indexOf(">") + 1, lines[2].indexOf("&deg;")).trim());
-			final float longitude = Float.parseFloat(lines[3].substring(lines[3].indexOf(">") + 1, lines[3].indexOf("&deg;")).trim());
-			final int depth = Integer.parseInt(lines[4].substring(lines[4].indexOf(">") + 1, lines[4].indexOf("</")).trim());
-			final Status status = Status.valueOf(lines[5].substring(lines[5].lastIndexOf("'>") + 2, lines[5].indexOf("</")).trim());
-			final String region = lines[6].substring(lines[6].lastIndexOf("'>") + 2, lines[6].lastIndexOf("</")).trim();
+			final float magnitude = Float.parseFloat(lines[1].substring(lines[1].indexOf(magnitudePrefix) + magnitudePrefix.length(), lines[1].indexOf(magnitudeSuffix)).trim());
+			final float latitude = Float.parseFloat(lines[2].substring(lines[2].indexOf(coordinatesPrefix) + coordinatesPrefix.length(), lines[2].indexOf(coordinatesSuffix)).trim());
+			final float longitude = Float.parseFloat(lines[3].substring(lines[3].indexOf(coordinatesPrefix) + coordinatesPrefix.length(), lines[3].indexOf(coordinatesSuffix)).trim());
+			final int depth = Integer.parseInt(lines[4].substring(lines[4].indexOf(magnitudePrefix) + magnitudePrefix.length(), lines[4].indexOf(depthSuffix)).trim());
+			final Status status = Status.valueOf(lines[5].substring(lines[5].lastIndexOf(statusPrefix) + statusPrefix.length(), lines[5].indexOf(statusSuffix)).trim());
+			final String region = lines[6].substring(lines[6].lastIndexOf(regionPrefix) + regionPrefix.length(), lines[6].lastIndexOf(regionSuffix)).trim();
 			final URL link = new URL(GeofonClient.BASE_URL + "/eqinfo/event.php?id=" + guid);
 			final URL enclosure = new URL(GeofonClient.BASE_URL + "/data/alerts/" + time.get(Calendar.YEAR) + "/" + guid + "/" + guid + ".jpg");
 			return new Earthquake(guid, time.getTime(), magnitude, new Latitude(latitude), new Longitude(longitude), new Depth(depth), status, region, link, enclosure);
