@@ -49,12 +49,6 @@ public class AboutDialog extends Dialog {
 
 		GridData gridData;
 
-		//		final Label icon = new Label(shell, SWT.WRAP);
-		//		icon.setImage(Images.MAIN_ICONS[3]);
-		//		gridData = new GridData(SWT.CENTER, SWT.CENTER, true, false, 1, 4);
-		//		icon.setLayoutData(gridData);
-		//		GridData gridData;
-
 		final Label info = new Label(shell, SWT.WRAP);
 		info.setText(this.message);
 		gridData = new GridData(SWT.CENTER, SWT.CENTER, true, false);
@@ -76,13 +70,6 @@ public class AboutDialog extends Dialog {
 		acknowledgementsData.setLayoutData(gridData);
 		acknowledgementsData.setText(Messages.get("lbl.about.acknowledgements.data"));
 
-		//		final Link linkIcon = new Link(shell, SWT.NONE);
-		//		String url = getIconUrl().startsWith("http") ? getIconUrl() : "http://" + getIconUrl();
-		//		linkIcon.setText(Messages.get("msg.info.icon") + " <a href=\"" + url + "\">" + getIconUrl() + "</a>");
-		//		gridData = new GridData(SWT.LEAD, SWT.CENTER, false, true);
-		//		linkIcon.setLayoutData(gridData);
-		//		linkIcon.addSelectionListener(new LinkSelectionListener());
-
 		final Link linkSource = new Link(shell, SWT.WRAP);
 		linkSource.setText("<a href=\"http://geofon.gfz-potsdam.de\">http://geofon.gfz-potsdam.de</a>");
 		gridData = new GridData(SWT.CENTER, SWT.CENTER, true, false);
@@ -91,13 +78,13 @@ public class AboutDialog extends Dialog {
 
 		final Button okButton = new Button(shell, SWT.PUSH);
 		okButton.setText(Messages.get("lbl.button.ok"));
-		gridData = new GridData(SWT.CENTER, SWT.CENTER, true, false, 2, 1);
-		gridData.minimumWidth = 64;
+		gridData = new GridData(SWT.CENTER, SWT.CENTER, true, false);
+		gridData.minimumWidth = 90;
 		okButton.setLayoutData(gridData);
 		okButton.setFocus();
 		okButton.addSelectionListener(new SelectionAdapter() {
 			@Override
-			public void widgetSelected(SelectionEvent event) {
+			public void widgetSelected(final SelectionEvent se) {
 				shell.close();
 			}
 		});
