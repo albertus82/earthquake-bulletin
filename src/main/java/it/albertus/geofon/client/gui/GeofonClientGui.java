@@ -2,7 +2,6 @@ package it.albertus.geofon.client.gui;
 
 import it.albertus.geofon.client.GeofonClient;
 import it.albertus.geofon.client.gui.listener.CloseListener;
-import it.albertus.geofon.client.model.Format;
 import it.albertus.geofon.client.resources.Messages;
 import it.albertus.util.Configuration;
 
@@ -35,10 +34,6 @@ public class GeofonClientGui extends ApplicationWindow {
 		final Display display = Display.getDefault();
 		final GeofonClientGui gui = new GeofonClientGui(display);
 		gui.open();
-
-		// TODO remove after KML implementation
-		gui.getSearchForm().getFormatRadios().get(Format.KML).setEnabled(false);
-		gui.getSearchForm().getFormatRadios().get(Format.RSS).setSelection(true);
 
 		if (configuration.getBoolean("search.on.start", Defaults.SEARCH_ON_START)) {
 			gui.getSearchForm().getSearchButton().notifyListeners(SWT.Selection, null);

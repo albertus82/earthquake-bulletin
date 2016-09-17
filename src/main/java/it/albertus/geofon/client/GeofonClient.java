@@ -14,6 +14,7 @@ public class GeofonClient {
 		String LANGUAGE = Locale.getDefault().getLanguage();
 	}
 
+	public static final String BASE_URL = "http://geofon.gfz-potsdam.de";
 	public static final String CFG_KEY_LANGUAGE = "language";
 	public static final String CFG_FILE_NAME = "geofon-client.cfg";
 	public static final Configuration configuration;

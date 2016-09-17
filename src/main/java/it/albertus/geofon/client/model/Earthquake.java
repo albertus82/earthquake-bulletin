@@ -10,7 +10,7 @@ public class Earthquake implements Serializable, Comparable<Earthquake> {
 
 	private final String guid;
 	private final Date time;
-	private final float magnitudo;
+	private final float magnitude;
 	private final Latitude latitude;
 	private final Longitude longitude;
 	private final Depth depth;
@@ -19,10 +19,10 @@ public class Earthquake implements Serializable, Comparable<Earthquake> {
 	private final URL link;
 	private final URL enclosure;
 
-	public Earthquake(String guid, Date time, float magnitudo, Latitude latitude, Longitude longitude, Depth depth, Status status, String region, URL link, URL enclosure) {
+	public Earthquake(String guid, Date time, float magnitude, Latitude latitude, Longitude longitude, Depth depth, Status status, String region, URL link, URL enclosure) {
 		this.guid = guid;
 		this.time = time;
-		this.magnitudo = magnitudo;
+		this.magnitude = magnitude;
 		this.latitude = latitude;
 		this.longitude = longitude;
 		this.depth = depth;
@@ -40,8 +40,8 @@ public class Earthquake implements Serializable, Comparable<Earthquake> {
 		return time;
 	}
 
-	public float getMagnitudo() {
-		return magnitudo;
+	public float getMagnitude() {
+		return magnitude;
 	}
 
 	public Latitude getLatitude() {
@@ -78,7 +78,7 @@ public class Earthquake implements Serializable, Comparable<Earthquake> {
 
 	@Override
 	public String toString() {
-		return "Earthquake [guid=" + guid + ", time=" + time + ", magnitudo=" + magnitudo + ", latitude=" + latitude + ", longitude=" + longitude + ", depth=" + depth + ", status=" + status + ", region=" + region + ", link=" + link + ", enclosure=" + enclosure + "]";
+		return "Earthquake [guid=" + guid + ", time=" + time + ", magnitude=" + magnitude + ", latitude=" + latitude + ", longitude=" + longitude + ", depth=" + depth + ", status=" + status + ", region=" + region + ", link=" + link + ", enclosure=" + enclosure + "]";
 	}
 
 	@Override

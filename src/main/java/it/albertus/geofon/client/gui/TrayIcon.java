@@ -110,7 +110,7 @@ public class TrayIcon {
 	public void showBalloonToolTip(final Earthquake earthquake) {
 		if (trayItem != null && !trayItem.isDisposed()) {
 			final StringBuilder text = new StringBuilder();
-			text.append("M ").append(earthquake.getMagnitudo()).append(", ").append(earthquake.getRegion());
+			text.append("M ").append(earthquake.getMagnitude()).append(", ").append(earthquake.getRegion());
 
 			final StringBuilder message = new StringBuilder();
 			message.append(ResultsTable.formatDate(earthquake.getTime())).append(" ");

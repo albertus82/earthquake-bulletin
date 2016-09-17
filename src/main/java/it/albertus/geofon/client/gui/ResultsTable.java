@@ -93,7 +93,7 @@ public class ResultsTable {
 				rc = eq1.getTime().compareTo(eq2.getTime());
 				break;
 			case 1:
-				rc = Float.compare(eq1.getMagnitudo(), eq2.getMagnitudo());
+				rc = Float.compare(eq1.getMagnitude(), eq2.getMagnitude());
 				break;
 			case 2:
 				rc = eq1.getLatitude().compareTo(eq2.getLatitude());
@@ -246,7 +246,7 @@ public class ResultsTable {
 			@Override
 			public String getText(final Object element) {
 				final Earthquake earthquake = (Earthquake) element;
-				return Float.toString(earthquake.getMagnitudo());
+				return Float.toString(earthquake.getMagnitude());
 			}
 
 		});

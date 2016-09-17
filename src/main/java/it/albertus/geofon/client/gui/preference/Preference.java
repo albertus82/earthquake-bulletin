@@ -96,7 +96,7 @@ public enum Preference implements IPreference {
 		public String getString() {
 			return Messages.get("lbl.form.format");
 		};
-	}).defaultValue(SearchForm.Defaults.FORMAT).build(), new FieldEditorDetailsBuilder(DefaultRadioGroupFieldEditor.class).labelsAndValues(getFormatRadioOptions()).radioNumColumns(2).radioUseGroup(true).build()),
+	}).defaultValue(SearchForm.Defaults.FORMAT.getValue()).build(), new FieldEditorDetailsBuilder(DefaultRadioGroupFieldEditor.class).labelsAndValues(getFormatRadioOptions()).radioNumColumns(2).radioUseGroup(true).build()),
 	CRITERIA_LIMIT(new PreferenceDetailsBuilder(PageDefinition.CRITERIA).label(new Localized() {
 		@Override
 		public String getString() {
@@ -221,11 +221,11 @@ public enum Preference implements IPreference {
 		final Format[] values = Format.values();
 		final LocalizedLabelsAndValues options = new LocalizedLabelsAndValues(values.length);
 		for (final Format format : values) {
-			final String value = format.name();
+			final String value = format.getValue();
 			final Localized name = new Localized() {
 				@Override
 				public String getString() {
-					return format.getDescription();
+					return format.getLabel();
 				}
 			};
 			options.put(name, value);

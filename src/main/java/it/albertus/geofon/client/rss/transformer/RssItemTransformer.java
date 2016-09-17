@@ -6,6 +6,7 @@ import it.albertus.geofon.client.model.Latitude;
 import it.albertus.geofon.client.model.Longitude;
 import it.albertus.geofon.client.model.Status;
 import it.albertus.geofon.client.rss.xml.Item;
+import it.albertus.geofon.client.rss.xml.Rss;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -13,9 +14,11 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Set;
 import java.util.TimeZone;
+import java.util.TreeSet;
 
-public class ItemTransformer {
+public class RssItemTransformer {
 
 	/** Use {@link #parseRssDate} method instead. */
 	@Deprecated
@@ -34,7 +37,19 @@ public class ItemTransformer {
 		}
 	}
 
-	public static Earthquake fromRss(final Item rssItem) {
+	public static Set<Earthquake> fromRss(final Rss rss) {
+		final Set<Earthquake> earthquakes = new TreeSet<>();
+		if (rss != null && rss.getChannel() != null) {
+			if (rss.getChannel().getItem() != null) {
+				for (final Item item : rss.getChannel().getItem()) {
+					earthquakes.add(RssItemTransformer.fromRss(item));
+				}
+			}
+		}
+		return earthquakes;
+	}
+
+	private static Earthquake fromRss(final Item rssItem) {
 		// Title
 		final String title = rssItem.getTitle();
 		final float magnitudo = Float.parseFloat(title.substring(1, title.indexOf(',')).trim());

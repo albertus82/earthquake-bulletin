@@ -1,5 +1,7 @@
 package it.albertus.geofon.client.gui.job;
 
+import java.io.FileNotFoundException;
+
 import it.albertus.geofon.client.gui.GeofonClientGui;
 import it.albertus.geofon.client.gui.util.ImageDownloader;
 import it.albertus.geofon.client.model.Earthquake;
@@ -41,6 +43,18 @@ public class DownloadMapJob extends Job {
 		if (earthquake.getEnclosure() != null) {
 			try {
 				downloadedImage = ImageDownloader.downloadImage(earthquake.getEnclosure());
+			}
+			catch (final FileNotFoundException fnfe) {
+				fnfe.printStackTrace();	
+				new SwtThreadExecutor(gui.getShell()) {
+					@Override
+					protected void run() {
+						final MessageBox dialog = new MessageBox(gui.getShell(), SWT.ICON_WARNING);
+						dialog.setText(Messages.get("lbl.window.title"));
+						dialog.setMessage(Messages.get("err.job.map.not.found"));
+						dialog.open();
+					}
+				}.start();
 			}
 			catch (final Exception e) {
 				e.printStackTrace();
