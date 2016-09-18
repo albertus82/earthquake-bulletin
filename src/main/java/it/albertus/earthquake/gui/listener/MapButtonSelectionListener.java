@@ -56,4 +56,5 @@ public class MapButtonSelectionListener extends SelectionAdapter {
 			}
 		}
 	}
+
 }
