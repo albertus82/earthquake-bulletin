@@ -35,9 +35,9 @@ public class MapDialog extends Dialog {
 	protected static final String HTML_FILE_NAME = "map.html";
 	protected static final int BUTTON_WIDTH = 90;
 
-	private static double centerLat;
-	private static double centerLng;
-	private static int zoom = DEFAULT_ZOOM;
+	private double centerLat;
+	private double centerLng;
+	private int zoom = DEFAULT_ZOOM;
 
 	private Double northEastLat;
 	private Double southWestLat;
@@ -104,11 +104,11 @@ public class MapDialog extends Dialog {
 		GridLayoutFactory.swtDefaults().numColumns(2).applyTo(buttonComposite);
 		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.CENTER).grab(true, false).applyTo(buttonComposite);
 
-		final Button okButton = new Button(buttonComposite, SWT.PUSH);
-		okButton.setText(Messages.get("lbl.button.confirm"));
-		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.FILL).grab(true, false).minSize(BUTTON_WIDTH, SWT.DEFAULT).applyTo(okButton);
-		okButton.setFocus();
-		okButton.addSelectionListener(new SelectionAdapter() {
+		final Button confirmButton = new Button(buttonComposite, SWT.PUSH);
+		confirmButton.setText(Messages.get("lbl.button.confirm"));
+		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.FILL).grab(true, false).minSize(BUTTON_WIDTH, SWT.DEFAULT).applyTo(confirmButton);
+		confirmButton.setFocus();
+		confirmButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent se) {
 				try {
@@ -140,7 +140,7 @@ public class MapDialog extends Dialog {
 				shell.close();
 			}
 		});
-		shell.setDefaultButton(okButton);
+		shell.setDefaultButton(confirmButton);
 	}
 
 	protected URL getMapPage(final Shell shell) {
@@ -196,35 +196,35 @@ public class MapDialog extends Dialog {
 		return pageUrl;
 	}
 
-	public static double getCenterLat() {
+	public double getCenterLat() {
 		return centerLat;
 	}
 
-	protected static void setCenterLat(final double centerLat) {
-		MapDialog.centerLat = centerLat;
+	public void setCenterLat(final double centerLat) {
+		this.centerLat = centerLat;
 	}
 
-	public static double getCenterLng() {
+	public double getCenterLng() {
 		return centerLng;
 	}
 
-	protected static void setCenterLng(final double centerLng) {
-		MapDialog.centerLng = centerLng;
+	public void setCenterLng(final double centerLng) {
+		this.centerLng = centerLng;
 	}
 
-	public static int getZoom() {
+	public int getZoom() {
 		return zoom;
 	}
 
-	protected static void setZoom(final int zoom) {
-		MapDialog.zoom = zoom;
+	public void setZoom(final int zoom) {
+		this.zoom = zoom;
 	}
 
 	public Double getNorthEastLat() {
 		return northEastLat;
 	}
 
-	protected void setNorthEastLat(final Double northEastLat) {
+	public void setNorthEastLat(final Double northEastLat) {
 		this.northEastLat = northEastLat;
 	}
 
@@ -232,7 +232,7 @@ public class MapDialog extends Dialog {
 		return southWestLat;
 	}
 
-	protected void setSouthWestLat(final Double southWestLat) {
+	public void setSouthWestLat(final Double southWestLat) {
 		this.southWestLat = southWestLat;
 	}
 
@@ -240,7 +240,7 @@ public class MapDialog extends Dialog {
 		return northEastLng;
 	}
 
-	protected void setNorthEastLng(final Double northEastLng) {
+	public void setNorthEastLng(final Double northEastLng) {
 		this.northEastLng = northEastLng;
 	}
 
@@ -248,7 +248,7 @@ public class MapDialog extends Dialog {
 		return southWestLng;
 	}
 
-	protected void setSouthWestLng(final Double southWestLng) {
+	public void setSouthWestLng(final Double southWestLng) {
 		this.southWestLng = southWestLng;
 	}
 
@@ -256,7 +256,7 @@ public class MapDialog extends Dialog {
 		return returnCode;
 	}
 
-	protected void setReturnCode(final int returnCode) {
+	public void setReturnCode(final int returnCode) {
 		this.returnCode = returnCode;
 	}
 

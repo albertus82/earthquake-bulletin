@@ -1,9 +1,7 @@
 package it.albertus.earthquake.gui.listener;
 
-import it.albertus.earthquake.gui.Images;
 import it.albertus.earthquake.gui.SearchForm;
 import it.albertus.earthquake.gui.map.MapDialog;
-import it.albertus.earthquake.resources.Messages;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -38,9 +36,7 @@ public class MapButtonSelectionListener extends SelectionAdapter {
 
 	@Override
 	public void widgetSelected(final SelectionEvent se) {
-		final MapDialog mapDialog = new MapDialog(form.getFormComposite().getShell());
-		mapDialog.setText(Messages.get("lbl.map.title"));
-		mapDialog.setImages(Images.MAIN_ICONS);
+		final MapDialog mapDialog = form.getMapDialog();
 		if (mapDialog.open() == SWT.OK) {
 			if (mapDialog.getSouthWestLat() != null) {
 				form.getLatitudeFromText().setText(formatCoordinate(mapDialog.getSouthWestLat()));
