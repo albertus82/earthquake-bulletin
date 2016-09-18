@@ -12,6 +12,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.Shell;
 
 public class MapBoundsDialog extends MapDialog {
@@ -77,10 +78,15 @@ public class MapBoundsDialog extends MapDialog {
 	}
 
 	@Override
-	protected Point computeSize(final Shell shell) {
+	protected Point getSize(final Shell shell) {
 		final Point normalShellSize = shell.getSize();
-		final Point packedShellSize = computeMinimumSize(shell);
+		final Point packedShellSize = getMinimumSize(shell);
 		return new Point(Math.min(packedShellSize.x * 3, normalShellSize.x), Math.min(packedShellSize.y * 3, normalShellSize.y));
+	}
+
+	@Override
+	protected Layout getLayout() {
+		return GridLayoutFactory.swtDefaults().create();
 	}
 
 	public Double getNorthEastLat() {

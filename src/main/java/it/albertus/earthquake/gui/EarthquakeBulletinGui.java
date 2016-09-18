@@ -5,11 +5,11 @@ import it.albertus.earthquake.gui.listener.CloseListener;
 import it.albertus.earthquake.resources.Messages;
 import it.albertus.util.Configuration;
 
+import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.window.ApplicationWindow;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -77,7 +77,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 
 		sashForm = new SashForm(parent, SWT.HORIZONTAL);
 		sashForm.setSashWidth((int) (sashForm.getSashWidth() * SASH_MAGNIFICATION_FACTOR));
-		sashForm.setLayout(new GridLayout());
+		GridLayoutFactory.swtDefaults().applyTo(sashForm);
 		sashForm.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 		resultsTable = new ResultsTable(sashForm, new GridData(SWT.FILL, SWT.FILL, true, true), this);
@@ -124,7 +124,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 
 	@Override
 	protected Layout getLayout() {
-		return new GridLayout();
+		return GridLayoutFactory.swtDefaults().create();
 	}
 
 	public SearchForm getSearchForm() {

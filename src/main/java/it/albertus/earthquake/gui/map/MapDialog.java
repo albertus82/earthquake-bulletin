@@ -27,6 +27,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 
@@ -83,8 +84,8 @@ public class MapDialog extends Dialog {
 			shell.setImages(images);
 		}
 		createContents(shell);
-		final Point minimumSize = computeMinimumSize(shell);
-		shell.setSize(computeSize(shell));
+		final Point minimumSize = getMinimumSize(shell);
+		shell.setSize(getSize(shell));
 		shell.setMinimumSize(minimumSize);
 		shell.open();
 		final Display display = getParent().getDisplay();
@@ -96,18 +97,22 @@ public class MapDialog extends Dialog {
 		return returnCode;
 	}
 
-	protected Point computeSize(final Shell shell) {
+	protected Point getSize(final Shell shell) {
 		final Point normalShellSize = shell.getSize();
 		int size = (int) (Math.min(normalShellSize.x, normalShellSize.y) / 1.25);
 		return new Point(size, size);
 	}
 
-	protected Point computeMinimumSize(final Shell shell) {
+	protected Point getMinimumSize(final Shell shell) {
 		return shell.computeSize(SWT.DEFAULT, SWT.DEFAULT, true);
 	}
 
+	protected Layout getLayout() {
+		return GridLayoutFactory.fillDefaults().extendedMargins(0, 0, 0, 5).create();
+	}
+
 	protected void createContents(final Shell shell) {
-		GridLayoutFactory.swtDefaults().applyTo(shell);
+		shell.setLayout(getLayout());
 		final Browser browser = createBrowser(shell);
 		createButtonBox(shell, browser);
 	}

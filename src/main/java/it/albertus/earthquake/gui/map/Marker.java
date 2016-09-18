@@ -13,7 +13,7 @@ public class Marker implements Serializable {
 	public Marker(final float latitude, final float longitude, final String title) {
 		this.latitude = latitude;
 		this.longitude = longitude;
-		this.title = title != null ? title : "";
+		this.title = title != null && !title.trim().isEmpty() ? title.trim() : "";
 	}
 
 	public Marker(final float latitude, final float longitude) {
@@ -64,7 +64,7 @@ public class Marker implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Marker [latitude=" + latitude + ", longitude=" + longitude + ", " + (title != null && !title.isEmpty() ? "title=" + title : "") + "]";
+		return "Marker [latitude=" + latitude + ", longitude=" + longitude + ", " + (title != null && !title.trim().isEmpty() ? "title=" + title : "") + "]";
 	}
 
 }
