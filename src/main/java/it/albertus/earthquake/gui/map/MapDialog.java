@@ -62,8 +62,7 @@ public class MapDialog extends Dialog {
 		}
 		createContents(shell);
 		final Point normalShellSize = shell.getSize();
-		shell.pack();
-		final Point packedShellSize = shell.getSize();
+		final Point packedShellSize = shell.computeSize(SWT.DEFAULT, SWT.DEFAULT, true);
 		shell.setMinimumSize(packedShellSize);
 		shell.setSize(Math.min(packedShellSize.x * 3, normalShellSize.x), Math.min(packedShellSize.y * 3, normalShellSize.y));
 		shell.open();
