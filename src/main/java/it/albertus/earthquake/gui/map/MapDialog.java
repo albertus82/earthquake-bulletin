@@ -33,20 +33,14 @@ import org.eclipse.swt.widgets.Shell;
 
 public class MapDialog extends Dialog {
 
-	public static final String MARKERS_PLACEHOLDER = "/* Markers */";
 	public static final String OPTIONS_PLACEHOLDER = "/* Options */";
-
-	public static final MapType DEFAULT_TYPE = MapType.TERRAIN;
-	public static final int DEFAULT_ZOOM = 1;
+	public static final String MARKERS_PLACEHOLDER = "/* Markers */";
 
 	protected static final String HTML_FILE_NAME = "map.html";
 	protected static final int BUTTON_WIDTH = 90;
 
-	private float centerLat;
-	private float centerLng;
-	private int zoom = DEFAULT_ZOOM;
-	private MapType type = DEFAULT_TYPE;
-	private final Set<Marker> markers = new HashSet<>();
+	private final MapOptions options = new MapOptions();
+	private final Set<MapMarker> markers = new HashSet<>();
 
 	private volatile int returnCode = SWT.CANCEL;
 
@@ -128,8 +122,8 @@ public class MapDialog extends Dialog {
 			public void controlResized(final ControlEvent ce) {
 				try {
 					final Point browserSize = browser.getSize();
-					browser.execute("document.getElementById('map').style.width= " + (browserSize.x - 20) + ";");
-					browser.execute("document.getElementById('map').style.height= " + (browserSize.y - 20) + ";");
+					browser.execute("document.getElementById('map').style.width = " + (browserSize.x - 20) + ";");
+					browser.execute("document.getElementById('map').style.height = " + (browserSize.y - 20) + ";");
 				}
 				catch (final Exception e) {
 					e.printStackTrace();
@@ -156,9 +150,9 @@ public class MapDialog extends Dialog {
 				// Options
 				if (line.contains(OPTIONS_PLACEHOLDER)) {
 					final StringBuilder optionsBlock = new StringBuilder();
-					optionsBlock.append('\t').append("center: new google.maps.LatLng(").append(centerLat).append(", ").append(centerLng).append("),").append(NewLine.SYSTEM_LINE_SEPARATOR);
-					optionsBlock.append('\t').append("zoom: ").append(zoom).append(',').append(NewLine.SYSTEM_LINE_SEPARATOR);
-					optionsBlock.append('\t').append("mapTypeId: google.maps.MapTypeId.").append(type.name());
+					optionsBlock.append('\t').append("center: new google.maps.LatLng(").append(options.getCenterLat()).append(", ").append(options.getCenterLng()).append("),").append(NewLine.SYSTEM_LINE_SEPARATOR);
+					optionsBlock.append('\t').append("zoom: ").append(options.getZoom()).append(',').append(NewLine.SYSTEM_LINE_SEPARATOR);
+					optionsBlock.append('\t').append("mapTypeId: google.maps.MapTypeId.").append(options.getType().name());
 					line = optionsBlock.toString();
 				}
 				// Markers
@@ -169,7 +163,7 @@ public class MapDialog extends Dialog {
 					else {
 						int index = 1;
 						final StringBuilder markersBlock = new StringBuilder();
-						for (final Marker marker : markers) {
+						for (final MapMarker marker : markers) {
 							markersBlock.append("var marker").append(index).append(" = new google.maps.Marker({").append(NewLine.SYSTEM_LINE_SEPARATOR);
 							markersBlock.append('\t').append("position: new google.maps.LatLng(").append(marker.getLatitude()).append(", ").append(marker.getLongitude()).append("),").append(NewLine.SYSTEM_LINE_SEPARATOR);
 							markersBlock.append('\t').append("map: map,").append(NewLine.SYSTEM_LINE_SEPARATOR);
@@ -218,30 +212,6 @@ public class MapDialog extends Dialog {
 		return pageUrl;
 	}
 
-	public float getCenterLat() {
-		return centerLat;
-	}
-
-	public void setCenterLat(final float centerLat) {
-		this.centerLat = centerLat;
-	}
-
-	public float getCenterLng() {
-		return centerLng;
-	}
-
-	public void setCenterLng(final float centerLng) {
-		this.centerLng = centerLng;
-	}
-
-	public int getZoom() {
-		return zoom;
-	}
-
-	public void setZoom(final int zoom) {
-		this.zoom = zoom;
-	}
-
 	public int getReturnCode() {
 		return returnCode;
 	}
@@ -258,18 +228,11 @@ public class MapDialog extends Dialog {
 		this.images = images;
 	}
 
-	public MapType getType() {
-		return type;
+	public MapOptions getOptions() {
+		return options;
 	}
 
-	public void setType(final MapType type) {
-		if (type == null) {
-			throw new IllegalArgumentException(String.valueOf(type));
-		}
-		this.type = type;
-	}
-
-	public Set<Marker> getMarkers() {
+	public Set<MapMarker> getMarkers() {
 		return markers;
 	}
 

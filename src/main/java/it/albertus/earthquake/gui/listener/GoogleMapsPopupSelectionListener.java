@@ -3,7 +3,7 @@ package it.albertus.earthquake.gui.listener;
 import it.albertus.earthquake.gui.Images;
 import it.albertus.earthquake.gui.ResultsTable;
 import it.albertus.earthquake.gui.map.MapDialog;
-import it.albertus.earthquake.gui.map.Marker;
+import it.albertus.earthquake.gui.map.MapMarker;
 import it.albertus.earthquake.model.Earthquake;
 import it.albertus.earthquake.resources.Messages;
 
@@ -25,10 +25,10 @@ public class GoogleMapsPopupSelectionListener extends SelectionAdapter {
 			final MapDialog epicenterMapDialog = new MapDialog(resultsTable.getTableViewer().getTable().getShell());
 			epicenterMapDialog.setText(Messages.get("lbl.map.epicenter.title"));
 			epicenterMapDialog.setImages(Images.MAIN_ICONS);
-			epicenterMapDialog.setCenterLat(selection.getLatitude().getValue());
-			epicenterMapDialog.setCenterLng(selection.getLongitude().getValue());
-			epicenterMapDialog.setZoom(6);
-			epicenterMapDialog.getMarkers().add(new Marker(selection.getLatitude().getValue(), selection.getLongitude().getValue(), Messages.get("lbl.map.epicenter.marker.title")));
+			epicenterMapDialog.getOptions().setCenterLat(selection.getLatitude().getValue());
+			epicenterMapDialog.getOptions().setCenterLng(selection.getLongitude().getValue());
+			epicenterMapDialog.getOptions().setZoom(6);
+			epicenterMapDialog.getMarkers().add(new MapMarker(selection.getLatitude().getValue(), selection.getLongitude().getValue(), Messages.get("lbl.map.epicenter.marker.title")));
 			epicenterMapDialog.open();
 		}
 	}

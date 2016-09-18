@@ -2,7 +2,7 @@ package it.albertus.earthquake.gui.map;
 
 import java.io.Serializable;
 
-public class Marker implements Serializable {
+public class MapMarker implements Serializable {
 
 	private static final long serialVersionUID = -8178591515901703859L;
 
@@ -10,13 +10,13 @@ public class Marker implements Serializable {
 	private final float longitude;
 	private final String title;
 
-	public Marker(final float latitude, final float longitude, final String title) {
+	public MapMarker(final float latitude, final float longitude, final String title) {
 		this.latitude = latitude;
 		this.longitude = longitude;
 		this.title = title != null && !title.trim().isEmpty() ? title.trim() : "";
 	}
 
-	public Marker(final float latitude, final float longitude) {
+	public MapMarker(final float latitude, final float longitude) {
 		this(latitude, longitude, null);
 	}
 
@@ -49,10 +49,10 @@ public class Marker implements Serializable {
 		if (obj == null) {
 			return false;
 		}
-		if (!(obj instanceof Marker)) {
+		if (!(obj instanceof MapMarker)) {
 			return false;
 		}
-		Marker other = (Marker) obj;
+		MapMarker other = (MapMarker) obj;
 		if (Float.floatToIntBits(latitude) != Float.floatToIntBits(other.latitude)) {
 			return false;
 		}
