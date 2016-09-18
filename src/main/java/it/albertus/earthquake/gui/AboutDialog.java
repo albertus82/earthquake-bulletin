@@ -22,7 +22,7 @@ public class AboutDialog extends Dialog {
 	private String iconUrl = "";
 
 	public AboutDialog(final Shell parent) {
-		this(parent, SWT.SHEET | SWT.RESIZE | SWT.WRAP); // SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL
+		this(parent, SWT.SHEET | SWT.RESIZE);
 	}
 
 	public AboutDialog(final Shell parent, final int style) {

@@ -50,7 +50,7 @@ public class MapDialog extends Dialog {
 	private Image[] images;
 
 	public MapDialog(final Shell shell) {
-		super(shell, SWT.SHEET | SWT.RESIZE | SWT.WRAP | SWT.MAX);
+		super(shell, SWT.SHEET | SWT.RESIZE | SWT.MAX);
 	}
 
 	public int open() {
