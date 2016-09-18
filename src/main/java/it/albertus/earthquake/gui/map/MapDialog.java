@@ -98,7 +98,7 @@ public class MapDialog extends Dialog {
 		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.CENTER).grab(true, false).applyTo(buttonComposite);
 
 		final Button okButton = new Button(buttonComposite, SWT.PUSH);
-		okButton.setText(Messages.get("lbl.button.ok"));
+		okButton.setText(Messages.get("lbl.button.confirm"));
 		GridData gridData = new GridData(SWT.CENTER, SWT.FILL, true, false);
 		gridData.minimumWidth = BUTTON_WIDTH;
 		okButton.setLayoutData(gridData);
