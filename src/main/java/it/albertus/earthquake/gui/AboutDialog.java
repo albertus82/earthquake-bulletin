@@ -3,11 +3,11 @@ package it.albertus.earthquake.gui;
 import it.albertus.earthquake.resources.Messages;
 import it.albertus.jface.listener.LinkSelectionListener;
 
+import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Display;
@@ -16,6 +16,8 @@ import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Shell;
 
 public class AboutDialog extends Dialog {
+
+	private static final int BUTTON_WIDTH = 90;
 
 	private String message = "";
 	private String applicationUrl = "";
@@ -45,42 +47,33 @@ public class AboutDialog extends Dialog {
 	}
 
 	private void createContents(final Shell shell) {
-		shell.setLayout(new GridLayout(1, false));
-
-		GridData gridData;
+		GridLayoutFactory.swtDefaults().applyTo(shell);
 
 		final Label info = new Label(shell, SWT.WRAP);
+		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.CENTER).grab(true, false).applyTo(info);
 		info.setText(this.message);
-		gridData = new GridData(SWT.CENTER, SWT.CENTER, true, false);
-		info.setLayoutData(gridData);
 
 		final Link linkProject = new Link(shell, SWT.WRAP);
+		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.CENTER).grab(true, false).applyTo(linkProject);
 		linkProject.setText("<a href=\"" + getApplicationUrl() + "\">" + getApplicationUrl() + "</a>");
-		gridData = new GridData(SWT.CENTER, SWT.CENTER, true, false);
-		linkProject.setLayoutData(gridData);
 		linkProject.addSelectionListener(new LinkSelectionListener());
 
 		final Label acknowledgementsLocations = new Label(shell, SWT.WRAP);
-		gridData = new GridData(SWT.CENTER, SWT.CENTER, true, false);
-		acknowledgementsLocations.setLayoutData(gridData);
+		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.CENTER).grab(true, false).applyTo(acknowledgementsLocations);
 		acknowledgementsLocations.setText(Messages.get("lbl.about.acknowledgements.locations"));
 
 		final Label acknowledgementsData = new Label(shell, SWT.WRAP);
-		gridData = new GridData(SWT.CENTER, SWT.CENTER, true, false);
-		acknowledgementsData.setLayoutData(gridData);
+		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.CENTER).grab(true, false).applyTo(acknowledgementsData);
 		acknowledgementsData.setText(Messages.get("lbl.about.acknowledgements.data"));
 
 		final Link linkSource = new Link(shell, SWT.WRAP);
+		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.CENTER).grab(true, false).applyTo(linkSource);
 		linkSource.setText("<a href=\"http://geofon.gfz-potsdam.de\">http://geofon.gfz-potsdam.de</a>");
-		gridData = new GridData(SWT.CENTER, SWT.CENTER, true, false);
-		linkSource.setLayoutData(gridData);
 		linkSource.addSelectionListener(new LinkSelectionListener());
 
 		final Button okButton = new Button(shell, SWT.PUSH);
+		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.CENTER).grab(true, false).minSize(BUTTON_WIDTH, SWT.DEFAULT).applyTo(okButton);
 		okButton.setText(Messages.get("lbl.button.ok"));
-		gridData = new GridData(SWT.CENTER, SWT.CENTER, true, false);
-		gridData.minimumWidth = 90;
-		okButton.setLayoutData(gridData);
 		okButton.setFocus();
 		okButton.addSelectionListener(new SelectionAdapter() {
 			@Override

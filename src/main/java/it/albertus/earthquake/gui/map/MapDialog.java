@@ -32,8 +32,8 @@ public class MapDialog extends Dialog {
 
 	public static final int DEFAULT_ZOOM = 1;
 
-	private static final String HTML_FILE_NAME = "map.html";
-	private static final int BUTTON_WIDTH = 90;
+	protected static final String HTML_FILE_NAME = "map.html";
+	protected static final int BUTTON_WIDTH = 90;
 
 	private static double centerLat;
 	private static double centerLng;
@@ -48,8 +48,12 @@ public class MapDialog extends Dialog {
 
 	private Image[] images;
 
-	public MapDialog(final Shell shell) {
-		super(shell, SWT.SHEET | SWT.RESIZE | SWT.MAX);
+	public MapDialog(final Shell parent) {
+		this(parent, SWT.SHEET | SWT.RESIZE | SWT.MAX);
+	}
+
+	public MapDialog(final Shell parent, final int style) {
+		super(parent, style);
 	}
 
 	public int open() {
@@ -74,7 +78,7 @@ public class MapDialog extends Dialog {
 		return returnCode;
 	}
 
-	private void createContents(final Shell shell) {
+	protected void createContents(final Shell shell) {
 		GridLayoutFactory.swtDefaults().applyTo(shell);
 
 		final Browser browser = new Browser(shell, SWT.NONE);
@@ -139,7 +143,7 @@ public class MapDialog extends Dialog {
 		shell.setDefaultButton(okButton);
 	}
 
-	private URL getMapPage(final Shell shell) {
+	protected URL getMapPage(final Shell shell) {
 		URL pageUrl = null;
 		File tempFile = null;
 		BufferedReader reader = null;
@@ -192,20 +196,68 @@ public class MapDialog extends Dialog {
 		return pageUrl;
 	}
 
+	public static double getCenterLat() {
+		return centerLat;
+	}
+
+	protected static void setCenterLat(final double centerLat) {
+		MapDialog.centerLat = centerLat;
+	}
+
+	public static double getCenterLng() {
+		return centerLng;
+	}
+
+	protected static void setCenterLng(final double centerLng) {
+		MapDialog.centerLng = centerLng;
+	}
+
+	public static int getZoom() {
+		return zoom;
+	}
+
+	protected static void setZoom(final int zoom) {
+		MapDialog.zoom = zoom;
+	}
+
 	public Double getNorthEastLat() {
 		return northEastLat;
+	}
+
+	protected void setNorthEastLat(final Double northEastLat) {
+		this.northEastLat = northEastLat;
 	}
 
 	public Double getSouthWestLat() {
 		return southWestLat;
 	}
 
+	protected void setSouthWestLat(final Double southWestLat) {
+		this.southWestLat = southWestLat;
+	}
+
 	public Double getNorthEastLng() {
 		return northEastLng;
 	}
 
+	protected void setNorthEastLng(final Double northEastLng) {
+		this.northEastLng = northEastLng;
+	}
+
 	public Double getSouthWestLng() {
 		return southWestLng;
+	}
+
+	protected void setSouthWestLng(final Double southWestLng) {
+		this.southWestLng = southWestLng;
+	}
+
+	public int getReturnCode() {
+		return returnCode;
+	}
+
+	protected void setReturnCode(final int returnCode) {
+		this.returnCode = returnCode;
 	}
 
 	public Image[] getImages() {
@@ -214,18 +266,6 @@ public class MapDialog extends Dialog {
 
 	public void setImages(final Image[] images) {
 		this.images = images;
-	}
-
-	public static double getCenterLat() {
-		return centerLat;
-	}
-
-	public static double getCenterLng() {
-		return centerLng;
-	}
-
-	public static int getZoom() {
-		return zoom;
 	}
 
 }
