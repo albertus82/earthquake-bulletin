@@ -1,8 +1,8 @@
 package it.albertus.earthquake.gui.listener;
 
 import it.albertus.earthquake.gui.SearchForm;
-import it.albertus.earthquake.gui.map.MapBounds;
-import it.albertus.earthquake.gui.map.MapBoundsDialog;
+import it.albertus.jface.google.maps.MapBounds;
+import it.albertus.jface.google.maps.MapBoundsDialog;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
