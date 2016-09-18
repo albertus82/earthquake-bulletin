@@ -43,20 +43,6 @@ public class ResultsTable {
 		return dateFormat.format(date);
 	}
 
-	enum TableDataKey {
-		INITIALIZED(Boolean.class);
-
-		private final Class<?> type;
-
-		private TableDataKey(final Class<?> type) {
-			this.type = type;
-		}
-
-		public Class<?> getType() {
-			return type;
-		}
-	}
-
 	private class EarthquakeViewerComparator extends ViewerComparator {
 
 		private static final int DESCENDING = 1;
@@ -132,24 +118,21 @@ public class ResultsTable {
 
 	public ResultsTable(final Composite parent, final Object layoutData, final EarthquakeBulletinGui gui) {
 		tableViewer = new TableViewer(parent, SWT.BORDER | SWT.FULL_SELECTION) {
+			// Auto resize columns on content change
 			@Override
-			protected void inputChanged(Object input, Object oldInput) {
+			protected void inputChanged(final Object input, final Object oldInput) {
 				super.inputChanged(input, oldInput);
-				if (!(Boolean) tableViewer.getData(TableDataKey.INITIALIZED.toString())) {
-					final Table table = tableViewer.getTable();
-					table.setRedraw(false);
-					final TableColumn sortedColumn = table.getSortColumn();
-					table.setSortColumn(null);
-					for (int j = 0; j < table.getColumns().length; j++) {
-						table.getColumn(j).pack();
-					}
-					table.setSortColumn(sortedColumn);
-					table.setRedraw(true);
-					tableViewer.setData(TableDataKey.INITIALIZED.toString(), true);
+				final Table table = tableViewer.getTable();
+				table.setRedraw(false);
+				final TableColumn sortedColumn = table.getSortColumn();
+				table.setSortColumn(null);
+				for (int j = 0; j < table.getColumns().length; j++) {
+					table.getColumn(j).pack();
 				}
+				table.setSortColumn(sortedColumn);
+				table.setRedraw(true);
 			}
 		};
-		tableViewer.setData(TableDataKey.INITIALIZED.toString(), false);
 		createColumns(parent, tableViewer);
 		final Table table = tableViewer.getTable();
 		table.setLayoutData(layoutData);
