@@ -16,8 +16,6 @@ import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
-import org.eclipse.swt.events.ControlAdapter;
-import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
@@ -117,20 +115,6 @@ public class MapDialog extends Dialog {
 	protected Browser createBrowser(final Shell shell) {
 		final Browser browser = new Browser(shell, SWT.NONE);
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(browser);
-		browser.addControlListener(new ControlAdapter() {
-			@Override
-			public void controlResized(final ControlEvent ce) {
-				try {
-					final Point browserSize = browser.getSize();
-					browser.execute("document.getElementById('map').style.width = " + (browserSize.x - 20) + ";");
-					browser.execute("document.getElementById('map').style.height = " + (browserSize.y - 20) + ";");
-				}
-				catch (final Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-
 		final URL pageUrl = getMapPage(shell);
 		browser.setUrl(pageUrl != null ? pageUrl.toString() : "");
 		return browser;
