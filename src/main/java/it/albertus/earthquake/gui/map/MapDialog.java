@@ -33,6 +33,9 @@ import org.eclipse.swt.widgets.Shell;
 
 public class MapDialog extends Dialog {
 
+	public static final String MARKERS_PLACEHOLDER = "/* Markers */";
+	public static final String OPTIONS_PLACEHOLDER = "/* Options */";
+
 	public static final MapType DEFAULT_TYPE = MapType.TERRAIN;
 	public static final int DEFAULT_ZOOM = 1;
 
@@ -125,8 +128,8 @@ public class MapDialog extends Dialog {
 			public void controlResized(final ControlEvent ce) {
 				try {
 					final Point browserSize = browser.getSize();
-					browser.execute("document.getElementById('map_canvas').style.width= " + (browserSize.x - 20) + ";");
-					browser.execute("document.getElementById('map_canvas').style.height= " + (browserSize.y - 20) + ";");
+					browser.execute("document.getElementById('map').style.width= " + (browserSize.x - 20) + ";");
+					browser.execute("document.getElementById('map').style.height= " + (browserSize.y - 20) + ";");
 				}
 				catch (final Exception e) {
 					e.printStackTrace();
@@ -150,30 +153,37 @@ public class MapDialog extends Dialog {
 			writer = new BufferedWriter(new FileWriter(tempFile));
 			String line;
 			while ((line = reader.readLine()) != null) {
-				if (line.contains("center: new google.maps.LatLng(0, 0)")) {
-					line = line.replace("0, 0", centerLat + ", " + centerLng);
+				// Options
+				if (line.contains(OPTIONS_PLACEHOLDER)) {
+					final StringBuilder optionsBlock = new StringBuilder();
+					optionsBlock.append('\t').append("center: new google.maps.LatLng(").append(centerLat).append(", ").append(centerLng).append("),").append(NewLine.SYSTEM_LINE_SEPARATOR);
+					optionsBlock.append('\t').append("zoom: ").append(zoom).append(',').append(NewLine.SYSTEM_LINE_SEPARATOR);
+					optionsBlock.append('\t').append("mapTypeId: google.maps.MapTypeId.").append(type.name());
+					line = optionsBlock.toString();
 				}
-				else if (line.contains("zoom: 1")) {
-					line = line.replace("1", Integer.toString(zoom));
-				}
-				else if (line.contains("mapTypeId: google.maps.MapTypeId.TERRAIN")) {
-					line = line.replace("TERRAIN", type.name());
-				}
-				else if (!markers.isEmpty() && line.contains("/* Markers */")) {
-					int i = 1;
-					final StringBuilder markersBlock = new StringBuilder();
-					for (final Marker marker : markers) {
-						markersBlock.append("var marker").append(i).append(" = new google.maps.Marker({").append(NewLine.SYSTEM_LINE_SEPARATOR);
-						markersBlock.append('\t').append("position: new google.maps.LatLng(").append(marker.getLatitude()).append(", ").append(marker.getLongitude()).append("),").append(NewLine.SYSTEM_LINE_SEPARATOR);
-						markersBlock.append('\t').append("map: map,").append(NewLine.SYSTEM_LINE_SEPARATOR);
-						markersBlock.append('\t').append("title: '").append(marker.getTitle().replace("'", "\\'")).append("'").append(NewLine.SYSTEM_LINE_SEPARATOR);
-						markersBlock.append("});").append(NewLine.SYSTEM_LINE_SEPARATOR);
-						i++;
+				// Markers
+				else if (line.contains(MARKERS_PLACEHOLDER)) {
+					if (markers.isEmpty()) {
+						line = null;
 					}
-					line = line.replace("/* Markers */", markersBlock.toString().trim());
+					else {
+						int index = 1;
+						final StringBuilder markersBlock = new StringBuilder();
+						for (final Marker marker : markers) {
+							markersBlock.append("var marker").append(index).append(" = new google.maps.Marker({").append(NewLine.SYSTEM_LINE_SEPARATOR);
+							markersBlock.append('\t').append("position: new google.maps.LatLng(").append(marker.getLatitude()).append(", ").append(marker.getLongitude()).append("),").append(NewLine.SYSTEM_LINE_SEPARATOR);
+							markersBlock.append('\t').append("map: map,").append(NewLine.SYSTEM_LINE_SEPARATOR);
+							markersBlock.append('\t').append("title: '").append(marker.getTitle().replace("'", "\\'")).append("'").append(NewLine.SYSTEM_LINE_SEPARATOR);
+							markersBlock.append("});").append(NewLine.SYSTEM_LINE_SEPARATOR);
+							index++;
+						}
+						line = markersBlock.toString().trim();
+					}
 				}
-				writer.write(line);
-				writer.newLine();
+				if (line != null) {
+					writer.write(line);
+					writer.newLine();
+				}
 			}
 			pageUrl = tempFile.toURI().toURL();
 		}
@@ -253,6 +263,9 @@ public class MapDialog extends Dialog {
 	}
 
 	public void setType(final MapType type) {
+		if (type == null) {
+			throw new IllegalArgumentException(String.valueOf(type));
+		}
 		this.type = type;
 	}
 
