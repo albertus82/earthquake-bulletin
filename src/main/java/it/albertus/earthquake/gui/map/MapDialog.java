@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 
 import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.browser.Browser;
@@ -19,8 +20,6 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Dialog;
@@ -76,7 +75,7 @@ public class MapDialog extends Dialog {
 	}
 
 	private void createContents(final Shell shell) {
-		shell.setLayout(new GridLayout(1, false));
+		GridLayoutFactory.swtDefaults().applyTo(shell);
 
 		final Browser browser = new Browser(shell, SWT.NONE);
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(browser);
@@ -98,14 +97,12 @@ public class MapDialog extends Dialog {
 		browser.setUrl(pageUrl != null ? pageUrl.toString() : "");
 
 		final Composite buttonComposite = new Composite(shell, SWT.NONE);
-		buttonComposite.setLayout(new GridLayout(2, false));
+		GridLayoutFactory.swtDefaults().numColumns(2).applyTo(buttonComposite);
 		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.CENTER).grab(true, false).applyTo(buttonComposite);
 
 		final Button okButton = new Button(buttonComposite, SWT.PUSH);
 		okButton.setText(Messages.get("lbl.button.confirm"));
-		GridData gridData = new GridData(SWT.CENTER, SWT.FILL, true, false);
-		gridData.minimumWidth = BUTTON_WIDTH;
-		okButton.setLayoutData(gridData);
+		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.FILL).grab(true, false).minSize(BUTTON_WIDTH, SWT.DEFAULT).applyTo(okButton);
 		okButton.setFocus();
 		okButton.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -132,9 +129,7 @@ public class MapDialog extends Dialog {
 
 		final Button cancelButton = new Button(buttonComposite, SWT.PUSH);
 		cancelButton.setText(Messages.get("lbl.button.cancel"));
-		gridData = new GridData(SWT.CENTER, SWT.FILL, true, false);
-		gridData.minimumWidth = BUTTON_WIDTH;
-		cancelButton.setLayoutData(gridData);
+		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.FILL).grab(true, false).minSize(BUTTON_WIDTH, SWT.DEFAULT).applyTo(cancelButton);
 		cancelButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent se) {
