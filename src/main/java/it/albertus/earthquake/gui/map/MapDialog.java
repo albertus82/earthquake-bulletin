@@ -1,6 +1,7 @@
 package it.albertus.earthquake.gui.map;
 
 import it.albertus.earthquake.resources.Messages;
+import it.albertus.util.NewLine;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -8,11 +9,12 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.SWTException;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
@@ -30,19 +32,17 @@ import org.eclipse.swt.widgets.Shell;
 
 public class MapDialog extends Dialog {
 
+	public static final MapType DEFAULT_TYPE = MapType.TERRAIN;
 	public static final int DEFAULT_ZOOM = 1;
 
 	protected static final String HTML_FILE_NAME = "map.html";
 	protected static final int BUTTON_WIDTH = 90;
 
-	private double centerLat;
-	private double centerLng;
+	private float centerLat;
+	private float centerLng;
 	private int zoom = DEFAULT_ZOOM;
-
-	private Double northEastLat;
-	private Double southWestLat;
-	private Double northEastLng;
-	private Double southWestLng;
+	private MapType type = DEFAULT_TYPE;
+	private final Set<Marker> markers = new HashSet<>();
 
 	private volatile int returnCode = SWT.CANCEL;
 
@@ -56,6 +56,25 @@ public class MapDialog extends Dialog {
 		super(parent, style);
 	}
 
+	public Composite createButtonBox(final Shell shell, final Browser browser) {
+		final Composite buttonComposite = new Composite(shell, SWT.NONE);
+		GridLayoutFactory.swtDefaults().applyTo(buttonComposite);
+		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.CENTER).grab(true, false).applyTo(buttonComposite);
+
+		final Button closeButton = new Button(buttonComposite, SWT.PUSH);
+		closeButton.setText(Messages.get("lbl.button.close"));
+		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.FILL).grab(true, false).minSize(BUTTON_WIDTH, SWT.DEFAULT).applyTo(closeButton);
+		closeButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(final SelectionEvent se) {
+				shell.close();
+			}
+		});
+
+		shell.setDefaultButton(closeButton);
+		return buttonComposite;
+	}
+
 	public int open() {
 		final Shell shell = new Shell(getParent(), getStyle());
 		shell.setText(getText());
@@ -64,10 +83,9 @@ public class MapDialog extends Dialog {
 			shell.setImages(images);
 		}
 		createContents(shell);
-		final Point normalShellSize = shell.getSize();
-		final Point packedShellSize = shell.computeSize(SWT.DEFAULT, SWT.DEFAULT, true);
-		shell.setMinimumSize(packedShellSize);
-		shell.setSize(Math.min(packedShellSize.x * 3, normalShellSize.x), Math.min(packedShellSize.y * 3, normalShellSize.y));
+		final Point minimumSize = computeMinimumSize(shell);
+		shell.setSize(computeSize(shell));
+		shell.setMinimumSize(minimumSize);
 		shell.open();
 		final Display display = getParent().getDisplay();
 		while (!shell.isDisposed()) {
@@ -78,9 +96,23 @@ public class MapDialog extends Dialog {
 		return returnCode;
 	}
 
+	protected Point computeSize(final Shell shell) {
+		final Point normalShellSize = shell.getSize();
+		int size = (int) (Math.min(normalShellSize.x, normalShellSize.y) / 1.25);
+		return new Point(size, size);
+	}
+
+	protected Point computeMinimumSize(final Shell shell) {
+		return shell.computeSize(SWT.DEFAULT, SWT.DEFAULT, true);
+	}
+
 	protected void createContents(final Shell shell) {
 		GridLayoutFactory.swtDefaults().applyTo(shell);
+		final Browser browser = createBrowser(shell);
+		createButtonBox(shell, browser);
+	}
 
+	protected Browser createBrowser(final Shell shell) {
 		final Browser browser = new Browser(shell, SWT.NONE);
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(browser);
 		browser.addControlListener(new ControlAdapter() {
@@ -99,48 +131,7 @@ public class MapDialog extends Dialog {
 
 		final URL pageUrl = getMapPage(shell);
 		browser.setUrl(pageUrl != null ? pageUrl.toString() : "");
-
-		final Composite buttonComposite = new Composite(shell, SWT.NONE);
-		GridLayoutFactory.swtDefaults().numColumns(2).applyTo(buttonComposite);
-		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.CENTER).grab(true, false).applyTo(buttonComposite);
-
-		final Button confirmButton = new Button(buttonComposite, SWT.PUSH);
-		confirmButton.setText(Messages.get("lbl.button.confirm"));
-		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.FILL).grab(true, false).minSize(BUTTON_WIDTH, SWT.DEFAULT).applyTo(confirmButton);
-		confirmButton.setFocus();
-		confirmButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(final SelectionEvent se) {
-				try {
-					centerLat = (double) browser.evaluate("return map.getCenter().lat();");
-					centerLng = (double) browser.evaluate("return map.getCenter().lng();");
-					zoom = ((Number) browser.evaluate("return map.getZoom();")).intValue();
-					northEastLat = (Double) browser.evaluate("return map.getBounds().getNorthEast().lat();");
-					southWestLat = (Double) browser.evaluate("return map.getBounds().getSouthWest().lat();");
-					northEastLng = (Double) browser.evaluate("return map.getBounds().getNorthEast().lng();");
-					southWestLng = (Double) browser.evaluate("return map.getBounds().getSouthWest().lng();");
-					returnCode = SWT.OK;
-				}
-				catch (final SWTException swte) {/* Ignore */}
-				catch (final Exception e) {
-					e.printStackTrace();
-				}
-				finally {
-					shell.close();
-				}
-			}
-		});
-
-		final Button cancelButton = new Button(buttonComposite, SWT.PUSH);
-		cancelButton.setText(Messages.get("lbl.button.cancel"));
-		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.FILL).grab(true, false).minSize(BUTTON_WIDTH, SWT.DEFAULT).applyTo(cancelButton);
-		cancelButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(final SelectionEvent se) {
-				shell.close();
-			}
-		});
-		shell.setDefaultButton(confirmButton);
+		return browser;
 	}
 
 	protected URL getMapPage(final Shell shell) {
@@ -154,11 +145,27 @@ public class MapDialog extends Dialog {
 			writer = new BufferedWriter(new FileWriter(tempFile));
 			String line;
 			while ((line = reader.readLine()) != null) {
-				if (line.contains("center : new google.maps.LatLng(0, 0)")) {
+				if (line.contains("center: new google.maps.LatLng(0, 0)")) {
 					line = line.replace("0, 0", centerLat + ", " + centerLng);
 				}
-				else if (line.contains("zoom : 1")) {
+				else if (line.contains("zoom: 1")) {
 					line = line.replace("1", Integer.toString(zoom));
+				}
+				else if (line.contains("mapTypeId: google.maps.MapTypeId.TERRAIN")) {
+					line = line.replace("TERRAIN", type.name());
+				}
+				else if (!markers.isEmpty() && line.contains("/* Markers */")) {
+					int i = 1;
+					final StringBuilder markersBlock = new StringBuilder();
+					for (final Marker marker : markers) {
+						markersBlock.append("var marker").append(i).append(" = new google.maps.Marker({").append(NewLine.SYSTEM_LINE_SEPARATOR);
+						markersBlock.append('\t').append("position: new google.maps.LatLng(").append(marker.getLatitude()).append(", ").append(marker.getLongitude()).append("),").append(NewLine.SYSTEM_LINE_SEPARATOR);
+						markersBlock.append('\t').append("map: map,").append(NewLine.SYSTEM_LINE_SEPARATOR);
+						markersBlock.append('\t').append("title: '").append(marker.getTitle().replace("'", "\\'")).append("'").append(NewLine.SYSTEM_LINE_SEPARATOR);
+						markersBlock.append("});").append(NewLine.SYSTEM_LINE_SEPARATOR);
+						i++;
+					}
+					line = line.replace("/* Markers */", markersBlock.toString().trim());
 				}
 				writer.write(line);
 				writer.newLine();
@@ -196,19 +203,19 @@ public class MapDialog extends Dialog {
 		return pageUrl;
 	}
 
-	public double getCenterLat() {
+	public float getCenterLat() {
 		return centerLat;
 	}
 
-	public void setCenterLat(final double centerLat) {
+	public void setCenterLat(final float centerLat) {
 		this.centerLat = centerLat;
 	}
 
-	public double getCenterLng() {
+	public float getCenterLng() {
 		return centerLng;
 	}
 
-	public void setCenterLng(final double centerLng) {
+	public void setCenterLng(final float centerLng) {
 		this.centerLng = centerLng;
 	}
 
@@ -218,38 +225,6 @@ public class MapDialog extends Dialog {
 
 	public void setZoom(final int zoom) {
 		this.zoom = zoom;
-	}
-
-	public Double getNorthEastLat() {
-		return northEastLat;
-	}
-
-	public void setNorthEastLat(final Double northEastLat) {
-		this.northEastLat = northEastLat;
-	}
-
-	public Double getSouthWestLat() {
-		return southWestLat;
-	}
-
-	public void setSouthWestLat(final Double southWestLat) {
-		this.southWestLat = southWestLat;
-	}
-
-	public Double getNorthEastLng() {
-		return northEastLng;
-	}
-
-	public void setNorthEastLng(final Double northEastLng) {
-		this.northEastLng = northEastLng;
-	}
-
-	public Double getSouthWestLng() {
-		return southWestLng;
-	}
-
-	public void setSouthWestLng(final Double southWestLng) {
-		this.southWestLng = southWestLng;
 	}
 
 	public int getReturnCode() {
@@ -266,6 +241,18 @@ public class MapDialog extends Dialog {
 
 	public void setImages(final Image[] images) {
 		this.images = images;
+	}
+
+	public MapType getType() {
+		return type;
+	}
+
+	public void setType(final MapType type) {
+		this.type = type;
+	}
+
+	public Set<Marker> getMarkers() {
+		return markers;
 	}
 
 }

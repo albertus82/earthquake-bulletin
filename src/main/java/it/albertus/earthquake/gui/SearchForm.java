@@ -9,7 +9,7 @@ import it.albertus.earthquake.gui.listener.FormatRadioSelectionListener;
 import it.albertus.earthquake.gui.listener.MapButtonSelectionListener;
 import it.albertus.earthquake.gui.listener.SearchButtonSelectionListener;
 import it.albertus.earthquake.gui.listener.StopButtonSelectionListener;
-import it.albertus.earthquake.gui.map.MapDialog;
+import it.albertus.earthquake.gui.map.MapBoundsDialog;
 import it.albertus.earthquake.model.Format;
 import it.albertus.earthquake.resources.Messages;
 import it.albertus.jface.listener.FloatVerifyListener;
@@ -101,7 +101,7 @@ public class SearchForm {
 	private final Button clearButton;
 	private final Button openMap;
 
-	private final MapDialog mapDialog;
+	private final MapBoundsDialog mapBoundsDialog;
 
 	private final TraverseListener formTextTraverseListener = new FormTextTraverseListener(this);
 	private final VerifyListener periodVerifyListener = new IntegerVerifyListener(true);
@@ -268,9 +268,9 @@ public class SearchForm {
 		autoRefreshButton.addSelectionListener(new AutoRefreshButtonSelectionListener(this));
 		autoRefreshButton.notifyListeners(SWT.Selection, null);
 
-		mapDialog = new MapDialog(gui.getShell());
-		mapDialog.setText(Messages.get("lbl.map.title"));
-		mapDialog.setImages(Images.MAIN_ICONS);
+		mapBoundsDialog = new MapBoundsDialog(gui.getShell());
+		mapBoundsDialog.setText(Messages.get("lbl.map.bounds.title"));
+		mapBoundsDialog.setImages(Images.MAIN_ICONS);
 	}
 
 	public void updateTexts() {
@@ -299,7 +299,8 @@ public class SearchForm {
 		searchButton.setText(Messages.get("lbl.form.button.submit"));
 		stopButton.setText(Messages.get("lbl.form.button.stop"));
 		clearButton.setText(Messages.get("lbl.form.button.clear"));
-		mapDialog.setText(Messages.get("lbl.map.title"));
+		openMap.setText(Messages.get("lbl.form.button.map"));
+		mapBoundsDialog.setText(Messages.get("lbl.map.bounds.title"));
 	}
 
 	public SearchJob getSearchJob() {
@@ -466,8 +467,8 @@ public class SearchForm {
 		return openMap;
 	}
 
-	public MapDialog getMapDialog() {
-		return mapDialog;
+	public MapBoundsDialog getMapBoundsDialog() {
+		return mapBoundsDialog;
 	}
 
 }

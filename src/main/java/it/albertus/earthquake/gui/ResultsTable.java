@@ -1,7 +1,8 @@
 package it.albertus.earthquake.gui;
 
 import it.albertus.earthquake.gui.listener.CopyLinkSelectionListener;
-import it.albertus.earthquake.gui.listener.GoogleMapsSelectionListener;
+import it.albertus.earthquake.gui.listener.GoogleMapsBrowserSelectionListener;
+import it.albertus.earthquake.gui.listener.GoogleMapsPopupSelectionListener;
 import it.albertus.earthquake.gui.listener.OpenInBrowserSelectionListener;
 import it.albertus.earthquake.gui.listener.ResultsTableContextMenuDetectListener;
 import it.albertus.earthquake.gui.listener.ShowMapListener;
@@ -112,9 +113,10 @@ public class ResultsTable {
 
 	private final Menu contextMenu;
 	private final MenuItem showMapMenuItem;
-	private final MenuItem openInBrowserMenuItem;
+	private final MenuItem openBrowserMenuItem;
 	private final MenuItem copyLinkMenuItem;
-	private final MenuItem googleMapsMenuItem;
+	private final MenuItem googleMapsBrowserMenuItem;
+	private final MenuItem googleMapsPopupMenuItem;
 
 	public ResultsTable(final Composite parent, final Object layoutData, final EarthquakeBulletinGui gui) {
 		tableViewer = new TableViewer(parent, SWT.BORDER | SWT.FULL_SELECTION) {
@@ -154,19 +156,26 @@ public class ResultsTable {
 		new MenuItem(contextMenu, SWT.SEPARATOR);
 
 		// Open in browser...
-		openInBrowserMenuItem = new MenuItem(contextMenu, SWT.PUSH);
-		openInBrowserMenuItem.setText(Messages.get("lbl.menu.item.open.in.browser"));
-		openInBrowserMenuItem.addSelectionListener(new OpenInBrowserSelectionListener(this));
+		openBrowserMenuItem = new MenuItem(contextMenu, SWT.PUSH);
+		openBrowserMenuItem.setText(Messages.get("lbl.menu.item.open.browser"));
+		openBrowserMenuItem.addSelectionListener(new OpenInBrowserSelectionListener(this));
 
 		// Copy link...
 		copyLinkMenuItem = new MenuItem(contextMenu, SWT.PUSH);
 		copyLinkMenuItem.setText(Messages.get("lbl.menu.item.copy.link"));
 		copyLinkMenuItem.addSelectionListener(new CopyLinkSelectionListener(this));
 
-		// Google Maps...
-		googleMapsMenuItem = new MenuItem(contextMenu, SWT.PUSH);
-		googleMapsMenuItem.setText(Messages.get("lbl.menu.item.google.maps"));
-		googleMapsMenuItem.addSelectionListener(new GoogleMapsSelectionListener(this));
+		new MenuItem(contextMenu, SWT.SEPARATOR);
+
+		// Google Maps Popup...
+		googleMapsPopupMenuItem = new MenuItem(contextMenu, SWT.PUSH);
+		googleMapsPopupMenuItem.setText(Messages.get("lbl.menu.item.google.maps.popup"));
+		googleMapsPopupMenuItem.addSelectionListener(new GoogleMapsPopupSelectionListener(this));
+
+		// Google Maps in browser...
+		googleMapsBrowserMenuItem = new MenuItem(contextMenu, SWT.PUSH);
+		googleMapsBrowserMenuItem.setText(Messages.get("lbl.menu.item.google.maps.browser"));
+		googleMapsBrowserMenuItem.addSelectionListener(new GoogleMapsBrowserSelectionListener(this));
 
 		table.addMenuDetectListener(new ResultsTableContextMenuDetectListener(this));
 	}
@@ -323,8 +332,10 @@ public class ResultsTable {
 			table.getColumn(i).setText(labelsMap.get(i).getString());
 		}
 		showMapMenuItem.setText(Messages.get("lbl.menu.item.show.map"));
-		googleMapsMenuItem.setText(Messages.get("lbl.menu.item.google.maps"));
-		openInBrowserMenuItem.setText(Messages.get("lbl.menu.item.open.in.browser"));
+		openBrowserMenuItem.setText(Messages.get("lbl.menu.item.open.browser"));
+		copyLinkMenuItem.setText(Messages.get("lbl.menu.item.copy.link"));
+		googleMapsPopupMenuItem.setText(Messages.get("lbl.menu.item.google.maps.popup"));
+		googleMapsBrowserMenuItem.setText(Messages.get("lbl.menu.item.google.maps.browser"));
 	}
 
 	public TableViewer getTableViewer() {
@@ -339,16 +350,20 @@ public class ResultsTable {
 		return showMapMenuItem;
 	}
 
+	public MenuItem getOpenBrowserMenuItem() {
+		return openBrowserMenuItem;
+	}
+
 	public MenuItem getCopyLinkMenuItem() {
 		return copyLinkMenuItem;
 	}
 
-	public MenuItem getOpenInBrowserMenuItem() {
-		return openInBrowserMenuItem;
+	public MenuItem getGoogleMapsBrowserMenuItem() {
+		return googleMapsBrowserMenuItem;
 	}
 
-	public MenuItem getGoogleMapsMenuItem() {
-		return googleMapsMenuItem;
+	public MenuItem getGoogleMapsPopupMenuItem() {
+		return googleMapsPopupMenuItem;
 	}
 
 }

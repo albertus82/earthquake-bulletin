@@ -1,0 +1,118 @@
+package it.albertus.earthquake.gui.map;
+
+import it.albertus.earthquake.resources.Messages;
+
+import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.layout.GridLayoutFactory;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
+import org.eclipse.swt.browser.Browser;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Shell;
+
+public class MapBoundsDialog extends MapDialog {
+
+	private Double northEastLat;
+	private Double southWestLat;
+	private Double northEastLng;
+	private Double southWestLng;
+
+	public MapBoundsDialog(final Shell parent) {
+		super(parent);
+	}
+
+	public MapBoundsDialog(final Shell parent, final int style) {
+		super(parent, style);
+	}
+
+	@Override
+	public Composite createButtonBox(final Shell shell, final Browser browser) {
+		final Composite buttonComposite = new Composite(shell, SWT.NONE);
+		GridLayoutFactory.swtDefaults().numColumns(2).applyTo(buttonComposite);
+		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.CENTER).grab(true, false).applyTo(buttonComposite);
+
+		final Button confirmButton = new Button(buttonComposite, SWT.PUSH);
+		confirmButton.setText(Messages.get("lbl.button.confirm"));
+		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.FILL).grab(true, false).minSize(BUTTON_WIDTH, SWT.DEFAULT).applyTo(confirmButton);
+		confirmButton.setFocus();
+		confirmButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(final SelectionEvent se) {
+				try {
+					setCenterLat(((Number) browser.evaluate("return map.getCenter().lat();")).floatValue());
+					setCenterLng(((Number) browser.evaluate("return map.getCenter().lng();")).floatValue());
+					setZoom(((Number) browser.evaluate("return map.getZoom();")).intValue());
+					northEastLat = (Double) browser.evaluate("return map.getBounds().getNorthEast().lat();");
+					southWestLat = (Double) browser.evaluate("return map.getBounds().getSouthWest().lat();");
+					northEastLng = (Double) browser.evaluate("return map.getBounds().getNorthEast().lng();");
+					southWestLng = (Double) browser.evaluate("return map.getBounds().getSouthWest().lng();");
+					setReturnCode(SWT.OK);
+				}
+				catch (final SWTException swte) {/* Ignore */}
+				catch (final Exception e) {
+					e.printStackTrace();
+				}
+				finally {
+					shell.close();
+				}
+			}
+		});
+
+		final Button cancelButton = new Button(buttonComposite, SWT.PUSH);
+		cancelButton.setText(Messages.get("lbl.button.cancel"));
+		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.FILL).grab(true, false).minSize(BUTTON_WIDTH, SWT.DEFAULT).applyTo(cancelButton);
+		cancelButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(final SelectionEvent se) {
+				shell.close();
+			}
+		});
+
+		shell.setDefaultButton(confirmButton);
+		return buttonComposite;
+	}
+
+	@Override
+	protected Point computeSize(final Shell shell) {
+		final Point normalShellSize = shell.getSize();
+		final Point packedShellSize = computeMinimumSize(shell);
+		return new Point(Math.min(packedShellSize.x * 3, normalShellSize.x), Math.min(packedShellSize.y * 3, normalShellSize.y));
+	}
+
+	public Double getNorthEastLat() {
+		return northEastLat;
+	}
+
+	public void setNorthEastLat(final Double northEastLat) {
+		this.northEastLat = northEastLat;
+	}
+
+	public Double getSouthWestLat() {
+		return southWestLat;
+	}
+
+	public void setSouthWestLat(final Double southWestLat) {
+		this.southWestLat = southWestLat;
+	}
+
+	public Double getNorthEastLng() {
+		return northEastLng;
+	}
+
+	public void setNorthEastLng(final Double northEastLng) {
+		this.northEastLng = northEastLng;
+	}
+
+	public Double getSouthWestLng() {
+		return southWestLng;
+	}
+
+	public void setSouthWestLng(final Double southWestLng) {
+		this.southWestLng = southWestLng;
+	}
+
+}

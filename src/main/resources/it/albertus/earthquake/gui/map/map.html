@@ -11,12 +11,13 @@
 		<script type="text/javascript">
 			var map;
 			function initialize() {
-				var myOptions = {
-					center : new google.maps.LatLng(0, 0),
-					zoom : 1,
-					mapTypeId : google.maps.MapTypeId.ROADMAP
+				var mapOptions = {
+					center: new google.maps.LatLng(0, 0),
+					zoom: 1,
+					mapTypeId: google.maps.MapTypeId.TERRAIN
 				};
-				map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+				map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
+				/* Markers */
 			}
 		</script>
 	</head>

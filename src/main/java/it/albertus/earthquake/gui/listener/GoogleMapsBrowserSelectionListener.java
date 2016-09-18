@@ -7,11 +7,11 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.program.Program;
 
-public class GoogleMapsSelectionListener extends SelectionAdapter {
+public class GoogleMapsBrowserSelectionListener extends SelectionAdapter {
 
 	private final ResultsTable resultsTable;
 
-	public GoogleMapsSelectionListener(final ResultsTable resultsTable) {
+	public GoogleMapsBrowserSelectionListener(final ResultsTable resultsTable) {
 		this.resultsTable = resultsTable;
 	}
 
