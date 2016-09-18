@@ -29,17 +29,17 @@ public class XhtmlTableDataTransformer {
 	private static final String magnitudeSuffix = "</";
 	private static final String latitudePrefix = magnitudePrefix;
 	private static final String latitudeSuffix = "&deg;";
+	private static final String latitudeSignPrefix = latitudeSuffix;
+	private static final String latitudeSignSuffix = magnitudeSuffix;
 	private static final String longitudePrefix = latitudePrefix;
 	private static final String longitudeSuffix = latitudeSuffix;
+	private static final String longitudeSignPrefix = latitudeSuffix;
+	private static final String longitudeSignSuffix = magnitudeSuffix;
 	private static final String depthSuffix = magnitudeSuffix;
 	private static final String statusPrefix = guidSuffix;
 	private static final String statusSuffix = magnitudeSuffix;
 	private static final String regionPrefix = statusPrefix;
 	private static final String regionSuffix = magnitudeSuffix;
-	private static final String latitudeSignPrefix = latitudeSuffix;
-	private static final String longitudeSignPrefix = latitudeSuffix;
-	private static final String latitudeSignSuffix = magnitudeSuffix;
-	private static final String longitudeSignSuffix = magnitudeSuffix;
 
 	/** Use {@link #parseRssDate} method instead. */
 	@Deprecated

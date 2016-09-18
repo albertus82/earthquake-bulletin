@@ -82,7 +82,7 @@ public class SearchJob extends Job {
 				if (form.getPeriodFromText().isEnabled()) {
 					params.put("datemin", URIEncoder.encodeURI(form.getPeriodFromText().getText()));
 				}
-				if (form.getPeriodFromText().isEnabled()) {
+				if (form.getPeriodToText().isEnabled()) {
 					params.put("datemax", URIEncoder.encodeURI(form.getPeriodToText().getText()));
 				}
 				params.put("latmin", URIEncoder.encodeURI(form.getLatitudeFromText().getText()));
