@@ -1,12 +1,12 @@
 package it.albertus.earthquake.gui.job;
 
-import java.io.FileNotFoundException;
-
 import it.albertus.earthquake.gui.EarthquakeBulletinGui;
 import it.albertus.earthquake.gui.util.ImageDownloader;
 import it.albertus.earthquake.model.Earthquake;
 import it.albertus.earthquake.resources.Messages;
 import it.albertus.jface.SwtThreadExecutor;
+
+import java.io.FileNotFoundException;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -45,11 +45,11 @@ public class DownloadMapJob extends Job {
 				downloadedImage = ImageDownloader.downloadImage(earthquake.getEnclosure());
 			}
 			catch (final FileNotFoundException fnfe) {
-				fnfe.printStackTrace();	
+				fnfe.printStackTrace();
 				new SwtThreadExecutor(gui.getShell()) {
 					@Override
 					protected void run() {
-						final MessageBox dialog = new MessageBox(gui.getShell(), SWT.ICON_WARNING);
+						final MessageBox dialog = new MessageBox(gui.getShell(), SWT.ICON_INFORMATION);
 						dialog.setText(Messages.get("lbl.window.title"));
 						dialog.setMessage(Messages.get("err.job.map.not.found"));
 						dialog.open();
