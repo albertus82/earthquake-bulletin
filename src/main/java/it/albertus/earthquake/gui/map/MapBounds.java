@@ -11,11 +11,20 @@ public class MapBounds implements Serializable {
 	private Double northEastLng;
 	private Double southWestLng;
 
+	public MapBounds() {}
+
+	public MapBounds(final Double northEastLat, final Double southWestLat, final Double northEastLng, final Double southWestLng) {
+		this.northEastLat = northEastLat;
+		this.southWestLat = southWestLat;
+		this.northEastLng = northEastLng;
+		this.southWestLng = southWestLng;
+	}
+
 	public Double getNorthEastLat() {
 		return northEastLat;
 	}
 
-	public void setNorthEastLat(Double northEastLat) {
+	public void setNorthEastLat(final Double northEastLat) {
 		this.northEastLat = northEastLat;
 	}
 
@@ -23,7 +32,7 @@ public class MapBounds implements Serializable {
 		return southWestLat;
 	}
 
-	public void setSouthWestLat(Double southWestLat) {
+	public void setSouthWestLat(final Double southWestLat) {
 		this.southWestLat = southWestLat;
 	}
 
@@ -31,7 +40,7 @@ public class MapBounds implements Serializable {
 		return northEastLng;
 	}
 
-	public void setNorthEastLng(Double northEastLng) {
+	public void setNorthEastLng(final Double northEastLng) {
 		this.northEastLng = northEastLng;
 	}
 
@@ -39,7 +48,7 @@ public class MapBounds implements Serializable {
 		return southWestLng;
 	}
 
-	public void setSouthWestLng(Double southWestLng) {
+	public void setSouthWestLng(final Double southWestLng) {
 		this.southWestLng = southWestLng;
 	}
 
@@ -60,7 +69,7 @@ public class MapBounds implements Serializable {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (this == obj) {
 			return true;
 		}

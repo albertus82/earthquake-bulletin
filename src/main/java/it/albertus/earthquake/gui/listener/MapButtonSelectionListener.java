@@ -1,6 +1,7 @@
 package it.albertus.earthquake.gui.listener;
 
 import it.albertus.earthquake.gui.SearchForm;
+import it.albertus.earthquake.gui.map.MapBounds;
 import it.albertus.earthquake.gui.map.MapBoundsDialog;
 
 import java.text.DecimalFormat;
@@ -38,17 +39,18 @@ public class MapButtonSelectionListener extends SelectionAdapter {
 	public void widgetSelected(final SelectionEvent se) {
 		final MapBoundsDialog mapBoundsDialog = form.getMapBoundsDialog();
 		if (mapBoundsDialog.open() == SWT.OK) {
-			if (mapBoundsDialog.getSouthWestLat() != null) {
-				form.getLatitudeFromText().setText(formatCoordinate(mapBoundsDialog.getSouthWestLat()));
+			final MapBounds bounds = mapBoundsDialog.getBounds();
+			if (bounds.getSouthWestLat() != null) {
+				form.getLatitudeFromText().setText(formatCoordinate(bounds.getSouthWestLat()));
 			}
-			if (mapBoundsDialog.getNorthEastLat() != null) {
-				form.getLatitudeToText().setText(formatCoordinate(mapBoundsDialog.getNorthEastLat()));
+			if (bounds.getNorthEastLat() != null) {
+				form.getLatitudeToText().setText(formatCoordinate(bounds.getNorthEastLat()));
 			}
-			if (mapBoundsDialog.getSouthWestLng() != null) {
-				form.getLongitudeFromText().setText(formatCoordinate(mapBoundsDialog.getSouthWestLng()));
+			if (bounds.getSouthWestLng() != null) {
+				form.getLongitudeFromText().setText(formatCoordinate(bounds.getSouthWestLng()));
 			}
-			if (mapBoundsDialog.getNorthEastLng() != null) {
-				form.getLongitudeToText().setText(formatCoordinate(mapBoundsDialog.getNorthEastLng()));
+			if (bounds.getNorthEastLng() != null) {
+				form.getLongitudeToText().setText(formatCoordinate(bounds.getNorthEastLng()));
 			}
 		}
 	}

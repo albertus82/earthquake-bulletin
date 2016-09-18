@@ -17,10 +17,7 @@ import org.eclipse.swt.widgets.Shell;
 
 public class MapBoundsDialog extends MapDialog {
 
-	private Double northEastLat;
-	private Double southWestLat;
-	private Double northEastLng;
-	private Double southWestLng;
+	private final MapBounds bounds = new MapBounds();
 
 	public MapBoundsDialog(final Shell parent) {
 		super(parent);
@@ -47,10 +44,10 @@ public class MapBoundsDialog extends MapDialog {
 					getOptions().setCenterLat(((Number) browser.evaluate("return map.getCenter().lat();")).floatValue());
 					getOptions().setCenterLng(((Number) browser.evaluate("return map.getCenter().lng();")).floatValue());
 					getOptions().setZoom(((Number) browser.evaluate("return map.getZoom();")).intValue());
-					northEastLat = (Double) browser.evaluate("return map.getBounds().getNorthEast().lat();");
-					southWestLat = (Double) browser.evaluate("return map.getBounds().getSouthWest().lat();");
-					northEastLng = (Double) browser.evaluate("return map.getBounds().getNorthEast().lng();");
-					southWestLng = (Double) browser.evaluate("return map.getBounds().getSouthWest().lng();");
+					bounds.setNorthEastLat((Double) browser.evaluate("return map.getBounds().getNorthEast().lat();"));
+					bounds.setSouthWestLat((Double) browser.evaluate("return map.getBounds().getSouthWest().lat();"));
+					bounds.setNorthEastLng((Double) browser.evaluate("return map.getBounds().getNorthEast().lng();"));
+					bounds.setSouthWestLng((Double) browser.evaluate("return map.getBounds().getSouthWest().lng();"));
 					setReturnCode(SWT.OK);
 				}
 				catch (final SWTException swte) {/* Ignore */}
@@ -89,36 +86,8 @@ public class MapBoundsDialog extends MapDialog {
 		return GridLayoutFactory.swtDefaults().create();
 	}
 
-	public Double getNorthEastLat() {
-		return northEastLat;
-	}
-
-	public void setNorthEastLat(final Double northEastLat) {
-		this.northEastLat = northEastLat;
-	}
-
-	public Double getSouthWestLat() {
-		return southWestLat;
-	}
-
-	public void setSouthWestLat(final Double southWestLat) {
-		this.southWestLat = southWestLat;
-	}
-
-	public Double getNorthEastLng() {
-		return northEastLng;
-	}
-
-	public void setNorthEastLng(final Double northEastLng) {
-		this.northEastLng = northEastLng;
-	}
-
-	public Double getSouthWestLng() {
-		return southWestLng;
-	}
-
-	public void setSouthWestLng(final Double southWestLng) {
-		this.southWestLng = southWestLng;
+	public MapBounds getBounds() {
+		return bounds;
 	}
 
 }

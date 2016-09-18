@@ -14,6 +14,15 @@ public class MapOptions implements Serializable {
 	private int zoom = DEFAULT_ZOOM;
 	private MapType type = DEFAULT_TYPE;
 
+	public MapOptions() {}
+
+	public MapOptions(final float centerLat, final float centerLng, final int zoom, final MapType type) {
+		this.centerLat = centerLat;
+		this.centerLng = centerLng;
+		this.zoom = zoom;
+		this.type = type;
+	}
+
 	public float getCenterLat() {
 		return centerLat;
 	}
@@ -66,7 +75,7 @@ public class MapOptions implements Serializable {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (this == obj) {
 			return true;
 		}
