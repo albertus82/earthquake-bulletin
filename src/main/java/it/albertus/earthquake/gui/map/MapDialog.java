@@ -61,6 +61,11 @@ public class MapDialog extends Dialog {
 			shell.setImages(images);
 		}
 		createContents(shell);
+		final Point normalShellSize = shell.getSize();
+		shell.pack();
+		final Point packedShellSize = shell.getSize();
+		shell.setMinimumSize(packedShellSize);
+		shell.setSize(Math.min(packedShellSize.x * 3, normalShellSize.x), Math.min(packedShellSize.y * 3, normalShellSize.y));
 		shell.open();
 		final Display display = getParent().getDisplay();
 		while (!shell.isDisposed()) {

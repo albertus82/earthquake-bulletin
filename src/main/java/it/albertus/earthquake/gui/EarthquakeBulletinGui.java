@@ -110,6 +110,13 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 	}
 
 	@Override
+	protected void constrainShellSize() {
+		super.constrainShellSize();
+		final Shell shell = getShell();
+		shell.setMinimumSize(shell.computeSize(SWT.DEFAULT, SWT.DEFAULT, true));
+	}
+
+	@Override
 	protected void initializeBounds() {/* Do not pack the shell */}
 
 	@Override
