@@ -18,6 +18,7 @@ import it.albertus.jface.preference.LocalizedLabelsAndValues;
 import it.albertus.jface.preference.PreferenceDetails;
 import it.albertus.jface.preference.PreferenceDetails.PreferenceDetailsBuilder;
 import it.albertus.jface.preference.field.DefaultBooleanFieldEditor;
+import it.albertus.jface.preference.field.DefaultDateFieldEditor;
 import it.albertus.jface.preference.field.DefaultFloatFieldEditor;
 import it.albertus.jface.preference.field.DefaultIntegerFieldEditor;
 import it.albertus.jface.preference.field.DefaultRadioGroupFieldEditor;
@@ -31,7 +32,6 @@ import java.util.Set;
 
 import org.eclipse.jface.preference.ComboFieldEditor;
 import org.eclipse.jface.preference.FieldEditor;
-import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.swt.widgets.Composite;
 
 public enum Preference implements IPreference {
@@ -54,13 +54,13 @@ public enum Preference implements IPreference {
 		public String getString() {
 			return Messages.get("lbl.form.criteria.period") + " " + Messages.get("lbl.form.criteria.period.from") + " " + Messages.get("lbl.form.criteria.period.from.note");
 		};
-	}).build(), new FieldEditorDetailsBuilder(StringFieldEditor.class).textLimit(SearchForm.PERIOD_TEXT_LIMIT).build()),
+	}).build(), new FieldEditorDetailsBuilder(DefaultDateFieldEditor.class).datePattern(SearchForm.DATE_PATTERN).textLimit(SearchForm.PERIOD_TEXT_LIMIT).build()),
 	CRITERIA_PERIOD_TO(new PreferenceDetailsBuilder(PageDefinition.CRITERIA).label(new Localized() {
 		@Override
 		public String getString() {
 			return Messages.get("lbl.form.criteria.period") + " " + Messages.get("lbl.form.criteria.period.to") + " " + Messages.get("lbl.form.criteria.period.to.note");
 		};
-	}).build(), new FieldEditorDetailsBuilder(StringFieldEditor.class).textLimit(SearchForm.PERIOD_TEXT_LIMIT).build()),
+	}).build(), new FieldEditorDetailsBuilder(DefaultDateFieldEditor.class).datePattern(SearchForm.DATE_PATTERN).textLimit(SearchForm.PERIOD_TEXT_LIMIT).build()),
 	CRITERIA_LATITUDE_FROM(new PreferenceDetailsBuilder(PageDefinition.CRITERIA).label(new Localized() {
 		@Override
 		public String getString() {

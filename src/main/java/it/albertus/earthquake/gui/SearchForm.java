@@ -47,6 +47,8 @@ public class SearchForm {
 	public static final float MAGNITUDE_MIN_VALUE = 0;
 	public static final float MAGNITUDE_MAX_VALUE = 10;
 
+	public static final String DATE_PATTERN = "yyyy-MM-dd";
+
 	public interface Defaults {
 		boolean AUTOREFRESH_ENABLED = false;
 		boolean CRITERIA_RESTRICT = false;
