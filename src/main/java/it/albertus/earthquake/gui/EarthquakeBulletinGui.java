@@ -5,11 +5,11 @@ import it.albertus.earthquake.gui.listener.CloseListener;
 import it.albertus.earthquake.resources.Messages;
 import it.albertus.util.Configuration;
 
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.window.ApplicationWindow;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -34,10 +34,6 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 		final Display display = Display.getDefault();
 		final EarthquakeBulletinGui gui = new EarthquakeBulletinGui(display);
 		gui.open();
-
-		if (configuration.getBoolean("search.on.start", Defaults.SEARCH_ON_START)) {
-			gui.getSearchForm().getSearchButton().notifyListeners(SWT.Selection, null);
-		}
 
 		final Shell shell = gui.getShell();
 		while (!shell.isDisposed()) {
@@ -78,9 +74,9 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 		sashForm = new SashForm(parent, SWT.HORIZONTAL);
 		sashForm.setSashWidth((int) (sashForm.getSashWidth() * SASH_MAGNIFICATION_FACTOR));
 		GridLayoutFactory.swtDefaults().applyTo(sashForm);
-		sashForm.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		GridDataFactory.fillDefaults().grab(true, true).applyTo(sashForm);
 
-		resultsTable = new ResultsTable(sashForm, new GridData(SWT.FILL, SWT.FILL, true, true), this);
+		resultsTable = new ResultsTable(sashForm, GridDataFactory.fillDefaults().grab(true, true).create(), this);
 
 		mapCanvas = new MapCanvas(sashForm);
 		sashForm.setWeights(SASH_WEIGHTS);
@@ -91,11 +87,14 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 	@Override
 	public int open() {
 		int code = super.open();
-		for (final Button radio : getSearchForm().getFormatRadios().values()) {
+		for (final Button radio : searchForm.getFormatRadios().values()) {
 			if (radio.getSelection()) {
 				radio.notifyListeners(SWT.Selection, null);
 				break;
 			}
+		}
+		if (configuration.getBoolean("search.on.start", Defaults.SEARCH_ON_START)) {
+			searchForm.getSearchButton().notifyListeners(SWT.Selection, null);
 		}
 		return code;
 	}
