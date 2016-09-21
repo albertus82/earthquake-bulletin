@@ -28,11 +28,13 @@ public class GoogleMapsPopupSelectionListener extends SelectionAdapter {
 			epicenterMapDialog.setText(Messages.get("lbl.map.epicenter.title"));
 			epicenterMapDialog.setImages(Images.MAIN_ICONS);
 			final MapOptions options = epicenterMapDialog.getOptions();
-			options.setCenterLat(selection.getLatitude().getValue());
-			options.setCenterLng(selection.getLongitude().getValue());
 			options.setZoom(6);
 			options.setType(MapType.TERRAIN);
-			epicenterMapDialog.getMarkers().add(new MapMarker(selection.getLatitude().getValue(), selection.getLongitude().getValue(), Messages.get("lbl.map.epicenter.marker.title")));
+			final double latitude = selection.getLatitude().doubleValue();
+			final double longitude = selection.getLongitude().doubleValue();
+			options.setCenterLat(latitude);
+			options.setCenterLng(longitude);
+			epicenterMapDialog.getMarkers().add(new MapMarker(latitude, longitude, Messages.get("lbl.map.epicenter.marker.title")));
 			epicenterMapDialog.open();
 		}
 	}

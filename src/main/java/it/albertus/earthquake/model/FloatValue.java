@@ -1,14 +1,12 @@
 package it.albertus.earthquake.model;
 
-import java.io.Serializable;
+public class FloatValue extends Number implements Comparable<FloatValue> {
 
-public class FloatWrapper implements Serializable, Comparable<FloatWrapper> {
-
-	private static final long serialVersionUID = 3280288073514757941L;
+	private static final long serialVersionUID = 2280288073514757941L;
 
 	protected final float value;
 
-	public FloatWrapper(final float value) {
+	public FloatValue(final float value) {
 		this.value = value;
 	}
 
@@ -32,10 +30,10 @@ public class FloatWrapper implements Serializable, Comparable<FloatWrapper> {
 		if (obj == null) {
 			return false;
 		}
-		if (!(obj instanceof FloatWrapper)) {
+		if (!(obj instanceof FloatValue)) {
 			return false;
 		}
-		FloatWrapper other = (FloatWrapper) obj;
+		FloatValue other = (FloatValue) obj;
 		if (Float.floatToIntBits(value) != Float.floatToIntBits(other.value)) {
 			return false;
 		}
@@ -43,8 +41,28 @@ public class FloatWrapper implements Serializable, Comparable<FloatWrapper> {
 	}
 
 	@Override
-	public int compareTo(final FloatWrapper o) {
+	public int compareTo(final FloatValue o) {
 		return Float.compare(this.value, o.value);
+	}
+
+	@Override
+	public int intValue() {
+		return (int) value;
+	}
+
+	@Override
+	public long longValue() {
+		return (long) value;
+	}
+
+	@Override
+	public float floatValue() {
+		return value;
+	}
+
+	@Override
+	public double doubleValue() {
+		return Double.parseDouble(Float.toString(value));
 	}
 
 }

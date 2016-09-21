@@ -1,6 +1,6 @@
 package it.albertus.earthquake.model;
 
-public class Longitude extends FloatWrapper {
+public class Longitude extends FloatValue {
 
 	private static final long serialVersionUID = 4555084498428295118L;
 
