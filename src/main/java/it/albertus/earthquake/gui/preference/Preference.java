@@ -18,6 +18,7 @@ import it.albertus.jface.preference.LocalizedLabelsAndValues;
 import it.albertus.jface.preference.PreferenceDetails;
 import it.albertus.jface.preference.PreferenceDetails.PreferenceDetailsBuilder;
 import it.albertus.jface.preference.field.DefaultBooleanFieldEditor;
+import it.albertus.jface.preference.field.DefaultComboFieldEditor;
 import it.albertus.jface.preference.field.DefaultDateFieldEditor;
 import it.albertus.jface.preference.field.DefaultFloatFieldEditor;
 import it.albertus.jface.preference.field.DefaultIntegerFieldEditor;
@@ -30,13 +31,12 @@ import java.util.EnumSet;
 import java.util.Locale;
 import java.util.Set;
 
-import org.eclipse.jface.preference.ComboFieldEditor;
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.swt.widgets.Composite;
 
 public enum Preference implements IPreference {
 
-	LANGUAGE(new PreferenceDetailsBuilder(PageDefinition.GENERAL).name(EarthquakeBulletin.CFG_KEY_LANGUAGE).defaultValue(EarthquakeBulletin.Defaults.LANGUAGE).build(), new FieldEditorDetailsBuilder(ComboFieldEditor.class).labelsAndValues(Preference.getLanguageComboOptions()).build()),
+	LANGUAGE(new PreferenceDetailsBuilder(PageDefinition.GENERAL).name(EarthquakeBulletin.CFG_KEY_LANGUAGE).defaultValue(EarthquakeBulletin.Defaults.LANGUAGE).build(), new FieldEditorDetailsBuilder(DefaultComboFieldEditor.class).labelsAndValues(Preference.getLanguageComboOptions()).build()),
 
 	START_MINIMIZED(new PreferenceDetailsBuilder(PageDefinition.GENERAL).defaultValue(EarthquakeBulletinGui.Defaults.START_MINIMIZED).separate().build(), new FieldEditorDetailsBuilder(DefaultBooleanFieldEditor.class).build()),
 	MINIMIZE_TRAY(new PreferenceDetailsBuilder(PageDefinition.GENERAL).defaultValue(TrayIcon.Defaults.MINIMIZE_TRAY).build(), new FieldEditorDetailsBuilder(DefaultBooleanFieldEditor.class).build()),
@@ -46,8 +46,8 @@ public enum Preference implements IPreference {
 	MAP_RESIZE_HQ(new PreferenceDetailsBuilder(PageDefinition.GENERAL).defaultValue(MapCanvasPaintListener.Defaults.MAP_RESIZE_HQ).separate().build(), new FieldEditorDetailsBuilder(DefaultBooleanFieldEditor.class).build()),
 	MAP_CACHE_SIZE(new PreferenceDetailsBuilder(PageDefinition.GENERAL).defaultValue(MapCache.Defaults.CACHE_SIZE).build(), new FieldEditorDetailsBuilder(ScaleIntegerFieldEditor.class).scaleMinimum(1).scaleMaximum(Byte.MAX_VALUE).scalePageIncrement(8).build()),
 
-	HTTP_CONNECTION_TIMEOUT_MS(new PreferenceDetailsBuilder(PageDefinition.CONNECTION).defaultValue(HttpConnector.Defaults.CONNECTION_TIMEOUT_IN_MILLIS).build(), new FieldEditorDetailsBuilder(DefaultIntegerFieldEditor.class).build()),
-	HTTP_READ_TIMEOUT_MS(new PreferenceDetailsBuilder(PageDefinition.CONNECTION).defaultValue(HttpConnector.Defaults.READ_TIMEOUT_IN_MILLIS).build(), new FieldEditorDetailsBuilder(DefaultIntegerFieldEditor.class).build()),
+	HTTP_CONNECTION_TIMEOUT_MS(new PreferenceDetailsBuilder(PageDefinition.CONNECTION).defaultValue(HttpConnector.Defaults.CONNECTION_TIMEOUT_IN_MILLIS).build(), new FieldEditorDetailsBuilder(DefaultIntegerFieldEditor.class).numberMinimum(0).build()),
+	HTTP_READ_TIMEOUT_MS(new PreferenceDetailsBuilder(PageDefinition.CONNECTION).defaultValue(HttpConnector.Defaults.READ_TIMEOUT_IN_MILLIS).build(), new FieldEditorDetailsBuilder(DefaultIntegerFieldEditor.class).numberMinimum(0).build()),
 
 	CRITERIA_PERIOD_FROM(new PreferenceDetailsBuilder(PageDefinition.CRITERIA).label(new Localized() {
 		@Override
@@ -115,7 +115,7 @@ public enum Preference implements IPreference {
 		public String getString() {
 			return Messages.get("lbl.form.button.autorefresh");
 		};
-	}).build(), new FieldEditorDetailsBuilder(DefaultIntegerFieldEditor.class).emptyStringAllowed(true).textLimit(SearchForm.AUTO_REFRESH_TEXT_LIMIT).build());
+	}).build(), new FieldEditorDetailsBuilder(DefaultIntegerFieldEditor.class).numberMinimum(1).emptyStringAllowed(true).textLimit(SearchForm.AUTO_REFRESH_TEXT_LIMIT).build());
 
 	private static final String LABEL_KEY_PREFIX = "lbl.preferences.";
 
