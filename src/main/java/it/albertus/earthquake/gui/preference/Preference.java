@@ -46,8 +46,8 @@ public enum Preference implements IPreference {
 	MAP_RESIZE_HQ(new PreferenceDetailsBuilder(PageDefinition.GENERAL).defaultValue(MapCanvasPaintListener.Defaults.MAP_RESIZE_HQ).separate().build(), new FieldEditorDetailsBuilder(DefaultBooleanFieldEditor.class).build()),
 	MAP_CACHE_SIZE(new PreferenceDetailsBuilder(PageDefinition.GENERAL).defaultValue(MapCache.Defaults.CACHE_SIZE).build(), new FieldEditorDetailsBuilder(ScaleIntegerFieldEditor.class).scaleMinimum(1).scaleMaximum(Byte.MAX_VALUE).scalePageIncrement(8).build()),
 
-	HTTP_CONNECTION_TIMEOUT_MS(new PreferenceDetailsBuilder(PageDefinition.CONNECTION).defaultValue(HttpConnector.Defaults.CONNECTION_TIMEOUT_IN_MILLIS).build(), new FieldEditorDetailsBuilder(DefaultIntegerFieldEditor.class).numberMinimum(0).build()),
-	HTTP_READ_TIMEOUT_MS(new PreferenceDetailsBuilder(PageDefinition.CONNECTION).defaultValue(HttpConnector.Defaults.READ_TIMEOUT_IN_MILLIS).build(), new FieldEditorDetailsBuilder(DefaultIntegerFieldEditor.class).numberMinimum(0).build()),
+	HTTP_CONNECTION_TIMEOUT_MS(new PreferenceDetailsBuilder(PageDefinition.CONNECTION).defaultValue(HttpConnector.Defaults.CONNECTION_TIMEOUT_IN_MILLIS).build(), new FieldEditorDetailsBuilder(DefaultIntegerFieldEditor.class).build()),
+	HTTP_READ_TIMEOUT_MS(new PreferenceDetailsBuilder(PageDefinition.CONNECTION).defaultValue(HttpConnector.Defaults.READ_TIMEOUT_IN_MILLIS).build(), new FieldEditorDetailsBuilder(DefaultIntegerFieldEditor.class).build()),
 
 	CRITERIA_PERIOD_FROM(new PreferenceDetailsBuilder(PageDefinition.CRITERIA).label(new Localized() {
 		@Override
