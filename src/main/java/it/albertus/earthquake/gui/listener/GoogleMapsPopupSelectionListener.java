@@ -4,6 +4,7 @@ import it.albertus.earthquake.gui.Images;
 import it.albertus.earthquake.gui.ResultsTable;
 import it.albertus.earthquake.model.Earthquake;
 import it.albertus.earthquake.resources.Messages;
+import it.albertus.jface.google.maps.MapControl;
 import it.albertus.jface.google.maps.MapDialog;
 import it.albertus.jface.google.maps.MapMarker;
 import it.albertus.jface.google.maps.MapOptions;
@@ -30,6 +31,7 @@ public class GoogleMapsPopupSelectionListener extends SelectionAdapter {
 			final MapOptions options = epicenterMapDialog.getOptions();
 			options.setZoom(6);
 			options.setType(MapType.TERRAIN);
+			options.getControls().put(MapControl.SCALE, true);
 			final double latitude = selection.getLatitude().doubleValue();
 			final double longitude = selection.getLongitude().doubleValue();
 			options.setCenterLat(latitude);

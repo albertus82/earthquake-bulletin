@@ -12,6 +12,8 @@ import it.albertus.earthquake.gui.listener.StopButtonSelectionListener;
 import it.albertus.earthquake.model.Format;
 import it.albertus.earthquake.resources.Messages;
 import it.albertus.jface.google.maps.MapBoundsDialog;
+import it.albertus.jface.google.maps.MapControl;
+import it.albertus.jface.google.maps.MapOptions;
 import it.albertus.jface.google.maps.MapType;
 import it.albertus.jface.listener.FloatVerifyListener;
 import it.albertus.jface.listener.IntegerVerifyListener;
@@ -274,7 +276,9 @@ public class SearchForm {
 		mapBoundsDialog = new MapBoundsDialog(gui.getShell());
 		mapBoundsDialog.setText(Messages.get("lbl.map.bounds.title"));
 		mapBoundsDialog.setImages(Images.MAIN_ICONS);
-		mapBoundsDialog.getOptions().setType(MapType.TERRAIN);
+		final MapOptions mapOptions = mapBoundsDialog.getOptions();
+		mapOptions.setType(MapType.TERRAIN);
+		mapOptions.getControls().put(MapControl.SCALE, true);
 	}
 
 	public void updateTexts() {
