@@ -3,6 +3,7 @@ package it.albertus.earthquake.gui.listener;
 import it.albertus.earthquake.gui.SearchForm;
 import it.albertus.earthquake.model.Format;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
@@ -33,6 +34,7 @@ public class FormatRadioSelectionListener extends SelectionAdapter {
 				form.getResultsLabel().setEnabled(false);
 				form.getPeriodLabel().setEnabled(false);
 				form.getResultsText().setText("20");
+				form.getResultsText().notifyListeners(SWT.KeyUp, null); // Clear error
 			}
 			else {
 				form.getPeriodFromText().setEnabled(true);

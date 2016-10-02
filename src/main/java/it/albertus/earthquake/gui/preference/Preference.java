@@ -102,7 +102,7 @@ public enum Preference implements IPreference {
 		public String getString() {
 			return Messages.get("lbl.form.limit") + " " + Messages.get("lbl.form.limit.note");
 		};
-	}).build(), new FieldEditorDetailsBuilder(EnhancedIntegerFieldEditor.class).emptyStringAllowed(true).numberValidRange(0, 1000).build()),
+	}).build(), new FieldEditorDetailsBuilder(EnhancedIntegerFieldEditor.class).emptyStringAllowed(true).numberValidRange(SearchForm.RESULTS_MIN_VALUE, SearchForm.RESULTS_MAX_VALUE).build()),
 	CRITERIA_RESTRICT(new PreferenceDetailsBuilder(PageDefinition.CRITERIA).defaultValue(SearchForm.Defaults.CRITERIA_RESTRICT).label(new Localized() {
 		@Override
 		public String getString() {
@@ -115,7 +115,7 @@ public enum Preference implements IPreference {
 		public String getString() {
 			return Messages.get("lbl.form.button.autorefresh");
 		};
-	}).build(), new FieldEditorDetailsBuilder(EnhancedIntegerFieldEditor.class).numberMinimum(1).emptyStringAllowed(true).textLimit(SearchForm.AUTO_REFRESH_TEXT_LIMIT).build());
+	}).build(), new FieldEditorDetailsBuilder(EnhancedIntegerFieldEditor.class).numberMinimum(SearchForm.AUTOREFRESH_MIN_VALUE).emptyStringAllowed(true).textLimit(SearchForm.AUTOREFRESH_TEXT_LIMIT).build());
 
 	private static final String LABEL_KEY_PREFIX = "lbl.preferences.";
 

@@ -212,8 +212,7 @@ public class SearchJob extends Job {
 					schedule(waitTimeInMillis[0]);
 				}
 				else {
-					gui.getSearchForm().getSearchButton().setEnabled(true);
-					gui.getSearchForm().getStopButton().setEnabled(false);
+					gui.getSearchForm().getStopButton().notifyListeners(SWT.Selection, null);
 				}
 				gui.getShell().setCursor(null);
 			}

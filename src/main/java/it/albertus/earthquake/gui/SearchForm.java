@@ -1,6 +1,7 @@
 package it.albertus.earthquake.gui;
 
 import it.albertus.earthquake.EarthquakeBulletin;
+import it.albertus.earthquake.gui.decoration.SearchFormTextDecoration;
 import it.albertus.earthquake.gui.job.SearchJob;
 import it.albertus.earthquake.gui.listener.AutoRefreshButtonSelectionListener;
 import it.albertus.earthquake.gui.listener.ClearButtonSelectionListener;
@@ -11,17 +12,27 @@ import it.albertus.earthquake.gui.listener.SearchButtonSelectionListener;
 import it.albertus.earthquake.gui.listener.StopButtonSelectionListener;
 import it.albertus.earthquake.model.Format;
 import it.albertus.earthquake.resources.Messages;
+import it.albertus.jface.JFaceMessages;
+import it.albertus.jface.decoration.TextDecoration;
 import it.albertus.jface.google.maps.MapBoundsDialog;
 import it.albertus.jface.google.maps.MapControl;
 import it.albertus.jface.google.maps.MapOptions;
 import it.albertus.jface.google.maps.MapType;
 import it.albertus.jface.listener.FloatVerifyListener;
 import it.albertus.jface.listener.IntegerVerifyListener;
+import it.albertus.jface.validation.DateTextValidator;
+import it.albertus.jface.validation.FloatTextValidator;
+import it.albertus.jface.validation.IntegerTextValidator;
+import it.albertus.jface.validation.TextValidator;
 import it.albertus.util.Configuration;
+import it.albertus.util.Localized;
 
 import java.util.EnumMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
+import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
@@ -40,7 +51,7 @@ public class SearchForm {
 	public static final int MAGNITUDE_TEXT_LIMIT = 4;
 	public static final int PERIOD_TEXT_LIMIT = 10;
 	public static final int RESULTS_TEXT_LIMIT = 4;
-	public static final int AUTO_REFRESH_TEXT_LIMIT = 4;
+	public static final int AUTOREFRESH_TEXT_LIMIT = 4;
 
 	public static final float LATITUDE_MIN_VALUE = -90;
 	public static final float LATITUDE_MAX_VALUE = 90;
@@ -48,6 +59,9 @@ public class SearchForm {
 	public static final float LONGITUDE_MAX_VALUE = 180;
 	public static final float MAGNITUDE_MIN_VALUE = 0;
 	public static final float MAGNITUDE_MAX_VALUE = 10;
+	public static final int RESULTS_MIN_VALUE = 1;
+	public static final int RESULTS_MAX_VALUE = 1000;
+	public static final int AUTOREFRESH_MIN_VALUE = 1;
 
 	public static final String DATE_PATTERN = "yyyy-MM-dd";
 
@@ -113,6 +127,8 @@ public class SearchForm {
 	private final VerifyListener coordinatesVerifyListener = new FloatVerifyListener(true);
 
 	private SearchJob searchJob;
+
+	private Set<TextValidator> validators = new HashSet<TextValidator>();
 
 	public SearchForm(final EarthquakeBulletinGui gui) {
 		formComposite = new Composite(gui.getShell(), SWT.NONE);
@@ -242,7 +258,7 @@ public class SearchForm {
 		GridDataFactory.swtDefaults().span(2, 1).applyTo(autoRefreshButton);
 
 		autoRefreshText = new Text(buttonsComposite, SWT.BORDER);
-		autoRefreshText.setTextLimit(AUTO_REFRESH_TEXT_LIMIT);
+		autoRefreshText.setTextLimit(AUTOREFRESH_TEXT_LIMIT);
 		autoRefreshText.addTraverseListener(formTextTraverseListener);
 		autoRefreshText.setText(configuration.getString("autorefresh.mins", ""));
 		autoRefreshText.addVerifyListener(new IntegerVerifyListener(false));
@@ -273,6 +289,89 @@ public class SearchForm {
 		autoRefreshButton.addSelectionListener(new AutoRefreshButtonSelectionListener(this));
 		autoRefreshButton.notifyListeners(SWT.Selection, null);
 
+		// Decorators
+		TextValidator validator = new DateTextValidator(periodFromText, DATE_PATTERN);
+		new SearchFormTextDecoration(validator, new Localized() {
+			@Override
+			public String getString() {
+				return JFaceMessages.get("err.preferences.date", DATE_PATTERN);
+			}
+		});
+		validators.add(validator);
+
+		validator = new DateTextValidator(periodToText, DATE_PATTERN);
+		new SearchFormTextDecoration(validator, new Localized() {
+			@Override
+			public String getString() {
+				return JFaceMessages.get("err.preferences.date", DATE_PATTERN);
+			}
+		});
+		validators.add(validator);
+
+		validator = new FloatTextValidator(latitudeFromText, LATITUDE_MIN_VALUE, LATITUDE_MAX_VALUE, true);
+		new SearchFormTextDecoration(validator, new Localized() {
+			@Override
+			public String getString() {
+				return JFaceMessages.get("err.preferences.decimal.range", LATITUDE_MIN_VALUE, LATITUDE_MAX_VALUE);
+			}
+		});
+		validators.add(validator);
+
+		validator = new FloatTextValidator(latitudeToText, LATITUDE_MIN_VALUE, LATITUDE_MAX_VALUE, true);
+		new SearchFormTextDecoration(validator, new Localized() {
+			@Override
+			public String getString() {
+				return JFaceMessages.get("err.preferences.decimal.range", LATITUDE_MIN_VALUE, LATITUDE_MAX_VALUE);
+			}
+		});
+		validators.add(validator);
+
+		validator = new FloatTextValidator(longitudeFromText, LONGITUDE_MIN_VALUE, LONGITUDE_MAX_VALUE, true);
+		new SearchFormTextDecoration(validator, new Localized() {
+			@Override
+			public String getString() {
+				return JFaceMessages.get("err.preferences.decimal.range", LONGITUDE_MIN_VALUE, LONGITUDE_MAX_VALUE);
+			}
+		});
+		validators.add(validator);
+
+		validator = new FloatTextValidator(longitudeToText, LONGITUDE_MIN_VALUE, LONGITUDE_MAX_VALUE, true);
+		new SearchFormTextDecoration(validator, new Localized() {
+			@Override
+			public String getString() {
+				return JFaceMessages.get("err.preferences.decimal.range", LONGITUDE_MIN_VALUE, LONGITUDE_MAX_VALUE);
+			}
+		});
+		validators.add(validator);
+
+		validator = new FloatTextValidator(minimumMagnitudeText, MAGNITUDE_MIN_VALUE, MAGNITUDE_MAX_VALUE, true);
+		new SearchFormTextDecoration(validator, new Localized() {
+			@Override
+			public String getString() {
+				return JFaceMessages.get("err.preferences.decimal.range", MAGNITUDE_MIN_VALUE, MAGNITUDE_MAX_VALUE);
+			}
+		});
+		validators.add(validator);
+
+		validator = new IntegerTextValidator(resultsText, RESULTS_MIN_VALUE, RESULTS_MAX_VALUE, true);
+		new SearchFormTextDecoration(validator, new Localized() {
+			@Override
+			public String getString() {
+				return JFaceMessages.get("err.preferences.integer.range", RESULTS_MIN_VALUE, RESULTS_MAX_VALUE);
+			}
+		});
+		validators.add(validator);
+
+		validator = new IntegerTextValidator(autoRefreshText, AUTOREFRESH_MIN_VALUE, null, true);
+		new TextDecoration(validator, new Localized() {
+			@Override
+			public String getString() {
+				return JFaceMessages.get("err.preferences.integer.min", AUTOREFRESH_MIN_VALUE);
+			}
+		}, TextDecoration.DEFAULT_STYLE, FieldDecorationRegistry.DEC_WARNING);
+		validators.add(validator);
+
+		// Map
 		mapBoundsDialog = new MapBoundsDialog(gui.getShell());
 		mapBoundsDialog.setText(Messages.get("lbl.map.bounds.title"));
 		mapBoundsDialog.setImages(Images.MAIN_ICONS);
