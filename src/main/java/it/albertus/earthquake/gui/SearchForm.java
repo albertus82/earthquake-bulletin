@@ -22,9 +22,9 @@ import it.albertus.jface.listener.FloatVerifyListener;
 import it.albertus.jface.listener.IntegerVerifyListener;
 import it.albertus.jface.validation.DateTextValidator;
 import it.albertus.jface.validation.FloatTextValidator;
-import it.albertus.jface.validation.IValidator;
 import it.albertus.jface.validation.IntegerTextValidator;
 import it.albertus.jface.validation.TextValidator;
+import it.albertus.jface.validation.Validator;
 import it.albertus.util.Configuration;
 import it.albertus.util.Localized;
 
@@ -127,9 +127,9 @@ public class SearchForm {
 	private final VerifyListener periodVerifyListener = new IntegerVerifyListener(true);
 	private final VerifyListener coordinatesVerifyListener = new FloatVerifyListener(true);
 
-	private SearchJob searchJob;
+	private final Set<Validator> validators = new HashSet<Validator>();
 
-	private final Set<IValidator> validators = new HashSet<IValidator>();
+	private SearchJob searchJob;
 
 	public SearchForm(final EarthquakeBulletinGui gui) {
 		formComposite = new Composite(gui.getShell(), SWT.NONE);
