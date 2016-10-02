@@ -170,7 +170,7 @@ public class SearchForm {
 		latitudeFromLabel.setText(Messages.get("lbl.form.criteria.latitude.from"));
 		latitudeFromText = new Text(criteriaGroup, SWT.BORDER);
 		latitudeFromText.setTextLimit(COORDINATES_TEXT_LIMIT);
-		latitudeFromText.setText(configuration.getString("criteria.latitude.from", ""));
+		latitudeFromText.setText(cleanFloat(configuration.getString("criteria.latitude.from", "")));
 		latitudeFromText.addTraverseListener(formTextTraverseListener);
 		latitudeFromText.addVerifyListener(coordinatesVerifyListener);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(latitudeFromText);
@@ -180,7 +180,7 @@ public class SearchForm {
 		latitudeToLabel.setText(Messages.get("lbl.form.criteria.latitude.to"));
 		latitudeToText = new Text(criteriaGroup, SWT.BORDER);
 		latitudeToText.setTextLimit(COORDINATES_TEXT_LIMIT);
-		latitudeToText.setText(configuration.getString("criteria.latitude.to", ""));
+		latitudeToText.setText(cleanFloat(configuration.getString("criteria.latitude.to", "")));
 		latitudeToText.addTraverseListener(formTextTraverseListener);
 		latitudeToText.addVerifyListener(coordinatesVerifyListener);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(latitudeToText);
@@ -193,7 +193,7 @@ public class SearchForm {
 		longitudeFromLabel.setText(Messages.get("lbl.form.criteria.longitude.from"));
 		longitudeFromText = new Text(criteriaGroup, SWT.BORDER);
 		longitudeFromText.setTextLimit(COORDINATES_TEXT_LIMIT);
-		longitudeFromText.setText(configuration.getString("criteria.longitude.from", ""));
+		longitudeFromText.setText(cleanFloat(configuration.getString("criteria.longitude.from", "")));
 		longitudeFromText.addTraverseListener(formTextTraverseListener);
 		longitudeFromText.addVerifyListener(coordinatesVerifyListener);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(longitudeFromText);
@@ -203,7 +203,7 @@ public class SearchForm {
 		longitudeToLabel.setText(Messages.get("lbl.form.criteria.longitude.to"));
 		longitudeToText = new Text(criteriaGroup, SWT.BORDER);
 		longitudeToText.setTextLimit(COORDINATES_TEXT_LIMIT);
-		longitudeToText.setText(configuration.getString("criteria.longitude.to", ""));
+		longitudeToText.setText(cleanFloat(configuration.getString("criteria.longitude.to", "")));
 		longitudeToText.addTraverseListener(formTextTraverseListener);
 		longitudeToText.addVerifyListener(coordinatesVerifyListener);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(longitudeToText);
@@ -215,7 +215,7 @@ public class SearchForm {
 		GridDataFactory.swtDefaults().span(2, 1).applyTo(minimumMagnitudeLabel);
 		minimumMagnitudeText = new Text(criteriaGroup, SWT.BORDER);
 		minimumMagnitudeText.setTextLimit(MAGNITUDE_TEXT_LIMIT);
-		minimumMagnitudeText.setText(configuration.getString("criteria.magnitude", ""));
+		minimumMagnitudeText.setText(cleanFloat(configuration.getString("criteria.magnitude", "")));
 		minimumMagnitudeText.addTraverseListener(formTextTraverseListener);
 		minimumMagnitudeText.addVerifyListener(new FloatVerifyListener(false));
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(minimumMagnitudeText);
@@ -242,7 +242,7 @@ public class SearchForm {
 		resultsText = new Text(criteriaGroup, SWT.BORDER);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(resultsText);
 		resultsText.setTextLimit(RESULTS_TEXT_LIMIT);
-		resultsText.setText(configuration.getString("criteria.limit", ""));
+		resultsText.setText(cleanInteger(configuration.getString("criteria.limit", "")));
 		resultsText.addTraverseListener(formTextTraverseListener);
 		resultsText.addVerifyListener(new IntegerVerifyListener(false));
 		resultsNote = new Label(criteriaGroup, SWT.NONE);
@@ -261,7 +261,7 @@ public class SearchForm {
 		autoRefreshText = new Text(buttonsComposite, SWT.BORDER);
 		autoRefreshText.setTextLimit(AUTOREFRESH_TEXT_LIMIT);
 		autoRefreshText.addTraverseListener(formTextTraverseListener);
-		autoRefreshText.setText(configuration.getString("autorefresh.mins", ""));
+		autoRefreshText.setText(cleanInteger(configuration.getString("autorefresh.mins", "")));
 		autoRefreshText.addVerifyListener(new IntegerVerifyListener(false));
 		GridDataFactory.swtDefaults().span(2, 1).align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(autoRefreshText);
 
@@ -379,6 +379,24 @@ public class SearchForm {
 		final MapOptions mapOptions = mapBoundsDialog.getOptions();
 		mapOptions.setType(MapType.TERRAIN);
 		mapOptions.getControls().put(MapControl.SCALE, true);
+	}
+
+	private String cleanFloat(final String value) {
+		try {
+			Float.parseFloat(value);
+			return value;
+		}
+		catch (final RuntimeException re) {/* Ignore */}
+		return "";
+	}
+
+	private String cleanInteger(final String value) {
+		try {
+			Integer.parseInt(value);
+			return value;
+		}
+		catch (final RuntimeException re) {/* Ignore */}
+		return "";
 	}
 
 	public void updateTexts() {
