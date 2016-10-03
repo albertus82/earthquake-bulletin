@@ -443,6 +443,40 @@ public class SearchForm {
 		mapBoundsDialog.setText(Messages.get("lbl.map.bounds.title"));
 	}
 
+	private String getConfiguredFloatString(final String key) {
+		String value;
+		try {
+			value = configuration.getFloat(key).toString();
+		}
+		catch (final RuntimeException re) {
+			value = "";
+		}
+		return value;
+	}
+
+	private String getConfiguredIntegerString(final String key) {
+		String value;
+		try {
+			value = configuration.getInt(key).toString();
+		}
+		catch (final RuntimeException re) {
+			value = "";
+		}
+		return value;
+	}
+
+	private String getConfiguredDateString(final String key) {
+		String value;
+		try {
+			value = configuration.getString(key);
+			parseDate(value);
+		}
+		catch (final Exception e) {
+			value = "";
+		}
+		return value;
+	}
+
 	public SearchJob getSearchJob() {
 		return searchJob;
 	}
@@ -609,40 +643,6 @@ public class SearchForm {
 
 	public MapBoundsDialog getMapBoundsDialog() {
 		return mapBoundsDialog;
-	}
-
-	private String getConfiguredFloatString(final String key) {
-		String value;
-		try {
-			value = configuration.getFloat(key).toString();
-		}
-		catch (final RuntimeException re) {
-			value = "";
-		}
-		return value;
-	}
-
-	private String getConfiguredIntegerString(final String key) {
-		String value;
-		try {
-			value = configuration.getInt(key).toString();
-		}
-		catch (final RuntimeException re) {
-			value = "";
-		}
-		return value;
-	}
-
-	private String getConfiguredDateString(final String key) {
-		String value;
-		try {
-			value = configuration.getString(key);
-			parseDate(value);
-		}
-		catch (final Exception e) {
-			value = "";
-		}
-		return value;
 	}
 
 }
