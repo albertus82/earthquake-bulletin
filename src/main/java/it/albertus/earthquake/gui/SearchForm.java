@@ -404,6 +404,15 @@ public class SearchForm {
 		mapOptions.getControls().put(MapControl.SCALE, true);
 	}
 
+	public boolean isValid() {
+		for (final Validator validator : validators) {
+			if (!validator.isValid()) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 	public void updateTexts() {
 		criteriaGroup.setText(Messages.get("lbl.form.criteria.group"));
 		periodLabel.setText(Messages.get("lbl.form.criteria.period"));
