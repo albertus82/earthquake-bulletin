@@ -245,11 +245,18 @@ public class SearchForm {
 		radioComposite = new Composite(criteriaGroup, SWT.NONE);
 		radioComposite.setLayout(new RowLayout(SWT.HORIZONTAL));
 		GridDataFactory.swtDefaults().grab(false, false).span(2, 1).applyTo(radioComposite);
+		Format selectedFormat;
+		try {
+			selectedFormat = Format.valueOf(configuration.getString("criteria.format").trim().toUpperCase());
+		}
+		catch (final RuntimeException re) {
+			selectedFormat = Defaults.FORMAT;
+		}
 		for (final Format format : Format.values()) {
 			final Button radio = new Button(radioComposite, SWT.RADIO);
 			radio.addSelectionListener(new FormatRadioSelectionListener(this, radio, format));
 			radio.setText(format.getLabel());
-			radio.setSelection(format.getValue().equalsIgnoreCase(configuration.getString("criteria.format", Defaults.FORMAT.getValue())));
+			radio.setSelection(format.equals(selectedFormat));
 			formatRadios.put(format, radio);
 		}
 		resultsLabel = new Label(criteriaGroup, SWT.NONE);
