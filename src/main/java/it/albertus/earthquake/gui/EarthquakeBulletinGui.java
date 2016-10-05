@@ -4,6 +4,7 @@ import it.albertus.earthquake.EarthquakeBulletin;
 import it.albertus.earthquake.gui.listener.CloseListener;
 import it.albertus.earthquake.resources.Messages;
 import it.albertus.util.Configuration;
+import it.albertus.util.Version;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
@@ -31,6 +32,8 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 	private static final int[] SASH_WEIGHTS = { 3, 2 };
 
 	public static void run() {
+		Display.setAppName(Messages.get("msg.application.name"));
+		Display.setAppVersion(Version.getInstance().getNumber());
 		final Display display = Display.getDefault();
 		final EarthquakeBulletinGui gui = new EarthquakeBulletinGui(display);
 		gui.open();
