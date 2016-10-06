@@ -1,11 +1,5 @@
 package it.albertus.earthquake.gui;
 
-import it.albertus.earthquake.EarthquakeBulletin;
-import it.albertus.earthquake.gui.listener.CloseListener;
-import it.albertus.earthquake.resources.Messages;
-import it.albertus.util.Configuration;
-import it.albertus.util.Version;
-
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.window.ApplicationWindow;
@@ -18,6 +12,12 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.Shell;
+
+import it.albertus.earthquake.EarthquakeBulletin;
+import it.albertus.earthquake.gui.listener.CloseListener;
+import it.albertus.earthquake.resources.Messages;
+import it.albertus.util.Configuration;
+import it.albertus.util.Version;
 
 public class EarthquakeBulletinGui extends ApplicationWindow {
 
@@ -62,7 +62,12 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 	protected void configureShell(final Shell shell) {
 		super.configureShell(shell);
 		shell.setImages(Images.MAIN_ICONS);
-		shell.setMinimized(configuration.getBoolean("start.minimized", Defaults.START_MINIMIZED));
+
+		// Fix invisible (transparent) shell bug with some Linux distibutions
+		if (!isGtk() && configuration.getBoolean("start.minimized", Defaults.START_MINIMIZED)) {
+			shell.setMinimized(true);
+		}
+
 		shell.setText(Messages.get("lbl.window.title"));
 	}
 
@@ -90,6 +95,12 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 	@Override
 	public int open() {
 		int code = super.open();
+
+		// Fix invisible (transparent) shell bug with some Linux distibutions
+		if (isGtk() && configuration.getBoolean("start.minimized", Defaults.START_MINIMIZED)) {
+			getShell().setMinimized(true);
+		}
+
 		for (final Button radio : searchForm.getFormatRadios().values()) {
 			if (radio.getSelection()) {
 				radio.notifyListeners(SWT.Selection, null);
@@ -127,6 +138,10 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 	@Override
 	protected Layout getLayout() {
 		return GridLayoutFactory.swtDefaults().create();
+	}
+
+	protected boolean isGtk() {
+		return SWT.getPlatform().toLowerCase().contains("gtk");
 	}
 
 	public SearchForm getSearchForm() {
