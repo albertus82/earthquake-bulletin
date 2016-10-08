@@ -2,6 +2,7 @@ package it.albertus.earthquake.gui;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
+import org.eclipse.jface.util.Util;
 import org.eclipse.jface.window.ApplicationWindow;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
@@ -16,7 +17,6 @@ import org.eclipse.swt.widgets.Shell;
 import it.albertus.earthquake.EarthquakeBulletin;
 import it.albertus.earthquake.gui.listener.CloseListener;
 import it.albertus.earthquake.resources.Messages;
-import it.albertus.jface.SwtUtils;
 import it.albertus.util.Configuration;
 import it.albertus.util.Version;
 
@@ -65,7 +65,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 		shell.setImages(Images.MAIN_ICONS);
 
 		// Fix invisible (transparent) shell bug with some Linux distibutions
-		if (!SwtUtils.isGtk() && configuration.getBoolean("start.minimized", Defaults.START_MINIMIZED)) {
+		if (!Util.isGtk() && configuration.getBoolean("start.minimized", Defaults.START_MINIMIZED)) {
 			shell.setMinimized(true);
 		}
 
@@ -98,7 +98,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 		int code = super.open();
 
 		// Fix invisible (transparent) shell bug with some Linux distibutions
-		if (SwtUtils.isGtk() && configuration.getBoolean("start.minimized", Defaults.START_MINIMIZED)) {
+		if (Util.isGtk() && configuration.getBoolean("start.minimized", Defaults.START_MINIMIZED)) {
 			getShell().setMinimized(true);
 		}
 
