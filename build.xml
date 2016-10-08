@@ -266,7 +266,7 @@
 		<copy todir="${build.directory}/bundle/cocoa-macosx-x86_64/${name}.app/Contents/Resources/Java" failonerror="false">
 			<fileset refid="config" />
 		</copy>
-		<copy todir="${build.directory}/bundle/cocoa-macosx-x86_64/${name}.app/Contents/Resources">
+		<copy todir="${build.directory}/bundle/cocoa-macosx-x86_64/${name}.app/Contents/SharedSupport">
 			<fileset refid="docs" />
 		</copy>
 		<tar destfile="${build.releaseDirectory}/${artifactId}-${version.number}-cocoa-macosx-x86_64-bin.tar.gz" compression="gzip">
