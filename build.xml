@@ -8,6 +8,8 @@
 	<property file="build.properties" />
 	<property file="${build.resourcesDirectory}/version.properties" />
 
+	<taskdef name="jarbundler" classname="com.ultramixer.jarbundler.JarBundler" classpath="${dependencies.directory}/ant/jarbundler-core-3.3.0.jar" />
+
 	<target name="clean">
 		<delete dir="${build.directory}" />
 	</target>
@@ -253,6 +255,10 @@
 			</manifest>
 			<metainf refid="docs" />
 		</jar>
+		<mkdir dir="${build.directory}/bundle/cocoa-macosx-x86_64" />
+		<jarbundler dir="${build.directory}/bundle/cocoa-macosx-x86_64" name="${name}" mainclass="${build.jar.archive.manifest.mainClass}" startOnMainThread="true" version="${version.number}" vmoptions="-Xms8m -Xmx32m" icon="${icons.directory}/main.icns" jvmversion="${build.compiler.target}+" stubfile="${dependencies.directory}/ant/universalJavaApplicationStub">
+			<jarfileset dir="${build.distDirectory}/cocoa-macosx-x86_64/${artifactId}" includes="**/*.jar" />
+		</jarbundler>
 	</target>
 
 	<target name="release" depends="jar">
@@ -266,6 +272,15 @@
 				<include name="/**" />
 				<exclude name="/${artifactId}/*.jar" />
 				<exclude name="/${artifactId}/*.command" />
+			</tarfileset>
+		</tar>
+		<tar destfile="${build.releaseDirectory}/${artifactId}-${version.number}-cocoa-macosx-x86_64-app.tar.gz" compression="gzip">
+			<tarfileset dir="${build.directory}/bundle/cocoa-macosx-x86_64" filemode="755">
+				<include name="/${name}.app/Contents/MacOS/*" />
+			</tarfileset>
+			<tarfileset dir="${build.directory}/bundle/cocoa-macosx-x86_64">
+				<include name="/**" />
+				<exclude name="/${name}.app/Contents/MacOS/*" />
 			</tarfileset>
 		</tar>
 
