@@ -1,5 +1,6 @@
 package it.albertus.earthquake.gui;
 
+import org.eclipse.jface.util.Util;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MenuDetectEvent;
 import org.eclipse.swt.events.MenuDetectListener;
@@ -93,7 +94,9 @@ public class TrayIcon {
 					});
 
 					trayItem.addListener(SWT.DefaultSelection, trayRestoreListener);
-					gui.getShell().addShellListener(trayRestoreListener); // OS X
+					if (!Util.isLinux()) {
+						gui.getShell().addShellListener(trayRestoreListener);
+					}
 				}
 			}
 			catch (final Exception e) {
