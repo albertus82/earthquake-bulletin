@@ -260,7 +260,7 @@
 	<target name="release" depends="jar">
 		<!-- Mac OS X -->
 		<mkdir dir="${build.directory}/bundle/cocoa-macosx-x86_64" />
-		<jarbundler vmoptions="${macosx.vmoptions}" dir="${build.directory}/bundle/cocoa-macosx-x86_64" name="${name}" mainclass="${build.jar.archive.manifest.mainClass}" startOnMainThread="true" version="${version.number}" icon="${icons.directory}/main.icns" jvmversion="${build.compiler.target}+" stubfile="${dependencies.directory}/ant/universalJavaApplicationStub">
+		<jarbundler vmoptions="${macosx.vmoptions}" dir="${build.directory}/bundle/cocoa-macosx-x86_64" name="${name}" mainclass="${build.jar.archive.manifest.mainClass}" startOnMainThread="true" version="${version.number}" icon="${build.distDirectory}/cocoa-macosx-x86_64/${artifactId}/${artifactId}.icns" jvmversion="${build.compiler.target}+" stubfile="${dependencies.directory}/ant/JavaApplicationStub">
 			<jarfileset dir="${build.distDirectory}/cocoa-macosx-x86_64/${artifactId}" includes="**/*.jar" />
 		</jarbundler>
 		<copy todir="${build.directory}/bundle/cocoa-macosx-x86_64/${name}.app/Contents/Resources/Java" failonerror="false">
