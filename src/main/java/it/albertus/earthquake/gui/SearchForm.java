@@ -34,6 +34,7 @@ import it.albertus.earthquake.gui.listener.SearchButtonSelectionListener;
 import it.albertus.earthquake.gui.listener.StopButtonSelectionListener;
 import it.albertus.earthquake.model.Format;
 import it.albertus.earthquake.resources.Messages;
+import it.albertus.jface.FontFormatter;
 import it.albertus.jface.JFaceMessages;
 import it.albertus.jface.decoration.TextDecoration;
 import it.albertus.jface.google.maps.MapBoundsDialog;
@@ -89,6 +90,8 @@ public class SearchForm {
 	}
 
 	private final Configuration configuration = EarthquakeBulletin.configuration;
+
+	private final FontFormatter fontFormatter = new FontFormatter(this.getClass().getName());
 
 	private final Composite formComposite;
 
@@ -176,7 +179,7 @@ public class SearchForm {
 		periodToText.setText(getConfiguredDateString("criteria.period.to"));
 		periodToText.addVerifyListener(periodVerifyListener);
 		periodToText.addTraverseListener(formTextTraverseListener);
-		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(periodToText);
+		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).hint(fontFormatter.getWidthHint(periodToText, PERIOD_TEXT_LIMIT, SWT.NORMAL), SWT.DEFAULT).applyTo(periodToText);
 		periodToNote = new Label(criteriaGroup, SWT.NONE);
 		periodToNote.setText(Messages.get("lbl.form.criteria.period.to.note"));
 
