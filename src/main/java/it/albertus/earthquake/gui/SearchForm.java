@@ -169,7 +169,7 @@ public class SearchForm {
 		periodFromText.setText(getConfiguredDateString("criteria.period.from"));
 		periodFromText.addVerifyListener(periodVerifyListener);
 		periodFromText.addTraverseListener(formTextTraverseListener);
-		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(periodFromText);
+		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).minSize(fontFormatter.computeWidth(periodFromText, PERIOD_TEXT_LIMIT, SWT.NORMAL), SWT.DEFAULT).applyTo(periodFromText);
 		periodFromNote = new Label(criteriaGroup, SWT.NONE);
 		periodFromNote.setText(Messages.get("lbl.form.criteria.period.from.note"));
 		periodToLabel = new Label(criteriaGroup, SWT.NONE);
@@ -179,7 +179,7 @@ public class SearchForm {
 		periodToText.setText(getConfiguredDateString("criteria.period.to"));
 		periodToText.addVerifyListener(periodVerifyListener);
 		periodToText.addTraverseListener(formTextTraverseListener);
-		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).hint(fontFormatter.getWidthHint(periodToText, PERIOD_TEXT_LIMIT, SWT.NORMAL), SWT.DEFAULT).applyTo(periodToText);
+		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).minSize(fontFormatter.computeWidth(periodToText, PERIOD_TEXT_LIMIT, SWT.NORMAL), SWT.DEFAULT).applyTo(periodToText);
 		periodToNote = new Label(criteriaGroup, SWT.NONE);
 		periodToNote.setText(Messages.get("lbl.form.criteria.period.to.note"));
 
