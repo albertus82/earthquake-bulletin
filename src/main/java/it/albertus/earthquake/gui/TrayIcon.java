@@ -1,12 +1,5 @@
 package it.albertus.earthquake.gui;
 
-import it.albertus.earthquake.EarthquakeBulletin;
-import it.albertus.earthquake.gui.listener.CloseListener;
-import it.albertus.earthquake.gui.listener.RestoreShellListener;
-import it.albertus.earthquake.model.Earthquake;
-import it.albertus.earthquake.resources.Messages;
-import it.albertus.util.Configuration;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MenuDetectEvent;
 import org.eclipse.swt.events.MenuDetectListener;
@@ -18,6 +11,13 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.ToolTip;
 import org.eclipse.swt.widgets.Tray;
 import org.eclipse.swt.widgets.TrayItem;
+
+import it.albertus.earthquake.EarthquakeBulletin;
+import it.albertus.earthquake.gui.listener.CloseListener;
+import it.albertus.earthquake.model.Earthquake;
+import it.albertus.earthquake.resources.Messages;
+import it.albertus.jface.listener.TrayRestoreListener;
+import it.albertus.util.Configuration;
 
 public class TrayIcon {
 
@@ -70,13 +70,13 @@ public class TrayIcon {
 					toolTip = new ToolTip(gui.getShell(), SWT.BALLOON | SWT.ICON_WARNING);
 					toolTip.setVisible(false);
 					toolTip.setAutoHide(true);
-					toolTip.addListener(SWT.Selection, new RestoreShellListener(gui));
+					toolTip.addListener(SWT.Selection, new TrayRestoreListener(gui.getShell(), trayItem));
 					trayItem.setToolTip(toolTip);
 
 					trayMenu = new Menu(gui.getShell(), SWT.POP_UP);
 					showMenuItem = new MenuItem(trayMenu, SWT.PUSH);
 					showMenuItem.setText(Messages.get("lbl.tray.show"));
-					showMenuItem.addListener(SWT.Selection, new RestoreShellListener(gui));
+					showMenuItem.addListener(SWT.Selection, new TrayRestoreListener(gui.getShell(), trayItem));
 					trayMenu.setDefaultItem(showMenuItem);
 
 					new MenuItem(trayMenu, SWT.SEPARATOR);
@@ -91,10 +91,11 @@ public class TrayIcon {
 						}
 					});
 
-					trayItem.addListener(SWT.DefaultSelection, new RestoreShellListener(gui));
+					trayItem.addListener(SWT.DefaultSelection, new TrayRestoreListener(gui.getShell(), trayItem));
+					gui.getShell().addShellListener(new TrayRestoreListener(gui.getShell(), trayItem)); // OS X
 				}
 			}
-			catch (Exception e) {
+			catch (final Exception e) {
 				e.printStackTrace();//Logger.getInstance().log(e);
 			}
 		}
