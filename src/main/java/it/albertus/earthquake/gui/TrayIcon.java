@@ -66,17 +66,18 @@ public class TrayIcon {
 					trayIcon = getTrayIcon();
 					trayItem.setImage(trayIcon);
 					trayItem.setToolTipText(Messages.get("lbl.tray.tooltip"));
+					final TrayRestoreListener trayRestoreListener = new TrayRestoreListener(gui.getShell(), trayItem);
 
 					toolTip = new ToolTip(gui.getShell(), SWT.BALLOON | SWT.ICON_WARNING);
 					toolTip.setVisible(false);
 					toolTip.setAutoHide(true);
-					toolTip.addListener(SWT.Selection, new TrayRestoreListener(gui.getShell(), trayItem));
+					toolTip.addListener(SWT.Selection, trayRestoreListener);
 					trayItem.setToolTip(toolTip);
 
 					trayMenu = new Menu(gui.getShell(), SWT.POP_UP);
 					showMenuItem = new MenuItem(trayMenu, SWT.PUSH);
 					showMenuItem.setText(Messages.get("lbl.tray.show"));
-					showMenuItem.addListener(SWT.Selection, new TrayRestoreListener(gui.getShell(), trayItem));
+					showMenuItem.addListener(SWT.Selection, trayRestoreListener);
 					trayMenu.setDefaultItem(showMenuItem);
 
 					new MenuItem(trayMenu, SWT.SEPARATOR);
@@ -91,8 +92,8 @@ public class TrayIcon {
 						}
 					});
 
-					trayItem.addListener(SWT.DefaultSelection, new TrayRestoreListener(gui.getShell(), trayItem));
-					gui.getShell().addShellListener(new TrayRestoreListener(gui.getShell(), trayItem)); // OS X
+					trayItem.addListener(SWT.DefaultSelection, trayRestoreListener);
+					gui.getShell().addShellListener(trayRestoreListener); // OS X
 				}
 			}
 			catch (final Exception e) {
