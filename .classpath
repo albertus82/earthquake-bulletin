@@ -6,7 +6,6 @@
 	<classpathentry kind="lib" path="lib/org.eclipse.core.commands_3.7.0.v20150422-0725.jar" sourcepath="lib/src/org.eclipse.core.commands.source_3.7.0.v20150422-0725.jar"/>
 	<classpathentry kind="lib" path="lib/org.eclipse.equinox.common_3.7.0.v20150402-1709.jar" sourcepath="lib/src/org.eclipse.equinox.common.source_3.7.0.v20150402-1709.jar"/>
 	<classpathentry kind="lib" path="lib/org.eclipse.jface_3.11.1.v20160128-1644.jar" sourcepath="lib/src/org.eclipse.jface.source_3.11.1.v20160128-1644.jar"/>
-	<classpathentry kind="lib" path="lib/org.eclipse.paho.client.mqttv3-1.1.0.jar" sourcepath="lib/src/org.eclipse.paho.client.mqttv3-1.1.0-sources.jar"/>
 	<classpathentry kind="lib" path="lib/org.eclipse.core.jobs_3.7.0.v20150330-2103.jar" sourcepath="lib/src/org.eclipse.core.jobs.source_3.7.0.v20150330-2103.jar"/>
 	<classpathentry kind="lib" path="lib/org.eclipse.osgi_3.10.102.v20160118-1700.jar" sourcepath="lib/src/org.eclipse.osgi.source_3.10.102.v20160118-1700.jar"/>
 	<classpathentry kind="lib" path="lib/os/win32-win32-x86_64/swt-4.5.2-win32-win32-x86_64.jar" sourcepath="lib/os/win32-win32-x86_64/src/swt-4.5.2-win32-win32-x86_64-src.zip"/>
