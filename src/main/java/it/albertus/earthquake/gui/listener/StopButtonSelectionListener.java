@@ -20,7 +20,7 @@ public class StopButtonSelectionListener extends SelectionAdapter {
 			form.getSearchJob().setShouldRun(false);
 			form.getSearchJob().setShouldSchedule(false);
 			form.setSearchJob(null);
-			form.getSearchButton().setEnabled(true);
+			form.updateButtons();
 		}
 	}
 

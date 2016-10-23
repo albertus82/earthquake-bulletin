@@ -65,7 +65,7 @@ public class SearchJob extends Job {
 		new SwtThreadExecutor(gui.getShell()) {
 			@Override
 			protected void run() {
-				gui.getSearchForm().getSearchButton().setEnabled(false);
+				gui.getSearchForm().updateButtons();
 				gui.getShell().setCursor(gui.getShell().getDisplay().getSystemCursor(SWT.CURSOR_WAIT));
 
 				// Parametri di ricerca

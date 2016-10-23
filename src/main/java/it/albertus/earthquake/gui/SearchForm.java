@@ -9,10 +9,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.layout.RowLayout;
@@ -27,6 +28,7 @@ import it.albertus.earthquake.gui.decoration.SearchFormTextDecoration;
 import it.albertus.earthquake.gui.job.SearchJob;
 import it.albertus.earthquake.gui.listener.AutoRefreshButtonSelectionListener;
 import it.albertus.earthquake.gui.listener.ClearButtonSelectionListener;
+import it.albertus.earthquake.gui.listener.FormTextModifyListener;
 import it.albertus.earthquake.gui.listener.FormTextTraverseListener;
 import it.albertus.earthquake.gui.listener.FormatRadioSelectionListener;
 import it.albertus.earthquake.gui.listener.MapButtonSelectionListener;
@@ -143,6 +145,7 @@ public class SearchForm {
 	private final MapBoundsDialog mapBoundsDialog;
 
 	private final TraverseListener formTextTraverseListener = new FormTextTraverseListener(this);
+	private final ModifyListener formTextModifyListener = new FormTextModifyListener(this);
 	private final VerifyListener periodVerifyListener = new IntegerVerifyListener(true);
 	private final VerifyListener coordinatesVerifyListener = new FloatVerifyListener(true);
 
@@ -395,8 +398,19 @@ public class SearchForm {
 			public String getString() {
 				return JFaceMessages.get("err.preferences.integer.min", AUTOREFRESH_MIN_VALUE);
 			}
-		}, TextDecoration.DEFAULT_STYLE, FieldDecorationRegistry.DEC_WARNING);
+		});
 		validators.add(validator);
+
+		// Text modify listeners
+		periodFromText.addModifyListener(formTextModifyListener);
+		periodToText.addModifyListener(formTextModifyListener);
+		latitudeFromText.addModifyListener(formTextModifyListener);
+		latitudeToText.addModifyListener(formTextModifyListener);
+		longitudeFromText.addModifyListener(formTextModifyListener);
+		longitudeToText.addModifyListener(formTextModifyListener);
+		minimumMagnitudeText.addModifyListener(formTextModifyListener);
+		resultsText.addModifyListener(formTextModifyListener);
+		autoRefreshText.addModifyListener(formTextModifyListener);
 
 		// Map
 		mapBoundsDialog = new MapBoundsDialog(gui.getShell());
@@ -414,6 +428,17 @@ public class SearchForm {
 			}
 		}
 		return true;
+	}
+
+	public void updateButtons() {
+		if (searchJob == null || searchJob.getState() == Job.NONE) {
+			stopButton.setEnabled(false);
+			searchButton.setEnabled(isValid());
+		}
+		else {
+			searchButton.setEnabled(false);
+			stopButton.setEnabled(true);
+		}
 	}
 
 	public void updateTexts() {
