@@ -1,16 +1,5 @@
 package it.albertus.earthquake.gui;
 
-import it.albertus.earthquake.gui.listener.CopyLinkSelectionListener;
-import it.albertus.earthquake.gui.listener.GoogleMapsBrowserSelectionListener;
-import it.albertus.earthquake.gui.listener.GoogleMapsPopupSelectionListener;
-import it.albertus.earthquake.gui.listener.OpenInBrowserSelectionListener;
-import it.albertus.earthquake.gui.listener.ResultsTableContextMenuDetectListener;
-import it.albertus.earthquake.gui.listener.ShowMapListener;
-import it.albertus.earthquake.model.Earthquake;
-import it.albertus.earthquake.model.Status;
-import it.albertus.earthquake.resources.Messages;
-import it.albertus.util.Localized;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -31,6 +20,17 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+
+import it.albertus.earthquake.gui.listener.CopyLinkSelectionListener;
+import it.albertus.earthquake.gui.listener.GoogleMapsBrowserSelectionListener;
+import it.albertus.earthquake.gui.listener.GoogleMapsPopupSelectionListener;
+import it.albertus.earthquake.gui.listener.OpenInBrowserSelectionListener;
+import it.albertus.earthquake.gui.listener.ResultsTableContextMenuDetectListener;
+import it.albertus.earthquake.gui.listener.ShowMapListener;
+import it.albertus.earthquake.model.Earthquake;
+import it.albertus.earthquake.model.Status;
+import it.albertus.earthquake.resources.Messages;
+import it.albertus.util.Localized;
 
 public class ResultsTable {
 
@@ -118,21 +118,26 @@ public class ResultsTable {
 	private final MenuItem googleMapsBrowserMenuItem;
 	private final MenuItem googleMapsPopupMenuItem;
 
+	private boolean initialized = false;
+
 	public ResultsTable(final Composite parent, final Object layoutData, final EarthquakeBulletinGui gui) {
 		tableViewer = new TableViewer(parent, SWT.BORDER | SWT.FULL_SELECTION) {
 			// Auto resize columns on content change
 			@Override
 			protected void inputChanged(final Object input, final Object oldInput) {
 				super.inputChanged(input, oldInput);
-				final Table table = tableViewer.getTable();
-				table.setRedraw(false);
-				final TableColumn sortedColumn = table.getSortColumn();
-				table.setSortColumn(null);
-				for (int j = 0; j < table.getColumns().length; j++) {
-					table.getColumn(j).pack();
+				if (!initialized) {
+					final Table table = tableViewer.getTable();
+					table.setRedraw(false);
+					final TableColumn sortedColumn = table.getSortColumn();
+					table.setSortColumn(null);
+					for (int j = 0; j < table.getColumns().length; j++) {
+						table.getColumn(j).pack();
+					}
+					table.setSortColumn(sortedColumn);
+					table.setRedraw(true);
+					initialized = true;
 				}
-				table.setSortColumn(sortedColumn);
-				table.setRedraw(true);
 			}
 		};
 		createColumns(parent, tableViewer);
