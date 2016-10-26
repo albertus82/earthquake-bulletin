@@ -1,19 +1,5 @@
 package it.albertus.earthquake.gui.job;
 
-import it.albertus.earthquake.EarthquakeBulletin;
-import it.albertus.earthquake.gui.EarthquakeBulletinGui;
-import it.albertus.earthquake.gui.SearchForm;
-import it.albertus.earthquake.model.Earthquake;
-import it.albertus.earthquake.model.Format;
-import it.albertus.earthquake.net.HttpConnector;
-import it.albertus.earthquake.resources.Messages;
-import it.albertus.earthquake.rss.transformer.RssItemTransformer;
-import it.albertus.earthquake.rss.xml.Rss;
-import it.albertus.earthquake.xhtml.TableData;
-import it.albertus.earthquake.xhtml.transformer.XhtmlTableDataTransformer;
-import it.albertus.jface.SwtThreadExecutor;
-import it.albertus.util.NewLine;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,6 +26,20 @@ import org.eclipse.swt.widgets.MessageBox;
 
 import com.dmurph.URIEncoder;
 
+import it.albertus.earthquake.EarthquakeBulletin;
+import it.albertus.earthquake.gui.EarthquakeBulletinGui;
+import it.albertus.earthquake.gui.SearchForm;
+import it.albertus.earthquake.model.Earthquake;
+import it.albertus.earthquake.model.Format;
+import it.albertus.earthquake.net.HttpConnector;
+import it.albertus.earthquake.resources.Messages;
+import it.albertus.earthquake.rss.transformer.RssItemTransformer;
+import it.albertus.earthquake.rss.xml.Rss;
+import it.albertus.earthquake.xhtml.TableData;
+import it.albertus.earthquake.xhtml.transformer.XhtmlTableDataTransformer;
+import it.albertus.jface.SwtThreadExecutor;
+import it.albertus.util.NewLine;
+
 public class SearchJob extends Job {
 
 	private final EarthquakeBulletinGui gui;
@@ -55,6 +55,8 @@ public class SearchJob extends Job {
 	@Override
 	protected IStatus run(final IProgressMonitor monitor) {
 		monitor.beginTask("Search", 1);
+
+		boolean error = false;
 
 		final long[] waitTimeInMillis = new long[1];
 
@@ -145,6 +147,7 @@ public class SearchJob extends Job {
 		}
 		catch (final Exception e) {
 			e.printStackTrace();
+			error = true;
 			new SwtThreadExecutor(gui.getShell()) {
 				@Override
 				protected void run() {
@@ -165,45 +168,50 @@ public class SearchJob extends Job {
 		}
 
 		final Collection<Earthquake> earthquakes = new TreeSet<>();
-		try {
-			switch (format[0]) {
-			case RSS:
-				earthquakes.addAll(RssItemTransformer.fromRss(rss));
-				break;
-			case XHTML:
-				earthquakes.addAll(XhtmlTableDataTransformer.fromXhtml(td));
-				break;
+		if (!error) {
+			try {
+				switch (format[0]) {
+				case RSS:
+					earthquakes.addAll(RssItemTransformer.fromRss(rss));
+					break;
+				case XHTML:
+					earthquakes.addAll(XhtmlTableDataTransformer.fromXhtml(td));
+					break;
+				}
+			}
+			catch (final Exception e) {
+				error = true;
+				e.printStackTrace();
+				new SwtThreadExecutor(gui.getShell()) {
+					@Override
+					protected void run() {
+						if (gui.getTrayIcon() == null || gui.getTrayIcon().getTrayItem() == null || !gui.getTrayIcon().getTrayItem().getVisible()) {
+							final MessageBox dialog = new MessageBox(gui.getShell(), SWT.ICON_WARNING);
+							dialog.setText(Messages.get("lbl.window.title"));
+							dialog.setMessage(Messages.get("err.job.decode"));
+							dialog.open();
+						}
+					}
+				}.start();
 			}
 		}
-		catch (final Exception e) {
-			e.printStackTrace();
+
+		if (!error) {
 			new SwtThreadExecutor(gui.getShell()) {
 				@Override
 				protected void run() {
-					if (gui.getTrayIcon() == null || gui.getTrayIcon().getTrayItem() == null || !gui.getTrayIcon().getTrayItem().getVisible()) {
-						final MessageBox dialog = new MessageBox(gui.getShell(), SWT.ICON_WARNING);
-						dialog.setText(Messages.get("lbl.window.title"));
-						dialog.setMessage(Messages.get("err.job.decode"));
-						dialog.open();
+					final Earthquake[] newData = earthquakes.toArray(new Earthquake[0]);
+					final Earthquake[] oldData = (Earthquake[]) gui.getResultsTable().getTableViewer().getInput();
+					gui.getResultsTable().getTableViewer().setInput(newData);
+					if (oldData != null && !Arrays.equals(newData, oldData)) {
+						gui.getMapCanvas().clear();
+						if (newData.length > 0 && newData[0] != null) {
+							gui.getTrayIcon().showBalloonToolTip(newData[0]);
+						}
 					}
 				}
 			}.start();
 		}
-
-		new SwtThreadExecutor(gui.getShell()) {
-			@Override
-			protected void run() {
-				final Earthquake[] newData = earthquakes.toArray(new Earthquake[0]);
-				final Earthquake[] oldData = (Earthquake[]) gui.getResultsTable().getTableViewer().getInput();
-				gui.getResultsTable().getTableViewer().setInput(newData);
-				if (oldData != null && !Arrays.equals(newData, oldData)) {
-					gui.getMapCanvas().clear();
-					if (newData.length > 0 && newData[0] != null) {
-						gui.getTrayIcon().showBalloonToolTip(newData[0]);
-					}
-				}
-			}
-		}.start();
 
 		new SwtThreadExecutor(gui.getShell()) {
 			@Override
