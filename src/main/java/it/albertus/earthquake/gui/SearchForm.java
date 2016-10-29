@@ -36,7 +36,7 @@ import it.albertus.earthquake.gui.listener.SearchButtonSelectionListener;
 import it.albertus.earthquake.gui.listener.StopButtonSelectionListener;
 import it.albertus.earthquake.model.Format;
 import it.albertus.earthquake.resources.Messages;
-import it.albertus.jface.FontFormatter;
+import it.albertus.jface.Formatter;
 import it.albertus.jface.JFaceMessages;
 import it.albertus.jface.decoration.TextDecoration;
 import it.albertus.jface.google.maps.MapBoundsDialog;
@@ -93,7 +93,7 @@ public class SearchForm {
 
 	private final Configuration configuration = EarthquakeBulletin.configuration;
 
-	private final FontFormatter fontFormatter = new FontFormatter(this.getClass().getName());
+	private final Formatter fontFormatter = new Formatter(this.getClass());
 
 	private final Composite formComposite;
 
