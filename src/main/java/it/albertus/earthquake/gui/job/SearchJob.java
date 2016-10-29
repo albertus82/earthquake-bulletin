@@ -205,7 +205,7 @@ public class SearchJob extends Job {
 					gui.getResultsTable().getTableViewer().setInput(newData);
 					if (oldData != null && !Arrays.equals(newData, oldData)) {
 						gui.getMapCanvas().clear();
-						if (newData.length > 0 && newData[0] != null) {
+						if (newData.length > 0 && newData[0] != null && oldData.length > 0 && !newData[0].equals(oldData[0])) {
 							gui.getTrayIcon().showBalloonToolTip(newData[0]);
 						}
 					}
