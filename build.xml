@@ -3,7 +3,7 @@
 <project name="EarthquakeBulletin" default="release">
 
 	<property environment="env" />
-	<property name="env.JAVA_HOME_BOOTCLASSPATH" value="${env.JAVA_HOME}/../jdk1.7.0_79" />
+	<property name="env.JRE7_HOME" value="${env.JAVA_HOME}/../jdk1.7.0_79/jre" />
 
 	<property file="build.properties" />
 	<property file="${build.resourcesDirectory}/version.properties" />
