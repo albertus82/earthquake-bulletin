@@ -45,10 +45,10 @@ import it.albertus.jface.google.maps.MapOptions;
 import it.albertus.jface.google.maps.MapType;
 import it.albertus.jface.listener.FloatVerifyListener;
 import it.albertus.jface.listener.IntegerVerifyListener;
+import it.albertus.jface.validation.ControlValidator;
 import it.albertus.jface.validation.DateTextValidator;
 import it.albertus.jface.validation.FloatTextValidator;
 import it.albertus.jface.validation.IntegerTextValidator;
-import it.albertus.jface.validation.TextValidator;
 import it.albertus.jface.validation.Validator;
 import it.albertus.util.Configuration;
 import it.albertus.util.Localized;
@@ -320,7 +320,7 @@ public class SearchForm {
 		autoRefreshButton.notifyListeners(SWT.Selection, null);
 
 		// Decorators
-		TextValidator validator = new DateTextValidator(periodFromText, DATE_PATTERN);
+		ControlValidator<Text> validator = new DateTextValidator(periodFromText, DATE_PATTERN);
 		new SearchFormTextDecoration(validator, new Localized() {
 			@Override
 			public String getString() {
@@ -338,7 +338,7 @@ public class SearchForm {
 		});
 		validators.add(validator);
 
-		validator = new FloatTextValidator(latitudeFromText, LATITUDE_MIN_VALUE, LATITUDE_MAX_VALUE, true);
+		validator = new FloatTextValidator(latitudeFromText, true, LATITUDE_MIN_VALUE, LATITUDE_MAX_VALUE);
 		new SearchFormTextDecoration(validator, new Localized() {
 			@Override
 			public String getString() {
@@ -347,7 +347,7 @@ public class SearchForm {
 		});
 		validators.add(validator);
 
-		validator = new FloatTextValidator(latitudeToText, LATITUDE_MIN_VALUE, LATITUDE_MAX_VALUE, true);
+		validator = new FloatTextValidator(latitudeToText, true, LATITUDE_MIN_VALUE, LATITUDE_MAX_VALUE);
 		new SearchFormTextDecoration(validator, new Localized() {
 			@Override
 			public String getString() {
@@ -356,7 +356,7 @@ public class SearchForm {
 		});
 		validators.add(validator);
 
-		validator = new FloatTextValidator(longitudeFromText, LONGITUDE_MIN_VALUE, LONGITUDE_MAX_VALUE, true);
+		validator = new FloatTextValidator(longitudeFromText, true, LONGITUDE_MIN_VALUE, LONGITUDE_MAX_VALUE);
 		new SearchFormTextDecoration(validator, new Localized() {
 			@Override
 			public String getString() {
@@ -365,7 +365,7 @@ public class SearchForm {
 		});
 		validators.add(validator);
 
-		validator = new FloatTextValidator(longitudeToText, LONGITUDE_MIN_VALUE, LONGITUDE_MAX_VALUE, true);
+		validator = new FloatTextValidator(longitudeToText, true, LONGITUDE_MIN_VALUE, LONGITUDE_MAX_VALUE);
 		new SearchFormTextDecoration(validator, new Localized() {
 			@Override
 			public String getString() {
@@ -374,7 +374,7 @@ public class SearchForm {
 		});
 		validators.add(validator);
 
-		validator = new FloatTextValidator(minimumMagnitudeText, MAGNITUDE_MIN_VALUE, MAGNITUDE_MAX_VALUE, true);
+		validator = new FloatTextValidator(minimumMagnitudeText, true, MAGNITUDE_MIN_VALUE, MAGNITUDE_MAX_VALUE);
 		new SearchFormTextDecoration(validator, new Localized() {
 			@Override
 			public String getString() {
@@ -383,7 +383,7 @@ public class SearchForm {
 		});
 		validators.add(validator);
 
-		validator = new IntegerTextValidator(resultsText, RESULTS_MIN_VALUE, RESULTS_MAX_VALUE, true);
+		validator = new IntegerTextValidator(resultsText, true, RESULTS_MIN_VALUE, RESULTS_MAX_VALUE);
 		new SearchFormTextDecoration(validator, new Localized() {
 			@Override
 			public String getString() {
@@ -392,7 +392,7 @@ public class SearchForm {
 		});
 		validators.add(validator);
 
-		validator = new IntegerTextValidator(autoRefreshText, AUTOREFRESH_MIN_VALUE, null, true);
+		validator = new IntegerTextValidator(autoRefreshText, true, AUTOREFRESH_MIN_VALUE, null);
 		new TextDecoration(validator, new Localized() {
 			@Override
 			public String getString() {
