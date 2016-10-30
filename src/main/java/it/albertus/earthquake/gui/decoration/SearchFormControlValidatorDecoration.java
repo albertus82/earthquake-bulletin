@@ -4,15 +4,14 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Text;
 
-import it.albertus.jface.decoration.TextDecoration;
+import it.albertus.jface.decoration.ControlValidatorDecoration;
 import it.albertus.jface.validation.ControlValidator;
 import it.albertus.util.Localized;
 
-public class SearchFormTextDecoration extends TextDecoration {
+public class SearchFormControlValidatorDecoration extends ControlValidatorDecoration {
 
-	public SearchFormTextDecoration(final ControlValidator<Text> validator, final Localized message) {
+	public SearchFormControlValidatorDecoration(final ControlValidator<?> validator, final Localized message) {
 		super(validator, message);
 	}
 

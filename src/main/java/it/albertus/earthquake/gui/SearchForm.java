@@ -24,7 +24,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 import it.albertus.earthquake.EarthquakeBulletin;
-import it.albertus.earthquake.gui.decoration.SearchFormTextDecoration;
+import it.albertus.earthquake.gui.decoration.SearchFormControlValidatorDecoration;
 import it.albertus.earthquake.gui.job.SearchJob;
 import it.albertus.earthquake.gui.listener.AutoRefreshButtonSelectionListener;
 import it.albertus.earthquake.gui.listener.ClearButtonSelectionListener;
@@ -38,7 +38,7 @@ import it.albertus.earthquake.model.Format;
 import it.albertus.earthquake.resources.Messages;
 import it.albertus.jface.Formatter;
 import it.albertus.jface.JFaceMessages;
-import it.albertus.jface.decoration.TextDecoration;
+import it.albertus.jface.decoration.ControlValidatorDecoration;
 import it.albertus.jface.google.maps.MapBoundsDialog;
 import it.albertus.jface.google.maps.MapControl;
 import it.albertus.jface.google.maps.MapOptions;
@@ -321,7 +321,7 @@ public class SearchForm {
 
 		// Decorators
 		ControlValidator<Text> validator = new DateTextValidator(periodFromText, DATE_PATTERN);
-		new SearchFormTextDecoration(validator, new Localized() {
+		new SearchFormControlValidatorDecoration(validator, new Localized() {
 			@Override
 			public String getString() {
 				return JFaceMessages.get("err.preferences.date", DATE_PATTERN);
@@ -330,7 +330,7 @@ public class SearchForm {
 		validators.add(validator);
 
 		validator = new DateTextValidator(periodToText, DATE_PATTERN);
-		new SearchFormTextDecoration(validator, new Localized() {
+		new SearchFormControlValidatorDecoration(validator, new Localized() {
 			@Override
 			public String getString() {
 				return JFaceMessages.get("err.preferences.date", DATE_PATTERN);
@@ -339,7 +339,7 @@ public class SearchForm {
 		validators.add(validator);
 
 		validator = new FloatTextValidator(latitudeFromText, true, LATITUDE_MIN_VALUE, LATITUDE_MAX_VALUE);
-		new SearchFormTextDecoration(validator, new Localized() {
+		new SearchFormControlValidatorDecoration(validator, new Localized() {
 			@Override
 			public String getString() {
 				return JFaceMessages.get("err.preferences.decimal.range", LATITUDE_MIN_VALUE, LATITUDE_MAX_VALUE);
@@ -348,7 +348,7 @@ public class SearchForm {
 		validators.add(validator);
 
 		validator = new FloatTextValidator(latitudeToText, true, LATITUDE_MIN_VALUE, LATITUDE_MAX_VALUE);
-		new SearchFormTextDecoration(validator, new Localized() {
+		new SearchFormControlValidatorDecoration(validator, new Localized() {
 			@Override
 			public String getString() {
 				return JFaceMessages.get("err.preferences.decimal.range", LATITUDE_MIN_VALUE, LATITUDE_MAX_VALUE);
@@ -357,7 +357,7 @@ public class SearchForm {
 		validators.add(validator);
 
 		validator = new FloatTextValidator(longitudeFromText, true, LONGITUDE_MIN_VALUE, LONGITUDE_MAX_VALUE);
-		new SearchFormTextDecoration(validator, new Localized() {
+		new SearchFormControlValidatorDecoration(validator, new Localized() {
 			@Override
 			public String getString() {
 				return JFaceMessages.get("err.preferences.decimal.range", LONGITUDE_MIN_VALUE, LONGITUDE_MAX_VALUE);
@@ -366,7 +366,7 @@ public class SearchForm {
 		validators.add(validator);
 
 		validator = new FloatTextValidator(longitudeToText, true, LONGITUDE_MIN_VALUE, LONGITUDE_MAX_VALUE);
-		new SearchFormTextDecoration(validator, new Localized() {
+		new SearchFormControlValidatorDecoration(validator, new Localized() {
 			@Override
 			public String getString() {
 				return JFaceMessages.get("err.preferences.decimal.range", LONGITUDE_MIN_VALUE, LONGITUDE_MAX_VALUE);
@@ -375,7 +375,7 @@ public class SearchForm {
 		validators.add(validator);
 
 		validator = new FloatTextValidator(minimumMagnitudeText, true, MAGNITUDE_MIN_VALUE, MAGNITUDE_MAX_VALUE);
-		new SearchFormTextDecoration(validator, new Localized() {
+		new SearchFormControlValidatorDecoration(validator, new Localized() {
 			@Override
 			public String getString() {
 				return JFaceMessages.get("err.preferences.decimal.range", MAGNITUDE_MIN_VALUE, MAGNITUDE_MAX_VALUE);
@@ -384,7 +384,7 @@ public class SearchForm {
 		validators.add(validator);
 
 		validator = new IntegerTextValidator(resultsText, true, RESULTS_MIN_VALUE, RESULTS_MAX_VALUE);
-		new SearchFormTextDecoration(validator, new Localized() {
+		new SearchFormControlValidatorDecoration(validator, new Localized() {
 			@Override
 			public String getString() {
 				return JFaceMessages.get("err.preferences.integer.range", RESULTS_MIN_VALUE, RESULTS_MAX_VALUE);
@@ -393,7 +393,7 @@ public class SearchForm {
 		validators.add(validator);
 
 		validator = new IntegerTextValidator(autoRefreshText, true, AUTOREFRESH_MIN_VALUE, null);
-		new TextDecoration(validator, new Localized() {
+		new ControlValidatorDecoration(validator, new Localized() {
 			@Override
 			public String getString() {
 				return JFaceMessages.get("err.preferences.integer.min", AUTOREFRESH_MIN_VALUE);
