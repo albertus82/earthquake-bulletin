@@ -1,8 +1,5 @@
 package it.albertus.earthquake.gui;
 
-import it.albertus.earthquake.resources.Messages;
-import it.albertus.jface.listener.LinkSelectionListener;
-
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
@@ -10,10 +7,12 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Dialog;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Shell;
+
+import it.albertus.earthquake.resources.Messages;
+import it.albertus.jface.listener.LinkSelectionListener;
 
 public class AboutDialog extends Dialog {
 
@@ -38,12 +37,6 @@ public class AboutDialog extends Dialog {
 		createContents(shell);
 		shell.pack();
 		shell.open();
-		final Display display = getParent().getDisplay();
-		while (!shell.isDisposed()) {
-			if (!display.readAndDispatch()) {
-				display.sleep();
-			}
-		}
 	}
 
 	private void createContents(final Shell shell) {
