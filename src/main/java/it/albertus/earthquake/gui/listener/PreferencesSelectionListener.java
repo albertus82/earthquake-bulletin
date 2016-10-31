@@ -1,5 +1,12 @@
 package it.albertus.earthquake.gui.listener;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.MessageBox;
+
 import it.albertus.earthquake.EarthquakeBulletin;
 import it.albertus.earthquake.gui.EarthquakeBulletinGui;
 import it.albertus.earthquake.gui.Images;
@@ -10,12 +17,7 @@ import it.albertus.earthquake.resources.Messages.Language;
 import it.albertus.jface.preference.Preferences;
 import it.albertus.util.Configuration;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.widgets.MessageBox;
-
-public class PreferencesSelectionListener extends SelectionAdapter {
+public class PreferencesSelectionListener extends SelectionAdapter implements Listener {
 
 	private final Configuration configuration = EarthquakeBulletin.configuration;
 	private final EarthquakeBulletinGui gui;
@@ -49,6 +51,11 @@ public class PreferencesSelectionListener extends SelectionAdapter {
 			messageBox.setMessage(Messages.get("lbl.preferences.restart"));
 			messageBox.open();
 		}
+	}
+
+	@Override
+	public void handleEvent(final Event event) {
+		widgetSelected(event != null ? new SelectionEvent(event) : null);
 	}
 
 }

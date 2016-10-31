@@ -1,13 +1,15 @@
 package it.albertus.earthquake.gui;
 
+import org.eclipse.jface.util.Util;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
+
 import it.albertus.earthquake.gui.listener.AboutSelectionListener;
 import it.albertus.earthquake.gui.listener.CloseListener;
 import it.albertus.earthquake.gui.listener.PreferencesSelectionListener;
 import it.albertus.earthquake.resources.Messages;
-
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
+import it.albertus.jface.cocoa.CocoaUIEnhancer;
 
 /**
  * Solo i <tt>MenuItem</tt> che fanno parte di una barra dei men&ugrave; con
@@ -18,21 +20,40 @@ import org.eclipse.swt.widgets.MenuItem;
  */
 public class MenuBar {
 
-	private final Menu bar;
+	private Menu bar;
 
-	private final Menu fileMenu;
-	private final MenuItem fileMenuHeader;
-	private final MenuItem fileExitItem;
+	private Menu fileMenu;
+	private MenuItem fileMenuHeader;
+	private MenuItem fileExitItem;
 
-	private final Menu toolsMenu;
-	private final MenuItem toolsMenuHeader;
-	private final MenuItem toolsPreferencesMenuItem;
+	private Menu toolsMenu;
+	private MenuItem toolsMenuHeader;
+	private MenuItem toolsPreferencesMenuItem;
 
-	private final Menu helpMenu;
-	private final MenuItem helpMenuHeader;
-	private final MenuItem helpAboutItem;
+	private Menu helpMenu;
+	private MenuItem helpMenuHeader;
+	private MenuItem helpAboutItem;
 
 	public MenuBar(final EarthquakeBulletinGui gui) {
+		if (Util.isCocoa()) {
+			createCocoaMenu(gui);
+		}
+		else {
+			createStandardMenu(gui);
+		}
+	}
+
+	private void createCocoaMenu(final EarthquakeBulletinGui gui) {
+		try {
+			new CocoaUIEnhancer().hookApplicationMenu(gui.getShell().getDisplay(), new CloseListener(gui), new AboutSelectionListener(gui), new PreferencesSelectionListener(gui));
+		}
+		catch (final Throwable t) {
+			t.printStackTrace();
+			createStandardMenu(gui); // fail-safe
+		}
+	}
+
+	private void createStandardMenu(final EarthquakeBulletinGui gui) {
 		bar = new Menu(gui.getShell(), SWT.BAR); // Bar
 
 		// File
@@ -69,12 +90,24 @@ public class MenuBar {
 	}
 
 	public void updateTexts() {
-		fileMenuHeader.setText(Messages.get("lbl.menu.header.file"));
-		fileExitItem.setText(Messages.get("lbl.menu.item.exit"));
-		toolsMenuHeader.setText(Messages.get("lbl.menu.header.tools"));
-		toolsPreferencesMenuItem.setText(Messages.get("lbl.menu.item.preferences"));
-		helpMenuHeader.setText(Messages.get("lbl.menu.header.help"));
-		helpAboutItem.setText(Messages.get("lbl.menu.item.about"));
+		if (fileMenuHeader != null && fileMenuHeader.isDisposed()) {
+			fileMenuHeader.setText(Messages.get("lbl.menu.header.file"));
+		}
+		if (fileExitItem != null && fileExitItem.isDisposed()) {
+			fileExitItem.setText(Messages.get("lbl.menu.item.exit"));
+		}
+		if (toolsMenuHeader != null && toolsMenuHeader.isDisposed()) {
+			toolsMenuHeader.setText(Messages.get("lbl.menu.header.tools"));
+		}
+		if (toolsPreferencesMenuItem != null && !toolsPreferencesMenuItem.isDisposed()) {
+			toolsPreferencesMenuItem.setText(Messages.get("lbl.menu.item.preferences"));
+		}
+		if (helpMenuHeader != null && helpMenuHeader.isDisposed()) {
+			helpMenuHeader.setText(Messages.get("lbl.menu.header.help"));
+		}
+		if (helpAboutItem != null && helpAboutItem.isDisposed()) {
+			helpAboutItem.setText(Messages.get("lbl.menu.item.about"));
+		}
 	}
 
 	public Menu getBar() {
