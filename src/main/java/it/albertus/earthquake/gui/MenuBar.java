@@ -90,22 +90,22 @@ public class MenuBar {
 	}
 
 	public void updateTexts() {
-		if (fileMenuHeader != null && fileMenuHeader.isDisposed()) {
+		if (fileMenuHeader != null && !fileMenuHeader.isDisposed()) {
 			fileMenuHeader.setText(Messages.get("lbl.menu.header.file"));
 		}
-		if (fileExitItem != null && fileExitItem.isDisposed()) {
+		if (fileExitItem != null && !fileExitItem.isDisposed()) {
 			fileExitItem.setText(Messages.get("lbl.menu.item.exit"));
 		}
-		if (toolsMenuHeader != null && toolsMenuHeader.isDisposed()) {
+		if (toolsMenuHeader != null && !toolsMenuHeader.isDisposed()) {
 			toolsMenuHeader.setText(Messages.get("lbl.menu.header.tools"));
 		}
 		if (toolsPreferencesMenuItem != null && !toolsPreferencesMenuItem.isDisposed()) {
 			toolsPreferencesMenuItem.setText(Messages.get("lbl.menu.item.preferences"));
 		}
-		if (helpMenuHeader != null && helpMenuHeader.isDisposed()) {
+		if (helpMenuHeader != null && !helpMenuHeader.isDisposed()) {
 			helpMenuHeader.setText(Messages.get("lbl.menu.header.help"));
 		}
-		if (helpAboutItem != null && helpAboutItem.isDisposed()) {
+		if (helpAboutItem != null && !helpAboutItem.isDisposed()) {
 			helpAboutItem.setText(Messages.get("lbl.menu.item.about"));
 		}
 	}
