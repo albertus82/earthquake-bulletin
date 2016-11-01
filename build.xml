@@ -265,6 +265,7 @@
 		</jarbundler>
 		<copy todir="${build.directory}/bundle/cocoa-macosx-x86_64/${name}.app/Contents/Resources/Java" failonerror="false">
 			<fileset refid="config" />
+			<fileset refid="command" />
 		</copy>
 		<copy todir="${build.directory}/bundle/cocoa-macosx-x86_64/${name}.app/Contents/SharedSupport">
 			<fileset refid="docs" />
