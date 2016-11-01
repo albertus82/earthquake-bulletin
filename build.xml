@@ -273,10 +273,12 @@
 		<tar destfile="${build.releaseDirectory}/${artifactId}-${version.number}-cocoa-macosx-x86_64-bin.tar.gz" compression="gzip">
 			<tarfileset dir="${build.directory}/bundle/cocoa-macosx-x86_64" filemode="755">
 				<include name="/${name}.app/Contents/MacOS/*" />
+				<include name="/${name}.app/Contents/Resources/Java/*.command" />
 			</tarfileset>
 			<tarfileset dir="${build.directory}/bundle/cocoa-macosx-x86_64">
 				<include name="/**" />
 				<exclude name="/${name}.app/Contents/MacOS/*" />
+				<exclude name="/${name}.app/Contents/Resources/Java/*.command" />
 			</tarfileset>
 		</tar>
 
