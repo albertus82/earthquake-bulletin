@@ -10,11 +10,11 @@ import it.albertus.earthquake.gui.AboutDialog;
 import it.albertus.earthquake.resources.Messages;
 import it.albertus.util.Version;
 
-public class AboutSelectionListener extends SelectionAdapter implements Listener {
+public class AboutListener extends SelectionAdapter implements Listener {
 
 	private final IShellProvider gui;
 
-	public AboutSelectionListener(final IShellProvider gui) {
+	public AboutListener(final IShellProvider gui) {
 		this.gui = gui;
 	}
 

@@ -17,12 +17,12 @@ import it.albertus.earthquake.resources.Messages.Language;
 import it.albertus.jface.preference.Preferences;
 import it.albertus.util.Configuration;
 
-public class PreferencesSelectionListener extends SelectionAdapter implements Listener {
+public class PreferencesListener extends SelectionAdapter implements Listener {
 
 	private final Configuration configuration = EarthquakeBulletin.configuration;
 	private final EarthquakeBulletinGui gui;
 
-	public PreferencesSelectionListener(final EarthquakeBulletinGui gui) {
+	public PreferencesListener(final EarthquakeBulletinGui gui) {
 		this.gui = gui;
 	}
 

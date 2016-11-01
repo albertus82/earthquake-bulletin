@@ -5,9 +5,9 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 
-import it.albertus.earthquake.gui.listener.AboutSelectionListener;
+import it.albertus.earthquake.gui.listener.AboutListener;
 import it.albertus.earthquake.gui.listener.CloseListener;
-import it.albertus.earthquake.gui.listener.PreferencesSelectionListener;
+import it.albertus.earthquake.gui.listener.PreferencesListener;
 import it.albertus.earthquake.resources.Messages;
 import it.albertus.jface.cocoa.CocoaUIEnhancer;
 
@@ -45,7 +45,7 @@ public class MenuBar {
 
 	private void createCocoaMenu(final EarthquakeBulletinGui gui) {
 		try {
-			new CocoaUIEnhancer(gui.getShell().getDisplay()).hookApplicationMenu(new CloseListener(gui), new AboutSelectionListener(gui), new PreferencesSelectionListener(gui));
+			new CocoaUIEnhancer(gui.getShell().getDisplay()).hookApplicationMenu(new CloseListener(gui), new AboutListener(gui), new PreferencesListener(gui));
 		}
 		catch (final Throwable t) {
 			t.printStackTrace();
@@ -74,7 +74,7 @@ public class MenuBar {
 
 		toolsPreferencesMenuItem = new MenuItem(toolsMenu, SWT.PUSH);
 		toolsPreferencesMenuItem.setText(Messages.get("lbl.menu.item.preferences"));
-		toolsPreferencesMenuItem.addSelectionListener(new PreferencesSelectionListener(gui));
+		toolsPreferencesMenuItem.addSelectionListener(new PreferencesListener(gui));
 
 		// Help
 		helpMenu = new Menu(gui.getShell(), SWT.DROP_DOWN);
@@ -84,7 +84,7 @@ public class MenuBar {
 
 		helpAboutItem = new MenuItem(helpMenu, SWT.PUSH);
 		helpAboutItem.setText(Messages.get("lbl.menu.item.about"));
-		helpAboutItem.addSelectionListener(new AboutSelectionListener(gui));
+		helpAboutItem.addSelectionListener(new AboutListener(gui));
 
 		gui.getShell().setMenuBar(bar);
 	}
