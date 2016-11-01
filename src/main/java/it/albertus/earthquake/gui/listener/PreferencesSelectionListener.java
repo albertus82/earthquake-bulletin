@@ -55,7 +55,7 @@ public class PreferencesSelectionListener extends SelectionAdapter implements Li
 
 	@Override
 	public void handleEvent(final Event event) {
-		widgetSelected(event != null ? new SelectionEvent(event) : null);
+		widgetSelected(null);
 	}
 
 }

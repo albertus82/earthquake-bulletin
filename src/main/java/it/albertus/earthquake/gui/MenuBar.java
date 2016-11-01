@@ -45,7 +45,7 @@ public class MenuBar {
 
 	private void createCocoaMenu(final EarthquakeBulletinGui gui) {
 		try {
-			new CocoaUIEnhancer().hookApplicationMenu(gui.getShell().getDisplay(), new CloseListener(gui), new AboutSelectionListener(gui), new PreferencesSelectionListener(gui));
+			new CocoaUIEnhancer(gui.getShell().getDisplay()).hookApplicationMenu(new CloseListener(gui), new AboutSelectionListener(gui), new PreferencesSelectionListener(gui));
 		}
 		catch (final Throwable t) {
 			t.printStackTrace();

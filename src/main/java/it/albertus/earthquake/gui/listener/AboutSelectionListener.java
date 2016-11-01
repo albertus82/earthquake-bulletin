@@ -30,7 +30,7 @@ public class AboutSelectionListener extends SelectionAdapter implements Listener
 
 	@Override
 	public void handleEvent(final Event event) {
-		widgetSelected(event != null ? new SelectionEvent(event) : null);
+		widgetSelected(null);
 	}
 
 }
