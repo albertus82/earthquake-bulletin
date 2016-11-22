@@ -22,7 +22,7 @@ public class EarthquakeBulletin {
 	static {
 		File config = null;
 		try {
-			final String parent = new File(EarthquakeBulletin.class.getProtectionDomain().getCodeSource().getLocation().toURI().getSchemeSpecificPart()).getParent();
+			final String parent = System.getProperty("user.home") + File.separator + Messages.get("msg.application.name");
 			config = new File((parent != null ? parent : "") + File.separator + CFG_FILE_NAME);
 		}
 		catch (final Exception e) {
