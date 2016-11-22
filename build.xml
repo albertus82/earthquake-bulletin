@@ -336,7 +336,8 @@
 			ArchitecturesAllowed=x86
 
 			[Files]
-			Source: "${artifactId}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
+			Source: "${artifactId}\*"; Excludes: "*.cfg"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
+			Source: "${artifactId}\*.cfg"; DestDir: "{userappdata}\${name}"; Flags: ignoreversion onlyifdoesntexist
 
 			[Icons]
 			Name: "{group}\${name}"; Filename: "{app}\${artifactId}.exe"
@@ -375,7 +376,8 @@
 			ArchitecturesInstallIn64BitMode=x64
 
 			[Files]
-			Source: "${artifactId}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
+			Source: "${artifactId}\*"; Excludes: "*.cfg"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
+			Source: "${artifactId}\*.cfg"; DestDir: "{userappdata}\${name}"; Flags: ignoreversion onlyifdoesntexist
 
 			[Icons]
 			Name: "{group}\${name}"; Filename: "{app}\${artifactId}.exe"
