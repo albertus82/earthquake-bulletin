@@ -337,7 +337,7 @@
 
 			[Files]
 			Source: "${artifactId}\*"; Excludes: "*.cfg"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
-			Source: "${artifactId}\*.cfg"; DestDir: "{userappdata}\${name}"; Flags: ignoreversion onlyifdoesntexist
+			Source: "${artifactId}\*.cfg"; DestDir: "{userappdata}\${name}"; Flags: onlyifdoesntexist
 
 			[Icons]
 			Name: "{group}\${name}"; Filename: "{app}\${artifactId}.exe"
@@ -379,7 +379,7 @@
 
 			[Files]
 			Source: "${artifactId}\*"; Excludes: "*.cfg"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
-			Source: "${artifactId}\*.cfg"; DestDir: "{userappdata}\${name}"; Flags: ignoreversion onlyifdoesntexist
+			Source: "${artifactId}\*.cfg"; DestDir: "{userappdata}\${name}"; Flags: onlyifdoesntexist
 
 			[Icons]
 			Name: "{group}\${name}"; Filename: "{app}\${artifactId}.exe"
