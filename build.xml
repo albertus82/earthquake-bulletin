@@ -339,10 +339,13 @@
 			Source: "${artifactId}\*"; Excludes: "*.cfg"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
 			Source: "${artifactId}\*.cfg"; DestDir: "{userappdata}\${name}"; Flags: onlyifdoesntexist
 
+			[Tasks]
+			Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
+
 			[Icons]
 			Name: "{group}\${name}"; Filename: "{app}\${artifactId}.exe"
-			Name: "{commondesktop}\${name}"; Filename: "{app}\${artifactId}.exe"
-			Name: "{group}\Uninstall ${name}"; Filename: "{uninstallexe}"
+			Name: "{group}\{cm:UninstallProgram,${name}}"; Filename: "{uninstallexe}"
+			Name: "{userdesktop}\${name}"; Filename: "{app}\${artifactId}.exe"; Tasks: desktopicon
 		</echo>
 
 		<exec osfamily="windows" executable="${innosetup.dir}/ISCC.exe">
@@ -381,10 +384,13 @@
 			Source: "${artifactId}\*"; Excludes: "*.cfg"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
 			Source: "${artifactId}\*.cfg"; DestDir: "{userappdata}\${name}"; Flags: onlyifdoesntexist
 
+			[Tasks]
+			Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
+
 			[Icons]
 			Name: "{group}\${name}"; Filename: "{app}\${artifactId}.exe"
-			Name: "{commondesktop}\${name}"; Filename: "{app}\${artifactId}.exe"
-			Name: "{group}\Uninstall ${name}"; Filename: "{uninstallexe}"
+			Name: "{group}\{cm:UninstallProgram,${name}}"; Filename: "{uninstallexe}"
+			Name: "{userdesktop}\${name}"; Filename: "{app}\${artifactId}.exe"; Tasks: desktopicon
 		</echo>
 
 		<exec osfamily="windows" executable="${innosetup.dir}/ISCC.exe">
