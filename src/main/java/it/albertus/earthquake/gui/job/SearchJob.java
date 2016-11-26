@@ -29,14 +29,14 @@ import com.dmurph.URIEncoder;
 import it.albertus.earthquake.EarthquakeBulletin;
 import it.albertus.earthquake.gui.EarthquakeBulletinGui;
 import it.albertus.earthquake.gui.SearchForm;
+import it.albertus.earthquake.html.TableData;
+import it.albertus.earthquake.html.transformer.HtmlTableDataTransformer;
 import it.albertus.earthquake.model.Earthquake;
 import it.albertus.earthquake.model.Format;
 import it.albertus.earthquake.net.HttpConnector;
 import it.albertus.earthquake.resources.Messages;
 import it.albertus.earthquake.rss.transformer.RssItemTransformer;
 import it.albertus.earthquake.rss.xml.Rss;
-import it.albertus.earthquake.xhtml.TableData;
-import it.albertus.earthquake.xhtml.transformer.XhtmlTableDataTransformer;
 import it.albertus.jface.SwtThreadExecutor;
 import it.albertus.util.NewLine;
 
@@ -128,7 +128,7 @@ public class SearchJob extends Job {
 				rss = (Rss) jaxbUnmarshaller.unmarshal(is);
 				urlConnection.disconnect();
 				break;
-			case XHTML:
+			case HTML:
 				td = new TableData();
 				try (final BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
 					String line = null;
@@ -174,8 +174,8 @@ public class SearchJob extends Job {
 				case RSS:
 					earthquakes.addAll(RssItemTransformer.fromRss(rss));
 					break;
-				case XHTML:
-					earthquakes.addAll(XhtmlTableDataTransformer.fromXhtml(td));
+				case HTML:
+					earthquakes.addAll(HtmlTableDataTransformer.fromHtml(td));
 					break;
 				}
 			}

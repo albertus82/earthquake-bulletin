@@ -13,8 +13,8 @@ public class HttpConnector {
 	private static final Configuration configuration = EarthquakeBulletin.configuration;
 
 	public interface Defaults {
-		int CONNECTION_TIMEOUT_IN_MILLIS = 5000;
-		int READ_TIMEOUT_IN_MILLIS = 5000;
+		int CONNECTION_TIMEOUT_IN_MILLIS = 10000;
+		int READ_TIMEOUT_IN_MILLIS = 10000;
 	}
 
 	public static HttpURLConnection openConnection(final URL url) throws IOException {

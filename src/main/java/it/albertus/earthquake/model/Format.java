@@ -4,7 +4,7 @@ import it.albertus.earthquake.resources.Messages;
 
 public enum Format {
 	RSS("rss"),
-	XHTML("html");
+	HTML("html");
 
 	private final String value;
 

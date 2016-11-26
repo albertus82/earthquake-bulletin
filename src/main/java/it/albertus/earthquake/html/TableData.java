@@ -1,4 +1,4 @@
-package it.albertus.earthquake.xhtml;
+package it.albertus.earthquake.html;
 
 import java.util.LinkedList;
 
