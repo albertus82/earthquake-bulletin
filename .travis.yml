@@ -1,5 +1,5 @@
 language: java
-script: ant release
+script: ant all
 env: JRE7_HOME=/usr/lib/jvm/java-7-oracle/jre
 jdk:
   - oraclejdk8

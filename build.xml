@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE project>
-<project name="EarthquakeBulletin" default="release">
+<project name="EarthquakeBulletin" default="all">
 
 	<property environment="env" />
 	<property name="env.JRE7_HOME" value="${env.JAVA_HOME}/../jdk1.7.0_79/jre" />
@@ -25,7 +25,7 @@
 		<delete dir="${build.directory}" />
 	</target>
 
-	<target name="compile" depends="clean">
+	<target name="compile">
 		<mkdir dir="${build.outputDirectory}" />
 		<javac srcdir="${build.sourceDirectory}" destdir="${build.outputDirectory}" source="${build.compiler.source}" target="${build.compiler.target}" debug="true" includeantruntime="false">
 			<classpath>
@@ -266,7 +266,7 @@
 		</jar>
 	</target>
 
-	<target name="release" depends="jar">
+	<target name="dist" depends="jar">
 		<!-- Mac OS X -->
 		<mkdir dir="${build.directory}/bundle/cocoa-macosx-x86_64" />
 		<jarbundler vmoptions="${macosx.vmoptions}" dir="${build.directory}/bundle/cocoa-macosx-x86_64" name="${name}" mainclass="${build.jar.archive.manifest.mainClass}" startonmainthread="true" version="${version.number}" icon="${build.distDirectory}/cocoa-macosx-x86_64/${artifactId}/${artifactId}.icns" usejavaxkey="true" jvmversion="${build.compiler.target}+" stubfile="${jarbundler.dir}/JavaApplicationStub" highresolutioncapable="true">
@@ -426,5 +426,7 @@
 			</tarfileset>
 		</tar>
 	</target>
+
+	<target name="all" depends="clean, dist" />
 
 </project>
