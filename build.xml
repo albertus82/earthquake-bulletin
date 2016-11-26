@@ -347,6 +347,9 @@
 			Name: "{group}\{cm:UninstallProgram,${name}}"; Filename: "{uninstallexe}"
 			Name: "{userdesktop}\${name}"; Filename: "{app}\${artifactId}.exe"; Tasks: desktopicon
 
+			[InstallDelete]
+			Type: files; Name: {app}\lib\*.jar
+
 			[Files]
 			Source: "${artifactId}\*"; Excludes: "*.cfg"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
 			Source: "${artifactId}\*.cfg"; DestDir: "{userappdata}\${name}"; Flags: onlyifdoesntexist
@@ -395,6 +398,9 @@
 			Name: "{group}\${name}"; Filename: "{app}\${artifactId}.exe"
 			Name: "{group}\{cm:UninstallProgram,${name}}"; Filename: "{uninstallexe}"
 			Name: "{userdesktop}\${name}"; Filename: "{app}\${artifactId}.exe"; Tasks: desktopicon
+
+			[InstallDelete]
+			Type: files; Name: {app}\lib\*.jar
 
 			[Files]
 			Source: "${artifactId}\*"; Excludes: "*.cfg"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
