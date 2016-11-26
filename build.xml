@@ -328,6 +328,10 @@
 			[Setup]
 			AppName=${name}
 			AppVersion=${version.number}
+			AppId=${innosetup.AppId.x86}
+			AppPublisherURL=${innosetup.AppPublisherURL}
+			AppSupportURL=${innosetup.AppSupportURL}
+			AppUpdatesURL=${innosetup.AppUpdatesURL}
 			DefaultDirName={pf}\${name}
 			DefaultGroupName=${name}
 			UninstallDisplayIcon={app}\${artifactId}.exe
@@ -339,16 +343,21 @@
 			Name: "English"; MessagesFile: "compiler:Default.isl"; LicenseFile: "${artifactId}\LICENSE.txt"
 			Name: "Italiano"; MessagesFile: "compiler:Languages\Italian.isl"; LicenseFile: "${artifactId}\LICENSE.txt"
 
+			[InstallDelete]
+			Type: files; Name: {app}\lib\*.jar
+
+			[Run]
+			Filename: "{app}\${artifactId}.exe"; Description: "{cm:LaunchProgram,${name}}"; Flags: nowait postinstall skipifsilent
+
 			[Tasks]
 			Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
+			Name: "startupicon"; Description: "{cm:AutoStartProgram,${name}}"; GroupDescription: "{cm:AutoStartProgramGroupDescription}"; Flags: unchecked
 
 			[Icons]
 			Name: "{group}\${name}"; Filename: "{app}\${artifactId}.exe"
 			Name: "{group}\{cm:UninstallProgram,${name}}"; Filename: "{uninstallexe}"
-			Name: "{userdesktop}\${name}"; Filename: "{app}\${artifactId}.exe"; Tasks: desktopicon
-
-			[InstallDelete]
-			Type: files; Name: {app}\lib\*.jar
+			Name: "{commondesktop}\${name}"; Filename: "{app}\${artifactId}.exe"; Tasks: desktopicon
+			Name: "{commonstartup}\${name}"; Filename: "{app}\${artifactId}.exe"; Tasks: startupicon
 
 			[Files]
 			Source: "${artifactId}\*"; Excludes: "*.cfg"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
@@ -379,6 +388,10 @@
 			[Setup]
 			AppName=${name}
 			AppVersion=${version.number}
+			AppId=${innosetup.AppId.x64}
+			AppPublisherURL=${innosetup.AppPublisherURL}
+			AppSupportURL=${innosetup.AppSupportURL}
+			AppUpdatesURL=${innosetup.AppUpdatesURL}			
 			DefaultDirName={pf}\${name}
 			DefaultGroupName=${name}
 			UninstallDisplayIcon={app}\${artifactId}.exe
@@ -391,16 +404,21 @@
 			Name: "English"; MessagesFile: "compiler:Default.isl"; LicenseFile: "${artifactId}\LICENSE.txt"
 			Name: "Italiano"; MessagesFile: "compiler:Languages\Italian.isl"; LicenseFile: "${artifactId}\LICENSE.txt"
 
+			[InstallDelete]
+			Type: files; Name: {app}\lib\*.jar
+
+			[Run]
+			Filename: "{app}\${artifactId}.exe"; Description: "{cm:LaunchProgram,${name}}"; Flags: nowait postinstall skipifsilent
+
 			[Tasks]
 			Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
+			Name: "startupicon"; Description: "{cm:AutoStartProgram,${name}}"; GroupDescription: "{cm:AutoStartProgramGroupDescription}"; Flags: unchecked
 
 			[Icons]
 			Name: "{group}\${name}"; Filename: "{app}\${artifactId}.exe"
 			Name: "{group}\{cm:UninstallProgram,${name}}"; Filename: "{uninstallexe}"
-			Name: "{userdesktop}\${name}"; Filename: "{app}\${artifactId}.exe"; Tasks: desktopicon
-
-			[InstallDelete]
-			Type: files; Name: {app}\lib\*.jar
+			Name: "{commondesktop}\${name}"; Filename: "{app}\${artifactId}.exe"; Tasks: desktopicon
+			Name: "{commonstartup}\${name}"; Filename: "{app}\${artifactId}.exe"; Tasks: startupicon
 
 			[Files]
 			Source: "${artifactId}\*"; Excludes: "*.cfg"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
