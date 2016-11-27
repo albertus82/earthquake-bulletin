@@ -1,13 +1,4 @@
-package it.albertus.earthquake.xhtml.transformer;
-
-import it.albertus.earthquake.EarthquakeBulletin;
-import it.albertus.earthquake.model.Depth;
-import it.albertus.earthquake.model.Earthquake;
-import it.albertus.earthquake.model.Latitude;
-import it.albertus.earthquake.model.Longitude;
-import it.albertus.earthquake.model.Status;
-import it.albertus.earthquake.xhtml.TableData;
-import it.albertus.util.NewLine;
+package it.albertus.earthquake.html.transformer;
 
 import java.net.URL;
 import java.text.DateFormat;
@@ -19,7 +10,16 @@ import java.util.Set;
 import java.util.TimeZone;
 import java.util.TreeSet;
 
-public class XhtmlTableDataTransformer {
+import it.albertus.earthquake.EarthquakeBulletin;
+import it.albertus.earthquake.html.TableData;
+import it.albertus.earthquake.model.Depth;
+import it.albertus.earthquake.model.Earthquake;
+import it.albertus.earthquake.model.Latitude;
+import it.albertus.earthquake.model.Longitude;
+import it.albertus.earthquake.model.Status;
+import it.albertus.util.NewLine;
+
+public class HtmlTableDataTransformer {
 
 	private static final String guidPrefix = "id=";
 	private static final String guidSuffix = "'>";
@@ -43,27 +43,27 @@ public class XhtmlTableDataTransformer {
 
 	/** Use {@link #parseRssDate} method instead. */
 	@Deprecated
-	private static final DateFormat xhtmlDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	private static final DateFormat htmlDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	static {
-		xhtmlDateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+		htmlDateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
 	}
 
-	private static synchronized Date parseXhtmlDate(final String source) {
+	private static synchronized Date parseHtmlDate(final String source) {
 		try {
-			return xhtmlDateFormat.parse(source);
+			return htmlDateFormat.parse(source);
 		}
 		catch (final ParseException pe) {
 			throw new IllegalArgumentException(pe);
 		}
 	}
 
-	public static Set<Earthquake> fromXhtml(final TableData tableData) throws IllegalArgumentException {
+	public static Set<Earthquake> fromHtml(final TableData tableData) throws IllegalArgumentException {
 		final Set<Earthquake> earthquakes = new TreeSet<>();
 		if (tableData != null && tableData.getItems().size() > 1) {
 			// Discards first and last <td>
 			for (int index = 1; index < tableData.getItems().size() - 1; index++) {
-				final Earthquake converted = fromXhtml(tableData.getItems().get(index));
+				final Earthquake converted = fromHtml(tableData.getItems().get(index));
 				if (converted != null) {
 					earthquakes.add(converted);
 				}
@@ -72,12 +72,12 @@ public class XhtmlTableDataTransformer {
 		return earthquakes;
 	}
 
-	private static Earthquake fromXhtml(final String td) throws IllegalArgumentException {
+	private static Earthquake fromHtml(final String td) throws IllegalArgumentException {
 		try {
 			final String lines[] = td.split(NewLine.SYSTEM_LINE_SEPARATOR);
 
 			final Calendar time = Calendar.getInstance();
-			time.setTime(parseXhtmlDate(lines[0].substring(lines[0].lastIndexOf(timePrefix) + timePrefix.length(), lines[0].indexOf(timeSuffix)).trim()));
+			time.setTime(parseHtmlDate(lines[0].substring(lines[0].lastIndexOf(timePrefix) + timePrefix.length(), lines[0].indexOf(timeSuffix)).trim()));
 
 			final String guid = lines[0].substring(lines[0].indexOf(guidPrefix) + guidPrefix.length(), lines[0].lastIndexOf(guidSuffix)).trim();
 
