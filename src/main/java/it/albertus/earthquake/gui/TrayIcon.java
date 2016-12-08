@@ -93,7 +93,7 @@ public class TrayIcon {
 						}
 					});
 
-					trayItem.addListener(SWT.DefaultSelection, trayRestoreListener);
+					trayItem.addListener(SWT.Selection, trayRestoreListener);
 					if (!Util.isLinux()) {
 						gui.getShell().addShellListener(trayRestoreListener);
 					}
