@@ -280,7 +280,7 @@
 		<jar destfile="${build.distDirectory}/gtk-linux-armhf/${artifactId}/${artifactId}.jar" basedir="${build.outputDirectory}" level="9">
 			<manifest>
 				<attribute name="Main-Class" value="${build.jar.archive.manifest.mainClass}" />
-				<attribute name="Class-Path" value="${classpath.other}" />
+				<attribute name="Class-Path" value="${classpath.gtk-linux-armhf}" />
 				<attribute name="Implementation-Title" value="${name}" />
 				<attribute name="Implementation-Version" value="${version.number}" />
 				<attribute name="X-Compile-Source-JDK" value="${build.compiler.source}" />
@@ -426,7 +426,7 @@
 			AppId=${innosetup.AppId.x64}
 			AppPublisherURL=${innosetup.AppPublisherURL}
 			AppSupportURL=${innosetup.AppSupportURL}
-			AppUpdatesURL=${innosetup.AppUpdatesURL}			
+			AppUpdatesURL=${innosetup.AppUpdatesURL}
 			DefaultDirName={pf}\${name}
 			DefaultGroupName=${name}
 			UninstallDisplayIcon={app}\${artifactId}.exe
