@@ -2,7 +2,6 @@ package it.albertus.earthquake.gui;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -36,13 +35,12 @@ public class ResultsTable {
 
 	private static final int NUMBER_OF_COLUMNS = 7;
 
-	/** Use {@link #formatDate} method instead. */
-	@Deprecated
-	private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
-
-	public static synchronized String formatDate(final Date date) {
-		return dateFormat.format(date);
-	}
+	public static final ThreadLocal<DateFormat> dateFormat = new ThreadLocal<DateFormat>() {
+		@Override
+		protected DateFormat initialValue() {
+			return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
+		};
+	};
 
 	private class EarthquakeViewerComparator extends ViewerComparator {
 
@@ -234,7 +232,7 @@ public class ResultsTable {
 			@Override
 			public String getText(final Object element) {
 				final Earthquake earthquake = (Earthquake) element;
-				return formatDate(earthquake.getTime());
+				return dateFormat.get().format(earthquake.getTime());
 			}
 		});
 

@@ -118,7 +118,7 @@ public class TrayIcon {
 			text.append("M ").append(earthquake.getMagnitude()).append(", ").append(earthquake.getRegion());
 
 			final StringBuilder message = new StringBuilder();
-			message.append(ResultsTable.formatDate(earthquake.getTime())).append(" ");
+			message.append(ResultsTable.dateFormat.get().format(earthquake.getTime())).append(" ");
 			message.append(earthquake.getLatitude()).append(" ");
 			message.append(earthquake.getLongitude()).append(" ");
 			message.append(earthquake.getDepth()).append(" ");

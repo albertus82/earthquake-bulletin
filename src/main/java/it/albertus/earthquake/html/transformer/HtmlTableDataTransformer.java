@@ -41,17 +41,18 @@ public class HtmlTableDataTransformer {
 	private static final String regionPrefix = statusPrefix;
 	private static final String regionSuffix = magnitudeSuffix;
 
-	/** Use {@link #parseRssDate} method instead. */
-	@Deprecated
-	private static final DateFormat htmlDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	private static final ThreadLocal<DateFormat> htmlDateFormat = new ThreadLocal<DateFormat>() {
+		@Override
+		protected DateFormat initialValue() {
+			final DateFormat htmlDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			htmlDateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+			return htmlDateFormat;
+		};
+	};
 
-	static {
-		htmlDateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
-	}
-
-	private static synchronized Date parseHtmlDate(final String source) {
+	private static Date parseHtmlDate(final String source) {
 		try {
-			return htmlDateFormat.parse(source);
+			return htmlDateFormat.get().parse(source);
 		}
 		catch (final ParseException pe) {
 			throw new IllegalArgumentException(pe);

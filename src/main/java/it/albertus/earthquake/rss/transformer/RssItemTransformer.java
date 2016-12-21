@@ -1,13 +1,5 @@
 package it.albertus.earthquake.rss.transformer;
 
-import it.albertus.earthquake.model.Depth;
-import it.albertus.earthquake.model.Earthquake;
-import it.albertus.earthquake.model.Latitude;
-import it.albertus.earthquake.model.Longitude;
-import it.albertus.earthquake.model.Status;
-import it.albertus.earthquake.rss.xml.Item;
-import it.albertus.earthquake.rss.xml.Rss;
-
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormat;
@@ -18,19 +10,28 @@ import java.util.Set;
 import java.util.TimeZone;
 import java.util.TreeSet;
 
+import it.albertus.earthquake.model.Depth;
+import it.albertus.earthquake.model.Earthquake;
+import it.albertus.earthquake.model.Latitude;
+import it.albertus.earthquake.model.Longitude;
+import it.albertus.earthquake.model.Status;
+import it.albertus.earthquake.rss.xml.Item;
+import it.albertus.earthquake.rss.xml.Rss;
+
 public class RssItemTransformer {
 
-	/** Use {@link #parseRssDate} method instead. */
-	@Deprecated
-	private static final DateFormat rssDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	private static final ThreadLocal<DateFormat> rssDateFormat = new ThreadLocal<DateFormat>() {
+		@Override
+		protected DateFormat initialValue() {
+			final DateFormat rssDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			rssDateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+			return rssDateFormat;
+		}
+	};
 
-	static {
-		rssDateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
-	}
-
-	private static synchronized Date parseRssDate(final String source) {
+	private static Date parseRssDate(final String source) {
 		try {
-			return rssDateFormat.parse(source);
+			return rssDateFormat.get().parse(source);
 		}
 		catch (final ParseException pe) {
 			throw new IllegalArgumentException(pe);
