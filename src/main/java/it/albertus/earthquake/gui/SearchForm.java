@@ -1,9 +1,7 @@
 package it.albertus.earthquake.gui;
 
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -13,6 +11,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.events.VerifyListener;
@@ -28,6 +27,8 @@ import it.albertus.earthquake.gui.decoration.SearchFormControlValidatorDecoratio
 import it.albertus.earthquake.gui.job.SearchJob;
 import it.albertus.earthquake.gui.listener.AutoRefreshButtonSelectionListener;
 import it.albertus.earthquake.gui.listener.ClearButtonSelectionListener;
+import it.albertus.earthquake.gui.listener.FormTextDateFocusListener;
+import it.albertus.earthquake.gui.listener.FormTextDateVerifyListener;
 import it.albertus.earthquake.gui.listener.FormTextModifyListener;
 import it.albertus.earthquake.gui.listener.FormTextTraverseListener;
 import it.albertus.earthquake.gui.listener.FormatRadioSelectionListener;
@@ -73,17 +74,14 @@ public class SearchForm {
 
 	public static final String DATE_PATTERN = "yyyy-MM-dd";
 
-	@Deprecated
-	private static final DateFormat dateFormat;
-
-	static {
-		dateFormat = new SimpleDateFormat(DATE_PATTERN);
-		dateFormat.setLenient(false);
-	}
-
-	private static synchronized Date parseDate(final String source) throws ParseException {
-		return dateFormat.parse(source);
-	}
+	private static final ThreadLocal<DateFormat> dateFormat = new ThreadLocal<DateFormat>() {
+		@Override
+		protected DateFormat initialValue() {
+			final DateFormat dateFormat = new SimpleDateFormat(DATE_PATTERN);
+			dateFormat.setLenient(false);
+			return dateFormat;
+		}
+	};
 
 	public interface Defaults {
 		boolean AUTOREFRESH_ENABLED = false;
@@ -146,8 +144,9 @@ public class SearchForm {
 
 	private final TraverseListener formTextTraverseListener = new FormTextTraverseListener(this);
 	private final ModifyListener formTextModifyListener = new FormTextModifyListener(this);
-	private final VerifyListener periodVerifyListener = new IntegerVerifyListener(true);
+	private final VerifyListener periodVerifyListener = new FormTextDateVerifyListener("0123456789-");
 	private final VerifyListener coordinatesVerifyListener = new FloatVerifyListener(true);
+	private final FocusListener periodFocusListener = new FormTextDateFocusListener(DATE_PATTERN);
 
 	private final Set<Validator> validators = new HashSet<Validator>();
 
@@ -169,6 +168,7 @@ public class SearchForm {
 		periodFromLabel.setText(Messages.get("lbl.form.criteria.period.from"));
 		periodFromText = new Text(criteriaGroup, SWT.BORDER);
 		periodFromText.setTextLimit(PERIOD_TEXT_LIMIT);
+		periodFromText.addFocusListener(periodFocusListener);
 		periodFromText.addVerifyListener(periodVerifyListener);
 		periodFromText.addTraverseListener(formTextTraverseListener);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).minSize(fontFormatter.computeWidth(periodFromText, PERIOD_TEXT_LIMIT, SWT.NORMAL), SWT.DEFAULT).applyTo(periodFromText);
@@ -178,6 +178,7 @@ public class SearchForm {
 		periodToLabel.setText(Messages.get("lbl.form.criteria.period.to"));
 		periodToText = new Text(criteriaGroup, SWT.BORDER);
 		periodToText.setTextLimit(PERIOD_TEXT_LIMIT);
+		periodToText.addFocusListener(periodFocusListener);
 		periodToText.addVerifyListener(periodVerifyListener);
 		periodToText.addTraverseListener(formTextTraverseListener);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).minSize(fontFormatter.computeWidth(periodToText, PERIOD_TEXT_LIMIT, SWT.NORMAL), SWT.DEFAULT).applyTo(periodToText);
@@ -499,7 +500,8 @@ public class SearchForm {
 		String value;
 		try {
 			value = configuration.getString(key);
-			parseDate(value);
+			final DateFormat df = dateFormat.get();
+			value = df.format(df.parse(value));
 		}
 		catch (final Exception e) {
 			value = "";
