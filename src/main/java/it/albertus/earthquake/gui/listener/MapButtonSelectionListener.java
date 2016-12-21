@@ -1,9 +1,5 @@
 package it.albertus.earthquake.gui.listener;
 
-import it.albertus.earthquake.gui.SearchForm;
-import it.albertus.jface.google.maps.MapBounds;
-import it.albertus.jface.google.maps.MapBoundsDialog;
-
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 
@@ -11,23 +7,25 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 
+import it.albertus.earthquake.gui.SearchForm;
+import it.albertus.jface.google.maps.MapBounds;
+import it.albertus.jface.google.maps.MapBoundsDialog;
+
 public class MapButtonSelectionListener extends SelectionAdapter {
 
-	/** Use {@link #formatCoordinate} method instead. */
-	@Deprecated
-	private static final DecimalFormat decimalFormat = new DecimalFormat();;
-
-	static {
-		final DecimalFormatSymbols decimalFormatSymbols = DecimalFormatSymbols.getInstance();
-		decimalFormatSymbols.setDecimalSeparator('.');
-		decimalFormat.setDecimalFormatSymbols(decimalFormatSymbols);
-		decimalFormat.setMaximumFractionDigits(2);
-		decimalFormat.setGroupingUsed(false);
-	}
-
-	private static synchronized String formatCoordinate(final double number) {
-		return decimalFormat.format(number);
-	}
+	private static final ThreadLocal<DecimalFormat> coordinateFormat = new ThreadLocal<DecimalFormat>() {
+		@Override
+		protected DecimalFormat initialValue() {
+			final DecimalFormatSymbols decimalFormatSymbols = DecimalFormatSymbols.getInstance();
+			decimalFormatSymbols.setDecimalSeparator('.');
+			final DecimalFormat decimalFormat = new DecimalFormat();
+			decimalFormat.setDecimalFormatSymbols(decimalFormatSymbols);
+			decimalFormat.setMaximumFractionDigits(2);
+			decimalFormat.setMinimumFractionDigits(2);
+			decimalFormat.setGroupingUsed(false);
+			return decimalFormat;
+		}
+	};
 
 	private final SearchForm form;
 
@@ -40,17 +38,18 @@ public class MapButtonSelectionListener extends SelectionAdapter {
 		final MapBoundsDialog mapBoundsDialog = form.getMapBoundsDialog();
 		if (mapBoundsDialog.open() == SWT.OK) {
 			final MapBounds bounds = mapBoundsDialog.getBounds();
+			final DecimalFormat cf = coordinateFormat.get();
 			if (bounds.getSouthWestLat() != null) {
-				form.getLatitudeFromText().setText(formatCoordinate(bounds.getSouthWestLat()));
+				form.getLatitudeFromText().setText(cf.format(bounds.getSouthWestLat()));
 			}
 			if (bounds.getNorthEastLat() != null) {
-				form.getLatitudeToText().setText(formatCoordinate(bounds.getNorthEastLat()));
+				form.getLatitudeToText().setText(cf.format(bounds.getNorthEastLat()));
 			}
 			if (bounds.getSouthWestLng() != null) {
-				form.getLongitudeFromText().setText(formatCoordinate(bounds.getSouthWestLng()));
+				form.getLongitudeFromText().setText(cf.format(bounds.getSouthWestLng()));
 			}
 			if (bounds.getNorthEastLng() != null) {
-				form.getLongitudeToText().setText(formatCoordinate(bounds.getNorthEastLng()));
+				form.getLongitudeToText().setText(cf.format(bounds.getNorthEastLng()));
 			}
 		}
 	}
