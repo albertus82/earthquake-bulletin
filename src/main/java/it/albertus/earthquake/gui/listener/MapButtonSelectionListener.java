@@ -13,19 +13,16 @@ import it.albertus.jface.google.maps.MapBoundsDialog;
 
 public class MapButtonSelectionListener extends SelectionAdapter {
 
-	private static final ThreadLocal<DecimalFormat> coordinateFormat = new ThreadLocal<DecimalFormat>() {
-		@Override
-		protected DecimalFormat initialValue() {
-			final DecimalFormatSymbols decimalFormatSymbols = DecimalFormatSymbols.getInstance();
-			decimalFormatSymbols.setDecimalSeparator('.');
-			final DecimalFormat decimalFormat = new DecimalFormat();
-			decimalFormat.setDecimalFormatSymbols(decimalFormatSymbols);
-			decimalFormat.setMaximumFractionDigits(2);
-			decimalFormat.setMinimumFractionDigits(2);
-			decimalFormat.setGroupingUsed(false);
-			return decimalFormat;
-		}
-	};
+	private static final DecimalFormat coordinateFormat = new DecimalFormat();
+
+	static {
+		final DecimalFormatSymbols decimalFormatSymbols = DecimalFormatSymbols.getInstance();
+		decimalFormatSymbols.setDecimalSeparator('.');
+		coordinateFormat.setDecimalFormatSymbols(decimalFormatSymbols);
+		coordinateFormat.setMaximumFractionDigits(2);
+		coordinateFormat.setMinimumFractionDigits(2);
+		coordinateFormat.setGroupingUsed(false);
+	}
 
 	private final SearchForm form;
 
@@ -38,18 +35,17 @@ public class MapButtonSelectionListener extends SelectionAdapter {
 		final MapBoundsDialog mapBoundsDialog = form.getMapBoundsDialog();
 		if (mapBoundsDialog.open() == SWT.OK) {
 			final MapBounds bounds = mapBoundsDialog.getBounds();
-			final DecimalFormat cf = coordinateFormat.get();
 			if (bounds.getSouthWestLat() != null) {
-				form.getLatitudeFromText().setText(cf.format(bounds.getSouthWestLat()));
+				form.getLatitudeFromText().setText(coordinateFormat.format(bounds.getSouthWestLat()));
 			}
 			if (bounds.getNorthEastLat() != null) {
-				form.getLatitudeToText().setText(cf.format(bounds.getNorthEastLat()));
+				form.getLatitudeToText().setText(coordinateFormat.format(bounds.getNorthEastLat()));
 			}
 			if (bounds.getSouthWestLng() != null) {
-				form.getLongitudeFromText().setText(cf.format(bounds.getSouthWestLng()));
+				form.getLongitudeFromText().setText(coordinateFormat.format(bounds.getSouthWestLng()));
 			}
 			if (bounds.getNorthEastLng() != null) {
-				form.getLongitudeToText().setText(cf.format(bounds.getNorthEastLng()));
+				form.getLongitudeToText().setText(coordinateFormat.format(bounds.getNorthEastLng()));
 			}
 		}
 	}
