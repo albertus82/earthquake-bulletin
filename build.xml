@@ -373,6 +373,7 @@
 			Compression=lzma2
 			SolidCompression=yes
 			ArchitecturesAllowed=x86
+			CloseApplications=no
 
 			[Languages]
 			Name: "English"; MessagesFile: "compiler:Default.isl"; LicenseFile: "${artifactId}\LICENSE.txt"
@@ -434,6 +435,7 @@
 			SolidCompression=yes
 			ArchitecturesAllowed=x64
 			ArchitecturesInstallIn64BitMode=x64
+			CloseApplications=no
 
 			[Languages]
 			Name: "English"; MessagesFile: "compiler:Default.isl"; LicenseFile: "${artifactId}\LICENSE.txt"
