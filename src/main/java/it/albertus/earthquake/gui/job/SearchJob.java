@@ -110,7 +110,7 @@ public class SearchJob extends Job {
 				protected void run() {
 					final boolean formValid = gui.getSearchForm().isValid();
 					jobVariables.setFormValid(formValid);
-					if (formValid) {
+					if (!formValid) {
 						gui.getSearchForm().getStopButton().notifyListeners(SWT.Selection, null);
 					}
 				}
