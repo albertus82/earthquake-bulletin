@@ -1,14 +1,14 @@
 package it.albertus.earthquake.gui.listener;
 
-import it.albertus.earthquake.gui.EarthquakeBulletinGui;
-import it.albertus.earthquake.gui.MapCache;
-import it.albertus.earthquake.gui.job.DownloadMapJob;
-import it.albertus.earthquake.model.Earthquake;
-
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+
+import it.albertus.earthquake.gui.EarthquakeBulletinGui;
+import it.albertus.earthquake.gui.MapCache;
+import it.albertus.earthquake.gui.job.DownloadMapJob;
+import it.albertus.earthquake.model.Earthquake;
 
 public class ShowMapListener implements Listener {
 
@@ -30,7 +30,7 @@ public class ShowMapListener implements Listener {
 					gui.getMapCanvas().setImage(guid, cache.get(guid));
 				}
 				else {
-					if ((gui.getMapCanvas().getDownloadMapJob() == null || gui.getMapCanvas().getDownloadMapJob().getState() == Job.NONE)) {
+					if (gui.getMapCanvas().getDownloadMapJob() == null || gui.getMapCanvas().getDownloadMapJob().getState() == Job.NONE) {
 						gui.getMapCanvas().setDownloadMapJob(new DownloadMapJob(gui, selectedItem));
 						gui.getMapCanvas().getDownloadMapJob().schedule();
 					}

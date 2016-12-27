@@ -23,11 +23,15 @@ public class RssItemTransformer {
 	private static final ThreadLocal<DateFormat> rssDateFormat = new ThreadLocal<DateFormat>() {
 		@Override
 		protected DateFormat initialValue() {
-			final DateFormat rssDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			rssDateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
-			return rssDateFormat;
+			final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+			return dateFormat;
 		}
 	};
+
+	private RssItemTransformer() {
+		throw new IllegalAccessError();
+	}
 
 	private static Date parseRssDate(final String source) {
 		try {
@@ -40,11 +44,9 @@ public class RssItemTransformer {
 
 	public static Set<Earthquake> fromRss(final Rss rss) {
 		final Set<Earthquake> earthquakes = new TreeSet<>();
-		if (rss != null && rss.getChannel() != null) {
-			if (rss.getChannel().getItem() != null) {
-				for (final Item item : rss.getChannel().getItem()) {
-					earthquakes.add(RssItemTransformer.fromRss(item));
-				}
+		if (rss != null && rss.getChannel() != null && rss.getChannel().getItem() != null) {
+			for (final Item item : rss.getChannel().getItem()) {
+				earthquakes.add(RssItemTransformer.fromRss(item));
 			}
 		}
 		return earthquakes;

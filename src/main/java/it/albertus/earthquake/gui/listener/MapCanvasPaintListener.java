@@ -1,10 +1,5 @@
 package it.albertus.earthquake.gui.listener;
 
-import it.albertus.earthquake.EarthquakeBulletin;
-import it.albertus.earthquake.gui.MapCanvas;
-import it.albertus.jface.HqImageResizer;
-import it.albertus.util.Configuration;
-
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.GC;
@@ -12,13 +7,23 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Canvas;
 
+import it.albertus.earthquake.EarthquakeBulletin;
+import it.albertus.earthquake.gui.MapCanvas;
+import it.albertus.jface.HqImageResizer;
+import it.albertus.util.Configuration;
+
 public class MapCanvasPaintListener implements PaintListener {
 
-	public interface Defaults {
-		boolean MAP_RESIZE_HQ = true;
+	public static class Defaults {
+		public static final boolean MAP_RESIZE_HQ = true;
+
+		private Defaults() {
+			throw new IllegalAccessError("Constants class");
+		}
 	}
 
-	private final Configuration configuration = EarthquakeBulletin.configuration;
+	private static final Configuration configuration = EarthquakeBulletin.configuration;
+
 	private final MapCanvas mapCanvas;
 	private Image resized;
 
@@ -41,10 +46,10 @@ public class MapCanvasPaintListener implements PaintListener {
 
 			if (canvasRatio > imageRatio) {
 				newWidth = (int) (imageSize.width * (1.0 * canvasSize.height / imageSize.height));
-				newHeight = (int) (canvasSize.height);
+				newHeight = canvasSize.height;
 			}
 			else {
-				newWidth = (int) (canvasSize.width);
+				newWidth = canvasSize.width;
 				newHeight = (int) (imageSize.height * (1.0 * canvasSize.width / imageSize.width));
 			}
 

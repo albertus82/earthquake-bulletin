@@ -1,12 +1,13 @@
 package it.albertus.earthquake.html;
 
 import java.util.LinkedList;
+import java.util.List;
 
 public class TableData {
 
 	private final LinkedList<String> items = new LinkedList<>();
 
-	public LinkedList<String> getItems() {
+	public List<String> getItems() {
 		return items;
 	}
 

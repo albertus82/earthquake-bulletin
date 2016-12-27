@@ -10,14 +10,22 @@ import it.albertus.util.Configuration;
 
 public class EarthquakeBulletin {
 
-	public interface Defaults {
-		String LANGUAGE = Locale.getDefault().getLanguage();
+	public static class Defaults {
+		public static final String LANGUAGE = Locale.getDefault().getLanguage();
+
+		private Defaults() {
+			throw new IllegalAccessError("Constants class");
+		}
 	}
 
 	public static final String BASE_URL = "http://geofon.gfz-potsdam.de";
 	public static final String CFG_KEY_LANGUAGE = "language";
 	public static final String CFG_FILE_NAME = "earthquake-bulletin.cfg";
 	public static final Configuration configuration;
+
+	private EarthquakeBulletin() {
+		throw new IllegalAccessError();
+	}
 
 	static {
 		File config = null;
@@ -35,7 +43,7 @@ public class EarthquakeBulletin {
 				final String language = getString(CFG_KEY_LANGUAGE, Defaults.LANGUAGE);
 				Messages.setLanguage(language);
 				JFaceMessages.setLanguage(language);
-			};
+			}
 		};
 	}
 

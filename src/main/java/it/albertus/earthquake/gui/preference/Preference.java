@@ -1,5 +1,12 @@
 package it.albertus.earthquake.gui.preference;
 
+import java.util.EnumSet;
+import java.util.Locale;
+import java.util.Set;
+
+import org.eclipse.jface.preference.FieldEditor;
+import org.eclipse.swt.widgets.Composite;
+
 import it.albertus.earthquake.EarthquakeBulletin;
 import it.albertus.earthquake.gui.CloseMessageBox;
 import it.albertus.earthquake.gui.EarthquakeBulletinGui;
@@ -27,13 +34,6 @@ import it.albertus.jface.preference.field.ScaleIntegerFieldEditor;
 import it.albertus.jface.preference.page.IPageDefinition;
 import it.albertus.util.Localized;
 
-import java.util.EnumSet;
-import java.util.Locale;
-import java.util.Set;
-
-import org.eclipse.jface.preference.FieldEditor;
-import org.eclipse.swt.widgets.Composite;
-
 public enum Preference implements IPreference {
 
 	LANGUAGE(new PreferenceDetailsBuilder(PageDefinition.GENERAL).name(EarthquakeBulletin.CFG_KEY_LANGUAGE).defaultValue(EarthquakeBulletin.Defaults.LANGUAGE).build(), new FieldEditorDetailsBuilder(DefaultComboFieldEditor.class).labelsAndValues(Preference.getLanguageComboOptions()).build()),
@@ -53,68 +53,68 @@ public enum Preference implements IPreference {
 		@Override
 		public String getString() {
 			return Messages.get("lbl.form.criteria.period") + " " + Messages.get("lbl.form.criteria.period.from") + " " + Messages.get("lbl.form.criteria.period.from.note");
-		};
+		}
 	}).build(), new FieldEditorDetailsBuilder(DateFieldEditor.class).datePattern(SearchForm.DATE_PATTERN).textLimit(SearchForm.PERIOD_TEXT_LIMIT).build()),
 	CRITERIA_PERIOD_TO(new PreferenceDetailsBuilder(PageDefinition.CRITERIA).label(new Localized() {
 		@Override
 		public String getString() {
 			return Messages.get("lbl.form.criteria.period") + " " + Messages.get("lbl.form.criteria.period.to") + " " + Messages.get("lbl.form.criteria.period.to.note");
-		};
+		}
 	}).build(), new FieldEditorDetailsBuilder(DateFieldEditor.class).datePattern(SearchForm.DATE_PATTERN).textLimit(SearchForm.PERIOD_TEXT_LIMIT).build()),
 	CRITERIA_LATITUDE_FROM(new PreferenceDetailsBuilder(PageDefinition.CRITERIA).label(new Localized() {
 		@Override
 		public String getString() {
 			return Messages.get("lbl.form.criteria.latitude") + " " + Messages.get("lbl.form.criteria.latitude.from") + " " + Messages.get("lbl.form.criteria.latitude.from.note");
-		};
+		}
 	}).build(), new FieldEditorDetailsBuilder(FloatFieldEditor.class).numberValidRange(SearchForm.LATITUDE_MIN_VALUE, SearchForm.LATITUDE_MAX_VALUE).emptyStringAllowed(true).textLimit(SearchForm.COORDINATES_TEXT_LIMIT).build()),
 	CRITERIA_LATITUDE_TO(new PreferenceDetailsBuilder(PageDefinition.CRITERIA).label(new Localized() {
 		@Override
 		public String getString() {
 			return Messages.get("lbl.form.criteria.latitude") + " " + Messages.get("lbl.form.criteria.latitude.to") + " " + Messages.get("lbl.form.criteria.latitude.to.note");
-		};
+		}
 	}).build(), new FieldEditorDetailsBuilder(FloatFieldEditor.class).numberValidRange(SearchForm.LATITUDE_MIN_VALUE, SearchForm.LATITUDE_MAX_VALUE).emptyStringAllowed(true).textLimit(SearchForm.COORDINATES_TEXT_LIMIT).build()),
 	CRITERIA_LONGITUDE_FROM(new PreferenceDetailsBuilder(PageDefinition.CRITERIA).label(new Localized() {
 		@Override
 		public String getString() {
 			return Messages.get("lbl.form.criteria.longitude") + " " + Messages.get("lbl.form.criteria.longitude.from") + " " + Messages.get("lbl.form.criteria.longitude.from.note");
-		};
+		}
 	}).build(), new FieldEditorDetailsBuilder(FloatFieldEditor.class).numberValidRange(SearchForm.LONGITUDE_MIN_VALUE, SearchForm.LONGITUDE_MAX_VALUE).emptyStringAllowed(true).textLimit(SearchForm.COORDINATES_TEXT_LIMIT).build()),
 	CRITERIA_LONGITUDE_TO(new PreferenceDetailsBuilder(PageDefinition.CRITERIA).label(new Localized() {
 		@Override
 		public String getString() {
 			return Messages.get("lbl.form.criteria.longitude") + " " + Messages.get("lbl.form.criteria.longitude.to") + " " + Messages.get("lbl.form.criteria.longitude.to.note");
-		};
+		}
 	}).build(), new FieldEditorDetailsBuilder(FloatFieldEditor.class).numberValidRange(SearchForm.LONGITUDE_MIN_VALUE, SearchForm.LONGITUDE_MAX_VALUE).emptyStringAllowed(true).textLimit(SearchForm.COORDINATES_TEXT_LIMIT).build()),
 	CRITERIA_MAGNITUDE(new PreferenceDetailsBuilder(PageDefinition.CRITERIA).label(new Localized() {
 		@Override
 		public String getString() {
 			return Messages.get("lbl.form.criteria.magnitude");
-		};
+		}
 	}).build(), new FieldEditorDetailsBuilder(FloatFieldEditor.class).numberValidRange(SearchForm.MAGNITUDE_MIN_VALUE, SearchForm.MAGNITUDE_MAX_VALUE).emptyStringAllowed(true).textLimit(SearchForm.MAGNITUDE_TEXT_LIMIT).build()),
 	CRITERIA_FORMAT(new PreferenceDetailsBuilder(PageDefinition.CRITERIA).label(new Localized() {
 		@Override
 		public String getString() {
 			return Messages.get("lbl.form.format");
-		};
+		}
 	}).defaultValue(SearchForm.Defaults.FORMAT.getValue()).build(), new FieldEditorDetailsBuilder(DefaultRadioGroupFieldEditor.class).labelsAndValues(getFormatRadioOptions()).radioNumColumns(2).radioUseGroup(true).build()),
 	CRITERIA_LIMIT(new PreferenceDetailsBuilder(PageDefinition.CRITERIA).label(new Localized() {
 		@Override
 		public String getString() {
 			return Messages.get("lbl.form.limit") + " " + Messages.get("lbl.form.limit.note");
-		};
+		}
 	}).build(), new FieldEditorDetailsBuilder(EnhancedIntegerFieldEditor.class).emptyStringAllowed(true).numberValidRange(SearchForm.RESULTS_MIN_VALUE, SearchForm.RESULTS_MAX_VALUE).build()),
 	CRITERIA_RESTRICT(new PreferenceDetailsBuilder(PageDefinition.CRITERIA).defaultValue(SearchForm.Defaults.CRITERIA_RESTRICT).label(new Localized() {
 		@Override
 		public String getString() {
 			return Messages.get("lbl.form.criteria.restrict");
-		};
+		}
 	}).build(), new FieldEditorDetailsBuilder(DefaultBooleanFieldEditor.class).build()),
 	AUTOREFRESH_ENABLED(new PreferenceDetailsBuilder(PageDefinition.CRITERIA).defaultValue(SearchForm.Defaults.AUTOREFRESH_ENABLED).build(), new FieldEditorDetailsBuilder(DefaultBooleanFieldEditor.class).build()),
 	AUTOREFRESH_MINS(new PreferenceDetailsBuilder(PageDefinition.CRITERIA).parent(AUTOREFRESH_ENABLED).label(new Localized() {
 		@Override
 		public String getString() {
 			return Messages.get("lbl.form.button.autorefresh");
-		};
+		}
 	}).build(), new FieldEditorDetailsBuilder(EnhancedIntegerFieldEditor.class).numberMinimum(SearchForm.AUTOREFRESH_MIN_VALUE).emptyStringAllowed(true).textLimit(SearchForm.AUTOREFRESH_TEXT_LIMIT).build());
 
 	private static final String LABEL_KEY_PREFIX = "lbl.preferences.";

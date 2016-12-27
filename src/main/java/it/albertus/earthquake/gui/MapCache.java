@@ -1,20 +1,25 @@
 package it.albertus.earthquake.gui;
 
-import it.albertus.earthquake.EarthquakeBulletin;
-import it.albertus.util.Configuration;
-
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import it.albertus.earthquake.EarthquakeBulletin;
+import it.albertus.util.Configuration;
+
 public class MapCache {
 
-	public interface Defaults {
-		byte CACHE_SIZE = 20;
+	public static class Defaults {
+		public static final byte CACHE_SIZE = 20;
+
+		private Defaults() {
+			throw new IllegalAccessError("Constants class");
+		}
 	}
 
 	private static final String CFG_KEY_MAP_CACHE_SIZE = "map.cache.size";
 
-	private final Configuration configuration = EarthquakeBulletin.configuration;
+	private static final Configuration configuration = EarthquakeBulletin.configuration;
+
 	private final Map<String, byte[]> cache = new LinkedHashMap<>(configuration.getByte(CFG_KEY_MAP_CACHE_SIZE, Defaults.CACHE_SIZE));
 
 	public void put(final String guid, final byte[] map) {

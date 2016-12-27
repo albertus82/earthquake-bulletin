@@ -3,6 +3,7 @@ package it.albertus.earthquake.gui;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
@@ -39,7 +40,7 @@ public class ResultsTable {
 		@Override
 		protected DateFormat initialValue() {
 			return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
-		};
+		}
 	};
 
 	private class EarthquakeViewerComparator extends ViewerComparator {
@@ -72,7 +73,7 @@ public class ResultsTable {
 		public int compare(Viewer viewer, Object e1, Object e2) {
 			final Earthquake eq1 = (Earthquake) e1;
 			final Earthquake eq2 = (Earthquake) e2;
-			int rc = 0;
+			int rc;
 			switch (propertyIndex) {
 			case 0:
 				rc = eq1.getTime().compareTo(eq2.getTime());
@@ -316,7 +317,7 @@ public class ResultsTable {
 	}
 
 	private SelectionAdapter createSelectionAdapter(final TableColumn column, final int index) {
-		final SelectionAdapter selectionAdapter = new SelectionAdapter() {
+		return new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				comparator.setColumn(index);
@@ -326,13 +327,13 @@ public class ResultsTable {
 				tableViewer.refresh();
 			}
 		};
-		return selectionAdapter;
 	}
 
 	public void updateTexts() {
 		final Table table = tableViewer.getTable();
-		for (final int i : labelsMap.keySet()) {
-			table.getColumn(i).setText(labelsMap.get(i).getString());
+		for (final Entry<Integer, Localized> e : labelsMap.entrySet()) {
+			table.getColumn(e.getKey()).setText(e.getValue().getString());
+			table.getColumn(e.getKey()).setText(e.getValue().getString());
 		}
 		showMapMenuItem.setText(Messages.get("lbl.menu.item.show.map"));
 		openBrowserMenuItem.setText(Messages.get("lbl.menu.item.open.browser"));

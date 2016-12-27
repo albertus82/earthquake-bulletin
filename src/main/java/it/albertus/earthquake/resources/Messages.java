@@ -27,6 +27,11 @@ public final class Messages {
 
 	private static ResourceBundle resources = ResourceBundle.getBundle(BASE_NAME, ResourceBundle.Control.getNoFallbackControl(ResourceBundle.Control.FORMAT_PROPERTIES));
 
+	/** Instantiation not permitted. */
+	private Messages() {
+		new IllegalAccessError();
+	}
+
 	/** Aggiorna la lingua in cui vengono mostrati i messaggi. */
 	public static void setLanguage(final Language language) {
 		if (language != null) {
@@ -51,15 +56,12 @@ public final class Messages {
 	}
 
 	public static String get(final String key, final Object... params) {
-		final List<String> stringParams = new ArrayList<String>(params.length);
+		final List<String> stringParams = new ArrayList<>(params.length);
 		for (final Object param : params) {
 			stringParams.add(param != null ? param.toString() : "");
 		}
 		final String message = MessageFormat.format(resources.getString(key), stringParams.toArray());
 		return message != null ? message.trim() : "";
 	}
-
-	/** Instantiation not permitted. */
-	private Messages() {}
 
 }

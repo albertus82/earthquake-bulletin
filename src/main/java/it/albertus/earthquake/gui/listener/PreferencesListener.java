@@ -19,7 +19,8 @@ import it.albertus.util.Configuration;
 
 public class PreferencesListener extends SelectionAdapter implements Listener {
 
-	private final Configuration configuration = EarthquakeBulletin.configuration;
+	private static final Configuration configuration = EarthquakeBulletin.configuration;
+
 	private final EarthquakeBulletinGui gui;
 
 	public PreferencesListener(final EarthquakeBulletinGui gui) {
@@ -38,7 +39,7 @@ public class PreferencesListener extends SelectionAdapter implements Listener {
 		}
 
 		// Check if must update texts...
-		if (gui != null && !language.equals(Messages.getLanguage())) {
+		if (!language.equals(Messages.getLanguage())) {
 			gui.getMenuBar().updateTexts();
 			gui.getResultsTable().updateTexts();
 			gui.getSearchForm().updateTexts();

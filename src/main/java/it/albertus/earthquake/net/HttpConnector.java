@@ -1,20 +1,28 @@
 package it.albertus.earthquake.net;
 
-import it.albertus.earthquake.EarthquakeBulletin;
-import it.albertus.util.Configuration;
-
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import it.albertus.earthquake.EarthquakeBulletin;
+import it.albertus.util.Configuration;
+
 public class HttpConnector {
 
 	private static final Configuration configuration = EarthquakeBulletin.configuration;
 
-	public interface Defaults {
-		int CONNECTION_TIMEOUT_IN_MILLIS = 10000;
-		int READ_TIMEOUT_IN_MILLIS = 10000;
+	public static class Defaults {
+		public static final int CONNECTION_TIMEOUT_IN_MILLIS = 10000;
+		public static final int READ_TIMEOUT_IN_MILLIS = 10000;
+
+		private Defaults() {
+			throw new IllegalAccessError("Constants class");
+		}
+	}
+
+	private HttpConnector() {
+		throw new IllegalAccessError();
 	}
 
 	public static HttpURLConnection openConnection(final URL url) throws IOException {

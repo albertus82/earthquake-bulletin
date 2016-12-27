@@ -44,11 +44,15 @@ public class HtmlTableDataTransformer {
 	private static final ThreadLocal<DateFormat> htmlDateFormat = new ThreadLocal<DateFormat>() {
 		@Override
 		protected DateFormat initialValue() {
-			final DateFormat htmlDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			htmlDateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
-			return htmlDateFormat;
-		};
+			final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+			return dateFormat;
+		}
 	};
+
+	private HtmlTableDataTransformer() {
+		throw new IllegalAccessError();
+	}
 
 	private static Date parseHtmlDate(final String source) {
 		try {
@@ -65,9 +69,7 @@ public class HtmlTableDataTransformer {
 			// Discards first and last <td>
 			for (int index = 1; index < tableData.getItems().size() - 1; index++) {
 				final Earthquake converted = fromHtml(tableData.getItems().get(index));
-				if (converted != null) {
-					earthquakes.add(converted);
-				}
+				earthquakes.add(converted);
 			}
 		}
 		return earthquakes;
@@ -75,7 +77,7 @@ public class HtmlTableDataTransformer {
 
 	private static Earthquake fromHtml(final String td) throws IllegalArgumentException {
 		try {
-			final String lines[] = td.split(NewLine.SYSTEM_LINE_SEPARATOR);
+			final String[] lines = td.split(NewLine.SYSTEM_LINE_SEPARATOR);
 
 			final Calendar time = Calendar.getInstance();
 			time.setTime(parseHtmlDate(lines[0].substring(lines[0].lastIndexOf(timePrefix) + timePrefix.length(), lines[0].indexOf(timeSuffix)).trim()));

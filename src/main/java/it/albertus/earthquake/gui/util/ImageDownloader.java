@@ -1,7 +1,5 @@
 package it.albertus.earthquake.gui.util;
 
-import it.albertus.earthquake.net.HttpConnector;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,38 +7,33 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import it.albertus.earthquake.net.HttpConnector;
+import it.albertus.util.IOUtils;
+
 public class ImageDownloader {
 
+	private static final int BUFFER_SIZE = 8192;
+
+	private ImageDownloader() {
+		throw new IllegalAccessError();
+	}
+
 	public static byte[] downloadImage(final URL url) throws IOException {
-		ByteArrayOutputStream buffer = null;
 		InputStream is = null;
 		HttpURLConnection urlConnection = null;
-		try {
+		try (final ByteArrayOutputStream buffer = new ByteArrayOutputStream()) {
 			urlConnection = HttpConnector.openConnection(url);
 			urlConnection.addRequestProperty("Accept", "image/*");
 			is = urlConnection.getInputStream();
-			buffer = new ByteArrayOutputStream();
-			int nRead;
-			byte[] data = new byte[8192];
-			while ((nRead = is.read(data, 0, data.length)) != -1) {
-				buffer.write(data, 0, nRead);
-			}
+			IOUtils.copy(is, buffer, BUFFER_SIZE);
+			return buffer.toByteArray();
 		}
 		finally {
-			try {
-				buffer.close();
-			}
-			catch (final Exception e) {/* Ignore */}
-			try {
-				is.close();
-			}
-			catch (final Exception e) {/* Ignore */}
-			try {
+			IOUtils.closeQuietly(is);
+			if (urlConnection != null) {
 				urlConnection.disconnect();
 			}
-			catch (final Exception e) {/* Ignore */}
 		}
-		return buffer.toByteArray();
 	}
 
 	public static byte[] downloadImage(final String url) throws MalformedURLException, IOException {

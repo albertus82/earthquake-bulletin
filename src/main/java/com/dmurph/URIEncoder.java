@@ -12,6 +12,10 @@ public class URIEncoder {
 	private static final String mark = "-_.!~*'()\"";
 	private static final char[] hex = "0123456789ABCDEF".toCharArray();
 
+	private URIEncoder() {
+		throw new IllegalAccessError();
+	}
+
 	public static String encodeURI(String argString) {
 		StringBuilder uri = new StringBuilder();
 

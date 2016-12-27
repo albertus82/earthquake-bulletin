@@ -74,22 +74,31 @@ public class SearchForm {
 
 	public static final String DATE_PATTERN = "yyyy-MM-dd";
 
+	private static final String MSG_KEY_ERR_INTEGER_MIN = "err.preferences.integer.min";
+	private static final String MSG_KEY_ERR_INTEGER_RANGE = "err.preferences.integer.range";
+	private static final String MSG_KEY_ERR_DATE = "err.preferences.date";
+	private static final String MSG_KEY_ERR_DECIMAL_RANGE = "err.preferences.decimal.range";
+
 	private static final ThreadLocal<DateFormat> dateFormat = new ThreadLocal<DateFormat>() {
 		@Override
 		protected DateFormat initialValue() {
-			final DateFormat dateFormat = new SimpleDateFormat(DATE_PATTERN);
-			dateFormat.setLenient(false);
-			return dateFormat;
+			final DateFormat df = new SimpleDateFormat(DATE_PATTERN);
+			df.setLenient(false);
+			return df;
 		}
 	};
 
-	public interface Defaults {
-		boolean AUTOREFRESH_ENABLED = false;
-		boolean CRITERIA_RESTRICT = false;
-		Format FORMAT = Format.RSS;
+	public static class Defaults {
+		public static final boolean AUTOREFRESH_ENABLED = false;
+		public static final boolean CRITERIA_RESTRICT = false;
+		public static final Format FORMAT = Format.RSS;
+
+		private Defaults() {
+			throw new IllegalAccessError("Constants class");
+		}
 	}
 
-	private final Configuration configuration = EarthquakeBulletin.configuration;
+	private static final Configuration configuration = EarthquakeBulletin.configuration;
 
 	private final Formatter fontFormatter = new Formatter(this.getClass());
 
@@ -148,7 +157,7 @@ public class SearchForm {
 	private final VerifyListener coordinatesVerifyListener = new FloatVerifyListener(true);
 	private final FocusListener periodFocusListener = new FormTextDateFocusListener(DATE_PATTERN);
 
-	private final Set<Validator> validators = new HashSet<Validator>();
+	private final Set<Validator> validators = new HashSet<>();
 
 	private SearchJob searchJob;
 
@@ -316,7 +325,7 @@ public class SearchForm {
 		new SearchFormControlValidatorDecoration(validator, new Localized() {
 			@Override
 			public String getString() {
-				return JFaceMessages.get("err.preferences.date", DATE_PATTERN);
+				return JFaceMessages.get(MSG_KEY_ERR_DATE, DATE_PATTERN);
 			}
 		});
 		validators.add(validator);
@@ -325,7 +334,7 @@ public class SearchForm {
 		new SearchFormControlValidatorDecoration(validator, new Localized() {
 			@Override
 			public String getString() {
-				return JFaceMessages.get("err.preferences.date", DATE_PATTERN);
+				return JFaceMessages.get(MSG_KEY_ERR_DATE, DATE_PATTERN);
 			}
 		});
 		validators.add(validator);
@@ -334,7 +343,7 @@ public class SearchForm {
 		new SearchFormControlValidatorDecoration(validator, new Localized() {
 			@Override
 			public String getString() {
-				return JFaceMessages.get("err.preferences.decimal.range", LATITUDE_MIN_VALUE, LATITUDE_MAX_VALUE);
+				return JFaceMessages.get(MSG_KEY_ERR_DECIMAL_RANGE, LATITUDE_MIN_VALUE, LATITUDE_MAX_VALUE);
 			}
 		});
 		validators.add(validator);
@@ -343,7 +352,7 @@ public class SearchForm {
 		new SearchFormControlValidatorDecoration(validator, new Localized() {
 			@Override
 			public String getString() {
-				return JFaceMessages.get("err.preferences.decimal.range", LATITUDE_MIN_VALUE, LATITUDE_MAX_VALUE);
+				return JFaceMessages.get(MSG_KEY_ERR_DECIMAL_RANGE, LATITUDE_MIN_VALUE, LATITUDE_MAX_VALUE);
 			}
 		});
 		validators.add(validator);
@@ -352,7 +361,7 @@ public class SearchForm {
 		new SearchFormControlValidatorDecoration(validator, new Localized() {
 			@Override
 			public String getString() {
-				return JFaceMessages.get("err.preferences.decimal.range", LONGITUDE_MIN_VALUE, LONGITUDE_MAX_VALUE);
+				return JFaceMessages.get(MSG_KEY_ERR_DECIMAL_RANGE, LONGITUDE_MIN_VALUE, LONGITUDE_MAX_VALUE);
 			}
 		});
 		validators.add(validator);
@@ -361,7 +370,7 @@ public class SearchForm {
 		new SearchFormControlValidatorDecoration(validator, new Localized() {
 			@Override
 			public String getString() {
-				return JFaceMessages.get("err.preferences.decimal.range", LONGITUDE_MIN_VALUE, LONGITUDE_MAX_VALUE);
+				return JFaceMessages.get(MSG_KEY_ERR_DECIMAL_RANGE, LONGITUDE_MIN_VALUE, LONGITUDE_MAX_VALUE);
 			}
 		});
 		validators.add(validator);
@@ -370,7 +379,7 @@ public class SearchForm {
 		new SearchFormControlValidatorDecoration(validator, new Localized() {
 			@Override
 			public String getString() {
-				return JFaceMessages.get("err.preferences.decimal.range", MAGNITUDE_MIN_VALUE, MAGNITUDE_MAX_VALUE);
+				return JFaceMessages.get(MSG_KEY_ERR_DECIMAL_RANGE, MAGNITUDE_MIN_VALUE, MAGNITUDE_MAX_VALUE);
 			}
 		});
 		validators.add(validator);
@@ -379,7 +388,7 @@ public class SearchForm {
 		new SearchFormControlValidatorDecoration(validator, new Localized() {
 			@Override
 			public String getString() {
-				return JFaceMessages.get("err.preferences.integer.range", RESULTS_MIN_VALUE, RESULTS_MAX_VALUE);
+				return JFaceMessages.get(MSG_KEY_ERR_INTEGER_RANGE, RESULTS_MIN_VALUE, RESULTS_MAX_VALUE);
 			}
 		});
 		validators.add(validator);
@@ -388,7 +397,7 @@ public class SearchForm {
 		new ControlValidatorDecoration(validator, new Localized() {
 			@Override
 			public String getString() {
-				return JFaceMessages.get("err.preferences.integer.min", AUTOREFRESH_MIN_VALUE);
+				return JFaceMessages.get(MSG_KEY_ERR_INTEGER_MIN, AUTOREFRESH_MIN_VALUE);
 			}
 		});
 		validators.add(validator);

@@ -22,12 +22,17 @@ import it.albertus.util.Configuration;
 
 public class TrayIcon {
 
-	public interface Defaults {
-		boolean MINIMIZE_TRAY = true;
+	public static class Defaults {
+		public static final boolean MINIMIZE_TRAY = true;
+
+		private Defaults() {
+			throw new IllegalAccessError("Constants class");
+		}
 	}
 
+	private static final Configuration configuration = EarthquakeBulletin.configuration;
+
 	private final EarthquakeBulletinGui gui;
-	private final Configuration configuration = EarthquakeBulletin.configuration;
 
 	private Tray tray;
 	private TrayItem trayItem;
@@ -100,7 +105,7 @@ public class TrayIcon {
 				}
 			}
 			catch (final Exception e) {
-				e.printStackTrace();//Logger.getInstance().log(e);
+				e.printStackTrace(); // Logger.getInstance().log(e);
 			}
 		}
 
