@@ -226,8 +226,7 @@ public class SearchJob extends Job {
 					}.start();
 				}
 				finally {
-					IOUtils.closeQuietly(wrapperStream);
-					IOUtils.closeQuietly(innerStream);
+					IOUtils.closeQuietly(wrapperStream, innerStream);
 				}
 
 				final Collection<Earthquake> earthquakes = new TreeSet<>();
