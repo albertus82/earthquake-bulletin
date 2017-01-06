@@ -62,7 +62,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 	@Override
 	protected void configureShell(final Shell shell) {
 		super.configureShell(shell);
-		shell.setImages(Images.MAIN_ICONS);
+		shell.setImages(Images.getMainIcons());
 
 		// Fix invisible (transparent) shell bug with some Linux distibutions
 		if (!Util.isGtk() && configuration.getBoolean("start.minimized", Defaults.START_MINIMIZED)) {

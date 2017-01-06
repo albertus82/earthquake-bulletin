@@ -427,7 +427,7 @@ public class SearchForm {
 		// Map
 		mapBoundsDialog = new MapBoundsDialog(gui.getShell());
 		mapBoundsDialog.setText(Messages.get("lbl.map.bounds.title"));
-		mapBoundsDialog.setImages(Images.MAIN_ICONS);
+		mapBoundsDialog.setImages(Images.getMainIcons());
 		final MapOptions mapOptions = mapBoundsDialog.getOptions();
 		mapOptions.setType(MapType.TERRAIN);
 		mapOptions.getControls().put(MapControl.SCALE, true);

@@ -64,7 +64,7 @@ public class TrayIcon {
 	}
 
 	private Image getTrayIcon() {
-		return Images.MAIN_ICONS[1];
+		return Images.getMainIcons()[1];
 	}
 
 	private void iconify() {

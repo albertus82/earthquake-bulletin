@@ -36,7 +36,7 @@ public class PreferencesListener extends SelectionAdapter implements Listener {
 	@Override
 	public void widgetSelected(final SelectionEvent se) {
 		final Language language = Messages.getLanguage();
-		final Preferences preferences = new Preferences(PageDefinition.values(), Preference.values(), configuration, Images.MAIN_ICONS);
+		final Preferences preferences = new Preferences(PageDefinition.values(), Preference.values(), configuration, Images.getMainIcons());
 		try {
 			preferences.openDialog(gui.getShell());
 		}

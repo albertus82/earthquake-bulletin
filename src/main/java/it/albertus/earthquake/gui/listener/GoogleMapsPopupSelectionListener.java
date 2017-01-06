@@ -27,7 +27,7 @@ public class GoogleMapsPopupSelectionListener extends SelectionAdapter {
 		if (selection != null && !resultsTable.getTableViewer().getTable().isDisposed()) {
 			final MapDialog epicenterMapDialog = new MapDialog(resultsTable.getTableViewer().getTable().getShell());
 			epicenterMapDialog.setText(Messages.get("lbl.map.epicenter.title"));
-			epicenterMapDialog.setImages(Images.MAIN_ICONS);
+			epicenterMapDialog.setImages(Images.getMainIcons());
 			final MapOptions options = epicenterMapDialog.getOptions();
 			options.setZoom(6);
 			options.setType(MapType.TERRAIN);
