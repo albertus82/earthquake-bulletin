@@ -28,14 +28,8 @@ public class EarthquakeBulletin {
 	}
 
 	static {
-		File config = null;
-		try {
-			final String parent = Messages.get("msg.application.name");
-			config = new File((parent != null ? parent : "") + File.separator + CFG_FILE_NAME);
-		}
-		catch (final Exception e) {
-			config = new File(CFG_FILE_NAME);
-		}
+		final String parent = Messages.get("msg.application.name");
+		final File config = new File((parent != null ? parent : "") + File.separator + CFG_FILE_NAME);
 		configuration = new Configuration(config.getPath(), true) {
 			@Override
 			protected void load() {
