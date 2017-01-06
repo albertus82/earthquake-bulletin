@@ -1,5 +1,8 @@
 package it.albertus.earthquake.gui;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.eclipse.jface.util.Util;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Menu;
@@ -10,6 +13,7 @@ import it.albertus.earthquake.gui.listener.CloseListener;
 import it.albertus.earthquake.gui.listener.PreferencesListener;
 import it.albertus.earthquake.resources.Messages;
 import it.albertus.jface.cocoa.CocoaUIEnhancer;
+import it.albertus.util.logging.LoggerFactory;
 
 /**
  * Solo i <tt>MenuItem</tt> che fanno parte di una barra dei men&ugrave; con
@@ -19,6 +23,8 @@ import it.albertus.jface.cocoa.CocoaUIEnhancer;
  * combinazioni di tasti saranno ignorate.
  */
 public class MenuBar {
+
+	private static final Logger logger = LoggerFactory.getLogger(MenuBar.class);
 
 	private Menu bar;
 
@@ -47,8 +53,8 @@ public class MenuBar {
 		try {
 			new CocoaUIEnhancer(gui.getShell().getDisplay()).hookApplicationMenu(new CloseListener(gui), new AboutListener(gui), new PreferencesListener(gui));
 		}
-		catch (final Throwable t) {
-			t.printStackTrace();
+		catch (final Throwable t) { // reflective methods may also (erroneously) throw LinkageError!
+			logger.log(Level.WARNING, Messages.get("err.cocoa.enhancer"), t);
 			createStandardMenu(gui); // fail-safe
 		}
 	}

@@ -1,5 +1,8 @@
 package it.albertus.earthquake.gui;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.eclipse.jface.util.Util;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MenuDetectEvent;
@@ -19,8 +22,11 @@ import it.albertus.earthquake.model.Earthquake;
 import it.albertus.earthquake.resources.Messages;
 import it.albertus.jface.listener.TrayRestoreListener;
 import it.albertus.util.Configuration;
+import it.albertus.util.logging.LoggerFactory;
 
 public class TrayIcon {
+
+	private static final Logger logger = LoggerFactory.getLogger(TrayIcon.class);
 
 	public static class Defaults {
 		public static final boolean MINIMIZE_TRAY = true;
@@ -105,7 +111,7 @@ public class TrayIcon {
 				}
 			}
 			catch (final Exception e) {
-				e.printStackTrace(); // Logger.getInstance().log(e);
+				logger.log(Level.SEVERE, Messages.get("err.tray.init"), e);
 			}
 		}
 

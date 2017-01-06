@@ -1,16 +1,23 @@
 package it.albertus.earthquake.gui.listener;
 
-import it.albertus.earthquake.gui.MapCanvas;
-
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.MessageBox;
+
+import it.albertus.earthquake.gui.MapCanvas;
+import it.albertus.earthquake.resources.Messages;
+import it.albertus.util.logging.LoggerFactory;
 
 public class SaveMapSelectionListener extends SelectionAdapter {
+
+	private static final Logger logger = LoggerFactory.getLogger(SaveMapSelectionListener.class);
 
 	private final MapCanvas mapCanvas;
 
@@ -32,7 +39,12 @@ public class SaveMapSelectionListener extends SelectionAdapter {
 					Files.write(Paths.get(fileName), mapCanvas.getCache().get(guid));
 				}
 				catch (final Exception e) {
-					e.printStackTrace();
+					final String message = Messages.get("err.image.save", fileName);
+					logger.log(Level.WARNING, message, e);
+					final MessageBox dialog = new MessageBox(mapCanvas.getCanvas().getShell(), SWT.ICON_WARNING);
+					dialog.setText(Messages.get("lbl.window.title"));
+					dialog.setMessage(message);
+					dialog.open();
 				}
 			}
 		}

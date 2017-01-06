@@ -12,6 +12,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 
 import javax.xml.bind.JAXBContext;
@@ -41,8 +43,11 @@ import it.albertus.earthquake.rss.xml.Rss;
 import it.albertus.jface.SwtThreadExecutor;
 import it.albertus.util.IOUtils;
 import it.albertus.util.NewLine;
+import it.albertus.util.logging.LoggerFactory;
 
 public class SearchJob extends Job {
+
+	private static final Logger logger = LoggerFactory.getLogger(SearchJob.class);
 
 	private final EarthquakeBulletinGui gui;
 	private boolean shouldRun = true;
@@ -154,7 +159,7 @@ public class SearchJob extends Job {
 							try {
 								short waitTimeInMinutes = Short.parseShort(gui.getSearchForm().getAutoRefreshText().getText());
 								if (waitTimeInMinutes > 0) {
-									jobVariables.setWaitTimeInMillis(waitTimeInMinutes * 1000 * 60);
+									jobVariables.setWaitTimeInMillis(waitTimeInMinutes * 1000L * 60);
 									gui.getSearchForm().getStopButton().setEnabled(true);
 								}
 							}
@@ -165,7 +170,7 @@ public class SearchJob extends Job {
 
 				final StringBuilder urlSb = new StringBuilder(EarthquakeBulletin.BASE_URL).append("/eqinfo/list.php?fmt=").append(jobVariables.getParams().get("fmt"));
 				for (final Entry<String, String> param : jobVariables.getParams().entrySet()) {
-					if (param.getValue() != null && !param.getValue().isEmpty() && !param.getKey().equals("fmt")) {
+					if (param.getValue() != null && !param.getValue().isEmpty() && !"fmt".equals(param.getKey())) {
 						urlSb.append("&").append(param.getKey()).append("=").append(param.getValue());
 					}
 				}
@@ -211,15 +216,16 @@ public class SearchJob extends Job {
 					}
 				}
 				catch (final Exception e) {
-					e.printStackTrace();
 					jobVariables.setError(true);
+					final String message = Messages.get("err.job.search");
+					logger.log(Level.WARNING, message, e);
 					new SwtThreadExecutor(gui.getShell()) {
 						@Override
 						protected void run() {
 							if (gui.getTrayIcon() == null || gui.getTrayIcon().getTrayItem() == null || !gui.getTrayIcon().getTrayItem().getVisible()) {
 								final MessageBox dialog = new MessageBox(gui.getShell(), SWT.ICON_WARNING);
 								dialog.setText(Messages.get("lbl.window.title"));
-								dialog.setMessage(Messages.get("err.job.search"));
+								dialog.setMessage(message);
 								dialog.open();
 							}
 						}
@@ -243,14 +249,15 @@ public class SearchJob extends Job {
 					}
 					catch (final Exception e) {
 						jobVariables.setError(true);
-						e.printStackTrace();
+						final String message = Messages.get("err.job.decode");
+						logger.log(Level.WARNING, message, e);
 						new SwtThreadExecutor(gui.getShell()) {
 							@Override
 							protected void run() {
 								if (gui.getTrayIcon() == null || gui.getTrayIcon().getTrayItem() == null || !gui.getTrayIcon().getTrayItem().getVisible()) {
 									final MessageBox dialog = new MessageBox(gui.getShell(), SWT.ICON_WARNING);
 									dialog.setText(Messages.get("lbl.window.title"));
-									dialog.setMessage(Messages.get("err.job.decode"));
+									dialog.setMessage(message);
 									dialog.open();
 								}
 							}
@@ -293,7 +300,6 @@ public class SearchJob extends Job {
 			return Status.OK_STATUS;
 		}
 		catch (final RuntimeException re) {
-			re.printStackTrace();
 			throw re;
 		}
 	}

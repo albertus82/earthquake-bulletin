@@ -9,16 +9,22 @@ import java.util.Date;
 import java.util.Set;
 import java.util.TimeZone;
 import java.util.TreeSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import it.albertus.earthquake.model.Depth;
 import it.albertus.earthquake.model.Earthquake;
 import it.albertus.earthquake.model.Latitude;
 import it.albertus.earthquake.model.Longitude;
 import it.albertus.earthquake.model.Status;
+import it.albertus.earthquake.resources.Messages;
 import it.albertus.earthquake.rss.xml.Item;
 import it.albertus.earthquake.rss.xml.Rss;
+import it.albertus.util.logging.LoggerFactory;
 
 public class RssItemTransformer {
+
+	private static final Logger logger = LoggerFactory.getLogger(RssItemTransformer.class);
 
 	private static final ThreadLocal<DateFormat> rssDateFormat = new ThreadLocal<DateFormat>() {
 		@Override
@@ -74,7 +80,7 @@ public class RssItemTransformer {
 				link = new URL(pageUrl.trim());
 			}
 			catch (final MalformedURLException mue) {
-				mue.printStackTrace();
+				logger.log(Level.WARNING, Messages.get("err.url.malformed", pageUrl), mue);
 			}
 		}
 
@@ -85,7 +91,7 @@ public class RssItemTransformer {
 				enclosure = new URL(imageUrl.trim());
 			}
 			catch (final MalformedURLException mue) {
-				mue.printStackTrace();
+				logger.log(Level.WARNING, Messages.get("err.url.malformed", imageUrl), mue);
 			}
 		}
 
