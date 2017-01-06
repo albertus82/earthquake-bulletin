@@ -1,16 +1,20 @@
 package it.albertus.earthquake.gui;
 
-import it.albertus.earthquake.EarthquakeBulletin;
-import it.albertus.earthquake.resources.Messages;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 
+import it.albertus.earthquake.EarthquakeBulletin;
+import it.albertus.earthquake.resources.Messages;
+
 public class CloseMessageBox {
 
-	public interface Defaults {
-		boolean CONFIRM_CLOSE = false;
+	public static class Defaults {
+		public static final boolean CONFIRM_CLOSE = false;
+
+		private Defaults() {
+			throw new IllegalAccessError("Constants class");
+		}
 	}
 
 	private final MessageBox messageBox;

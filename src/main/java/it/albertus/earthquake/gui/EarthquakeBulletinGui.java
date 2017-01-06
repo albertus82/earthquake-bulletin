@@ -22,9 +22,13 @@ import it.albertus.util.Version;
 
 public class EarthquakeBulletinGui extends ApplicationWindow {
 
-	public interface Defaults {
-		boolean START_MINIMIZED = false;
-		boolean SEARCH_ON_START = false;
+	public static class Defaults {
+		public static final boolean START_MINIMIZED = false;
+		public static final boolean SEARCH_ON_START = false;
+
+		private Defaults() {
+			throw new IllegalAccessError("Constants class");
+		}
 	}
 
 	private static final Configuration configuration = EarthquakeBulletin.configuration;
@@ -32,11 +36,22 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 	private static final float SASH_MAGNIFICATION_FACTOR = 1.5f;
 	private static final int[] SASH_WEIGHTS = { 3, 2 };
 
+	private SearchForm searchForm;
+	private ResultsTable resultsTable;
+	private MapCanvas mapCanvas;
+	private SashForm sashForm;
+	private TrayIcon trayIcon;
+	private MenuBar menuBar;
+
+	public EarthquakeBulletinGui() {
+		super(null);
+	}
+
 	public static void run() {
 		Display.setAppName(Messages.get("msg.application.name"));
 		Display.setAppVersion(Version.getInstance().getNumber());
 		final Display display = Display.getDefault();
-		final EarthquakeBulletinGui gui = new EarthquakeBulletinGui(display);
+		final EarthquakeBulletinGui gui = new EarthquakeBulletinGui();
 		gui.open();
 
 		final Shell shell = gui.getShell();
@@ -46,17 +61,6 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 			}
 		}
 		display.dispose();
-	}
-
-	private SearchForm searchForm;
-	private ResultsTable resultsTable;
-	private MapCanvas mapCanvas;
-	private SashForm sashForm;
-	private TrayIcon trayIcon;
-	private MenuBar menuBar;
-
-	public EarthquakeBulletinGui(final Display display) {
-		super(null);
 	}
 
 	@Override
