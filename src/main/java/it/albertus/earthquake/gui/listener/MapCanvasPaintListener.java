@@ -64,13 +64,13 @@ public class MapCanvasPaintListener implements PaintListener {
 
 			final GC gc = new GC(canvas);
 
-			final float scale = newHeight / (float) imageSize.height;
-			if (scale == 1) { // Do not resize!
+			if (newHeight == imageSize.height) { // Do not resize!
 				gc.drawImage(image, left, top);
 			}
 			else {
 				if (configuration.getBoolean("map.resize.hq", Defaults.MAP_RESIZE_HQ)) {
 					final Image oldImage = resized;
+					final float scale = newHeight / (float) imageSize.height;
 					resized = HqImageResizer.resize(image, scale);
 					gc.drawImage(resized, left, top);
 					if (oldImage != null && oldImage != resized) {
