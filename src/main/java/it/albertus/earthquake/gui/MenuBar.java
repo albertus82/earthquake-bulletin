@@ -12,6 +12,7 @@ import it.albertus.earthquake.gui.listener.AboutListener;
 import it.albertus.earthquake.gui.listener.CloseListener;
 import it.albertus.earthquake.gui.listener.PreferencesListener;
 import it.albertus.earthquake.resources.Messages;
+import it.albertus.jface.cocoa.CocoaEnhancerException;
 import it.albertus.jface.cocoa.CocoaUIEnhancer;
 import it.albertus.util.logging.LoggerFactory;
 
@@ -53,8 +54,8 @@ public class MenuBar {
 		try {
 			new CocoaUIEnhancer(gui.getShell().getDisplay()).hookApplicationMenu(new CloseListener(gui), new AboutListener(gui), new PreferencesListener(gui));
 		}
-		catch (final Throwable t) { // reflective methods may also (erroneously) throw LinkageError!
-			logger.log(Level.WARNING, Messages.get("err.cocoa.enhancer"), t);
+		catch (final CocoaEnhancerException cce) {
+			logger.log(Level.WARNING, Messages.get("err.cocoa.enhancer"), cce);
 			createStandardMenu(gui); // fail-safe
 		}
 	}
