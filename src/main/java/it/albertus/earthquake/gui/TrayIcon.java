@@ -145,7 +145,9 @@ public class TrayIcon {
 					}
 				});
 			}
-			catch (final Exception e) {/* Ignore */}
+			catch (final RuntimeException re) {
+				logger.log(Level.WARNING, re.getLocalizedMessage() != null ? re.getLocalizedMessage() : re.getMessage(), re);
+			}
 		}
 	}
 
