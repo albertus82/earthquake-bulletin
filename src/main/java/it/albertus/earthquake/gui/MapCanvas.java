@@ -1,12 +1,8 @@
 package it.albertus.earthquake.gui;
 
-import it.albertus.earthquake.gui.job.DownloadMapJob;
-import it.albertus.earthquake.gui.listener.MapCanvasContextMenuListener;
-import it.albertus.earthquake.gui.listener.MapCanvasPaintListener;
-import it.albertus.earthquake.gui.listener.SaveMapSelectionListener;
-import it.albertus.earthquake.resources.Messages;
-
 import java.io.ByteArrayInputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -19,7 +15,16 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 
+import it.albertus.earthquake.gui.job.DownloadMapJob;
+import it.albertus.earthquake.gui.listener.MapCanvasContextMenuListener;
+import it.albertus.earthquake.gui.listener.MapCanvasPaintListener;
+import it.albertus.earthquake.gui.listener.SaveMapSelectionListener;
+import it.albertus.earthquake.resources.Messages;
+import it.albertus.util.logging.LoggerFactory;
+
 public class MapCanvas {
+
+	private static final Logger logger = LoggerFactory.getLogger(MapCanvas.class);
 
 	private final MapCache cache = new MapCache();
 	private final Canvas canvas;
@@ -65,7 +70,9 @@ public class MapCanvas {
 					oldImage.dispose();
 				}
 			}
-			catch (final Exception e) {/* Ignore */}
+			catch (final Exception e) {
+				logger.log(Level.WARNING, e.getLocalizedMessage() != null ? e.getLocalizedMessage() : e.getMessage(), e);
+			}
 		}
 	}
 

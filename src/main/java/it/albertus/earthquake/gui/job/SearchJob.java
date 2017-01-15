@@ -163,7 +163,9 @@ public class SearchJob extends Job {
 									gui.getSearchForm().getStopButton().setEnabled(true);
 								}
 							}
-							catch (final RuntimeException re) {/* Ignore */}
+							catch (final RuntimeException re) {
+								logger.log(Level.WARNING, re.getLocalizedMessage() != null ? re.getLocalizedMessage() : re.getMessage(), re);
+							}
 						}
 					}
 				}.start();
@@ -182,7 +184,7 @@ public class SearchJob extends Job {
 				try {
 					final URL url = new URL(urlSb.toString());
 					final HttpURLConnection urlConnection = openConnection(url);
-					final String responseContentEncoding = urlConnection.getHeaderField("Content-Encoding");
+					final String responseContentEncoding = urlConnection.getContentEncoding();
 					final boolean gzip = responseContentEncoding != null && responseContentEncoding.toLowerCase().contains("gzip");
 					innerStream = urlConnection.getInputStream();
 					if (gzip) {
