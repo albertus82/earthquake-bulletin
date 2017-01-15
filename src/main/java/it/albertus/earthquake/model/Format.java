@@ -3,8 +3,8 @@ package it.albertus.earthquake.model;
 import it.albertus.earthquake.resources.Messages;
 
 public enum Format {
-	RSS("rss"),
-	HTML("html");
+	HTML("html"),
+	RSS("rss");
 
 	private final String value;
 

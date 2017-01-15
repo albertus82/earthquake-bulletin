@@ -6,6 +6,8 @@ import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -53,8 +55,11 @@ import it.albertus.jface.validation.IntegerTextValidator;
 import it.albertus.jface.validation.Validator;
 import it.albertus.util.Configuration;
 import it.albertus.util.Localized;
+import it.albertus.util.logging.LoggerFactory;
 
 public class SearchForm {
+
+	private static final Logger logger = LoggerFactory.getLogger(SearchForm.class);
 
 	public static final int COORDINATES_TEXT_LIMIT = 7;
 	public static final int MAGNITUDE_TEXT_LIMIT = 4;
@@ -91,7 +96,7 @@ public class SearchForm {
 	public static class Defaults {
 		public static final boolean AUTOREFRESH_ENABLED = false;
 		public static final boolean CRITERIA_RESTRICT = false;
-		public static final Format FORMAT = Format.RSS;
+		public static final Format FORMAT = Format.HTML;
 
 		private Defaults() {
 			throw new IllegalAccessError("Constants class");
@@ -256,9 +261,10 @@ public class SearchForm {
 		GridDataFactory.swtDefaults().grab(false, false).span(2, 1).applyTo(radioComposite);
 		Format selectedFormat;
 		try {
-			selectedFormat = Format.valueOf(configuration.getString("criteria.format").trim().toUpperCase());
+			selectedFormat = Format.valueOf(configuration.getString("criteria.format", Defaults.FORMAT.name()).trim().toUpperCase());
 		}
-		catch (final RuntimeException re) {
+		catch (final IllegalArgumentException iae) {
+			logger.log(Level.WARNING, iae.getLocalizedMessage() != null ? iae.getLocalizedMessage() : iae.getMessage(), iae);
 			selectedFormat = Defaults.FORMAT;
 		}
 		for (final Format format : Format.values()) {
@@ -484,36 +490,44 @@ public class SearchForm {
 	}
 
 	private String getConfiguredFloatString(final String key) {
-		String value;
+		String value = "";
 		try {
-			value = configuration.getFloat(key).toString();
+			final Float number = configuration.getFloat(key);
+			if (number != null) {
+				value = number.toString();
+			}
 		}
 		catch (final RuntimeException re) {
-			value = "";
+			logger.log(Level.WARNING, re.getLocalizedMessage() != null ? re.getLocalizedMessage() : re.getMessage(), re);
 		}
 		return value;
 	}
 
 	private String getConfiguredIntegerString(final String key) {
-		String value;
+		String value = "";
 		try {
-			value = configuration.getInt(key).toString();
+			final Integer number = configuration.getInt(key);
+			if (number != null) {
+				value = number.toString();
+			}
 		}
 		catch (final RuntimeException re) {
-			value = "";
+			logger.log(Level.WARNING, re.getLocalizedMessage() != null ? re.getLocalizedMessage() : re.getMessage(), re);
 		}
 		return value;
 	}
 
 	private String getConfiguredDateString(final String key) {
-		String value;
-		try {
-			value = configuration.getString(key);
-			final DateFormat df = dateFormat.get();
-			value = df.format(df.parse(value));
-		}
-		catch (final Exception e) {
-			value = "";
+		String value = "";
+		final String dateStr = configuration.getString(key);
+		if (dateStr != null && !dateStr.trim().isEmpty()) {
+			try {
+				final DateFormat df = dateFormat.get();
+				value = df.format(df.parse(dateStr));
+			}
+			catch (final Exception e) {
+				logger.log(Level.WARNING, e.getLocalizedMessage() != null ? e.getLocalizedMessage() : e.getMessage(), e);
+			}
 		}
 		return value;
 	}

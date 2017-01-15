@@ -156,15 +156,18 @@ public class SearchJob extends Job {
 						params.put("nmax", URIEncoder.encodeURI(form.getResultsText().getText()));
 
 						if (gui.getSearchForm().getAutoRefreshButton().getSelection()) {
-							try {
-								short waitTimeInMinutes = Short.parseShort(gui.getSearchForm().getAutoRefreshText().getText());
-								if (waitTimeInMinutes > 0) {
-									jobVariables.setWaitTimeInMillis(waitTimeInMinutes * 1000L * 60);
-									gui.getSearchForm().getStopButton().setEnabled(true);
+							final String time = gui.getSearchForm().getAutoRefreshText().getText().trim();
+							if (!time.isEmpty()) {
+								try {
+									short waitTimeInMinutes = Short.parseShort(time);
+									if (waitTimeInMinutes > 0) {
+										jobVariables.setWaitTimeInMillis(waitTimeInMinutes * 1000L * 60);
+										gui.getSearchForm().getStopButton().setEnabled(true);
+									}
 								}
-							}
-							catch (final RuntimeException re) {
-								logger.log(Level.WARNING, re.getLocalizedMessage() != null ? re.getLocalizedMessage() : re.getMessage(), re);
+								catch (final RuntimeException re) {
+									logger.log(Level.WARNING, re.getLocalizedMessage() != null ? re.getLocalizedMessage() : re.getMessage(), re);
+								}
 							}
 						}
 					}
