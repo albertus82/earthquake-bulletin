@@ -16,6 +16,14 @@ public class EarthquakeBulletin {
 
 	private static final Logger logger = LoggerFactory.getLogger(EarthquakeBulletin.class);
 
+	public static class InitializationException extends Exception {
+		private static final long serialVersionUID = 6499234883656892068L;
+
+		private InitializationException(final String message, final Throwable cause) {
+			super(message, cause);
+		}
+	}
+
 	public static class Defaults {
 		public static final String LANGUAGE = Locale.getDefault().getLanguage();
 
@@ -30,7 +38,7 @@ public class EarthquakeBulletin {
 
 	private static Configuration configuration = null;
 
-	private static Exception initializationException = null;
+	private static InitializationException initializationException = null;
 
 	private EarthquakeBulletin() {
 		throw new IllegalAccessError();
@@ -51,8 +59,9 @@ public class EarthquakeBulletin {
 			};
 		}
 		catch (final IOException ioe) {
-			logger.log(Level.SEVERE, Messages.get("err.open.cfg", CFG_FILE_NAME), ioe);
-			initializationException = new IOException(Messages.get("err.open.cfg", CFG_FILE_NAME), ioe);
+			final String message = Messages.get("err.open.cfg", CFG_FILE_NAME);
+			logger.log(Level.SEVERE, message, ioe);
+			initializationException = new InitializationException(message, ioe);
 		}
 	}
 
@@ -64,7 +73,7 @@ public class EarthquakeBulletin {
 		return configuration;
 	}
 
-	public static Exception getInitializationException() {
+	public static InitializationException getInitializationException() {
 		return initializationException;
 	}
 

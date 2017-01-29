@@ -1,17 +1,6 @@
 package it.albertus.earthquake.gui;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.MultiStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.util.Util;
@@ -27,17 +16,14 @@ import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.Shell;
 
 import it.albertus.earthquake.EarthquakeBulletin;
+import it.albertus.earthquake.EarthquakeBulletin.InitializationException;
 import it.albertus.earthquake.gui.listener.CloseListener;
 import it.albertus.earthquake.resources.Messages;
+import it.albertus.jface.EnhancedErrorDialog;
 import it.albertus.util.Configuration;
-import it.albertus.util.ExceptionUtils;
-import it.albertus.util.IOUtils;
 import it.albertus.util.Version;
-import it.albertus.util.logging.LoggerFactory;
 
 public class EarthquakeBulletinGui extends ApplicationWindow {
-
-	private static final Logger logger = LoggerFactory.getLogger(EarthquakeBulletinGui.class);
 
 	public static class Defaults {
 		public static final boolean START_MINIMIZED = false;
@@ -64,54 +50,26 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 		super(null);
 	}
 
-	public static void run(final Exception initializationException) {
+	public static void run(final InitializationException ie) {
 		Display.setAppName(Messages.get("msg.application.name"));
 		Display.setAppVersion(Version.getInstance().getNumber());
 		final Display display = Display.getDefault();
-		final Shell shell;
 
-		if (initializationException != null) { // Display error dialog and exit.
-			shell = new Shell(display);
-			final MultiStatus status = createMultiStatus(IStatus.ERROR, initializationException.getCause() != null ? initializationException.getCause() : initializationException);
-			ErrorDialog.openError(shell, Messages.get("lbl.window.title"), initializationException.getLocalizedMessage() != null ? initializationException.getLocalizedMessage() : initializationException.getMessage(), status);
-			shell.dispose();
+		if (ie != null) { // Display error dialog and exit.
+			EnhancedErrorDialog.openError(null, Messages.get("lbl.window.title"), ie.getLocalizedMessage() != null ? ie.getLocalizedMessage() : ie.getMessage(), IStatus.ERROR, ie.getCause() != null ? ie.getCause() : ie, Images.getMainIcons());
 		}
 		else { // Open main window.
 			final EarthquakeBulletinGui gui = new EarthquakeBulletinGui();
 			gui.open();
-			shell = gui.getShell();
-		}
-
-		while (!shell.isDisposed()) {
-			if (!display.readAndDispatch()) {
-				Display.getCurrent().sleep();
+			final Shell shell = gui.getShell();
+			while (!shell.isDisposed()) {
+				if (!display.readAndDispatch()) {
+					Display.getCurrent().sleep();
+				}
 			}
 		}
+
 		display.dispose();
-	}
-
-	private static MultiStatus createMultiStatus(final int severity, final Throwable throwable) {
-		final List<IStatus> childStatuses = new ArrayList<>();
-
-		StringReader sr = null;
-		BufferedReader br = null;
-		try {
-			sr = new StringReader(ExceptionUtils.getStackTrace(throwable));
-			br = new BufferedReader(sr);
-			String line;
-			while ((line = br.readLine()) != null) {
-				final IStatus status = new Status(severity, throwable.getClass().getName(), line);
-				childStatuses.add(status);
-			}
-		}
-		catch (final IOException ioe) {
-			logger.log(Level.WARNING, ioe.getLocalizedMessage() != null ? ioe.getLocalizedMessage() : ioe.getMessage(), ioe);
-		}
-		finally {
-			IOUtils.closeQuietly(br, sr);
-		}
-
-		return new MultiStatus(throwable.getClass().getName(), IStatus.ERROR, childStatuses.toArray(new IStatus[] {}), throwable.toString(), throwable);
 	}
 
 	@Override

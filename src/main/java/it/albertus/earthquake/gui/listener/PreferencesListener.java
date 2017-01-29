@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -18,6 +19,7 @@ import it.albertus.earthquake.gui.preference.PageDefinition;
 import it.albertus.earthquake.gui.preference.Preference;
 import it.albertus.earthquake.resources.Messages;
 import it.albertus.earthquake.resources.Messages.Language;
+import it.albertus.jface.EnhancedErrorDialog;
 import it.albertus.jface.preference.Preferences;
 import it.albertus.util.Configuration;
 import it.albertus.util.logging.LoggerFactory;
@@ -42,7 +44,9 @@ public class PreferencesListener extends SelectionAdapter implements Listener {
 			preferences.openDialog(gui.getShell());
 		}
 		catch (final IOException ioe) {
-			logger.log(Level.SEVERE, Messages.get("err.preferences.dialog.open"), ioe);
+			final String message = Messages.get("err.preferences.dialog.open");
+			logger.log(Level.WARNING, message, ioe);
+			EnhancedErrorDialog.openError(gui.getShell(), Messages.get("lbl.window.title"), message, IStatus.WARNING, ioe, Images.getMainIcons());
 		}
 
 		// Check if must update texts...
