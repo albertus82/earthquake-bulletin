@@ -36,7 +36,7 @@ public class TrayIcon {
 		}
 	}
 
-	private static final Configuration configuration = EarthquakeBulletin.configuration;
+	private static final Configuration configuration = EarthquakeBulletin.getConfiguration();
 
 	private final EarthquakeBulletinGui gui;
 

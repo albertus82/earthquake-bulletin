@@ -10,7 +10,7 @@ import it.albertus.util.Configuration;
 
 public class HttpConnector {
 
-	private static final Configuration configuration = EarthquakeBulletin.configuration;
+	private static final Configuration configuration = EarthquakeBulletin.getConfiguration();
 
 	public static class Defaults {
 		public static final int CONNECTION_TIMEOUT_IN_MILLIS = 10000;

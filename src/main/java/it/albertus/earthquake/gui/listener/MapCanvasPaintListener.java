@@ -22,7 +22,7 @@ public class MapCanvasPaintListener implements PaintListener {
 		}
 	}
 
-	private static final Configuration configuration = EarthquakeBulletin.configuration;
+	private static final Configuration configuration = EarthquakeBulletin.getConfiguration();
 
 	private final MapCanvas mapCanvas;
 	private Image resized;

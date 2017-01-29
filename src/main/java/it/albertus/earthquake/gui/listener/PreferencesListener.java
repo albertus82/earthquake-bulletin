@@ -1,5 +1,6 @@
 package it.albertus.earthquake.gui.listener;
 
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -25,7 +26,7 @@ public class PreferencesListener extends SelectionAdapter implements Listener {
 
 	private static final Logger logger = LoggerFactory.getLogger(PreferencesListener.class);
 
-	private static final Configuration configuration = EarthquakeBulletin.configuration;
+	private static final Configuration configuration = EarthquakeBulletin.getConfiguration();
 
 	private final EarthquakeBulletinGui gui;
 
@@ -40,8 +41,8 @@ public class PreferencesListener extends SelectionAdapter implements Listener {
 		try {
 			preferences.openDialog(gui.getShell());
 		}
-		catch (final Exception e) {
-			logger.log(Level.SEVERE, Messages.get("err.preferences.dialog.open"), e);
+		catch (final IOException ioe) {
+			logger.log(Level.SEVERE, Messages.get("err.preferences.dialog.open"), ioe);
 		}
 
 		// Check if must update texts...

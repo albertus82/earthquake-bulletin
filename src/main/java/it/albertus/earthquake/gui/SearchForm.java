@@ -103,7 +103,7 @@ public class SearchForm {
 		}
 	}
 
-	private static final Configuration configuration = EarthquakeBulletin.configuration;
+	private static final Configuration configuration = EarthquakeBulletin.getConfiguration();
 
 	private final Formatter fontFormatter = new Formatter(this.getClass());
 

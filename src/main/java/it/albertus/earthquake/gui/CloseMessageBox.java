@@ -30,7 +30,7 @@ public class CloseMessageBox {
 	}
 
 	public static boolean show() {
-		return EarthquakeBulletin.configuration.getBoolean("confirm.close", Defaults.CONFIRM_CLOSE);
+		return EarthquakeBulletin.getConfiguration().getBoolean("confirm.close", Defaults.CONFIRM_CLOSE);
 	}
 
 }

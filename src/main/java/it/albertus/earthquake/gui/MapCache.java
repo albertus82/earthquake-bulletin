@@ -18,7 +18,7 @@ public class MapCache {
 
 	private static final String CFG_KEY_MAP_CACHE_SIZE = "map.cache.size";
 
-	private static final Configuration configuration = EarthquakeBulletin.configuration;
+	private static final Configuration configuration = EarthquakeBulletin.getConfiguration();
 
 	private final Map<String, byte[]> cache = new LinkedHashMap<>(configuration.getByte(CFG_KEY_MAP_CACHE_SIZE, Defaults.CACHE_SIZE));
 
