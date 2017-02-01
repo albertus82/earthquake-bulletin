@@ -63,8 +63,8 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 			gui.open();
 			final Shell shell = gui.getShell();
 			while (!shell.isDisposed()) {
-				if (!display.readAndDispatch()) {
-					Display.getCurrent().sleep();
+				if (!display.isDisposed() && !display.readAndDispatch()) {
+					display.sleep();
 				}
 			}
 		}
