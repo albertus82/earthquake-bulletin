@@ -263,8 +263,8 @@ public class SearchForm {
 		try {
 			selectedFormat = Format.valueOf(configuration.getString("criteria.format", Defaults.FORMAT.name()).trim().toUpperCase());
 		}
-		catch (final IllegalArgumentException iae) {
-			logger.log(Level.WARNING, iae.getLocalizedMessage() != null ? iae.getLocalizedMessage() : iae.getMessage(), iae);
+		catch (final IllegalArgumentException e) {
+			logger.log(Level.WARNING, e.toString(), e);
 			selectedFormat = Defaults.FORMAT;
 		}
 		for (final Format format : Format.values()) {
@@ -497,8 +497,8 @@ public class SearchForm {
 				value = number.toString();
 			}
 		}
-		catch (final RuntimeException re) {
-			logger.log(Level.WARNING, re.getLocalizedMessage() != null ? re.getLocalizedMessage() : re.getMessage(), re);
+		catch (final RuntimeException e) {
+			logger.log(Level.WARNING, e.toString(), e);
 		}
 		return value;
 	}
@@ -511,8 +511,8 @@ public class SearchForm {
 				value = number.toString();
 			}
 		}
-		catch (final RuntimeException re) {
-			logger.log(Level.WARNING, re.getLocalizedMessage() != null ? re.getLocalizedMessage() : re.getMessage(), re);
+		catch (final RuntimeException e) {
+			logger.log(Level.WARNING, e.toString(), e);
 		}
 		return value;
 	}
@@ -526,7 +526,7 @@ public class SearchForm {
 				value = df.format(df.parse(dateStr));
 			}
 			catch (final Exception e) {
-				logger.log(Level.WARNING, e.getLocalizedMessage() != null ? e.getLocalizedMessage() : e.getMessage(), e);
+				logger.log(Level.WARNING, e.toString(), e);
 			}
 		}
 		return value;

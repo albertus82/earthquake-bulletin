@@ -165,8 +165,8 @@ public class SearchJob extends Job {
 										gui.getSearchForm().getStopButton().setEnabled(true);
 									}
 								}
-								catch (final RuntimeException re) {
-									logger.log(Level.WARNING, re.getLocalizedMessage() != null ? re.getLocalizedMessage() : re.getMessage(), re);
+								catch (final RuntimeException e) {
+									logger.log(Level.WARNING, e.toString(), e);
 								}
 							}
 						}

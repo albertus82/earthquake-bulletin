@@ -71,7 +71,7 @@ public class MapCanvas {
 				}
 			}
 			catch (final Exception e) {
-				logger.log(Level.WARNING, e.getLocalizedMessage() != null ? e.getLocalizedMessage() : e.getMessage(), e);
+				logger.log(Level.WARNING, e.toString(), e);
 			}
 		}
 	}
