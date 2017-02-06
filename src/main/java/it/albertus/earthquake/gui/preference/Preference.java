@@ -2,7 +2,10 @@ package it.albertus.earthquake.gui.preference;
 
 import java.util.EnumSet;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
+import java.util.logging.Level;
 
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.swt.widgets.Composite;
@@ -24,19 +27,22 @@ import it.albertus.jface.preference.IPreference;
 import it.albertus.jface.preference.LocalizedLabelsAndValues;
 import it.albertus.jface.preference.PreferenceDetails;
 import it.albertus.jface.preference.PreferenceDetails.PreferenceDetailsBuilder;
+import it.albertus.jface.preference.StaticLabelsAndValues;
 import it.albertus.jface.preference.field.DateFieldEditor;
 import it.albertus.jface.preference.field.DefaultBooleanFieldEditor;
 import it.albertus.jface.preference.field.DefaultComboFieldEditor;
 import it.albertus.jface.preference.field.DefaultRadioGroupFieldEditor;
+import it.albertus.jface.preference.field.EnhancedDirectoryFieldEditor;
 import it.albertus.jface.preference.field.EnhancedIntegerFieldEditor;
 import it.albertus.jface.preference.field.FloatFieldEditor;
 import it.albertus.jface.preference.field.ScaleIntegerFieldEditor;
 import it.albertus.jface.preference.page.IPageDefinition;
 import it.albertus.util.Localized;
+import it.albertus.util.logging.LoggingSupport;
 
 public enum Preference implements IPreference {
 
-	LANGUAGE(new PreferenceDetailsBuilder(PageDefinition.GENERAL).name(EarthquakeBulletin.CFG_KEY_LANGUAGE).defaultValue(EarthquakeBulletin.Defaults.LANGUAGE).build(), new FieldEditorDetailsBuilder(DefaultComboFieldEditor.class).labelsAndValues(Preference.getLanguageComboOptions()).build()),
+	LANGUAGE(new PreferenceDetailsBuilder(PageDefinition.GENERAL).defaultValue(Messages.Defaults.LANGUAGE).build(), new FieldEditorDetailsBuilder(DefaultComboFieldEditor.class).labelsAndValues(Preference.getLanguageComboOptions()).build()),
 
 	START_MINIMIZED(new PreferenceDetailsBuilder(PageDefinition.GENERAL).defaultValue(EarthquakeBulletinGui.Defaults.START_MINIMIZED).separate().build(), new FieldEditorDetailsBuilder(DefaultBooleanFieldEditor.class).build()),
 	MINIMIZE_TRAY(new PreferenceDetailsBuilder(PageDefinition.GENERAL).defaultValue(TrayIcon.Defaults.MINIMIZE_TRAY).build(), new FieldEditorDetailsBuilder(DefaultBooleanFieldEditor.class).build()),
@@ -115,7 +121,17 @@ public enum Preference implements IPreference {
 		public String getString() {
 			return Messages.get("lbl.form.button.autorefresh");
 		}
-	}).build(), new FieldEditorDetailsBuilder(EnhancedIntegerFieldEditor.class).numberMinimum(SearchForm.AUTOREFRESH_MIN_VALUE).emptyStringAllowed(true).textLimit(SearchForm.AUTOREFRESH_TEXT_LIMIT).build());
+	}).build(), new FieldEditorDetailsBuilder(EnhancedIntegerFieldEditor.class).numberMinimum(SearchForm.AUTOREFRESH_MIN_VALUE).emptyStringAllowed(true).textLimit(SearchForm.AUTOREFRESH_TEXT_LIMIT).build()),
+
+	LOGGING_LEVEL(new PreferenceDetailsBuilder(PageDefinition.LOGGING).defaultValue(EarthquakeBulletin.Defaults.LOGGING_LEVEL.intValue()).build(), new FieldEditorDetailsBuilder(DefaultComboFieldEditor.class).labelsAndValues(getLoggingComboOptions()).build()),
+	LOGGING_FILES_PATH(new PreferenceDetailsBuilder(PageDefinition.LOGGING).defaultValue(EarthquakeBulletin.Defaults.LOGGING_FILES_PATH).build(), new FieldEditorDetailsBuilder(EnhancedDirectoryFieldEditor.class).emptyStringAllowed(false).directoryMustExist(false).directoryDialogMessage(new Localized() {
+		@Override
+		public String getString() {
+			return Messages.get("msg.preferences.directory.dialog.message.log");
+		}
+	}).build()),
+	LOGGING_FILES_LIMIT(new PreferenceDetailsBuilder(PageDefinition.LOGGING).defaultValue(EarthquakeBulletin.Defaults.LOGGING_FILES_LIMIT).build(), new FieldEditorDetailsBuilder(ScaleIntegerFieldEditor.class).scaleMinimum(512).scaleMaximum(8192).scalePageIncrement(512).build()),
+	LOGGING_FILES_COUNT(new PreferenceDetailsBuilder(PageDefinition.LOGGING).defaultValue(EarthquakeBulletin.Defaults.LOGGING_FILES_COUNT).build(), new FieldEditorDetailsBuilder(ScaleIntegerFieldEditor.class).scaleMinimum(1).scaleMaximum(9).scalePageIncrement(1).build());
 
 	private static final String LABEL_KEY_PREFIX = "lbl.preferences.";
 
@@ -229,6 +245,15 @@ public enum Preference implements IPreference {
 				}
 			};
 			options.put(name, value);
+		}
+		return options;
+	}
+
+	public static StaticLabelsAndValues getLoggingComboOptions() {
+		final Map<Integer, Level> levels = LoggingSupport.getLevels();
+		final StaticLabelsAndValues options = new StaticLabelsAndValues(levels.size());
+		for (final Entry<Integer, Level> entry : levels.entrySet()) {
+			options.put(entry.getValue().getName(), entry.getKey().toString());
 		}
 		return options;
 	}

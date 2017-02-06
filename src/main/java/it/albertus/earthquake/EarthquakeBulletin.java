@@ -2,19 +2,33 @@ package it.albertus.earthquake;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Locale;
+import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 import it.albertus.earthquake.gui.EarthquakeBulletinGui;
 import it.albertus.earthquake.resources.Messages;
 import it.albertus.jface.JFaceMessages;
 import it.albertus.util.Configuration;
+import it.albertus.util.logging.FileHandlerBuilder;
 import it.albertus.util.logging.LoggerFactory;
+import it.albertus.util.logging.LoggingSupport;
 
 public class EarthquakeBulletin {
 
 	private static final Logger logger = LoggerFactory.getLogger(EarthquakeBulletin.class);
+
+	public static class Defaults {
+		public static final Level LOGGING_LEVEL = Level.INFO;
+		public static final String LOGGING_FILES_PATH = Configuration.getOsSpecificLocalAppDataDir() + File.separator + Messages.get("msg.application.name");
+		public static final int LOGGING_FILES_LIMIT = 1024;
+		public static final int LOGGING_FILES_COUNT = 5;
+
+		private Defaults() {
+			throw new IllegalAccessError("Constants class");
+		}
+	}
 
 	public static class InitializationException extends Exception {
 		private static final long serialVersionUID = 6499234883656892068L;
@@ -24,27 +38,23 @@ public class EarthquakeBulletin {
 		}
 	}
 
-	public static class Defaults {
-		public static final String LANGUAGE = Locale.getDefault().getLanguage();
-
-		private Defaults() {
-			throw new IllegalAccessError("Constants class");
-		}
-	}
-
 	public static final String BASE_URL = "http://geofon.gfz-potsdam.de";
-	public static final String CFG_KEY_LANGUAGE = "language";
 	public static final String CFG_FILE_NAME = "earthquake-bulletin.cfg";
+	public static final String LOG_FILE_NAME = "earthquake-bulletin.%g.log";
 
 	private static Configuration configuration = null;
-
 	private static InitializationException initializationException = null;
+	private static FileHandlerBuilder fileHandlerBuilder = null;
+	private static FileHandler fileHandler = null;
 
 	private EarthquakeBulletin() {
 		throw new IllegalAccessError();
 	}
 
 	static {
+		if (LoggingSupport.getFormat() == null) {
+			LoggingSupport.setFormat("%1$td/%1$tm/%1$tY %1$tH:%1$tM:%1$tS %4$s: %5$s%6$s%n");
+		}
 		final String parent = Messages.get("msg.application.name");
 		final File config = new File((parent != null ? parent : "") + File.separator + CFG_FILE_NAME);
 		try {
@@ -52,9 +62,42 @@ public class EarthquakeBulletin {
 				@Override
 				protected void load() throws IOException {
 					super.load();
-					final String language = getString(CFG_KEY_LANGUAGE, Defaults.LANGUAGE);
+
+					// Language
+					final String language = getString("language", Messages.Defaults.LANGUAGE);
 					Messages.setLanguage(language);
 					JFaceMessages.setLanguage(language);
+
+					// Logging  
+					if (this != null) {
+						try {
+							LoggingSupport.setLevel(LoggingSupport.getRootLogger().getName(), Level.parse(this.getString("logging.level", Defaults.LOGGING_LEVEL.getName())));
+						}
+						catch (final IllegalArgumentException iae) {
+							logger.log(Level.WARNING, iae.toString(), iae);
+						}
+
+						final String loggingPath = this.getString("logging.files.path", Defaults.LOGGING_FILES_PATH);
+						if (loggingPath != null && !loggingPath.isEmpty()) {
+							final FileHandlerBuilder builder = new FileHandlerBuilder().pattern(loggingPath + File.separator + LOG_FILE_NAME).limit(this.getInt("logging.files.limit", Defaults.LOGGING_FILES_LIMIT) * 1024).count(this.getInt("logging.files.count", Defaults.LOGGING_FILES_COUNT)).append(true).formatter(new SimpleFormatter());
+							if (fileHandlerBuilder == null || !builder.equals(fileHandlerBuilder)) {
+								if (fileHandler != null) {
+									LoggingSupport.getRootLogger().removeHandler(fileHandler);
+									fileHandler.close();
+									fileHandler = null;
+								}
+								try {
+									new File(loggingPath).mkdirs();
+									fileHandlerBuilder = builder;
+									fileHandler = builder.build();
+									LoggingSupport.getRootLogger().addHandler(fileHandler);
+								}
+								catch (final IOException ioe) {
+									logger.log(Level.SEVERE, ioe.toString(), ioe);
+								}
+							}
+						}
+					}
 				}
 			};
 		}
@@ -63,6 +106,7 @@ public class EarthquakeBulletin {
 			logger.log(Level.SEVERE, message, ioe);
 			initializationException = new InitializationException(message, ioe);
 		}
+
 	}
 
 	public static void main(final String[] args) {

@@ -8,6 +8,14 @@ import java.util.ResourceBundle;
 
 public final class Messages {
 
+	public static class Defaults {
+		public static final String LANGUAGE = Locale.getDefault().getLanguage();
+
+		private Defaults() {
+			throw new IllegalAccessError("Constants class");
+		}
+	}
+
 	public enum Language {
 		ENGLISH(Locale.ENGLISH),
 		ITALIAN(Locale.ITALIAN);

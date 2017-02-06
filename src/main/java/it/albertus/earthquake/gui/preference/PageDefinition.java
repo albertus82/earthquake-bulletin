@@ -1,5 +1,7 @@
 package it.albertus.earthquake.gui.preference;
 
+import org.eclipse.jface.resource.ImageDescriptor;
+
 import it.albertus.earthquake.resources.Messages;
 import it.albertus.jface.preference.page.BasePreferencePage;
 import it.albertus.jface.preference.page.IPageDefinition;
@@ -7,13 +9,12 @@ import it.albertus.jface.preference.page.PageDefinitionDetails;
 import it.albertus.jface.preference.page.PageDefinitionDetails.PageDefinitionDetailsBuilder;
 import it.albertus.util.Localized;
 
-import org.eclipse.jface.resource.ImageDescriptor;
-
 public enum PageDefinition implements IPageDefinition {
 
 	GENERAL,
 	CONNECTION,
-	CRITERIA;
+	CRITERIA,
+	LOGGING;
 
 	private static final String LABEL_KEY_PREFIX = "lbl.preferences.";
 
