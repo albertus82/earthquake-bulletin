@@ -20,6 +20,7 @@ public class EarthquakeBulletinConfiguration extends Configuration {
 	private static final Logger logger = LoggerFactory.getLogger(EarthquakeBulletinConfiguration.class);
 
 	public static class Defaults {
+		public static final boolean LOGGING_FILES_ENABLED = true;
 		public static final Level LOGGING_LEVEL = Level.INFO;
 		public static final String LOGGING_FILES_PATH = Configuration.getOsSpecificLocalAppDataDir() + File.separator + Messages.get("msg.application.name");
 		public static final int LOGGING_FILES_LIMIT = 1024;
@@ -58,24 +59,34 @@ public class EarthquakeBulletinConfiguration extends Configuration {
 				logger.log(Level.WARNING, iae.toString(), iae);
 			}
 
-			final String loggingPath = this.getString("logging.files.path", Defaults.LOGGING_FILES_PATH);
-			if (loggingPath != null && !loggingPath.isEmpty()) {
-				final FileHandlerBuilder builder = new FileHandlerBuilder().pattern(loggingPath + File.separator + LOG_FILE_NAME).limit(this.getInt("logging.files.limit", Defaults.LOGGING_FILES_LIMIT) * 1024).count(this.getInt("logging.files.count", Defaults.LOGGING_FILES_COUNT)).append(true).formatter(new CustomFormatter(EarthquakeBulletin.LOG_FORMAT));
-				if (fileHandlerBuilder == null || !builder.equals(fileHandlerBuilder)) {
-					if (fileHandler != null) {
-						LoggingSupport.getRootLogger().removeHandler(fileHandler);
-						fileHandler.close();
-						fileHandler = null;
+			if (this.getBoolean("logging.files.enabled", Defaults.LOGGING_FILES_ENABLED)) {
+				final String loggingPath = this.getString("logging.files.path", Defaults.LOGGING_FILES_PATH);
+				if (loggingPath != null && !loggingPath.isEmpty()) {
+					final FileHandlerBuilder builder = new FileHandlerBuilder().pattern(loggingPath + File.separator + LOG_FILE_NAME).limit(this.getInt("logging.files.limit", Defaults.LOGGING_FILES_LIMIT) * 1024).count(this.getInt("logging.files.count", Defaults.LOGGING_FILES_COUNT)).append(true).formatter(new CustomFormatter(EarthquakeBulletin.LOG_FORMAT));
+					if (fileHandlerBuilder == null || !builder.equals(fileHandlerBuilder)) {
+						if (fileHandler != null) {
+							LoggingSupport.getRootLogger().removeHandler(fileHandler);
+							fileHandler.close();
+							fileHandler = null;
+						}
+						try {
+							new File(loggingPath).mkdirs();
+							fileHandlerBuilder = builder;
+							fileHandler = builder.build();
+							LoggingSupport.getRootLogger().addHandler(fileHandler);
+						}
+						catch (final IOException ioe) {
+							logger.log(Level.SEVERE, ioe.toString(), ioe);
+						}
 					}
-					try {
-						new File(loggingPath).mkdirs();
-						fileHandlerBuilder = builder;
-						fileHandler = builder.build();
-						LoggingSupport.getRootLogger().addHandler(fileHandler);
-					}
-					catch (final IOException ioe) {
-						logger.log(Level.SEVERE, ioe.toString(), ioe);
-					}
+				}
+			}
+			else {
+				if (fileHandler != null) {
+					LoggingSupport.getRootLogger().removeHandler(fileHandler);
+					fileHandler.close();
+					fileHandler = null;
+					fileHandlerBuilder = null;
 				}
 			}
 		}
