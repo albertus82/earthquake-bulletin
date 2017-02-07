@@ -6,6 +6,7 @@ import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import it.albertus.earthquake.EarthquakeBulletin;
 import it.albertus.earthquake.resources.Messages;
 import it.albertus.jface.JFaceMessages;
 import it.albertus.util.Configuration;
@@ -59,7 +60,7 @@ public class EarthquakeBulletinConfiguration extends Configuration {
 
 			final String loggingPath = this.getString("logging.files.path", Defaults.LOGGING_FILES_PATH);
 			if (loggingPath != null && !loggingPath.isEmpty()) {
-				final FileHandlerBuilder builder = new FileHandlerBuilder().pattern(loggingPath + File.separator + LOG_FILE_NAME).limit(this.getInt("logging.files.limit", Defaults.LOGGING_FILES_LIMIT) * 1024).count(this.getInt("logging.files.count", Defaults.LOGGING_FILES_COUNT)).append(true).formatter(new CustomFormatter("%1$td/%1$tm/%1$tY %1$tH:%1$tM:%1$tS.%tL %4$s %3$s - %5$s%6$s%n"));
+				final FileHandlerBuilder builder = new FileHandlerBuilder().pattern(loggingPath + File.separator + LOG_FILE_NAME).limit(this.getInt("logging.files.limit", Defaults.LOGGING_FILES_LIMIT) * 1024).count(this.getInt("logging.files.count", Defaults.LOGGING_FILES_COUNT)).append(true).formatter(new CustomFormatter(EarthquakeBulletin.LOG_FORMAT));
 				if (fileHandlerBuilder == null || !builder.equals(fileHandlerBuilder)) {
 					if (fileHandler != null) {
 						LoggingSupport.getRootLogger().removeHandler(fileHandler);
