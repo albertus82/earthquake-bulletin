@@ -1,6 +1,5 @@
 package it.albertus.earthquake;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -14,7 +13,7 @@ import it.albertus.util.logging.LoggingSupport;
 
 public class EarthquakeBulletin {
 
-	private static final Logger logger = LoggerFactory.getLogger(EarthquakeBulletin.class);
+	private static final Logger logger;
 
 	public static class InitializationException extends Exception {
 		private static final long serialVersionUID = 6499234883656892068L;
@@ -25,11 +24,10 @@ public class EarthquakeBulletin {
 	}
 
 	public static final String BASE_URL = "http://geofon.gfz-potsdam.de";
-	public static final String CFG_FILE_NAME = "earthquake-bulletin.cfg";
-	public static final String LOG_FILE_NAME = "earthquake-bulletin.%g.log";
+	public static final String LOG_FORMAT = "%1$td/%1$tm/%1$tY %1$tH:%1$tM:%1$tS.%tL %4$s %3$s - %5$s%6$s%n";
 
-	private static Configuration configuration = null;
-	private static InitializationException initializationException = null;
+	private static Configuration configuration;
+	private static InitializationException initializationException;
 
 	private EarthquakeBulletin() {
 		throw new IllegalAccessError();
@@ -37,19 +35,17 @@ public class EarthquakeBulletin {
 
 	static {
 		if (LoggingSupport.getFormat() == null) {
-			LoggingSupport.setFormat("%1$td/%1$tm/%1$tY %1$tH:%1$tM:%1$tS %4$s: %5$s%6$s%n");
+			LoggingSupport.setFormat(LOG_FORMAT);
 		}
-		final String parent = Messages.get("msg.application.name");
-		final File config = new File((parent != null ? parent : "") + File.separator + CFG_FILE_NAME);
+		logger = LoggerFactory.getLogger(EarthquakeBulletin.class);
 		try {
-			configuration = new EarthquakeBulletinConfiguration(config.getPath(), true);
+			configuration = new EarthquakeBulletinConfiguration();
 		}
 		catch (final IOException ioe) {
-			final String message = Messages.get("err.open.cfg", CFG_FILE_NAME);
+			final String message = Messages.get("err.open.cfg", EarthquakeBulletinConfiguration.CFG_FILE_NAME);
 			logger.log(Level.SEVERE, message, ioe);
 			initializationException = new InitializationException(message, ioe);
 		}
-
 	}
 
 	public static void main(final String[] args) {

@@ -5,12 +5,11 @@ import java.io.IOException;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
 
-import it.albertus.earthquake.EarthquakeBulletin;
 import it.albertus.earthquake.resources.Messages;
 import it.albertus.jface.JFaceMessages;
 import it.albertus.util.Configuration;
+import it.albertus.util.logging.CustomFormatter;
 import it.albertus.util.logging.FileHandlerBuilder;
 import it.albertus.util.logging.LoggerFactory;
 import it.albertus.util.logging.LoggingSupport;
@@ -30,11 +29,14 @@ public class EarthquakeBulletinConfiguration extends Configuration {
 		}
 	}
 
+	public static final String CFG_FILE_NAME = "earthquake-bulletin.cfg";
+	public static final String LOG_FILE_NAME = "earthquake-bulletin.%g.log";
+
 	private FileHandlerBuilder fileHandlerBuilder; // do NOT set any value here!
 	private FileHandler fileHandler; // do NOT set any value here!
 
-	public EarthquakeBulletinConfiguration(String fileName, boolean prependOsSpecificConfigurationDir) throws IOException {
-		super(fileName, prependOsSpecificConfigurationDir);
+	public EarthquakeBulletinConfiguration() throws IOException {
+		super(Messages.get("msg.application.name") + File.separator + CFG_FILE_NAME, true);
 	}
 
 	@Override
@@ -57,7 +59,7 @@ public class EarthquakeBulletinConfiguration extends Configuration {
 
 			final String loggingPath = this.getString("logging.files.path", Defaults.LOGGING_FILES_PATH);
 			if (loggingPath != null && !loggingPath.isEmpty()) {
-				final FileHandlerBuilder builder = new FileHandlerBuilder().pattern(loggingPath + File.separator + EarthquakeBulletin.LOG_FILE_NAME).limit(this.getInt("logging.files.limit", Defaults.LOGGING_FILES_LIMIT) * 1024).count(this.getInt("logging.files.count", Defaults.LOGGING_FILES_COUNT)).append(true).formatter(new SimpleFormatter());
+				final FileHandlerBuilder builder = new FileHandlerBuilder().pattern(loggingPath + File.separator + LOG_FILE_NAME).limit(this.getInt("logging.files.limit", Defaults.LOGGING_FILES_LIMIT) * 1024).count(this.getInt("logging.files.count", Defaults.LOGGING_FILES_COUNT)).append(true).formatter(new CustomFormatter("%1$td/%1$tm/%1$tY %1$tH:%1$tM:%1$tS.%tL %4$s %3$s - %5$s%6$s%n"));
 				if (fileHandlerBuilder == null || !builder.equals(fileHandlerBuilder)) {
 					if (fileHandler != null) {
 						LoggingSupport.getRootLogger().removeHandler(fileHandler);
