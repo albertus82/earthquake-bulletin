@@ -14,7 +14,7 @@ public enum PageDefinition implements IPageDefinition {
 	GENERAL,
 	CONNECTION,
 	CRITERIA,
-	LOGGING;
+	LOGGING(new PageDefinitionDetailsBuilder().pageClass(LoggingPreferencePage.class).build());
 
 	private static final String LABEL_KEY_PREFIX = "lbl.preferences.";
 
