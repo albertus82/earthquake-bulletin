@@ -1,10 +1,10 @@
 package it.albertus.earthquake.gui.listener;
 
-import it.albertus.earthquake.gui.SearchForm;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+
+import it.albertus.earthquake.gui.SearchForm;
 
 public class ClearButtonSelectionListener extends SelectionAdapter {
 
@@ -16,10 +16,10 @@ public class ClearButtonSelectionListener extends SelectionAdapter {
 
 	@Override
 	public void widgetSelected(final SelectionEvent se) {
-		form.getPeriodFromText().setText("");
-		form.getPeriodFromText().notifyListeners(SWT.KeyUp, null);
-		form.getPeriodToText().setText("");
-		form.getPeriodToText().notifyListeners(SWT.KeyUp, null);
+		form.getPeriodFromDateTime().setSelection(null);
+		form.getPeriodFromDateTime().notifyListeners(SWT.KeyUp, null);
+		form.getPeriodToDateTime().setSelection(null);
+		form.getPeriodToDateTime().notifyListeners(SWT.KeyUp, null);
 		form.getLatitudeFromText().setText("");
 		form.getLatitudeFromText().notifyListeners(SWT.KeyUp, null);
 		form.getLatitudeToText().setText("");

@@ -9,11 +9,11 @@ import org.eclipse.swt.widgets.MessageBox;
 import it.albertus.earthquake.gui.SearchForm;
 import it.albertus.earthquake.resources.Messages;
 
-public class FormTextTraverseListener implements TraverseListener {
+public class FormFieldTraverseListener implements TraverseListener {
 
 	private final SearchForm form;
 
-	public FormTextTraverseListener(final SearchForm form) {
+	public FormFieldTraverseListener(final SearchForm form) {
 		this.form = form;
 	}
 

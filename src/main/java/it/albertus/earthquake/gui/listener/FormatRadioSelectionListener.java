@@ -24,8 +24,8 @@ public class FormatRadioSelectionListener extends SelectionAdapter {
 	public void widgetSelected(final SelectionEvent se) {
 		if (radio.getSelection()) {
 			if (Format.RSS.equals(format)) {
-				form.getPeriodFromText().setEnabled(false);
-				form.getPeriodToText().setEnabled(false);
+				form.getPeriodFromDateTime().setEnabled(false);
+				form.getPeriodToDateTime().setEnabled(false);
 				form.getResultsText().setEnabled(false);
 				form.getPeriodFromLabel().setEnabled(false);
 				form.getPeriodFromNote().setEnabled(false);
@@ -37,8 +37,8 @@ public class FormatRadioSelectionListener extends SelectionAdapter {
 				form.getResultsText().notifyListeners(SWT.KeyUp, null); // Clear error
 			}
 			else {
-				form.getPeriodFromText().setEnabled(true);
-				form.getPeriodToText().setEnabled(true);
+				form.getPeriodFromDateTime().setEnabled(true);
+				form.getPeriodToDateTime().setEnabled(true);
 				form.getResultsText().setEnabled(true);
 				form.getPeriodFromLabel().setEnabled(true);
 				form.getPeriodFromNote().setEnabled(true);

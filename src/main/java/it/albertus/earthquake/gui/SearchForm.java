@@ -2,8 +2,10 @@ package it.albertus.earthquake.gui;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.EnumMap;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -12,8 +14,9 @@ import java.util.logging.Logger;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
+import org.eclipse.nebula.widgets.cdatetime.CDT;
+import org.eclipse.nebula.widgets.cdatetime.CDateTime;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.events.VerifyListener;
@@ -29,17 +32,14 @@ import it.albertus.earthquake.gui.decoration.SearchFormControlValidatorDecoratio
 import it.albertus.earthquake.gui.job.SearchJob;
 import it.albertus.earthquake.gui.listener.AutoRefreshButtonSelectionListener;
 import it.albertus.earthquake.gui.listener.ClearButtonSelectionListener;
-import it.albertus.earthquake.gui.listener.FormTextDateFocusListener;
-import it.albertus.earthquake.gui.listener.FormTextDateVerifyListener;
+import it.albertus.earthquake.gui.listener.FormFieldTraverseListener;
 import it.albertus.earthquake.gui.listener.FormTextModifyListener;
-import it.albertus.earthquake.gui.listener.FormTextTraverseListener;
 import it.albertus.earthquake.gui.listener.FormatRadioSelectionListener;
 import it.albertus.earthquake.gui.listener.MapButtonSelectionListener;
 import it.albertus.earthquake.gui.listener.SearchButtonSelectionListener;
 import it.albertus.earthquake.gui.listener.StopButtonSelectionListener;
 import it.albertus.earthquake.model.Format;
 import it.albertus.earthquake.resources.Messages;
-import it.albertus.jface.Formatter;
 import it.albertus.jface.JFaceMessages;
 import it.albertus.jface.decoration.ControlValidatorDecoration;
 import it.albertus.jface.google.maps.MapBoundsDialog;
@@ -49,7 +49,6 @@ import it.albertus.jface.google.maps.MapType;
 import it.albertus.jface.listener.FloatVerifyListener;
 import it.albertus.jface.listener.IntegerVerifyListener;
 import it.albertus.jface.validation.ControlValidator;
-import it.albertus.jface.validation.DateTextValidator;
 import it.albertus.jface.validation.FloatTextValidator;
 import it.albertus.jface.validation.IntegerTextValidator;
 import it.albertus.jface.validation.Validator;
@@ -79,9 +78,10 @@ public class SearchForm {
 
 	public static final String DATE_PATTERN = "yyyy-MM-dd";
 
+	private static final byte CDATETIME_INDENT_RIGHT = 3;
+
 	private static final String MSG_KEY_ERR_INTEGER_MIN = "err.preferences.integer.min";
 	private static final String MSG_KEY_ERR_INTEGER_RANGE = "err.preferences.integer.range";
-	private static final String MSG_KEY_ERR_DATE = "err.preferences.date";
 	private static final String MSG_KEY_ERR_DECIMAL_RANGE = "err.preferences.decimal.range";
 
 	private static final ThreadLocal<DateFormat> dateFormat = new ThreadLocal<DateFormat>() {
@@ -105,15 +105,13 @@ public class SearchForm {
 
 	private static final Configuration configuration = EarthquakeBulletin.getConfiguration();
 
-	private final Formatter fontFormatter = new Formatter(this.getClass());
-
 	private final Composite formComposite;
 
 	private final Label periodLabel;
 	private final Label periodFromLabel;
 	private final Label periodToLabel;
-	private final Text periodFromText;
-	private final Text periodToText;
+	private final CDateTime periodFromDateTime;
+	private final CDateTime periodToDateTime;
 	private final Label periodFromNote;
 	private final Label periodToNote;
 
@@ -156,11 +154,9 @@ public class SearchForm {
 
 	private final MapBoundsDialog mapBoundsDialog;
 
-	private final TraverseListener formTextTraverseListener = new FormTextTraverseListener(this);
+	private final TraverseListener formFieldTraverseListener = new FormFieldTraverseListener(this);
 	private final ModifyListener formTextModifyListener = new FormTextModifyListener(this);
-	private final VerifyListener periodVerifyListener = new FormTextDateVerifyListener("0123456789-");
 	private final VerifyListener coordinatesVerifyListener = new FloatVerifyListener(true);
-	private final FocusListener periodFocusListener = new FormTextDateFocusListener(DATE_PATTERN);
 
 	private final Set<Validator> validators = new HashSet<>();
 
@@ -180,22 +176,20 @@ public class SearchForm {
 		periodLabel.setText(Messages.get("lbl.form.criteria.period"));
 		periodFromLabel = new Label(criteriaGroup, SWT.NONE);
 		periodFromLabel.setText(Messages.get("lbl.form.criteria.period.from"));
-		periodFromText = new Text(criteriaGroup, SWT.BORDER);
-		periodFromText.setTextLimit(PERIOD_TEXT_LIMIT);
-		periodFromText.addFocusListener(periodFocusListener);
-		periodFromText.addVerifyListener(periodVerifyListener);
-		periodFromText.addTraverseListener(formTextTraverseListener);
-		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).minSize(fontFormatter.computeWidth(periodFromText, PERIOD_TEXT_LIMIT, SWT.NORMAL), SWT.DEFAULT).applyTo(periodFromText);
+		periodFromDateTime = new CDateTime(criteriaGroup, CDT.DROP_DOWN | CDT.BORDER);
+		periodFromDateTime.setPattern(DATE_PATTERN);
+		periodFromDateTime.setLocale(Messages.Language.ENGLISH.equals(Messages.getLanguage()) ? Locale.US : Messages.getLanguage().getLocale());
+		periodFromDateTime.addTraverseListener(formFieldTraverseListener);
+		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).indent(CDATETIME_INDENT_RIGHT, 0).applyTo(periodFromDateTime);
 		periodFromNote = new Label(criteriaGroup, SWT.NONE);
 		periodFromNote.setText(Messages.get("lbl.form.criteria.period.from.note"));
 		periodToLabel = new Label(criteriaGroup, SWT.NONE);
 		periodToLabel.setText(Messages.get("lbl.form.criteria.period.to"));
-		periodToText = new Text(criteriaGroup, SWT.BORDER);
-		periodToText.setTextLimit(PERIOD_TEXT_LIMIT);
-		periodToText.addFocusListener(periodFocusListener);
-		periodToText.addVerifyListener(periodVerifyListener);
-		periodToText.addTraverseListener(formTextTraverseListener);
-		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).minSize(fontFormatter.computeWidth(periodToText, PERIOD_TEXT_LIMIT, SWT.NORMAL), SWT.DEFAULT).applyTo(periodToText);
+		periodToDateTime = new CDateTime(criteriaGroup, CDT.DROP_DOWN | CDT.BORDER);
+		periodToDateTime.setPattern(DATE_PATTERN);
+		periodToDateTime.setLocale(Messages.Language.ENGLISH.equals(Messages.getLanguage()) ? Locale.US : Messages.getLanguage().getLocale());
+		periodToDateTime.addTraverseListener(formFieldTraverseListener);
+		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).indent(CDATETIME_INDENT_RIGHT, 0).applyTo(periodToDateTime);
 		periodToNote = new Label(criteriaGroup, SWT.NONE);
 		periodToNote.setText(Messages.get("lbl.form.criteria.period.to.note"));
 
@@ -205,7 +199,7 @@ public class SearchForm {
 		latitudeFromLabel.setText(Messages.get("lbl.form.criteria.latitude.from"));
 		latitudeFromText = new Text(criteriaGroup, SWT.BORDER);
 		latitudeFromText.setTextLimit(COORDINATES_TEXT_LIMIT);
-		latitudeFromText.addTraverseListener(formTextTraverseListener);
+		latitudeFromText.addTraverseListener(formFieldTraverseListener);
 		latitudeFromText.addVerifyListener(coordinatesVerifyListener);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(latitudeFromText);
 		latitudeFromNote = new Label(criteriaGroup, SWT.NONE);
@@ -214,7 +208,7 @@ public class SearchForm {
 		latitudeToLabel.setText(Messages.get("lbl.form.criteria.latitude.to"));
 		latitudeToText = new Text(criteriaGroup, SWT.BORDER);
 		latitudeToText.setTextLimit(COORDINATES_TEXT_LIMIT);
-		latitudeToText.addTraverseListener(formTextTraverseListener);
+		latitudeToText.addTraverseListener(formFieldTraverseListener);
 		latitudeToText.addVerifyListener(coordinatesVerifyListener);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(latitudeToText);
 		latitudeToNote = new Label(criteriaGroup, SWT.NONE);
@@ -226,7 +220,7 @@ public class SearchForm {
 		longitudeFromLabel.setText(Messages.get("lbl.form.criteria.longitude.from"));
 		longitudeFromText = new Text(criteriaGroup, SWT.BORDER);
 		longitudeFromText.setTextLimit(COORDINATES_TEXT_LIMIT);
-		longitudeFromText.addTraverseListener(formTextTraverseListener);
+		longitudeFromText.addTraverseListener(formFieldTraverseListener);
 		longitudeFromText.addVerifyListener(coordinatesVerifyListener);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(longitudeFromText);
 		longitudeFromNote = new Label(criteriaGroup, SWT.NONE);
@@ -235,7 +229,7 @@ public class SearchForm {
 		longitudeToLabel.setText(Messages.get("lbl.form.criteria.longitude.to"));
 		longitudeToText = new Text(criteriaGroup, SWT.BORDER);
 		longitudeToText.setTextLimit(COORDINATES_TEXT_LIMIT);
-		longitudeToText.addTraverseListener(formTextTraverseListener);
+		longitudeToText.addTraverseListener(formFieldTraverseListener);
 		longitudeToText.addVerifyListener(coordinatesVerifyListener);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(longitudeToText);
 		longitudeToNote = new Label(criteriaGroup, SWT.NONE);
@@ -246,7 +240,7 @@ public class SearchForm {
 		GridDataFactory.swtDefaults().span(2, 1).applyTo(minimumMagnitudeLabel);
 		minimumMagnitudeText = new Text(criteriaGroup, SWT.BORDER);
 		minimumMagnitudeText.setTextLimit(MAGNITUDE_TEXT_LIMIT);
-		minimumMagnitudeText.addTraverseListener(formTextTraverseListener);
+		minimumMagnitudeText.addTraverseListener(formFieldTraverseListener);
 		minimumMagnitudeText.addVerifyListener(new FloatVerifyListener(false));
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(minimumMagnitudeText);
 		restrictButton = new Button(criteriaGroup, SWT.CHECK);
@@ -280,7 +274,7 @@ public class SearchForm {
 		resultsText = new Text(criteriaGroup, SWT.BORDER);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(resultsText);
 		resultsText.setTextLimit(RESULTS_TEXT_LIMIT);
-		resultsText.addTraverseListener(formTextTraverseListener);
+		resultsText.addTraverseListener(formFieldTraverseListener);
 		resultsText.addVerifyListener(new IntegerVerifyListener(false));
 		resultsNote = new Label(criteriaGroup, SWT.NONE);
 		resultsNote.setText(Messages.get("lbl.form.limit.note"));
@@ -297,7 +291,7 @@ public class SearchForm {
 
 		autoRefreshText = new Text(buttonsComposite, SWT.BORDER);
 		autoRefreshText.setTextLimit(AUTOREFRESH_TEXT_LIMIT);
-		autoRefreshText.addTraverseListener(formTextTraverseListener);
+		autoRefreshText.addTraverseListener(formFieldTraverseListener);
 		autoRefreshText.addVerifyListener(new IntegerVerifyListener(false));
 		GridDataFactory.swtDefaults().span(2, 1).align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(autoRefreshText);
 
@@ -327,25 +321,7 @@ public class SearchForm {
 		autoRefreshButton.notifyListeners(SWT.Selection, null);
 
 		// Decorators
-		ControlValidator<Text> validator = new DateTextValidator(periodFromText, DATE_PATTERN);
-		new SearchFormControlValidatorDecoration(validator, new Localized() {
-			@Override
-			public String getString() {
-				return JFaceMessages.get(MSG_KEY_ERR_DATE, DATE_PATTERN);
-			}
-		});
-		validators.add(validator);
-
-		validator = new DateTextValidator(periodToText, DATE_PATTERN);
-		new SearchFormControlValidatorDecoration(validator, new Localized() {
-			@Override
-			public String getString() {
-				return JFaceMessages.get(MSG_KEY_ERR_DATE, DATE_PATTERN);
-			}
-		});
-		validators.add(validator);
-
-		validator = new FloatTextValidator(latitudeFromText, true, LATITUDE_MIN_VALUE, LATITUDE_MAX_VALUE);
+		ControlValidator<Text> validator = new FloatTextValidator(latitudeFromText, true, LATITUDE_MIN_VALUE, LATITUDE_MAX_VALUE);
 		new SearchFormControlValidatorDecoration(validator, new Localized() {
 			@Override
 			public String getString() {
@@ -409,8 +385,6 @@ public class SearchForm {
 		validators.add(validator);
 
 		// Text modify listeners
-		periodFromText.addModifyListener(formTextModifyListener);
-		periodToText.addModifyListener(formTextModifyListener);
 		latitudeFromText.addModifyListener(formTextModifyListener);
 		latitudeToText.addModifyListener(formTextModifyListener);
 		longitudeFromText.addModifyListener(formTextModifyListener);
@@ -420,8 +394,8 @@ public class SearchForm {
 		autoRefreshText.addModifyListener(formTextModifyListener);
 
 		// Load parameters from configuration
-		periodFromText.setText(getConfiguredDateString("criteria.period.from"));
-		periodToText.setText(getConfiguredDateString("criteria.period.to"));
+		periodFromDateTime.setSelection(getConfiguredDate("criteria.period.from"));
+		periodToDateTime.setSelection(getConfiguredDate("criteria.period.to"));
 		latitudeFromText.setText(getConfiguredFloatString("criteria.latitude.from"));
 		latitudeToText.setText(getConfiguredFloatString("criteria.latitude.to"));
 		longitudeFromText.setText(getConfiguredFloatString("criteria.longitude.from"));
@@ -460,6 +434,8 @@ public class SearchForm {
 	}
 
 	public void updateTexts() {
+		periodFromDateTime.setLocale(Messages.Language.ENGLISH.equals(Messages.getLanguage()) ? Locale.US : Messages.getLanguage().getLocale());
+		periodToDateTime.setLocale(Messages.Language.ENGLISH.equals(Messages.getLanguage()) ? Locale.US : Messages.getLanguage().getLocale());
 		criteriaGroup.setText(Messages.get("lbl.form.criteria.group"));
 		periodLabel.setText(Messages.get("lbl.form.criteria.period"));
 		periodFromLabel.setText(Messages.get("lbl.form.criteria.period.from"));
@@ -517,13 +493,13 @@ public class SearchForm {
 		return value;
 	}
 
-	private String getConfiguredDateString(final String key) {
-		String value = "";
+	private Date getConfiguredDate(final String key) {
+		Date value = null;
 		final String dateStr = configuration.getString(key);
 		if (dateStr != null && !dateStr.trim().isEmpty()) {
 			try {
 				final DateFormat df = dateFormat.get();
-				value = df.format(df.parse(dateStr));
+				value = df.parse(dateStr);
 			}
 			catch (final Exception e) {
 				logger.log(Level.WARNING, e.toString(), e);
@@ -556,12 +532,12 @@ public class SearchForm {
 		return periodToLabel;
 	}
 
-	public Text getPeriodFromText() {
-		return periodFromText;
+	public CDateTime getPeriodFromDateTime() {
+		return periodFromDateTime;
 	}
 
-	public Text getPeriodToText() {
-		return periodToText;
+	public CDateTime getPeriodToDateTime() {
+		return periodToDateTime;
 	}
 
 	public Label getPeriodFromNote() {

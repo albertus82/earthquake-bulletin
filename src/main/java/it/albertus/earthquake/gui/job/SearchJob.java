@@ -142,11 +142,11 @@ public class SearchJob extends Job {
 						final Map<String, String> params = jobVariables.getParams();
 						params.put("fmt", jobVariables.getFormat().getValue());
 						params.put("mode", form.getRestrictButton().getSelection() ? "mt" : "");
-						if (form.getPeriodFromText().isEnabled()) {
-							params.put("datemin", URIEncoder.encodeURI(form.getPeriodFromText().getText()));
+						if (form.getPeriodFromDateTime().isEnabled() && form.getPeriodFromDateTime().getSelection() != null) {
+							params.put("datemin", URIEncoder.encodeURI(form.getPeriodFromDateTime().getText()));
 						}
-						if (form.getPeriodToText().isEnabled()) {
-							params.put("datemax", URIEncoder.encodeURI(form.getPeriodToText().getText()));
+						if (form.getPeriodToDateTime().isEnabled() && form.getPeriodToDateTime().getSelection() != null) {
+							params.put("datemax", URIEncoder.encodeURI(form.getPeriodToDateTime().getText()));
 						}
 						params.put("latmin", URIEncoder.encodeURI(form.getLatitudeFromText().getText()));
 						params.put("latmax", URIEncoder.encodeURI(form.getLatitudeToText().getText()));
