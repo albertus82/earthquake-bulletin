@@ -2,7 +2,7 @@ package it.albertus.earthquake.config;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.FileHandler;
+import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -35,7 +35,7 @@ public class EarthquakeBulletinConfiguration extends Configuration {
 	public static final String LOG_FILE_NAME = "earthquake-bulletin.%g.log";
 
 	private FileHandlerBuilder fileHandlerBuilder;
-	private FileHandler fileHandler;
+	private Handler fileHandler;
 
 	public EarthquakeBulletinConfiguration() throws IOException {
 		super(Messages.get("msg.application.name") + File.separator + CFG_FILE_NAME, true);
