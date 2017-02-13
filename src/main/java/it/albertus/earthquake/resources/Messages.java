@@ -66,7 +66,7 @@ public final class Messages {
 	public static String get(final String key, final Object... params) {
 		final List<String> stringParams = new ArrayList<>(params.length);
 		for (final Object param : params) {
-			stringParams.add(param != null ? param.toString() : "");
+			stringParams.add(String.valueOf(param));
 		}
 		final String message = MessageFormat.format(resources.getString(key), stringParams.toArray());
 		return message != null ? message.trim() : "";
