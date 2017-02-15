@@ -8,7 +8,6 @@ import static it.albertus.earthquake.gui.preference.PageDefinition.LOGGING;
 import java.util.EnumSet;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
 
@@ -128,7 +127,7 @@ public enum Preference implements IPreference {
 		}
 	}).build(), new FieldEditorDetailsBuilder(EnhancedIntegerFieldEditor.class).numberMinimum(SearchForm.AUTOREFRESH_MIN_VALUE).emptyStringAllowed(true).textLimit(SearchForm.AUTOREFRESH_TEXT_LIMIT).build()),
 
-	LOGGING_LEVEL(new PreferenceDetailsBuilder(LOGGING).defaultValue(EarthquakeBulletinConfiguration.Defaults.LOGGING_LEVEL.intValue()).build(), new FieldEditorDetailsBuilder(DefaultComboFieldEditor.class).labelsAndValues(getLoggingComboOptions()).build()),
+	LOGGING_LEVEL(new PreferenceDetailsBuilder(LOGGING).defaultValue(EarthquakeBulletinConfiguration.Defaults.LOGGING_LEVEL.getName()).build(), new FieldEditorDetailsBuilder(DefaultComboFieldEditor.class).labelsAndValues(getLoggingComboOptions()).build()),
 	LOGGING_FILES_ENABLED(new PreferenceDetailsBuilder(LOGGING).separate().defaultValue(EarthquakeBulletinConfiguration.Defaults.LOGGING_FILES_ENABLED).build(), new FieldEditorDetailsBuilder(DefaultBooleanFieldEditor.class).build()),
 	LOGGING_FILES_PATH(new PreferenceDetailsBuilder(LOGGING).parent(LOGGING_FILES_ENABLED).defaultValue(EarthquakeBulletinConfiguration.Defaults.LOGGING_FILES_PATH).build(), new FieldEditorDetailsBuilder(EnhancedDirectoryFieldEditor.class).emptyStringAllowed(false).directoryMustExist(false).directoryDialogMessage(new Localized() {
 		@Override
@@ -258,8 +257,8 @@ public enum Preference implements IPreference {
 	public static StaticLabelsAndValues getLoggingComboOptions() {
 		final Map<Integer, Level> levels = LoggingSupport.getLevels();
 		final StaticLabelsAndValues options = new StaticLabelsAndValues(levels.size());
-		for (final Entry<Integer, Level> entry : levels.entrySet()) {
-			options.put(entry.getValue().getName(), entry.getKey().toString());
+		for (final Level level : levels.values()) {
+			options.put(level.getName(), level.getName());
 		}
 		return options;
 	}
