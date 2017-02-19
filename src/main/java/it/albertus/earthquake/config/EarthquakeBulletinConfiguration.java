@@ -37,9 +37,18 @@ public class EarthquakeBulletinConfiguration extends Configuration {
 	private FileHandlerBuilder fileHandlerBuilder;
 	private Handler fileHandler;
 
-	public EarthquakeBulletinConfiguration() throws IOException {
+	private static EarthquakeBulletinConfiguration instance;
+
+	private EarthquakeBulletinConfiguration() throws IOException {
 		super(Messages.get("msg.application.name") + File.separator + CFG_FILE_NAME, true);
 		init();
+	}
+
+	public static synchronized EarthquakeBulletinConfiguration getInstance() throws IOException {
+		if (instance == null) {
+			instance = new EarthquakeBulletinConfiguration();
+		}
+		return instance;
 	}
 
 	@Override

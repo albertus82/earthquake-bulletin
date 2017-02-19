@@ -24,14 +24,11 @@ public class EarthquakeBulletin {
 	}
 
 	public static final String BASE_URL = "http://geofon.gfz-potsdam.de";
+
 	public static final String LOG_FORMAT = "%1$td/%1$tm/%1$tY %1$tH:%1$tM:%1$tS.%tL %4$s %3$s - %5$s%6$s%n";
 
 	private static Configuration configuration;
 	private static InitializationException initializationException;
-
-	private EarthquakeBulletin() {
-		throw new IllegalAccessError();
-	}
 
 	static {
 		if (LoggingSupport.getFormat() == null) {
@@ -39,13 +36,17 @@ public class EarthquakeBulletin {
 		}
 		logger = LoggerFactory.getLogger(EarthquakeBulletin.class);
 		try {
-			configuration = new EarthquakeBulletinConfiguration();
+			configuration = EarthquakeBulletinConfiguration.getInstance();
 		}
 		catch (final IOException ioe) {
 			final String message = Messages.get("err.open.cfg", EarthquakeBulletinConfiguration.CFG_FILE_NAME);
 			logger.log(Level.SEVERE, message, ioe);
 			initializationException = new InitializationException(message, ioe);
 		}
+	}
+
+	private EarthquakeBulletin() {
+		throw new IllegalAccessError();
 	}
 
 	public static void main(final String[] args) {
