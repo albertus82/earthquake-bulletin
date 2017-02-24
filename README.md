@@ -2,6 +2,7 @@ Earthquake Bulletin
 ===================
 
 [![Build Status](https://travis-ci.org/Albertus82/EarthquakeBulletin.svg?branch=master)](https://travis-ci.org/Albertus82/EarthquakeBulletin)
+[![Build status](https://ci.appveyor.com/api/projects/status/github/Albertus82/EarthquakeBulletin?branch=master&svg=true)](https://ci.appveyor.com/project/Albertus82/EarthquakeBulletin)
 
 Java desktop client for **GEOFON Program GFZ Potsdam Earthquake Bulletin**.
 
