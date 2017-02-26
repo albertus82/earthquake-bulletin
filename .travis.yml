@@ -1,19 +1,27 @@
 language: java
-script:
-  - ant all
-  - if [ "$TRAVIS_JDK_VERSION" == "oraclejdk8" ]; then sonar-scanner -Dsonar.login=$SONAR_TOKEN; fi;
-env:
-  global:
-    - secure: "eFGdpNwzEYxlN0FlSYLTQqbijxyfYOyn47ZipEHQGRjRUoDZFIc91kWDVNHLiZ2BCRa5K2zADTFD6yatLCdLqfZ9o0NkmNenAtI1ssi0Zfyz5rj1P3Q1XjkoPDrQToag1vXSm501EvRW8AlgdmuPACjZ63ojGBZYbL+7gcmI1PMBEnoF9oH+1kJuAr8CW0mUHf51vHU7Bcg1t5z7ERj+QD3RRMgZ3WeMGxRe3kIMHuBHyaoEPSyqQCXocxste9+XvZSvoQ4TEyDqk5l+jHGRk8qnEqxAv1ygn2xbg/iuryVpkqexezJt2s9ggOa6E0ytB7RXtsDdyq8rdeeg+4wFwOhv1Pl4CN5no1jAVb8zr1Lg6HgX2gyBlVFJSla4+n/voD2asuL8MLpEfhlfLsOHlYGdI43j2kCjZ5opL6DhbLmKBd8PTxvDN73Z1HzO/wdenkLZkSEbVbsXXIgJzJfSr3TJHA3DNlgMmimrCCphUvwlAEEldoF1Q1NOP6gC/HvQ0AWs1LmYLffs2abwm4x/vcI4p5D8TRhxcLsL1fjzUKy7iXp9RQ+PQZN6oexVAfsgQAVUItwp+dbKFc/NfVAu2WwEYYW6DTE5QAobzHff0LQdctNT1LKvv4JRfuNdvFb/kA7pIBWxBdUE/AjoTPKQLlNQNvS4jDQh8C8w0yhju4I="
-    - JRE7_HOME=/usr/lib/jvm/java-7-oracle/jre
+
 jdk:
   - oraclejdk8
   - oraclejdk7
   - openjdk7
+
+addons:
+  sonarqube: true
+
+env:
+  global:
+    - secure: "eFGdpNwzEYxlN0FlSYLTQqbijxyfYOyn47ZipEHQGRjRUoDZFIc91kWDVNHLiZ2BCRa5K2zADTFD6yatLCdLqfZ9o0NkmNenAtI1ssi0Zfyz5rj1P3Q1XjkoPDrQToag1vXSm501EvRW8AlgdmuPACjZ63ojGBZYbL+7gcmI1PMBEnoF9oH+1kJuAr8CW0mUHf51vHU7Bcg1t5z7ERj+QD3RRMgZ3WeMGxRe3kIMHuBHyaoEPSyqQCXocxste9+XvZSvoQ4TEyDqk5l+jHGRk8qnEqxAv1ygn2xbg/iuryVpkqexezJt2s9ggOa6E0ytB7RXtsDdyq8rdeeg+4wFwOhv1Pl4CN5no1jAVb8zr1Lg6HgX2gyBlVFJSla4+n/voD2asuL8MLpEfhlfLsOHlYGdI43j2kCjZ5opL6DhbLmKBd8PTxvDN73Z1HzO/wdenkLZkSEbVbsXXIgJzJfSr3TJHA3DNlgMmimrCCphUvwlAEEldoF1Q1NOP6gC/HvQ0AWs1LmYLffs2abwm4x/vcI4p5D8TRhxcLsL1fjzUKy7iXp9RQ+PQZN6oexVAfsgQAVUItwp+dbKFc/NfVAu2WwEYYW6DTE5QAobzHff0LQdctNT1LKvv4JRfuNdvFb/kA7pIBWxBdUE/AjoTPKQLlNQNvS4jDQh8C8w0yhju4I="
+    - JRE7_HOME=/usr/lib/jvm/java-7-oracle/jre
+
 sudo: required
+
 before_script:
   - sudo add-apt-repository -y ppa:ubuntu-wine/ppa
   - sudo apt-get update -qq
   - sudo apt-get -y --force-yes install lib32z1 lib32ncurses5 wine1.7
-addons:
-  sonarqube: true
+
+script:
+  - ant all
+
+after_success:
+  - if [ "$TRAVIS_JDK_VERSION" == "oraclejdk8" ]; then sonar-scanner -Dsonar.login=$SONAR_TOKEN; fi;

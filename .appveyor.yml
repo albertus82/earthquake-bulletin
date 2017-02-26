@@ -1,3 +1,5 @@
+clone_depth: 50
+
 environment:
   JRE7_HOME: $(ProgramFiles)\Java\jdk1.7.0\jre
 
