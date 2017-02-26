@@ -22,6 +22,7 @@ import it.albertus.earthquake.model.Earthquake;
 import it.albertus.earthquake.resources.Messages;
 import it.albertus.jface.listener.TrayRestoreListener;
 import it.albertus.util.Configuration;
+import it.albertus.util.NewLine;
 import it.albertus.util.logging.LoggerFactory;
 
 public class TrayIcon {
@@ -142,6 +143,30 @@ public class TrayIcon {
 						toolTip.setText(text.toString().trim());
 						toolTip.setMessage(message.toString().trim());
 						toolTip.setVisible(true);
+					}
+				});
+			}
+			catch (final RuntimeException e) {
+				logger.log(Level.WARNING, e.toString(), e);
+			}
+		}
+	}
+
+	public void updateToolTipText(final Earthquake earthquake) {
+		if (trayItem != null && !trayItem.isDisposed()) {
+			final StringBuilder text = new StringBuilder(Messages.get("lbl.tray.tooltip")).append(NewLine.SYSTEM_LINE_SEPARATOR);
+			text.append("M ").append(earthquake.getMagnitude()).append(", ").append(earthquake.getRegion()).append(NewLine.SYSTEM_LINE_SEPARATOR);
+			text.append(ResultsTable.dateFormat.get().format(earthquake.getTime())).append(' ');
+			text.append(earthquake.getLatitude()).append(' ');
+			text.append(earthquake.getLongitude()).append(' ');
+			text.append(earthquake.getDepth()).append(' ');
+			text.append(earthquake.getStatus());
+
+			try {
+				trayItem.getDisplay().syncExec(new Runnable() {
+					@Override
+					public void run() {
+						trayItem.setToolTipText(text.toString());
 					}
 				});
 			}
