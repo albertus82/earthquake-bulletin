@@ -278,9 +278,7 @@ public class SearchJob extends Job {
 							final Earthquake[] oldData = (Earthquake[]) gui.getResultsTable().getTableViewer().getInput();
 							gui.getResultsTable().getTableViewer().setInput(newData);
 							if (!Arrays.equals(newData, oldData)) {
-								if (newData.length > 0 && newData[0] != null) {
-									gui.getTrayIcon().updateToolTipText(newData[0]);
-								}
+								gui.getTrayIcon().updateToolTipText(newData.length > 0 ? newData[0] : null);
 								if (oldData != null) {
 									gui.getMapCanvas().clear();
 									if (newData.length > 0 && newData[0] != null && oldData.length > 0 && !newData[0].equals(oldData[0])) {
@@ -316,7 +314,6 @@ public class SearchJob extends Job {
 
 	private HttpURLConnection openConnection(final URL url) throws IOException {
 		final HttpURLConnection urlConnection = HttpConnector.openConnection(url);
-		urlConnection.addRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:50.0) Gecko/20100101 Firefox/50.0");
 		urlConnection.addRequestProperty("Accept", "*/*");
 		urlConnection.addRequestProperty("Accept-Encoding", "gzip");
 		return urlConnection;

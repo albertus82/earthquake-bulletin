@@ -154,13 +154,17 @@ public class TrayIcon {
 
 	public void updateToolTipText(final Earthquake earthquake) {
 		if (trayItem != null && !trayItem.isDisposed()) {
-			final StringBuilder text = new StringBuilder(Messages.get("lbl.tray.tooltip")).append(NewLine.SYSTEM_LINE_SEPARATOR);
-			text.append("M ").append(earthquake.getMagnitude()).append(", ").append(earthquake.getRegion()).append(NewLine.SYSTEM_LINE_SEPARATOR);
-			text.append(ResultsTable.dateFormat.get().format(earthquake.getTime())).append(' ');
-			text.append(earthquake.getLatitude()).append(' ');
-			text.append(earthquake.getLongitude()).append(' ');
-			text.append(earthquake.getDepth()).append(' ');
-			text.append(earthquake.getStatus());
+			final StringBuilder text = new StringBuilder(Messages.get("lbl.tray.tooltip"));
+			if (earthquake != null) {
+				text.append(NewLine.SYSTEM_LINE_SEPARATOR);
+				text.append("M ").append(earthquake.getMagnitude()).append(", ").append(earthquake.getRegion());
+				text.append(NewLine.SYSTEM_LINE_SEPARATOR);
+				text.append(ResultsTable.dateFormat.get().format(earthquake.getTime())).append(' ');
+				text.append(earthquake.getLatitude()).append(' ');
+				text.append(earthquake.getLongitude()).append(' ');
+				text.append(earthquake.getDepth()).append(' ');
+				text.append(earthquake.getStatus());
+			}
 
 			try {
 				trayItem.getDisplay().syncExec(new Runnable() {
