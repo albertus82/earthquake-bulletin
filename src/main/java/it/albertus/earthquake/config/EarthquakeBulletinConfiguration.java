@@ -21,7 +21,7 @@ public class EarthquakeBulletinConfiguration extends Configuration {
 
 	public static class Defaults {
 		public static final boolean LOGGING_FILES_ENABLED = true;
-		public static final Level LOGGING_LEVEL = Level.INFO;
+		public static final Level LOGGING_LEVEL = Level.WARNING;
 		public static final String LOGGING_FILES_PATH = getOsSpecificLocalAppDataDir() + File.separator + Messages.get("msg.application.name");
 		public static final int LOGGING_FILES_LIMIT = 1024;
 		public static final int LOGGING_FILES_COUNT = 5;
