@@ -6,7 +6,7 @@ Earthquake Bulletin
 
 Java desktop client for **GEOFON Program GFZ Potsdam Earthquake Bulletin**.
 
-![Screenshot](https://cloud.githubusercontent.com/assets/8672431/21478514/6858a5ee-cb4c-11e6-920c-04f9e60342e8.png)
+![Screenshot](https://cloud.githubusercontent.com/assets/8672431/23579323/50b92ccc-00eb-11e7-8c35-0c9192f4913d.png)
 
 ## Acknowledgements
 
