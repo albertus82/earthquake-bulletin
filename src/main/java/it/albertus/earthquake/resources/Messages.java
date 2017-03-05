@@ -4,9 +4,16 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import it.albertus.util.logging.LoggerFactory;
 
 public final class Messages {
+
+	private static final Logger logger = LoggerFactory.getLogger(Messages.class);
 
 	public static class Defaults {
 		public static final String LANGUAGE = Locale.getDefault().getLanguage();
@@ -68,7 +75,14 @@ public final class Messages {
 		for (final Object param : params) {
 			stringParams.add(String.valueOf(param));
 		}
-		final String message = MessageFormat.format(resources.getString(key), stringParams.toArray());
+		String message;
+		try {
+			message = MessageFormat.format(resources.getString(key), stringParams.toArray());
+		}
+		catch (final MissingResourceException e) {
+			logger.log(Level.WARNING, e.getMessage(), e);
+			message = key;
+		}
 		return message != null ? message.trim() : "";
 	}
 
