@@ -15,7 +15,7 @@ import it.albertus.earthquake.gui.EarthquakeBulletinGui;
 import it.albertus.earthquake.gui.util.ImageDownloader;
 import it.albertus.earthquake.model.Earthquake;
 import it.albertus.earthquake.resources.Messages;
-import it.albertus.jface.SwtThreadExecutor;
+import it.albertus.jface.DisplayThreadExecutor;
 import it.albertus.util.logging.LoggerFactory;
 
 public class DownloadMapJob extends Job {
@@ -36,12 +36,12 @@ public class DownloadMapJob extends Job {
 	protected IStatus run(final IProgressMonitor monitor) {
 		monitor.beginTask("Image download", 1);
 
-		new SwtThreadExecutor(gui.getShell()) {
+		new DisplayThreadExecutor(gui.getShell()).execute(new Runnable() {
 			@Override
-			protected void run() {
+			public void run() {
 				gui.getShell().setCursor(gui.getShell().getDisplay().getSystemCursor(SWT.CURSOR_WAIT));
 			}
-		}.start();
+		});
 
 		byte[] downloadedImage = null;
 		if (earthquake.getEnclosure() != null) {
@@ -51,40 +51,40 @@ public class DownloadMapJob extends Job {
 			catch (final FileNotFoundException fnfe) {
 				final String message = Messages.get("err.job.map.not.found");
 				logger.log(Level.WARNING, message, fnfe);
-				new SwtThreadExecutor(gui.getShell()) {
+				new DisplayThreadExecutor(gui.getShell()).execute(new Runnable() {
 					@Override
-					protected void run() {
+					public void run() {
 						final MessageBox dialog = new MessageBox(gui.getShell(), SWT.ICON_INFORMATION);
 						dialog.setText(Messages.get("lbl.window.title"));
 						dialog.setMessage(message);
 						dialog.open();
 					}
-				}.start();
+				});
 			}
 			catch (final Exception e) {
 				final String message = Messages.get("err.job.map");
 				logger.log(Level.WARNING, message, e);
-				new SwtThreadExecutor(gui.getShell()) {
+				new DisplayThreadExecutor(gui.getShell()).execute(new Runnable() {
 					@Override
-					protected void run() {
+					public void run() {
 						final MessageBox dialog = new MessageBox(gui.getShell(), SWT.ICON_WARNING);
 						dialog.setText(Messages.get("lbl.window.title"));
 						dialog.setMessage(message);
 						dialog.open();
 					}
-				}.start();
+				});
 			}
 		}
 		final byte[] image = downloadedImage;
-		new SwtThreadExecutor(gui.getMapCanvas().getCanvas()) {
+		new DisplayThreadExecutor(gui.getMapCanvas().getCanvas()).execute(new Runnable() {
 			@Override
-			protected void run() {
+			public void run() {
 				if (image != null) {
 					gui.getMapCanvas().setImage(earthquake.getGuid(), image);
 				}
 				gui.getShell().setCursor(null);
 			}
-		}.start();
+		});
 
 		monitor.done();
 		return Status.OK_STATUS;

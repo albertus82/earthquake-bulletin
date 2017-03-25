@@ -71,19 +71,20 @@ public final class Messages {
 	}
 
 	public static String get(final String key, final Object... params) {
-		final List<String> stringParams = new ArrayList<>(params.length);
+		final List<String> stringParams = new ArrayList<String>(params.length);
 		for (final Object param : params) {
 			stringParams.add(String.valueOf(param));
 		}
 		String message;
 		try {
 			message = MessageFormat.format(resources.getString(key), stringParams.toArray());
+			message = message != null ? message.trim() : "";
 		}
 		catch (final MissingResourceException e) {
 			logger.log(Level.WARNING, e.getMessage(), e);
 			message = key;
 		}
-		return message != null ? message.trim() : "";
+		return message;
 	}
 
 }

@@ -40,7 +40,7 @@ import it.albertus.earthquake.net.HttpConnector;
 import it.albertus.earthquake.resources.Messages;
 import it.albertus.earthquake.rss.transformer.RssItemTransformer;
 import it.albertus.earthquake.rss.xml.Rss;
-import it.albertus.jface.SwtThreadExecutor;
+import it.albertus.jface.DisplayThreadExecutor;
 import it.albertus.util.IOUtils;
 import it.albertus.util.NewLine;
 import it.albertus.util.logging.LoggerFactory;
@@ -110,23 +110,23 @@ public class SearchJob extends Job {
 
 			final JobVariables jobVariables = new JobVariables();
 
-			new SwtThreadExecutor(gui.getShell()) {
+			new DisplayThreadExecutor(gui.getShell()).execute(new Runnable() {
 				@Override
-				protected void run() {
+				public void run() {
 					final boolean formValid = gui.getSearchForm().isValid();
 					jobVariables.setFormValid(formValid);
 					if (!formValid) {
 						gui.getSearchForm().getStopButton().notifyListeners(SWT.Selection, null);
 					}
 				}
-			}.start();
+			});
 
 			if (jobVariables.isFormValid()) {
 				jobVariables.setFormat(SearchForm.Defaults.FORMAT);
 
-				new SwtThreadExecutor(gui.getShell()) {
+				new DisplayThreadExecutor(gui.getShell()).execute(new Runnable() {
 					@Override
-					protected void run() {
+					public void run() {
 						gui.getSearchForm().updateButtons();
 						gui.getShell().setCursor(gui.getShell().getDisplay().getSystemCursor(SWT.CURSOR_WAIT));
 
@@ -171,7 +171,7 @@ public class SearchJob extends Job {
 							}
 						}
 					}
-				}.start();
+				});
 
 				final StringBuilder urlSb = new StringBuilder(EarthquakeBulletin.BASE_URL).append("/eqinfo/list.php?fmt=").append(jobVariables.getParams().get("fmt"));
 				for (final Entry<String, String> param : jobVariables.getParams().entrySet()) {
@@ -224,9 +224,9 @@ public class SearchJob extends Job {
 					jobVariables.setError(true);
 					final String message = Messages.get("err.job.search");
 					logger.log(Level.WARNING, message, e);
-					new SwtThreadExecutor(gui.getShell()) {
+					new DisplayThreadExecutor(gui.getShell()).execute(new Runnable() {
 						@Override
-						protected void run() {
+						public void run() {
 							if (gui.getTrayIcon() == null || gui.getTrayIcon().getTrayItem() == null || !gui.getTrayIcon().getTrayItem().getVisible()) {
 								final MessageBox dialog = new MessageBox(gui.getShell(), SWT.ICON_WARNING);
 								dialog.setText(Messages.get("lbl.window.title"));
@@ -234,7 +234,7 @@ public class SearchJob extends Job {
 								dialog.open();
 							}
 						}
-					}.start();
+					});
 				}
 				finally {
 					IOUtils.closeQuietly(wrapperStream, innerStream);
@@ -256,9 +256,9 @@ public class SearchJob extends Job {
 						jobVariables.setError(true);
 						final String message = Messages.get("err.job.decode");
 						logger.log(Level.WARNING, message, e);
-						new SwtThreadExecutor(gui.getShell()) {
+						new DisplayThreadExecutor(gui.getShell()).execute(new Runnable() {
 							@Override
-							protected void run() {
+							public void run() {
 								if (gui.getTrayIcon() == null || gui.getTrayIcon().getTrayItem() == null || !gui.getTrayIcon().getTrayItem().getVisible()) {
 									final MessageBox dialog = new MessageBox(gui.getShell(), SWT.ICON_WARNING);
 									dialog.setText(Messages.get("lbl.window.title"));
@@ -266,14 +266,14 @@ public class SearchJob extends Job {
 									dialog.open();
 								}
 							}
-						}.start();
+						});
 					}
 				}
 
 				if (!jobVariables.isError()) {
-					new SwtThreadExecutor(gui.getShell()) {
+					new DisplayThreadExecutor(gui.getShell()).execute(new Runnable() {
 						@Override
-						protected void run() {
+						public void run() {
 							final Earthquake[] newData = earthquakes.toArray(new Earthquake[0]);
 							final Earthquake[] oldData = (Earthquake[]) gui.getResultsTable().getTableViewer().getInput();
 							gui.getResultsTable().getTableViewer().setInput(newData);
@@ -287,12 +287,12 @@ public class SearchJob extends Job {
 								}
 							}
 						}
-					}.start();
+					});
 				}
 
-				new SwtThreadExecutor(gui.getShell()) {
+				new DisplayThreadExecutor(gui.getShell()).execute(new Runnable() {
 					@Override
-					protected void run() {
+					public void run() {
 						final long waitTimeInMillis = jobVariables.getWaitTimeInMillis();
 						if (waitTimeInMillis > 0) {
 							schedule(waitTimeInMillis);
@@ -302,7 +302,7 @@ public class SearchJob extends Job {
 						}
 						gui.getShell().setCursor(null);
 					}
-				}.start();
+				});
 			}
 			monitor.done();
 			return Status.OK_STATUS;
