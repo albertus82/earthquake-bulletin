@@ -39,6 +39,7 @@ public class PreferencesListener extends SelectionAdapter implements Listener {
 	@Override
 	public void widgetSelected(final SelectionEvent se) {
 		final Language language = Messages.getLanguage();
+		final String timezone = configuration.getString("timezone", EarthquakeBulletin.Defaults.TIME_ZONE_ID);
 		final Preferences preferences = new Preferences(PageDefinition.values(), Preference.values(), configuration, Images.getMainIcons());
 		try {
 			preferences.openDialog(gui.getShell());
@@ -57,6 +58,12 @@ public class PreferencesListener extends SelectionAdapter implements Listener {
 			gui.getMapCanvas().updateTexts();
 			gui.getShell().layout(true, true);
 		}
+
+		// Check if time zone has changed...
+		if (!timezone.equals(configuration.getString("timezone", EarthquakeBulletin.Defaults.TIME_ZONE_ID))) {
+			gui.getResultsTable().getTableViewer().refresh();
+		}
+
 		if (preferences.isRestartRequired()) {
 			final MessageBox messageBox = new MessageBox(gui.getShell(), SWT.ICON_INFORMATION);
 			messageBox.setText(Messages.get("lbl.window.title"));

@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map.Entry;
+import java.util.TimeZone;
 
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
@@ -21,6 +22,8 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
+import it.albertus.earthquake.EarthquakeBulletin;
+import it.albertus.earthquake.config.EarthquakeBulletinConfiguration;
 import it.albertus.earthquake.gui.listener.CopyLinkSelectionListener;
 import it.albertus.earthquake.gui.listener.GoogleMapsBrowserSelectionListener;
 import it.albertus.earthquake.gui.listener.GoogleMapsPopupSelectionListener;
@@ -30,11 +33,14 @@ import it.albertus.earthquake.gui.listener.ShowMapListener;
 import it.albertus.earthquake.model.Earthquake;
 import it.albertus.earthquake.model.Status;
 import it.albertus.earthquake.resources.Messages;
+import it.albertus.util.Configuration;
 import it.albertus.util.Localized;
 
 public class ResultsTable {
 
 	private static final int NUMBER_OF_COLUMNS = 7;
+
+	private static final Configuration configuration = EarthquakeBulletinConfiguration.getInstance();
 
 	public static final ThreadLocal<DateFormat> dateFormat = new ThreadLocal<DateFormat>() {
 		@Override
@@ -233,7 +239,9 @@ public class ResultsTable {
 			@Override
 			public String getText(final Object element) {
 				final Earthquake earthquake = (Earthquake) element;
-				return dateFormat.get().format(earthquake.getTime());
+				final DateFormat df = dateFormat.get();
+				df.setTimeZone(TimeZone.getTimeZone(configuration.getString("timezone", EarthquakeBulletin.Defaults.TIME_ZONE_ID)));
+				return df.format(earthquake.getTime());
 			}
 		});
 

@@ -5,15 +5,18 @@ import static it.albertus.earthquake.gui.preference.PageDefinition.CRITERIA;
 import static it.albertus.earthquake.gui.preference.PageDefinition.GENERAL;
 import static it.albertus.earthquake.gui.preference.PageDefinition.LOGGING;
 
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.logging.Level;
 
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.swt.widgets.Composite;
 
+import it.albertus.earthquake.EarthquakeBulletin;
 import it.albertus.earthquake.config.EarthquakeBulletinConfiguration;
 import it.albertus.earthquake.gui.CloseDialog;
 import it.albertus.earthquake.gui.EarthquakeBulletinGui;
@@ -47,6 +50,7 @@ import it.albertus.util.logging.LoggingSupport;
 public enum Preference implements IPreference {
 
 	LANGUAGE(new PreferenceDetailsBuilder(GENERAL).defaultValue(Messages.Defaults.LANGUAGE).build(), new FieldEditorDetailsBuilder(DefaultComboFieldEditor.class).labelsAndValues(Preference.getLanguageComboOptions()).build()),
+	TIMEZONE(new PreferenceDetailsBuilder(GENERAL).defaultValue(EarthquakeBulletin.Defaults.TIME_ZONE_ID).build(), new FieldEditorDetailsBuilder(DefaultComboFieldEditor.class).labelsAndValues(getTimeZoneComboOptions()).build()),
 
 	START_MINIMIZED(new PreferenceDetailsBuilder(GENERAL).defaultValue(EarthquakeBulletinGui.Defaults.START_MINIMIZED).separate().build(), new FieldEditorDetailsBuilder(DefaultBooleanFieldEditor.class).build()),
 	MINIMIZE_TRAY(new PreferenceDetailsBuilder(GENERAL).defaultValue(TrayIcon.Defaults.MINIMIZE_TRAY).build(), new FieldEditorDetailsBuilder(DefaultBooleanFieldEditor.class).build()),
@@ -259,6 +263,16 @@ public enum Preference implements IPreference {
 		final StaticLabelsAndValues options = new StaticLabelsAndValues(levels.size());
 		for (final Level level : levels.values()) {
 			options.put(level.getName(), level.getName());
+		}
+		return options;
+	}
+
+	public static StaticLabelsAndValues getTimeZoneComboOptions() {
+		final String[] zones = TimeZone.getAvailableIDs();
+		Arrays.sort(zones);
+		final StaticLabelsAndValues options = new StaticLabelsAndValues(zones.length);
+		for (final String zone : zones) {
+			options.put(zone, zone);
 		}
 		return options;
 	}

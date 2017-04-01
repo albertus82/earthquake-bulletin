@@ -1,5 +1,7 @@
 package it.albertus.earthquake.gui;
 
+import java.text.DateFormat;
+import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -130,7 +132,9 @@ public class TrayIcon {
 			text.append("M ").append(earthquake.getMagnitude()).append(", ").append(earthquake.getRegion());
 
 			final StringBuilder message = new StringBuilder();
-			message.append(ResultsTable.dateFormat.get().format(earthquake.getTime())).append(" ");
+			final DateFormat df = ResultsTable.dateFormat.get();
+			df.setTimeZone(TimeZone.getTimeZone(configuration.getString("timezone", EarthquakeBulletin.Defaults.TIME_ZONE_ID)));
+			message.append(df.format(earthquake.getTime())).append(" ");
 			message.append(earthquake.getLatitude()).append(" ");
 			message.append(earthquake.getLongitude()).append(" ");
 			message.append(earthquake.getDepth()).append(" ");
@@ -159,7 +163,9 @@ public class TrayIcon {
 				text.append(NewLine.SYSTEM_LINE_SEPARATOR);
 				text.append("M ").append(earthquake.getMagnitude()).append(", ").append(earthquake.getRegion());
 				text.append(NewLine.SYSTEM_LINE_SEPARATOR);
-				text.append(ResultsTable.dateFormat.get().format(earthquake.getTime())).append(' ');
+				final DateFormat df = ResultsTable.dateFormat.get();
+				df.setTimeZone(TimeZone.getTimeZone(configuration.getString("timezone", EarthquakeBulletin.Defaults.TIME_ZONE_ID)));
+				text.append(df.format(earthquake.getTime())).append(' ');
 				text.append(earthquake.getLatitude()).append(' ');
 				text.append(earthquake.getLongitude()).append(' ');
 				text.append(earthquake.getDepth()).append(' ');

@@ -1,6 +1,5 @@
 package it.albertus.earthquake;
 
-import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -14,6 +13,14 @@ import it.albertus.util.logging.LoggingSupport;
 public class EarthquakeBulletin {
 
 	private static final Logger logger;
+
+	public static class Defaults {
+		public static final String TIME_ZONE_ID = "UTC";
+
+		private Defaults() {
+			throw new IllegalAccessError("Constants class");
+		}
+	}
 
 	public static class InitializationException extends Exception {
 		private static final long serialVersionUID = 6499234883656892068L;
@@ -38,10 +45,10 @@ public class EarthquakeBulletin {
 		try {
 			configuration = EarthquakeBulletinConfiguration.getInstance();
 		}
-		catch (final IOException ioe) {
+		catch (final RuntimeException e) {
 			final String message = Messages.get("err.open.cfg", EarthquakeBulletinConfiguration.CFG_FILE_NAME);
-			logger.log(Level.SEVERE, message, ioe);
-			initializationException = new InitializationException(message, ioe);
+			logger.log(Level.SEVERE, message, e);
+			initializationException = new InitializationException(message, e);
 		}
 	}
 

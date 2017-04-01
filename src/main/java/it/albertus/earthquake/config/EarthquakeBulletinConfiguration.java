@@ -44,9 +44,14 @@ public class EarthquakeBulletinConfiguration extends Configuration {
 		init();
 	}
 
-	public static synchronized EarthquakeBulletinConfiguration getInstance() throws IOException {
+	public static synchronized EarthquakeBulletinConfiguration getInstance() {
 		if (instance == null) {
-			instance = new EarthquakeBulletinConfiguration();
+			try {
+				instance = new EarthquakeBulletinConfiguration();
+			}
+			catch (final IOException e) {
+				throw new RuntimeException(e);
+			}
 		}
 		return instance;
 	}
