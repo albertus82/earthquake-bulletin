@@ -12,6 +12,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.nebula.widgets.cdatetime.CDT;
@@ -41,6 +42,7 @@ import it.albertus.earthquake.gui.listener.StopButtonSelectionListener;
 import it.albertus.earthquake.model.Format;
 import it.albertus.earthquake.resources.Messages;
 import it.albertus.jface.JFaceMessages;
+import it.albertus.jface.SwtUtils;
 import it.albertus.jface.decoration.ControlValidatorDecoration;
 import it.albertus.jface.google.maps.MapBoundsDialog;
 import it.albertus.jface.google.maps.MapControl;
@@ -282,7 +284,7 @@ public class SearchForm {
 		// Buttons
 		buttonsComposite = new Composite(formComposite, SWT.NONE);
 		GridLayoutFactory.swtDefaults().numColumns(2).equalWidth(true).applyTo(buttonsComposite);
-		GridDataFactory.fillDefaults().grab(true, true).applyTo(buttonsComposite);
+		GridDataFactory.fillDefaults().grab(false, true).applyTo(buttonsComposite);
 
 		autoRefreshButton = new Button(buttonsComposite, SWT.CHECK);
 		autoRefreshButton.setText(Messages.get("lbl.form.button.autorefresh"));
@@ -297,11 +299,11 @@ public class SearchForm {
 
 		searchButton = new Button(buttonsComposite, SWT.NONE);
 		searchButton.setText(Messages.get("lbl.form.button.submit"));
-		GridDataFactory.fillDefaults().grab(true, false).applyTo(searchButton);
+		GridDataFactory.fillDefaults().grab(true, false).minSize(SwtUtils.convertHorizontalDLUsToPixels(searchButton, IDialogConstants.BUTTON_WIDTH), SWT.DEFAULT).applyTo(searchButton);
 
 		stopButton = new Button(buttonsComposite, SWT.NONE);
 		stopButton.setText(Messages.get("lbl.form.button.stop"));
-		GridDataFactory.fillDefaults().grab(true, false).applyTo(stopButton);
+		GridDataFactory.fillDefaults().grab(true, false).minSize(SwtUtils.convertHorizontalDLUsToPixels(stopButton, IDialogConstants.BUTTON_WIDTH), SWT.DEFAULT).applyTo(stopButton);
 		stopButton.setEnabled(false);
 
 		openMap = new Button(buttonsComposite, SWT.NONE);

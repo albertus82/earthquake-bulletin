@@ -6,7 +6,6 @@ import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Label;
@@ -14,6 +13,7 @@ import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Shell;
 
 import it.albertus.earthquake.resources.Messages;
+import it.albertus.jface.SwtUtils;
 import it.albertus.jface.listener.LinkSelectionListener;
 
 public class AboutDialog extends Dialog {
@@ -66,10 +66,7 @@ public class AboutDialog extends Dialog {
 
 		final Button okButton = new Button(shell, SWT.PUSH);
 		okButton.setText(Messages.get("lbl.button.ok"));
-		final GC gc = new GC(okButton);
-		gc.setFont(okButton.getFont());
-		final int buttonWidth = org.eclipse.jface.dialogs.Dialog.convertHorizontalDLUsToPixels(gc.getFontMetrics(), IDialogConstants.BUTTON_WIDTH);
-		gc.dispose();
+		final int buttonWidth = SwtUtils.convertHorizontalDLUsToPixels(okButton, IDialogConstants.BUTTON_WIDTH);
 		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.CENTER).grab(true, false).minSize(buttonWidth, SWT.DEFAULT).applyTo(okButton);
 		okButton.setFocus();
 		okButton.addSelectionListener(new SelectionAdapter() {
