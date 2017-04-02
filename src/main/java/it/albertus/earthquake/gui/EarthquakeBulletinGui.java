@@ -77,12 +77,6 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 	protected void configureShell(final Shell shell) {
 		super.configureShell(shell);
 		shell.setImages(Images.getMainIcons());
-
-		// Fix invisible (transparent) shell bug with some Linux distibutions
-		if (!Util.isGtk() && configuration.getBoolean("start.minimized", Defaults.START_MINIMIZED)) {
-			shell.setMinimized(true);
-		}
-
 		shell.setText(Messages.get("lbl.window.title"));
 	}
 
@@ -109,10 +103,10 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 
 	@Override
 	public int open() {
-		int code = super.open();
+		final int code = super.open();
 
 		// Fix invisible (transparent) shell bug with some Linux distibutions
-		if (Util.isGtk() && configuration.getBoolean("start.minimized", Defaults.START_MINIMIZED)) {
+		if (configuration.getBoolean("start.minimized", Defaults.START_MINIMIZED) && Util.isGtk()) {
 			getShell().setMinimized(true);
 		}
 
@@ -143,7 +137,12 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 		final Shell shell = getShell();
 		final Point preferredSize = shell.computeSize(SWT.DEFAULT, SWT.DEFAULT, true);
 		shell.setMinimumSize(preferredSize);
-		// shell.setSize(preferredSize.x, shell.getSize().y); TODO
+		shell.setSize(preferredSize.x, shell.getSize().y);
+
+		// Fix invisible (transparent) shell bug with some Linux distibutions
+		if (configuration.getBoolean("start.minimized", Defaults.START_MINIMIZED) && !Util.isGtk()) {
+			shell.setMinimized(true);
+		}
 	}
 
 	@Override
