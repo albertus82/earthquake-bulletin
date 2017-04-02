@@ -11,6 +11,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.widgets.Shell;
 
 import it.albertus.earthquake.EarthquakeBulletin;
 import it.albertus.earthquake.gui.EarthquakeBulletinGui;
@@ -41,22 +42,19 @@ public class PreferencesListener extends SelectionAdapter implements Listener {
 		final Language language = Messages.getLanguage();
 		final String timezone = configuration.getString("timezone", EarthquakeBulletin.Defaults.TIME_ZONE_ID);
 		final Preferences preferences = new Preferences(PageDefinition.values(), Preference.values(), configuration, Images.getMainIcons());
+		final Shell shell = gui.getShell();
 		try {
-			preferences.openDialog(gui.getShell());
+			preferences.openDialog(shell);
 		}
 		catch (final IOException ioe) {
 			final String message = Messages.get("err.preferences.dialog.open");
 			logger.log(Level.WARNING, message, ioe);
-			EnhancedErrorDialog.openError(gui.getShell(), Messages.get("lbl.window.title"), message, IStatus.WARNING, ioe, Images.getMainIcons());
+			EnhancedErrorDialog.openError(shell, Messages.get("lbl.window.title"), message, IStatus.WARNING, ioe, Images.getMainIcons());
 		}
 
 		// Check if must update texts...
 		if (!language.equals(Messages.getLanguage())) {
-			gui.getMenuBar().updateTexts();
-			gui.getResultsTable().updateTexts();
-			gui.getSearchForm().updateTexts();
-			gui.getMapCanvas().updateTexts();
-			gui.getShell().layout(true, true);
+			gui.updateLanguage();
 		}
 
 		// Check if time zone has changed...
@@ -65,7 +63,7 @@ public class PreferencesListener extends SelectionAdapter implements Listener {
 		}
 
 		if (preferences.isRestartRequired()) {
-			final MessageBox messageBox = new MessageBox(gui.getShell(), SWT.ICON_INFORMATION);
+			final MessageBox messageBox = new MessageBox(shell, SWT.ICON_INFORMATION);
 			messageBox.setText(Messages.get("lbl.window.title"));
 			messageBox.setMessage(Messages.get("lbl.preferences.restart"));
 			messageBox.open();

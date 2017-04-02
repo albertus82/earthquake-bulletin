@@ -14,6 +14,7 @@ import java.util.TimeZone;
 import java.util.logging.Level;
 
 import org.eclipse.jface.preference.FieldEditor;
+import org.eclipse.jface.util.Util;
 import org.eclipse.swt.widgets.Composite;
 
 import it.albertus.earthquake.EarthquakeBulletin;
@@ -42,6 +43,7 @@ import it.albertus.jface.preference.field.DefaultRadioGroupFieldEditor;
 import it.albertus.jface.preference.field.EnhancedDirectoryFieldEditor;
 import it.albertus.jface.preference.field.EnhancedIntegerFieldEditor;
 import it.albertus.jface.preference.field.FloatFieldEditor;
+import it.albertus.jface.preference.field.ListFieldEditor;
 import it.albertus.jface.preference.field.ScaleIntegerFieldEditor;
 import it.albertus.jface.preference.page.IPageDefinition;
 import it.albertus.util.Localized;
@@ -50,7 +52,7 @@ import it.albertus.util.logging.LoggingSupport;
 public enum Preference implements IPreference {
 
 	LANGUAGE(new PreferenceDetailsBuilder(GENERAL).defaultValue(Messages.Defaults.LANGUAGE).build(), new FieldEditorDetailsBuilder(DefaultComboFieldEditor.class).labelsAndValues(Preference.getLanguageComboOptions()).build()),
-	TIMEZONE(new PreferenceDetailsBuilder(GENERAL).defaultValue(EarthquakeBulletin.Defaults.TIME_ZONE_ID).build(), new FieldEditorDetailsBuilder(DefaultComboFieldEditor.class).labelsAndValues(getTimeZoneComboOptions()).build()),
+	TIMEZONE(new PreferenceDetailsBuilder(GENERAL).defaultValue(EarthquakeBulletin.Defaults.TIME_ZONE_ID).build(), new FieldEditorDetailsBuilder(Util.isGtk() ? ListFieldEditor.class : DefaultComboFieldEditor.class).labelsAndValues(getTimeZoneComboOptions()).height(7).build()), // GTK3 combo rendering is slow when item count is high
 
 	START_MINIMIZED(new PreferenceDetailsBuilder(GENERAL).defaultValue(EarthquakeBulletinGui.Defaults.START_MINIMIZED).separate().build(), new FieldEditorDetailsBuilder(DefaultBooleanFieldEditor.class).build()),
 	MINIMIZE_TRAY(new PreferenceDetailsBuilder(GENERAL).defaultValue(TrayIcon.Defaults.MINIMIZE_TRAY).build(), new FieldEditorDetailsBuilder(DefaultBooleanFieldEditor.class).build()),

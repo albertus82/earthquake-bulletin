@@ -15,6 +15,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.TableColumn;
 
 import it.albertus.earthquake.EarthquakeBulletin;
 import it.albertus.earthquake.gui.listener.CloseListener;
@@ -154,6 +155,31 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 	@Override
 	protected Layout getLayout() {
 		return GridLayoutFactory.swtDefaults().create();
+	}
+
+	public void updateLanguage() {
+		final Shell shell = getShell();
+		shell.setRedraw(false);
+		menuBar.updateTexts();
+		resultsTable.updateTexts();
+		searchForm.updateTexts();
+		mapCanvas.updateTexts();
+
+		final TableColumn[] columns = resultsTable.getTableViewer().getTable().getColumns();
+		final int[] widths = new int[columns.length];
+		for (int i = 0; i < columns.length; i++) {
+			widths[i] = columns[i].getWidth();
+			columns[i].setWidth(1);
+		}
+
+		shell.layout(true, true);
+		shell.setMinimumSize(shell.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x, shell.getMinimumSize().y);
+
+		for (int i = 0; i < columns.length; i++) {
+			columns[i].setWidth(widths[i]);
+		}
+
+		shell.setRedraw(true);
 	}
 
 	public SearchForm getSearchForm() {
