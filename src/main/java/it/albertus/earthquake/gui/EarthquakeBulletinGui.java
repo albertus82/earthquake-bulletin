@@ -7,6 +7,7 @@ import org.eclipse.jface.util.Util;
 import org.eclipse.jface.window.ApplicationWindow;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -16,9 +17,9 @@ import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.Shell;
 
 import it.albertus.earthquake.EarthquakeBulletin;
-import it.albertus.earthquake.EarthquakeBulletin.InitializationException;
 import it.albertus.earthquake.gui.listener.CloseListener;
 import it.albertus.earthquake.resources.Messages;
+import it.albertus.earthquake.util.InitializationException;
 import it.albertus.jface.EnhancedErrorDialog;
 import it.albertus.util.Configuration;
 import it.albertus.util.Version;
@@ -50,13 +51,13 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 		super(null);
 	}
 
-	public static void run(final InitializationException ie) {
+	public static void run(final InitializationException e) {
 		Display.setAppName(Messages.get("msg.application.name"));
 		Display.setAppVersion(Version.getInstance().getNumber());
 		final Display display = Display.getDefault();
 
-		if (ie != null) { // Display error dialog and exit.
-			EnhancedErrorDialog.openError(null, Messages.get("lbl.window.title"), ie.getLocalizedMessage() != null ? ie.getLocalizedMessage() : ie.getMessage(), IStatus.ERROR, ie.getCause() != null ? ie.getCause() : ie, Images.getMainIcons());
+		if (e != null) { // Display error dialog and exit.
+			EnhancedErrorDialog.openError(null, Messages.get("lbl.window.title"), e.getLocalizedMessage() != null ? e.getLocalizedMessage() : e.getMessage(), IStatus.ERROR, e.getCause() != null ? e.getCause() : e, Images.getMainIcons());
 		}
 		else { // Open main window.
 			final EarthquakeBulletinGui gui = new EarthquakeBulletinGui();
@@ -140,7 +141,9 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 	protected void constrainShellSize() {
 		super.constrainShellSize();
 		final Shell shell = getShell();
-		shell.setMinimumSize(shell.computeSize(SWT.DEFAULT, SWT.DEFAULT, true));
+		final Point preferredSize = shell.computeSize(SWT.DEFAULT, SWT.DEFAULT, true);
+		shell.setMinimumSize(preferredSize);
+		// shell.setSize(preferredSize.x, shell.getSize().y); TODO
 	}
 
 	@Override

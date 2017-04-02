@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 
 import it.albertus.earthquake.EarthquakeBulletin;
 import it.albertus.earthquake.resources.Messages;
+import it.albertus.earthquake.util.InitializationException;
 import it.albertus.jface.JFaceMessages;
 import it.albertus.util.Configuration;
 import it.albertus.util.logging.CustomFormatter;
@@ -44,13 +45,15 @@ public class EarthquakeBulletinConfiguration extends Configuration {
 		init();
 	}
 
-	public static synchronized EarthquakeBulletinConfiguration getInstance() {
+	public static synchronized EarthquakeBulletinConfiguration getInstance() throws InitializationException {
 		if (instance == null) {
 			try {
 				instance = new EarthquakeBulletinConfiguration();
 			}
 			catch (final IOException e) {
-				throw new RuntimeException(e);
+				final String message = Messages.get("err.open.cfg", CFG_FILE_NAME);
+				logger.log(Level.SEVERE, message, e);
+				throw new InitializationException(message, e);
 			}
 		}
 		return instance;
