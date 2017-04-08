@@ -3,7 +3,7 @@ package it.albertus.earthquake.gui;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import it.albertus.earthquake.EarthquakeBulletin;
+import it.albertus.earthquake.config.EarthquakeBulletinConfiguration;
 import it.albertus.util.Configuration;
 
 public class MapCache {
@@ -18,7 +18,7 @@ public class MapCache {
 
 	private static final String CFG_KEY_MAP_CACHE_SIZE = "map.cache.size";
 
-	private static final Configuration configuration = EarthquakeBulletin.getConfiguration();
+	private static final Configuration configuration = EarthquakeBulletinConfiguration.getInstance();
 
 	private final Map<String, byte[]> cache = new LinkedHashMap<>(configuration.getByte(CFG_KEY_MAP_CACHE_SIZE, Defaults.CACHE_SIZE));
 

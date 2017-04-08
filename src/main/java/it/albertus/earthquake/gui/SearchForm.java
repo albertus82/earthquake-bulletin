@@ -28,7 +28,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-import it.albertus.earthquake.EarthquakeBulletin;
+import it.albertus.earthquake.config.EarthquakeBulletinConfiguration;
 import it.albertus.earthquake.gui.decoration.SearchFormControlValidatorDecoration;
 import it.albertus.earthquake.gui.job.SearchJob;
 import it.albertus.earthquake.gui.listener.AutoRefreshButtonSelectionListener;
@@ -105,7 +105,7 @@ public class SearchForm {
 		}
 	}
 
-	private static final Configuration configuration = EarthquakeBulletin.getConfiguration();
+	private static final Configuration configuration = EarthquakeBulletinConfiguration.getInstance();
 
 	private final Composite formComposite;
 

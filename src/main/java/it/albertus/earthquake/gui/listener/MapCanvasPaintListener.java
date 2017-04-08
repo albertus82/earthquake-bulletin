@@ -7,10 +7,9 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Canvas;
 
-import it.albertus.earthquake.EarthquakeBulletin;
+import it.albertus.earthquake.config.EarthquakeBulletinConfiguration;
 import it.albertus.earthquake.gui.MapCanvas;
 import it.albertus.jface.HqImageResizer;
-import it.albertus.util.Configuration;
 
 public class MapCanvasPaintListener implements PaintListener {
 
@@ -21,8 +20,6 @@ public class MapCanvasPaintListener implements PaintListener {
 			throw new IllegalAccessError("Constants class");
 		}
 	}
-
-	private static final Configuration configuration = EarthquakeBulletin.getConfiguration();
 
 	private final MapCanvas mapCanvas;
 	private Image resized;
@@ -68,7 +65,7 @@ public class MapCanvasPaintListener implements PaintListener {
 				gc.drawImage(image, left, top);
 			}
 			else {
-				if (configuration.getBoolean("map.resize.hq", Defaults.MAP_RESIZE_HQ)) {
+				if (EarthquakeBulletinConfiguration.getInstance().getBoolean("map.resize.hq", Defaults.MAP_RESIZE_HQ)) {
 					final Image oldImage = resized;
 					final float scale = newHeight / (float) imageSize.height;
 					resized = HqImageResizer.resize(image, scale);

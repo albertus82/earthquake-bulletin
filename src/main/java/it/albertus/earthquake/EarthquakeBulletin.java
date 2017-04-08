@@ -3,7 +3,6 @@ package it.albertus.earthquake;
 import it.albertus.earthquake.config.EarthquakeBulletinConfiguration;
 import it.albertus.earthquake.gui.EarthquakeBulletinGui;
 import it.albertus.earthquake.util.InitializationException;
-import it.albertus.util.Configuration;
 import it.albertus.util.logging.LoggingSupport;
 
 public class EarthquakeBulletin {
@@ -20,8 +19,6 @@ public class EarthquakeBulletin {
 
 	public static final String LOG_FORMAT = "%1$td/%1$tm/%1$tY %1$tH:%1$tM:%1$tS.%tL %4$s %3$s - %5$s%6$s%n";
 
-	private static Configuration configuration;
-
 	private static InitializationException initializationException;
 
 	static {
@@ -29,7 +26,7 @@ public class EarthquakeBulletin {
 			LoggingSupport.setFormat(LOG_FORMAT);
 		}
 		try {
-			configuration = EarthquakeBulletinConfiguration.getInstance();
+			EarthquakeBulletinConfiguration.getInstance();
 		}
 		catch (final InitializationException e) {
 			initializationException = e;
@@ -45,10 +42,6 @@ public class EarthquakeBulletin {
 
 	public static void main(final String[] args) {
 		EarthquakeBulletinGui.run(initializationException);
-	}
-
-	public static Configuration getConfiguration() {
-		return configuration;
 	}
 
 	public static InitializationException getInitializationException() {

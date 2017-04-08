@@ -8,7 +8,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeSet;
@@ -59,56 +58,12 @@ public class SearchJob extends Job {
 		this.setUser(true);
 	}
 
-	private class JobVariables {
-		private boolean formValid;
-		private long waitTimeInMillis;
-		private Format format;
-		private boolean error;
-		private final Map<String, String> params = new LinkedHashMap<>();
-
-		public boolean isFormValid() {
-			return formValid;
-		}
-
-		public void setFormValid(boolean formValid) {
-			this.formValid = formValid;
-		}
-
-		public long getWaitTimeInMillis() {
-			return waitTimeInMillis;
-		}
-
-		public void setWaitTimeInMillis(long waitTimeInMillis) {
-			this.waitTimeInMillis = waitTimeInMillis;
-		}
-
-		public Format getFormat() {
-			return format;
-		}
-
-		public void setFormat(Format format) {
-			this.format = format;
-		}
-
-		public boolean isError() {
-			return error;
-		}
-
-		public void setError(boolean error) {
-			this.error = error;
-		}
-
-		public Map<String, String> getParams() {
-			return params;
-		}
-	}
-
 	@Override
 	protected IStatus run(final IProgressMonitor monitor) {
 		try {
 			monitor.beginTask("Search", 1);
 
-			final JobVariables jobVariables = new JobVariables();
+			final SearchJobVars jobVariables = new SearchJobVars();
 
 			new DisplayThreadExecutor(gui.getShell()).execute(new Runnable() {
 				@Override
@@ -314,7 +269,7 @@ public class SearchJob extends Job {
 
 	private HttpURLConnection openConnection(final URL url) throws IOException {
 		final HttpURLConnection urlConnection = HttpConnector.openConnection(url);
-		urlConnection.addRequestProperty("Accept", "*/*");
+		urlConnection.addRequestProperty("Accept", "*/html,*/xml");
 		urlConnection.addRequestProperty("Accept-Encoding", "gzip");
 		return urlConnection;
 	}

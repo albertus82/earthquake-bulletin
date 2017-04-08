@@ -19,6 +19,7 @@ import org.eclipse.swt.widgets.Tray;
 import org.eclipse.swt.widgets.TrayItem;
 
 import it.albertus.earthquake.EarthquakeBulletin;
+import it.albertus.earthquake.config.EarthquakeBulletinConfiguration;
 import it.albertus.earthquake.gui.listener.CloseListener;
 import it.albertus.earthquake.model.Earthquake;
 import it.albertus.earthquake.resources.Messages;
@@ -39,7 +40,7 @@ public class TrayIcon {
 		}
 	}
 
-	private static final Configuration configuration = EarthquakeBulletin.getConfiguration();
+	private static final Configuration configuration = EarthquakeBulletinConfiguration.getInstance();
 
 	private final EarthquakeBulletinGui gui;
 
