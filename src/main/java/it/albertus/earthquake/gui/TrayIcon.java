@@ -159,25 +159,28 @@ public class TrayIcon {
 
 	public void updateToolTipText(final Earthquake earthquake) {
 		if (trayItem != null && !trayItem.isDisposed()) {
-			final StringBuilder text = new StringBuilder(Messages.get("lbl.tray.tooltip"));
+			final StringBuilder buf = new StringBuilder(Messages.get("lbl.tray.tooltip"));
 			if (earthquake != null) {
-				text.append(NewLine.SYSTEM_LINE_SEPARATOR);
-				text.append("M ").append(earthquake.getMagnitude()).append(", ").append(earthquake.getRegion());
-				text.append(NewLine.SYSTEM_LINE_SEPARATOR);
+				buf.append(NewLine.SYSTEM_LINE_SEPARATOR);
+				buf.append("M ").append(earthquake.getMagnitude()).append(", ").append(earthquake.getRegion());
+				buf.append(NewLine.SYSTEM_LINE_SEPARATOR);
 				final DateFormat df = ResultsTable.dateFormat.get();
 				df.setTimeZone(TimeZone.getTimeZone(configuration.getString("timezone", EarthquakeBulletin.Defaults.TIME_ZONE_ID)));
-				text.append(df.format(earthquake.getTime())).append(' ');
-				text.append(earthquake.getLatitude()).append(' ');
-				text.append(earthquake.getLongitude()).append(' ');
-				text.append(earthquake.getDepth()).append(' ');
-				text.append(earthquake.getStatus());
+				buf.append(df.format(earthquake.getTime())).append(' ');
+				buf.append(earthquake.getLatitude()).append(' ');
+				buf.append(earthquake.getLongitude()).append(' ');
+				buf.append(earthquake.getDepth()).append(' ');
+				buf.append(earthquake.getStatus());
 			}
+			final String text = buf.toString();
 
 			try {
 				trayItem.getDisplay().syncExec(new Runnable() {
 					@Override
 					public void run() {
-						trayItem.setToolTipText(text.toString());
+						if (!text.equals(trayItem.getToolTipText())) {
+							trayItem.setToolTipText(text);
+						}
 					}
 				});
 			}

@@ -232,13 +232,11 @@ public class SearchJob extends Job {
 							final Earthquake[] newData = earthquakes.toArray(new Earthquake[0]);
 							final Earthquake[] oldData = (Earthquake[]) gui.getResultsTable().getTableViewer().getInput();
 							gui.getResultsTable().getTableViewer().setInput(newData);
-							if (!Arrays.equals(newData, oldData)) {
-								gui.getTrayIcon().updateToolTipText(newData.length > 0 ? newData[0] : null);
-								if (oldData != null) {
-									gui.getMapCanvas().clear();
-									if (newData.length > 0 && newData[0] != null && oldData.length > 0 && !newData[0].equals(oldData[0])) {
-										gui.getTrayIcon().showBalloonToolTip(newData[0]);
-									}
+							gui.getTrayIcon().updateToolTipText(newData.length > 0 ? newData[0] : null);
+							if (oldData != null && !Arrays.equals(newData, oldData)) {
+								gui.getMapCanvas().clear();
+								if (newData.length > 0 && newData[0] != null && oldData.length > 0 && !newData[0].equals(oldData[0])) {
+									gui.getTrayIcon().showBalloonToolTip(newData[0]);
 								}
 							}
 						}
