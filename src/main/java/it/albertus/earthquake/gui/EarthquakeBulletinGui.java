@@ -138,7 +138,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 		final Shell shell = getShell();
 		final Point preferredSize = shell.computeSize(SWT.DEFAULT, SWT.DEFAULT, true);
 		shell.setMinimumSize(preferredSize);
-		shell.setSize(preferredSize.x, shell.getSize().y);
+		// shell.setSize(preferredSize.x, shell.getSize().y);
 
 		// Fix invisible (transparent) shell bug with some Linux distibutions
 		if (configuration.getBoolean("start.minimized", Defaults.START_MINIMIZED) && !Util.isGtk()) {
