@@ -36,10 +36,10 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 		}
 	}
 
-	private static final Configuration configuration = EarthquakeBulletinConfiguration.getInstance();
-
 	private static final float SASH_MAGNIFICATION_FACTOR = 1.5f;
 	private static final int[] SASH_WEIGHTS = { 3, 2 };
+
+	private final Configuration configuration = EarthquakeBulletinConfiguration.getInstance();
 
 	private SearchForm searchForm;
 	private ResultsTable resultsTable;
