@@ -11,7 +11,7 @@ matrix:
     - os: osx
 
 addons:
-  sonarqube: true
+  sonarcloud: true
   apt:
     sources:
       - sourceline: 'ppa:ubuntu-wine/ppa'
