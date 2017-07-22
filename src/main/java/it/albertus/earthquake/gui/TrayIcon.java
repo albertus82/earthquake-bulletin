@@ -160,6 +160,7 @@ public class TrayIcon {
 				trayItem.getDisplay().syncExec(new Runnable() {
 					@Override
 					public void run() {
+						logger.log(Level.INFO, "{0}", text);
 						trayItem.setToolTip(toolTip);
 						toolTip.setText(text.toString().trim());
 						toolTip.setMessage(message.toString().trim());

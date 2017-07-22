@@ -23,7 +23,7 @@ import it.albertus.earthquake.gui.SearchForm;
 import it.albertus.earthquake.model.Earthquake;
 import it.albertus.earthquake.model.Format;
 import it.albertus.earthquake.resources.Messages;
-import it.albertus.earthquake.service.GeofonBulletinProvider;
+import it.albertus.earthquake.service.BulletinProvider;
 import it.albertus.earthquake.service.SearchJobVars;
 import it.albertus.jface.DisplayThreadExecutor;
 import it.albertus.jface.EnhancedErrorDialog;
@@ -34,12 +34,15 @@ public class SearchJob extends Job {
 	private static final Logger logger = LoggerFactory.getLogger(SearchJob.class);
 
 	private final EarthquakeBulletinGui gui;
+	private final BulletinProvider provider;
+
 	private boolean shouldRun = true;
 	private boolean shouldSchedule = true;
 
-	public SearchJob(final EarthquakeBulletinGui gui) {
+	public SearchJob(final EarthquakeBulletinGui gui, final BulletinProvider provider) {
 		super("Search");
 		this.gui = gui;
+		this.provider = provider;
 		this.setUser(true);
 	}
 
@@ -114,7 +117,7 @@ public class SearchJob extends Job {
 
 			final Collection<Earthquake> earthquakes = new TreeSet<>();
 			try {
-				earthquakes.addAll(new GeofonBulletinProvider().getEarthquakes(jobVariables));
+				earthquakes.addAll(provider.getEarthquakes(jobVariables));
 			}
 			catch (final Exception e) {
 				jobVariables.setError(true);
