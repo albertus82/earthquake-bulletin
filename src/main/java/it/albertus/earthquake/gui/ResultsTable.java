@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.TimeZone;
 
+import org.eclipse.jface.resource.FontRegistry;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
@@ -15,6 +17,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
@@ -37,7 +40,18 @@ import it.albertus.util.Localized;
 
 public class ResultsTable {
 
+	public static class Defaults {
+		public static final float MAGNITUDE_BIG = 5.0f;
+		public static final float MAGNITUDE_XXL = 6.0f;
+
+		private Defaults() {
+			throw new IllegalAccessError("Constants class");
+		}
+	}
+
 	private static final int NUMBER_OF_COLUMNS = 7;
+
+	private static final String TABLE_FONT = "TABLE_FONT";
 
 	private static final Configuration configuration = EarthquakeBulletinConfiguration.getInstance();
 
@@ -245,6 +259,7 @@ public class ResultsTable {
 		});
 
 		col = createTableViewerColumn(labelsMap.get(1).getString(), 1);
+		col.getColumn().setAlignment(SWT.CENTER);
 		col.setLabelProvider(new EarthquakeColumnLabelProvider() {
 			@Override
 			public String getText(final Object element) {
@@ -255,16 +270,30 @@ public class ResultsTable {
 			@Override
 			public Color getForeground(final Object element) {
 				final Earthquake earthquake = (Earthquake) element;
-				if (earthquake.getMagnitude() > 6) {
+				if (earthquake.getMagnitude() >= configuration.getFloat("magnitude.xxl", Defaults.MAGNITUDE_XXL)) {
 					return parent.getDisplay().getSystemColor(SWT.COLOR_RED);
 				}
 				else {
 					return super.getForeground(element);
 				}
 			}
+
+			@Override
+			public Font getFont(final Object element) {
+				final Earthquake earthquake = (Earthquake) element;
+				if (earthquake.getMagnitude() >= configuration.getFloat("magnitude.big", Defaults.MAGNITUDE_BIG) && getTableViewer().getTable().getItemCount() != 0) {
+					final FontRegistry fontRegistry = JFaceResources.getFontRegistry();
+					if (!fontRegistry.hasValueFor(TABLE_FONT)) {
+						fontRegistry.put(TABLE_FONT, getTableViewer().getTable().getItem(0).getFont(0).getFontData());
+					}
+					return fontRegistry.getBold(TABLE_FONT);
+				}
+				return super.getFont(element);
+			}
 		});
 
 		col = createTableViewerColumn(labelsMap.get(2).getString(), 2);
+		col.getColumn().setAlignment(SWT.RIGHT);
 		col.setLabelProvider(new EarthquakeColumnLabelProvider() {
 			@Override
 			public String getText(final Object element) {
@@ -274,6 +303,7 @@ public class ResultsTable {
 		});
 
 		col = createTableViewerColumn(labelsMap.get(3).getString(), 3);
+		col.getColumn().setAlignment(SWT.RIGHT);
 		col.setLabelProvider(new EarthquakeColumnLabelProvider() {
 			@Override
 			public String getText(final Object element) {
@@ -283,6 +313,7 @@ public class ResultsTable {
 		});
 
 		col = createTableViewerColumn(labelsMap.get(4).getString(), 4);
+		col.getColumn().setAlignment(SWT.RIGHT);
 		col.setLabelProvider(new EarthquakeColumnLabelProvider() {
 			@Override
 			public String getText(final Object element) {
@@ -292,6 +323,7 @@ public class ResultsTable {
 		});
 
 		col = createTableViewerColumn(labelsMap.get(5).getString(), 5);
+		col.getColumn().setAlignment(SWT.CENTER);
 		col.setLabelProvider(new EarthquakeColumnLabelProvider() {
 			@Override
 			public String getText(final Object element) {
