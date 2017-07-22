@@ -1,4 +1,4 @@
-package it.albertus.earthquake.rss.transformer;
+package it.albertus.earthquake.service.rss.transformer;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -18,8 +18,8 @@ import it.albertus.earthquake.model.Latitude;
 import it.albertus.earthquake.model.Longitude;
 import it.albertus.earthquake.model.Status;
 import it.albertus.earthquake.resources.Messages;
-import it.albertus.earthquake.rss.xml.Item;
-import it.albertus.earthquake.rss.xml.Rss;
+import it.albertus.earthquake.service.rss.xml.Item;
+import it.albertus.earthquake.service.rss.xml.Rss;
 import it.albertus.util.logging.LoggerFactory;
 
 public class RssItemTransformer {

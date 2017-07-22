@@ -1,4 +1,4 @@
-package it.albertus.earthquake.gui.job;
+package it.albertus.earthquake.service;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,14 +16,14 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
 import it.albertus.earthquake.EarthquakeBulletin;
-import it.albertus.earthquake.html.TableData;
-import it.albertus.earthquake.html.transformer.HtmlTableDataTransformer;
 import it.albertus.earthquake.model.Earthquake;
 import it.albertus.earthquake.model.Format;
-import it.albertus.earthquake.net.HttpConnector;
 import it.albertus.earthquake.resources.Messages;
-import it.albertus.earthquake.rss.transformer.RssItemTransformer;
-import it.albertus.earthquake.rss.xml.Rss;
+import it.albertus.earthquake.service.html.TableData;
+import it.albertus.earthquake.service.html.transformer.HtmlTableDataTransformer;
+import it.albertus.earthquake.service.net.HttpConnector;
+import it.albertus.earthquake.service.rss.transformer.RssItemTransformer;
+import it.albertus.earthquake.service.rss.xml.Rss;
 import it.albertus.util.IOUtils;
 import it.albertus.util.NewLine;
 

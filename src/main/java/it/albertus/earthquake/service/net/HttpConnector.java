@@ -1,8 +1,7 @@
-package it.albertus.earthquake.net;
+package it.albertus.earthquake.service.net;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import it.albertus.earthquake.config.EarthquakeBulletinConfiguration;
@@ -33,7 +32,7 @@ public class HttpConnector {
 		return urlConnection;
 	}
 
-	public static HttpURLConnection openConnection(final String url) throws MalformedURLException, IOException {
+	public static HttpURLConnection openConnection(final String url) throws IOException {
 		return openConnection(new URL(url));
 	}
 

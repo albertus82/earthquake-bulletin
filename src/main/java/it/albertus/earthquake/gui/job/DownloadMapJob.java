@@ -12,9 +12,9 @@ import org.eclipse.swt.SWT;
 
 import it.albertus.earthquake.gui.EarthquakeBulletinGui;
 import it.albertus.earthquake.gui.Images;
-import it.albertus.earthquake.gui.util.ImageDownloader;
 import it.albertus.earthquake.model.Earthquake;
 import it.albertus.earthquake.resources.Messages;
+import it.albertus.earthquake.service.net.ImageDownloader;
 import it.albertus.jface.DisplayThreadExecutor;
 import it.albertus.jface.EnhancedErrorDialog;
 import it.albertus.util.logging.LoggerFactory;

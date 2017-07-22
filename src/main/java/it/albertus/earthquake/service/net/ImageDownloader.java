@@ -1,4 +1,4 @@
-package it.albertus.earthquake.gui.util;
+package it.albertus.earthquake.service.net;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -7,7 +7,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import it.albertus.earthquake.net.HttpConnector;
 import it.albertus.util.IOUtils;
 
 public class ImageDownloader {

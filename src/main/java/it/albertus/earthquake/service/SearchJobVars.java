@@ -1,11 +1,11 @@
-package it.albertus.earthquake.gui.job;
+package it.albertus.earthquake.service;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import it.albertus.earthquake.model.Format;
 
-class SearchJobVars {
+public class SearchJobVars {
 
 	private boolean formValid;
 	private long waitTimeInMillis;

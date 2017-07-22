@@ -1,4 +1,4 @@
-package it.albertus.earthquake.gui.job;
+package it.albertus.earthquake.service;
 
 public class FetchException extends Exception {
 

@@ -23,6 +23,8 @@ import it.albertus.earthquake.gui.SearchForm;
 import it.albertus.earthquake.model.Earthquake;
 import it.albertus.earthquake.model.Format;
 import it.albertus.earthquake.resources.Messages;
+import it.albertus.earthquake.service.GeofonBulletinProvider;
+import it.albertus.earthquake.service.SearchJobVars;
 import it.albertus.jface.DisplayThreadExecutor;
 import it.albertus.jface.EnhancedErrorDialog;
 import it.albertus.util.logging.LoggerFactory;

@@ -1,4 +1,4 @@
-package it.albertus.earthquake.html.transformer;
+package it.albertus.earthquake.service.html.transformer;
 
 import java.net.URL;
 import java.text.DateFormat;
@@ -11,12 +11,12 @@ import java.util.TimeZone;
 import java.util.TreeSet;
 
 import it.albertus.earthquake.EarthquakeBulletin;
-import it.albertus.earthquake.html.TableData;
 import it.albertus.earthquake.model.Depth;
 import it.albertus.earthquake.model.Earthquake;
 import it.albertus.earthquake.model.Latitude;
 import it.albertus.earthquake.model.Longitude;
 import it.albertus.earthquake.model.Status;
+import it.albertus.earthquake.service.html.TableData;
 import it.albertus.util.NewLine;
 
 public class HtmlTableDataTransformer {

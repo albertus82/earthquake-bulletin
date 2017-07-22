@@ -1,4 +1,4 @@
-package it.albertus.earthquake.rss.xml;
+package it.albertus.earthquake.service.rss.xml;
 
 import java.util.Arrays;
 
