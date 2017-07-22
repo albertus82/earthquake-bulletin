@@ -6,10 +6,13 @@ import java.net.URL;
 
 import it.albertus.earthquake.config.EarthquakeBulletinConfiguration;
 import it.albertus.util.Configuration;
+import it.albertus.util.Version;
 
 public class HttpConnector {
 
 	private static final Configuration configuration = EarthquakeBulletinConfiguration.getInstance();
+
+	private static final String VERSION_NUMBER = Version.getInstance().getNumber();
 
 	public static class Defaults {
 		public static final int CONNECTION_TIMEOUT_IN_MILLIS = 20000;
@@ -28,7 +31,10 @@ public class HttpConnector {
 		final HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
 		urlConnection.setConnectTimeout(configuration.getInt("http.connection.timeout.ms", Defaults.CONNECTION_TIMEOUT_IN_MILLIS));
 		urlConnection.setReadTimeout(configuration.getInt("http.read.timeout.ms", Defaults.READ_TIMEOUT_IN_MILLIS));
-		urlConnection.addRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:52.0) Gecko/20100101 Firefox/52.0");
+		final StringBuilder userAgent = new StringBuilder("Mozilla/5.0");
+		userAgent.append(" (").append(System.getProperty("os.name")).append("; ").append(System.getProperty("os.arch")).append("; ").append(System.getProperty("os.version")).append(") ");
+		userAgent.append("EarthquakeBulletin/").append(VERSION_NUMBER).append(" (KHTML, like Gecko)");
+		urlConnection.addRequestProperty("User-Agent", userAgent.toString());
 		return urlConnection;
 	}
 
