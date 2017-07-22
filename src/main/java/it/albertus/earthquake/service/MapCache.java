@@ -24,9 +24,7 @@ public class MapCache {
 	private final Map<String, MapImage> cache = new LinkedHashMap<>(configuration.getByte(MAP_CACHE_SIZE, Defaults.CACHE_SIZE));
 
 	public void put(final String guid, final MapImage map) {
-		if (!cache.containsKey(guid)) {
-			cache.put(guid, map);
-		}
+		cache.put(guid, map);
 		while (cache.size() > 0 && cache.size() > configuration.getByte(MAP_CACHE_SIZE, Defaults.CACHE_SIZE)) {
 			final String eldestGuid = cache.keySet().iterator().next();
 			cache.remove(eldestGuid);
