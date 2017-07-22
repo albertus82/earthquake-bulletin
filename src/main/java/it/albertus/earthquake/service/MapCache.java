@@ -1,9 +1,10 @@
-package it.albertus.earthquake.gui;
+package it.albertus.earthquake.service;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import it.albertus.earthquake.config.EarthquakeBulletinConfiguration;
+import it.albertus.earthquake.model.MapImage;
 import it.albertus.util.Configuration;
 
 public class MapCache {
@@ -16,23 +17,23 @@ public class MapCache {
 		}
 	}
 
-	private static final String CFG_KEY_MAP_CACHE_SIZE = "map.cache.size";
+	private static final String MAP_CACHE_SIZE = "map.cache.size";
 
 	private static final Configuration configuration = EarthquakeBulletinConfiguration.getInstance();
 
-	private final Map<String, byte[]> cache = new LinkedHashMap<>(configuration.getByte(CFG_KEY_MAP_CACHE_SIZE, Defaults.CACHE_SIZE));
+	private final Map<String, MapImage> cache = new LinkedHashMap<>(configuration.getByte(MAP_CACHE_SIZE, Defaults.CACHE_SIZE));
 
-	public void put(final String guid, final byte[] map) {
+	public void put(final String guid, final MapImage map) {
 		if (!cache.containsKey(guid)) {
 			cache.put(guid, map);
 		}
-		while (cache.size() > 0 && cache.size() > configuration.getByte(CFG_KEY_MAP_CACHE_SIZE, Defaults.CACHE_SIZE)) {
+		while (cache.size() > 0 && cache.size() > configuration.getByte(MAP_CACHE_SIZE, Defaults.CACHE_SIZE)) {
 			final String eldestGuid = cache.keySet().iterator().next();
 			cache.remove(eldestGuid);
 		}
 	}
 
-	public byte[] get(final String guid) {
+	public MapImage get(final String guid) {
 		return cache.get(guid);
 	}
 

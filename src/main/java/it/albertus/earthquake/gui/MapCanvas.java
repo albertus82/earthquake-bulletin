@@ -19,7 +19,9 @@ import it.albertus.earthquake.gui.job.DownloadMapJob;
 import it.albertus.earthquake.gui.listener.MapCanvasContextMenuListener;
 import it.albertus.earthquake.gui.listener.MapCanvasPaintListener;
 import it.albertus.earthquake.gui.listener.SaveMapSelectionListener;
+import it.albertus.earthquake.model.MapImage;
 import it.albertus.earthquake.resources.Messages;
+import it.albertus.earthquake.service.MapCache;
 import it.albertus.util.logging.LoggerFactory;
 
 public class MapCanvas {
@@ -58,9 +60,10 @@ public class MapCanvas {
 		return guid;
 	}
 
-	public void setImage(final String guid, final byte[] imageBytes) {
+	public void setImage(final String guid, final MapImage mapImage) {
+		final byte[] imageBytes = mapImage.getBytes();
 		if (imageBytes != null && imageBytes.length > 0) {
-			cache.put(guid, imageBytes);
+			cache.put(guid, mapImage);
 			try (final ByteArrayInputStream bais = new ByteArrayInputStream(imageBytes)) {
 				final Image oldImage = this.image;
 				this.image = new Image(canvas.getDisplay(), bais);

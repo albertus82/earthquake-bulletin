@@ -36,7 +36,7 @@ public class SaveMapSelectionListener extends SelectionAdapter {
 			final String fileName = saveDialog.open();
 			if (fileName != null) {
 				try {
-					Files.write(Paths.get(fileName), mapCanvas.getCache().get(guid));
+					Files.write(Paths.get(fileName), mapCanvas.getCache().get(guid).getBytes());
 				}
 				catch (final Exception e) {
 					final String message = Messages.get("err.image.save", fileName);
