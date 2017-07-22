@@ -7,7 +7,6 @@ import java.util.Map.Entry;
 import java.util.TimeZone;
 
 import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
@@ -235,7 +234,7 @@ public class ResultsTable {
 		});
 
 		TableViewerColumn col = createTableViewerColumn(labelsMap.get(0).getString(), 0);
-		col.setLabelProvider(new ColumnLabelProvider() {
+		col.setLabelProvider(new EarthquakeColumnLabelProvider() {
 			@Override
 			public String getText(final Object element) {
 				final Earthquake earthquake = (Earthquake) element;
@@ -246,17 +245,27 @@ public class ResultsTable {
 		});
 
 		col = createTableViewerColumn(labelsMap.get(1).getString(), 1);
-		col.setLabelProvider(new ColumnLabelProvider() {
+		col.setLabelProvider(new EarthquakeColumnLabelProvider() {
 			@Override
 			public String getText(final Object element) {
 				final Earthquake earthquake = (Earthquake) element;
 				return Float.toString(earthquake.getMagnitude());
 			}
 
+			@Override
+			public Color getForeground(final Object element) {
+				final Earthquake earthquake = (Earthquake) element;
+				if (earthquake.getMagnitude() > 6) {
+					return parent.getDisplay().getSystemColor(SWT.COLOR_RED);
+				}
+				else {
+					return super.getForeground(element);
+				}
+			}
 		});
 
 		col = createTableViewerColumn(labelsMap.get(2).getString(), 2);
-		col.setLabelProvider(new ColumnLabelProvider() {
+		col.setLabelProvider(new EarthquakeColumnLabelProvider() {
 			@Override
 			public String getText(final Object element) {
 				final Earthquake earthquake = (Earthquake) element;
@@ -265,7 +274,7 @@ public class ResultsTable {
 		});
 
 		col = createTableViewerColumn(labelsMap.get(3).getString(), 3);
-		col.setLabelProvider(new ColumnLabelProvider() {
+		col.setLabelProvider(new EarthquakeColumnLabelProvider() {
 			@Override
 			public String getText(final Object element) {
 				final Earthquake earthquake = (Earthquake) element;
@@ -274,7 +283,7 @@ public class ResultsTable {
 		});
 
 		col = createTableViewerColumn(labelsMap.get(4).getString(), 4);
-		col.setLabelProvider(new ColumnLabelProvider() {
+		col.setLabelProvider(new EarthquakeColumnLabelProvider() {
 			@Override
 			public String getText(final Object element) {
 				final Earthquake earthquake = (Earthquake) element;
@@ -283,7 +292,7 @@ public class ResultsTable {
 		});
 
 		col = createTableViewerColumn(labelsMap.get(5).getString(), 5);
-		col.setLabelProvider(new ColumnLabelProvider() {
+		col.setLabelProvider(new EarthquakeColumnLabelProvider() {
 			@Override
 			public String getText(final Object element) {
 				final Earthquake earthquake = (Earthquake) element;
@@ -298,7 +307,7 @@ public class ResultsTable {
 		});
 
 		col = createTableViewerColumn(labelsMap.get(6).getString(), 6);
-		col.setLabelProvider(new ColumnLabelProvider() {
+		col.setLabelProvider(new EarthquakeColumnLabelProvider() {
 			@Override
 			public String getText(final Object element) {
 				final Earthquake earthquake = (Earthquake) element;
@@ -329,8 +338,7 @@ public class ResultsTable {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				comparator.setColumn(index);
-				int dir = comparator.getDirection();
-				tableViewer.getTable().setSortDirection(dir);
+				tableViewer.getTable().setSortDirection(comparator.getDirection());
 				tableViewer.getTable().setSortColumn(column);
 				tableViewer.refresh();
 			}
@@ -358,6 +366,14 @@ public class ResultsTable {
 		return contextMenu;
 	}
 
+	public MenuItem getGoogleMapsBrowserMenuItem() {
+		return googleMapsBrowserMenuItem;
+	}
+
+	public MenuItem getGoogleMapsPopupMenuItem() {
+		return googleMapsPopupMenuItem;
+	}
+
 	public MenuItem getShowMapMenuItem() {
 		return showMapMenuItem;
 	}
@@ -368,14 +384,6 @@ public class ResultsTable {
 
 	public MenuItem getCopyLinkMenuItem() {
 		return copyLinkMenuItem;
-	}
-
-	public MenuItem getGoogleMapsBrowserMenuItem() {
-		return googleMapsBrowserMenuItem;
-	}
-
-	public MenuItem getGoogleMapsPopupMenuItem() {
-		return googleMapsPopupMenuItem;
 	}
 
 }
