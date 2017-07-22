@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -24,6 +23,7 @@ import it.albertus.earthquake.model.Earthquake;
 import it.albertus.earthquake.model.Format;
 import it.albertus.earthquake.resources.Messages;
 import it.albertus.earthquake.service.BulletinProvider;
+import it.albertus.earthquake.service.GeofonBulletinProvider;
 import it.albertus.earthquake.service.SearchJobVars;
 import it.albertus.jface.DisplayThreadExecutor;
 import it.albertus.jface.EnhancedErrorDialog;
@@ -34,15 +34,14 @@ public class SearchJob extends Job {
 	private static final Logger logger = LoggerFactory.getLogger(SearchJob.class);
 
 	private final EarthquakeBulletinGui gui;
-	private final BulletinProvider provider;
+	private final BulletinProvider provider = new GeofonBulletinProvider();
 
 	private boolean shouldRun = true;
 	private boolean shouldSchedule = true;
 
-	public SearchJob(final EarthquakeBulletinGui gui, final BulletinProvider provider) {
+	public SearchJob(final EarthquakeBulletinGui gui) {
 		super("Search");
 		this.gui = gui;
-		this.provider = provider;
 		this.setUser(true);
 	}
 
@@ -115,25 +114,9 @@ public class SearchJob extends Job {
 				}
 			});
 
-			final Collection<Earthquake> earthquakes = new TreeSet<>();
 			try {
-				earthquakes.addAll(provider.getEarthquakes(jobVariables));
-			}
-			catch (final Exception e) {
-				jobVariables.setError(true);
-				final String message = e.getMessage();
-				logger.log(Level.WARNING, message, e);
-				new DisplayThreadExecutor(gui.getShell()).execute(new Runnable() {
-					@Override
-					public void run() {
-						if (gui.getTrayIcon() == null || gui.getTrayIcon().getTrayItem() == null || !gui.getTrayIcon().getTrayItem().getVisible()) {
-							EnhancedErrorDialog.openError(gui.getShell(), Messages.get("lbl.window.title"), message, IStatus.WARNING, e.getCause() != null ? e.getCause() : e, Images.getMainIcons());
-						}
-					}
-				});
-			}
+				final Collection<Earthquake> earthquakes = provider.getEarthquakes(jobVariables);
 
-			if (!jobVariables.isError()) {
 				new DisplayThreadExecutor(gui.getShell()).execute(new Runnable() {
 					@Override
 					public void run() {
@@ -143,9 +126,21 @@ public class SearchJob extends Job {
 						gui.getTrayIcon().updateToolTipText(newData.length > 0 ? newData[0] : null);
 						if (oldData != null && !Arrays.equals(newData, oldData)) {
 							gui.getMapCanvas().clear();
-							if (newData.length > 0 && newData[0] != null && oldData.length > 0 && !newData[0].equals(oldData[0])) {
+							if (newData.length > 0 && newData[0] != null && oldData.length > 0 && !newData[0].equals(oldData[0]) && gui.getTrayIcon().getTrayItem().getVisible()) {
 								gui.getTrayIcon().showBalloonToolTip(newData[0]);
 							}
+						}
+					}
+				});
+			}
+			catch (final Exception e) {
+				final String message = e.getMessage();
+				logger.log(Level.WARNING, message, e);
+				new DisplayThreadExecutor(gui.getShell()).execute(new Runnable() {
+					@Override
+					public void run() {
+						if (gui.getTrayIcon() == null || gui.getTrayIcon().getTrayItem() == null || !gui.getTrayIcon().getTrayItem().getVisible()) {
+							EnhancedErrorDialog.openError(gui.getShell(), Messages.get("lbl.window.title"), message, IStatus.WARNING, e.getCause() != null ? e.getCause() : e, Images.getMainIcons());
 						}
 					}
 				});

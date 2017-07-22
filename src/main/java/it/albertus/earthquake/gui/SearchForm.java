@@ -41,7 +41,6 @@ import it.albertus.earthquake.gui.listener.SearchButtonSelectionListener;
 import it.albertus.earthquake.gui.listener.StopButtonSelectionListener;
 import it.albertus.earthquake.model.Format;
 import it.albertus.earthquake.resources.Messages;
-import it.albertus.earthquake.service.GeofonBulletinProvider;
 import it.albertus.jface.JFaceMessages;
 import it.albertus.jface.SwtUtils;
 import it.albertus.jface.decoration.ControlValidatorDecoration;
@@ -317,7 +316,7 @@ public class SearchForm {
 		GridDataFactory.fillDefaults().span(2, 1).grab(true, false).applyTo(clearButton);
 
 		// Listeners
-		searchButton.addSelectionListener(new SearchButtonSelectionListener(gui, new GeofonBulletinProvider()));
+		searchButton.addSelectionListener(new SearchButtonSelectionListener(gui));
 		stopButton.addSelectionListener(new StopButtonSelectionListener(this));
 		clearButton.addSelectionListener(new ClearButtonSelectionListener(this));
 		autoRefreshButton.addSelectionListener(new AutoRefreshButtonSelectionListener(this));

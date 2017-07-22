@@ -10,7 +10,6 @@ public class SearchJobVars {
 	private boolean formValid;
 	private long waitTimeInMillis;
 	private Format format;
-	private boolean error;
 	private final Map<String, String> params = new LinkedHashMap<>();
 
 	public boolean isFormValid() {
@@ -35,14 +34,6 @@ public class SearchJobVars {
 
 	public void setFormat(Format format) {
 		this.format = format;
-	}
-
-	public boolean isError() {
-		return error;
-	}
-
-	public void setError(boolean error) {
-		this.error = error;
 	}
 
 	public Map<String, String> getParams() {
