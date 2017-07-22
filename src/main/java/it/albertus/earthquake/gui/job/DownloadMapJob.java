@@ -9,13 +9,14 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.MessageBox;
 
 import it.albertus.earthquake.gui.EarthquakeBulletinGui;
+import it.albertus.earthquake.gui.Images;
 import it.albertus.earthquake.gui.util.ImageDownloader;
 import it.albertus.earthquake.model.Earthquake;
 import it.albertus.earthquake.resources.Messages;
 import it.albertus.jface.DisplayThreadExecutor;
+import it.albertus.jface.EnhancedErrorDialog;
 import it.albertus.util.logging.LoggerFactory;
 
 public class DownloadMapJob extends Job {
@@ -48,16 +49,13 @@ public class DownloadMapJob extends Job {
 			try {
 				downloadedImage = ImageDownloader.downloadImage(earthquake.getEnclosure());
 			}
-			catch (final FileNotFoundException fnfe) {
+			catch (final FileNotFoundException e) {
 				final String message = Messages.get("err.job.map.not.found");
-				logger.log(Level.WARNING, message, fnfe);
+				logger.log(Level.INFO, message, e);
 				new DisplayThreadExecutor(gui.getShell()).execute(new Runnable() {
 					@Override
 					public void run() {
-						final MessageBox dialog = new MessageBox(gui.getShell(), SWT.ICON_INFORMATION);
-						dialog.setText(Messages.get("lbl.window.title"));
-						dialog.setMessage(message);
-						dialog.open();
+						EnhancedErrorDialog.openError(gui.getShell(), Messages.get("lbl.window.title"), message, IStatus.INFO, e, Images.getMainIcons());
 					}
 				});
 			}
@@ -67,10 +65,7 @@ public class DownloadMapJob extends Job {
 				new DisplayThreadExecutor(gui.getShell()).execute(new Runnable() {
 					@Override
 					public void run() {
-						final MessageBox dialog = new MessageBox(gui.getShell(), SWT.ICON_WARNING);
-						dialog.setText(Messages.get("lbl.window.title"));
-						dialog.setMessage(message);
-						dialog.open();
+						EnhancedErrorDialog.openError(gui.getShell(), Messages.get("lbl.window.title"), message, IStatus.WARNING, e, Images.getMainIcons());
 					}
 				});
 			}

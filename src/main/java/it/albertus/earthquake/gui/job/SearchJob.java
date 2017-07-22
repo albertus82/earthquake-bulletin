@@ -1,11 +1,5 @@
 package it.albertus.earthquake.gui.job;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
@@ -13,10 +7,6 @@ import java.util.Map.Entry;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.zip.GZIPInputStream;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Unmarshaller;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -24,24 +14,17 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.MessageBox;
 
 import com.dmurph.URIEncoder;
 
-import it.albertus.earthquake.EarthquakeBulletin;
 import it.albertus.earthquake.gui.EarthquakeBulletinGui;
+import it.albertus.earthquake.gui.Images;
 import it.albertus.earthquake.gui.SearchForm;
-import it.albertus.earthquake.html.TableData;
-import it.albertus.earthquake.html.transformer.HtmlTableDataTransformer;
 import it.albertus.earthquake.model.Earthquake;
 import it.albertus.earthquake.model.Format;
-import it.albertus.earthquake.net.HttpConnector;
 import it.albertus.earthquake.resources.Messages;
-import it.albertus.earthquake.rss.transformer.RssItemTransformer;
-import it.albertus.earthquake.rss.xml.Rss;
 import it.albertus.jface.DisplayThreadExecutor;
-import it.albertus.util.IOUtils;
-import it.albertus.util.NewLine;
+import it.albertus.jface.EnhancedErrorDialog;
 import it.albertus.util.logging.LoggerFactory;
 
 public class SearchJob extends Job {
@@ -60,216 +43,125 @@ public class SearchJob extends Job {
 
 	@Override
 	protected IStatus run(final IProgressMonitor monitor) {
-		try {
-			monitor.beginTask("Search", 1);
+		monitor.beginTask("Search", 1);
 
-			final SearchJobVars jobVariables = new SearchJobVars();
+		final SearchJobVars jobVariables = new SearchJobVars();
+
+		new DisplayThreadExecutor(gui.getShell()).execute(new Runnable() {
+			@Override
+			public void run() {
+				final boolean formValid = gui.getSearchForm().isValid();
+				jobVariables.setFormValid(formValid);
+				if (!formValid) {
+					gui.getSearchForm().getStopButton().notifyListeners(SWT.Selection, null);
+				}
+			}
+		});
+
+		if (jobVariables.isFormValid()) {
+			jobVariables.setFormat(SearchForm.Defaults.FORMAT);
 
 			new DisplayThreadExecutor(gui.getShell()).execute(new Runnable() {
 				@Override
 				public void run() {
-					final boolean formValid = gui.getSearchForm().isValid();
-					jobVariables.setFormValid(formValid);
-					if (!formValid) {
-						gui.getSearchForm().getStopButton().notifyListeners(SWT.Selection, null);
+					gui.getSearchForm().updateButtons();
+					gui.getShell().setCursor(gui.getShell().getDisplay().getSystemCursor(SWT.CURSOR_WAIT));
+
+					// Parametri di ricerca
+					final SearchForm form = gui.getSearchForm();
+
+					for (final Entry<Format, Button> entry : form.getFormatRadios().entrySet()) {
+						if (entry.getValue().getSelection()) {
+							jobVariables.setFormat(entry.getKey());
+							break;
+						}
+					}
+					final Map<String, String> params = jobVariables.getParams();
+					params.put("fmt", jobVariables.getFormat().getValue());
+					params.put("mode", form.getRestrictButton().getSelection() ? "mt" : "");
+					if (form.getPeriodFromDateTime().isEnabled() && form.getPeriodFromDateTime().getSelection() != null) {
+						params.put("datemin", URIEncoder.encodeURI(form.getPeriodFromDateTime().getText()));
+					}
+					if (form.getPeriodToDateTime().isEnabled() && form.getPeriodToDateTime().getSelection() != null) {
+						params.put("datemax", URIEncoder.encodeURI(form.getPeriodToDateTime().getText()));
+					}
+					params.put("latmin", URIEncoder.encodeURI(form.getLatitudeFromText().getText()));
+					params.put("latmax", URIEncoder.encodeURI(form.getLatitudeToText().getText()));
+					params.put("lonmin", URIEncoder.encodeURI(form.getLongitudeFromText().getText()));
+					params.put("lonmax", URIEncoder.encodeURI(form.getLongitudeToText().getText()));
+					params.put("magmin", URIEncoder.encodeURI(form.getMinimumMagnitudeText().getText()));
+					params.put("nmax", URIEncoder.encodeURI(form.getResultsText().getText()));
+
+					if (gui.getSearchForm().getAutoRefreshButton().getSelection()) {
+						final String time = gui.getSearchForm().getAutoRefreshText().getText().trim();
+						if (!time.isEmpty()) {
+							try {
+								short waitTimeInMinutes = Short.parseShort(time);
+								if (waitTimeInMinutes > 0) {
+									jobVariables.setWaitTimeInMillis(waitTimeInMinutes * 1000L * 60);
+									gui.getSearchForm().getStopButton().setEnabled(true);
+								}
+							}
+							catch (final RuntimeException e) {
+								logger.log(Level.WARNING, e.toString(), e);
+							}
+						}
 					}
 				}
 			});
 
-			if (jobVariables.isFormValid()) {
-				jobVariables.setFormat(SearchForm.Defaults.FORMAT);
-
+			final Collection<Earthquake> earthquakes = new TreeSet<>();
+			try {
+				earthquakes.addAll(new GeofonBulletinProvider().getEarthquakes(jobVariables));
+			}
+			catch (final Exception e) {
+				jobVariables.setError(true);
+				final String message = e.getMessage();
+				logger.log(Level.WARNING, message, e);
 				new DisplayThreadExecutor(gui.getShell()).execute(new Runnable() {
 					@Override
 					public void run() {
-						gui.getSearchForm().updateButtons();
-						gui.getShell().setCursor(gui.getShell().getDisplay().getSystemCursor(SWT.CURSOR_WAIT));
-
-						// Parametri di ricerca
-						final SearchForm form = gui.getSearchForm();
-
-						for (final Entry<Format, Button> entry : form.getFormatRadios().entrySet()) {
-							if (entry.getValue().getSelection()) {
-								jobVariables.setFormat(entry.getKey());
-								break;
-							}
+						if (gui.getTrayIcon() == null || gui.getTrayIcon().getTrayItem() == null || !gui.getTrayIcon().getTrayItem().getVisible()) {
+							EnhancedErrorDialog.openError(gui.getShell(), Messages.get("lbl.window.title"), message, IStatus.WARNING, e.getCause() != null ? e.getCause() : e, Images.getMainIcons());
 						}
-						final Map<String, String> params = jobVariables.getParams();
-						params.put("fmt", jobVariables.getFormat().getValue());
-						params.put("mode", form.getRestrictButton().getSelection() ? "mt" : "");
-						if (form.getPeriodFromDateTime().isEnabled() && form.getPeriodFromDateTime().getSelection() != null) {
-							params.put("datemin", URIEncoder.encodeURI(form.getPeriodFromDateTime().getText()));
-						}
-						if (form.getPeriodToDateTime().isEnabled() && form.getPeriodToDateTime().getSelection() != null) {
-							params.put("datemax", URIEncoder.encodeURI(form.getPeriodToDateTime().getText()));
-						}
-						params.put("latmin", URIEncoder.encodeURI(form.getLatitudeFromText().getText()));
-						params.put("latmax", URIEncoder.encodeURI(form.getLatitudeToText().getText()));
-						params.put("lonmin", URIEncoder.encodeURI(form.getLongitudeFromText().getText()));
-						params.put("lonmax", URIEncoder.encodeURI(form.getLongitudeToText().getText()));
-						params.put("magmin", URIEncoder.encodeURI(form.getMinimumMagnitudeText().getText()));
-						params.put("nmax", URIEncoder.encodeURI(form.getResultsText().getText()));
-
-						if (gui.getSearchForm().getAutoRefreshButton().getSelection()) {
-							final String time = gui.getSearchForm().getAutoRefreshText().getText().trim();
-							if (!time.isEmpty()) {
-								try {
-									short waitTimeInMinutes = Short.parseShort(time);
-									if (waitTimeInMinutes > 0) {
-										jobVariables.setWaitTimeInMillis(waitTimeInMinutes * 1000L * 60);
-										gui.getSearchForm().getStopButton().setEnabled(true);
-									}
-								}
-								catch (final RuntimeException e) {
-									logger.log(Level.WARNING, e.toString(), e);
-								}
-							}
-						}
-					}
-				});
-
-				final StringBuilder urlSb = new StringBuilder(EarthquakeBulletin.BASE_URL).append("/eqinfo/list.php?fmt=").append(jobVariables.getParams().get("fmt"));
-				for (final Entry<String, String> param : jobVariables.getParams().entrySet()) {
-					if (param.getValue() != null && !param.getValue().isEmpty() && !"fmt".equals(param.getKey())) {
-						urlSb.append("&").append(param.getKey()).append("=").append(param.getValue());
-					}
-				}
-
-				Rss rss = null;
-				TableData td = null;
-				InputStream innerStream = null;
-				InputStream wrapperStream = null;
-				try {
-					final URL url = new URL(urlSb.toString());
-					final HttpURLConnection urlConnection = openConnection(url);
-					final String responseContentEncoding = urlConnection.getContentEncoding();
-					final boolean gzip = responseContentEncoding != null && responseContentEncoding.toLowerCase().contains("gzip");
-					innerStream = urlConnection.getInputStream();
-					if (gzip) {
-						wrapperStream = new GZIPInputStream(innerStream);
-					}
-					else {
-						wrapperStream = innerStream;
-					}
-					switch (jobVariables.getFormat()) {
-					case RSS:
-						final JAXBContext jaxbContext = JAXBContext.newInstance(Rss.class);
-						final Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-						rss = (Rss) jaxbUnmarshaller.unmarshal(wrapperStream);
-						urlConnection.disconnect();
-						break;
-					case HTML:
-						td = new TableData();
-						try (final BufferedReader br = new BufferedReader(new InputStreamReader(wrapperStream))) {
-							String line = null;
-							while ((line = br.readLine()) != null) {
-								if (line.trim().toLowerCase().contains("<tr")) {
-									final StringBuilder block = new StringBuilder();
-									while (!(line = br.readLine()).toLowerCase().contains("</tr")) {
-										block.append(line.trim()).append(NewLine.SYSTEM_LINE_SEPARATOR);
-									}
-									td.addItem(block.toString());
-								}
-							}
-						}
-						break;
-					}
-				}
-				catch (final Exception e) {
-					jobVariables.setError(true);
-					final String message = Messages.get("err.job.search");
-					logger.log(Level.WARNING, message, e);
-					new DisplayThreadExecutor(gui.getShell()).execute(new Runnable() {
-						@Override
-						public void run() {
-							if (gui.getTrayIcon() == null || gui.getTrayIcon().getTrayItem() == null || !gui.getTrayIcon().getTrayItem().getVisible()) {
-								final MessageBox dialog = new MessageBox(gui.getShell(), SWT.ICON_WARNING);
-								dialog.setText(Messages.get("lbl.window.title"));
-								dialog.setMessage(message);
-								dialog.open();
-							}
-						}
-					});
-				}
-				finally {
-					IOUtils.closeQuietly(wrapperStream, innerStream);
-				}
-
-				final Collection<Earthquake> earthquakes = new TreeSet<>();
-				if (!jobVariables.isError()) {
-					try {
-						switch (jobVariables.getFormat()) {
-						case RSS:
-							earthquakes.addAll(RssItemTransformer.fromRss(rss));
-							break;
-						case HTML:
-							earthquakes.addAll(HtmlTableDataTransformer.fromHtml(td));
-							break;
-						}
-					}
-					catch (final Exception e) {
-						jobVariables.setError(true);
-						final String message = Messages.get("err.job.decode");
-						logger.log(Level.WARNING, message, e);
-						new DisplayThreadExecutor(gui.getShell()).execute(new Runnable() {
-							@Override
-							public void run() {
-								if (gui.getTrayIcon() == null || gui.getTrayIcon().getTrayItem() == null || !gui.getTrayIcon().getTrayItem().getVisible()) {
-									final MessageBox dialog = new MessageBox(gui.getShell(), SWT.ICON_WARNING);
-									dialog.setText(Messages.get("lbl.window.title"));
-									dialog.setMessage(message);
-									dialog.open();
-								}
-							}
-						});
-					}
-				}
-
-				if (!jobVariables.isError()) {
-					new DisplayThreadExecutor(gui.getShell()).execute(new Runnable() {
-						@Override
-						public void run() {
-							final Earthquake[] newData = earthquakes.toArray(new Earthquake[0]);
-							final Earthquake[] oldData = (Earthquake[]) gui.getResultsTable().getTableViewer().getInput();
-							gui.getResultsTable().getTableViewer().setInput(newData);
-							gui.getTrayIcon().updateToolTipText(newData.length > 0 ? newData[0] : null);
-							if (oldData != null && !Arrays.equals(newData, oldData)) {
-								gui.getMapCanvas().clear();
-								if (newData.length > 0 && newData[0] != null && oldData.length > 0 && !newData[0].equals(oldData[0])) {
-									gui.getTrayIcon().showBalloonToolTip(newData[0]);
-								}
-							}
-						}
-					});
-				}
-
-				new DisplayThreadExecutor(gui.getShell()).execute(new Runnable() {
-					@Override
-					public void run() {
-						final long waitTimeInMillis = jobVariables.getWaitTimeInMillis();
-						if (waitTimeInMillis > 0) {
-							schedule(waitTimeInMillis);
-						}
-						else {
-							gui.getSearchForm().getStopButton().notifyListeners(SWT.Selection, null);
-						}
-						gui.getShell().setCursor(null);
 					}
 				});
 			}
-			monitor.done();
-			return Status.OK_STATUS;
-		}
-		catch (final RuntimeException re) {
-			throw re;
-		}
-	}
 
-	private HttpURLConnection openConnection(final URL url) throws IOException {
-		final HttpURLConnection urlConnection = HttpConnector.openConnection(url);
-		urlConnection.addRequestProperty("Accept", "*/html,*/xml");
-		urlConnection.addRequestProperty("Accept-Encoding", "gzip");
-		return urlConnection;
+			if (!jobVariables.isError()) {
+				new DisplayThreadExecutor(gui.getShell()).execute(new Runnable() {
+					@Override
+					public void run() {
+						final Earthquake[] newData = earthquakes.toArray(new Earthquake[0]);
+						final Earthquake[] oldData = (Earthquake[]) gui.getResultsTable().getTableViewer().getInput();
+						gui.getResultsTable().getTableViewer().setInput(newData);
+						gui.getTrayIcon().updateToolTipText(newData.length > 0 ? newData[0] : null);
+						if (oldData != null && !Arrays.equals(newData, oldData)) {
+							gui.getMapCanvas().clear();
+							if (newData.length > 0 && newData[0] != null && oldData.length > 0 && !newData[0].equals(oldData[0])) {
+								gui.getTrayIcon().showBalloonToolTip(newData[0]);
+							}
+						}
+					}
+				});
+			}
+
+			new DisplayThreadExecutor(gui.getShell()).execute(new Runnable() {
+				@Override
+				public void run() {
+					final long waitTimeInMillis = jobVariables.getWaitTimeInMillis();
+					if (waitTimeInMillis > 0) {
+						schedule(waitTimeInMillis);
+					}
+					else {
+						gui.getSearchForm().getStopButton().notifyListeners(SWT.Selection, null);
+					}
+					gui.getShell().setCursor(null);
+				}
+			});
+		}
+		monitor.done();
+		return Status.OK_STATUS;
 	}
 
 	@Override
