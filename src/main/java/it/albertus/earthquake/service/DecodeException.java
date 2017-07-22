@@ -2,22 +2,10 @@ package it.albertus.earthquake.service;
 
 public class DecodeException extends Exception {
 
-	private static final long serialVersionUID = -6856256302141455910L;
-
-	public DecodeException() {
-		super();
-	}
+	private static final long serialVersionUID = 6542635211667343403L;
 
 	public DecodeException(String message, Throwable cause) {
 		super(message, cause);
-	}
-
-	public DecodeException(String message) {
-		super(message);
-	}
-
-	public DecodeException(Throwable cause) {
-		super(cause);
 	}
 
 }
