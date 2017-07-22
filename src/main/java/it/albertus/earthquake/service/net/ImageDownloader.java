@@ -4,7 +4,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import it.albertus.util.IOUtils;
@@ -35,7 +34,7 @@ public class ImageDownloader {
 		}
 	}
 
-	public static byte[] downloadImage(final String url) throws MalformedURLException, IOException {
+	public static byte[] downloadImage(final String url) throws IOException {
 		return downloadImage(new URL(url));
 	}
 

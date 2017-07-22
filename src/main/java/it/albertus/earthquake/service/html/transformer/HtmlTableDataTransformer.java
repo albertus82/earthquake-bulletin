@@ -63,7 +63,7 @@ public class HtmlTableDataTransformer {
 		}
 	}
 
-	public static Set<Earthquake> fromHtml(final TableData tableData) throws IllegalArgumentException {
+	public static Set<Earthquake> fromHtml(final TableData tableData) {
 		final Set<Earthquake> earthquakes = new TreeSet<>();
 		if (tableData != null && tableData.getItems().size() > 1) {
 			// Discards first and last <td>
@@ -75,7 +75,7 @@ public class HtmlTableDataTransformer {
 		return earthquakes;
 	}
 
-	private static Earthquake fromHtml(final String td) throws IllegalArgumentException {
+	private static Earthquake fromHtml(final String td) {
 		try {
 			final String[] lines = td.split(NewLine.SYSTEM_LINE_SEPARATOR);
 
