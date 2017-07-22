@@ -17,6 +17,7 @@ import it.albertus.earthquake.EarthquakeBulletin;
 import it.albertus.earthquake.config.EarthquakeBulletinConfiguration;
 import it.albertus.earthquake.gui.EarthquakeBulletinGui;
 import it.albertus.earthquake.gui.Images;
+import it.albertus.earthquake.gui.ResultsTable;
 import it.albertus.earthquake.gui.preference.PageDefinition;
 import it.albertus.earthquake.gui.preference.Preference;
 import it.albertus.earthquake.resources.Messages;
@@ -42,6 +43,9 @@ public class PreferencesListener extends SelectionAdapter implements Listener {
 	public void widgetSelected(final SelectionEvent se) {
 		final Language language = Messages.getLanguage();
 		final String timezone = configuration.getString("timezone", EarthquakeBulletin.Defaults.TIME_ZONE_ID);
+		final float magnitudeBig = configuration.getFloat("magnitude.big", ResultsTable.Defaults.MAGNITUDE_BIG);
+		final float magnitudeXxl = configuration.getFloat("magnitude.xxl", ResultsTable.Defaults.MAGNITUDE_XXL);
+
 		final Preferences preferences = new Preferences(PageDefinition.values(), Preference.values(), configuration, Images.getMainIcons());
 		final Shell shell = gui.getShell();
 		try {
@@ -59,7 +63,7 @@ public class PreferencesListener extends SelectionAdapter implements Listener {
 		}
 
 		// Check if time zone has changed...
-		if (!timezone.equals(configuration.getString("timezone", EarthquakeBulletin.Defaults.TIME_ZONE_ID))) {
+		if (magnitudeBig != configuration.getFloat("magnitude.big", ResultsTable.Defaults.MAGNITUDE_BIG) || magnitudeXxl != configuration.getFloat("magnitude.xxl", ResultsTable.Defaults.MAGNITUDE_XXL) || !timezone.equals(configuration.getString("timezone", EarthquakeBulletin.Defaults.TIME_ZONE_ID))) {
 			gui.getResultsTable().getTableViewer().refresh();
 		}
 
