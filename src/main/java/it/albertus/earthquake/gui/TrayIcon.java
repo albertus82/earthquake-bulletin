@@ -1,6 +1,8 @@
 package it.albertus.earthquake.gui;
 
 import java.text.DateFormat;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -46,8 +48,8 @@ public class TrayIcon {
 
 	private Tray tray;
 	private TrayItem trayItem;
-	private ToolTip toolTip;
 
+	private final Map<Integer, ToolTip> toolTips = new HashMap<>(3);
 	private Menu trayMenu;
 	private MenuItem showMenuItem;
 	private MenuItem exitMenuItem;
@@ -84,11 +86,13 @@ public class TrayIcon {
 					trayItem.setToolTipText(Messages.get("lbl.tray.tooltip"));
 					final TrayRestoreListener trayRestoreListener = new TrayRestoreListener(gui.getShell(), trayItem);
 
-					toolTip = new ToolTip(gui.getShell(), SWT.BALLOON | SWT.ICON_WARNING);
-					toolTip.setVisible(false);
-					toolTip.setAutoHide(true);
-					toolTip.addListener(SWT.Selection, trayRestoreListener);
-					trayItem.setToolTip(toolTip);
+					for (final int icon : new int[] { SWT.ICON_INFORMATION, SWT.ICON_WARNING, SWT.ICON_ERROR }) {
+						final ToolTip toolTip = new ToolTip(gui.getShell(), SWT.BALLOON | icon);
+						toolTip.setVisible(false);
+						toolTip.setAutoHide(true);
+						toolTip.addListener(SWT.Selection, trayRestoreListener);
+						toolTips.put(icon, toolTip);
+					}
 
 					trayMenu = new Menu(gui.getShell(), SWT.POP_UP);
 					showMenuItem = new MenuItem(trayMenu, SWT.PUSH);
@@ -135,16 +139,28 @@ public class TrayIcon {
 			final StringBuilder message = new StringBuilder();
 			final DateFormat df = ResultsTable.dateFormat.get();
 			df.setTimeZone(TimeZone.getTimeZone(configuration.getString("timezone", EarthquakeBulletin.Defaults.TIME_ZONE_ID)));
-			message.append(df.format(earthquake.getTime())).append(" ");
-			message.append(earthquake.getLatitude()).append(" ");
-			message.append(earthquake.getLongitude()).append(" ");
-			message.append(earthquake.getDepth()).append(" ");
+			message.append(df.format(earthquake.getTime())).append(' ');
+			message.append(earthquake.getLatitude()).append(' ');
+			message.append(earthquake.getLongitude()).append(' ');
+			message.append(earthquake.getDepth()).append(' ');
 			message.append(earthquake.getStatus());
+
+			final ToolTip toolTip;
+			if (earthquake.getMagnitude() >= configuration.getFloat("magnitude.xxl", ResultsTable.Defaults.MAGNITUDE_XXL)) {
+				toolTip = toolTips.get(SWT.ICON_ERROR);
+			}
+			else if (earthquake.getMagnitude() >= configuration.getFloat("magnitude.big", ResultsTable.Defaults.MAGNITUDE_BIG)) {
+				toolTip = toolTips.get(SWT.ICON_WARNING);
+			}
+			else {
+				toolTip = toolTips.get(SWT.ICON_INFORMATION);
+			}
 
 			try {
 				trayItem.getDisplay().syncExec(new Runnable() {
 					@Override
 					public void run() {
+						trayItem.setToolTip(toolTip);
 						toolTip.setText(text.toString().trim());
 						toolTip.setMessage(message.toString().trim());
 						toolTip.setVisible(true);
@@ -190,28 +206,15 @@ public class TrayIcon {
 		}
 	}
 
-	public Tray getTray() {
-		return tray;
+	public void updateTexts() {
+		if (trayMenu != null) {
+			showMenuItem.setText(Messages.get("lbl.tray.show"));
+			exitMenuItem.setText(Messages.get("lbl.tray.close"));
+		}
 	}
 
 	public TrayItem getTrayItem() {
 		return trayItem;
-	}
-
-	public ToolTip getToolTip() {
-		return toolTip;
-	}
-
-	public Menu getTrayMenu() {
-		return trayMenu;
-	}
-
-	public MenuItem getShowMenuItem() {
-		return showMenuItem;
-	}
-
-	public MenuItem getExitMenuItem() {
-		return exitMenuItem;
 	}
 
 }

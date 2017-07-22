@@ -164,6 +164,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 		resultsTable.updateTexts();
 		searchForm.updateTexts();
 		mapCanvas.updateTexts();
+		trayIcon.updateTexts();
 
 		final TableColumn[] columns = resultsTable.getTableViewer().getTable().getColumns();
 		final int[] widths = new int[columns.length];
