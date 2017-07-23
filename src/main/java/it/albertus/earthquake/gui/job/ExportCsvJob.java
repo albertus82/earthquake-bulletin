@@ -16,6 +16,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.Table;
 
 import it.albertus.earthquake.gui.EarthquakeBulletinGui;
 import it.albertus.earthquake.gui.Images;
@@ -42,7 +43,7 @@ public class ExportCsvJob extends Job {
 
 	@Override
 	protected IStatus run(final IProgressMonitor monitor) {
-		monitor.beginTask("Image download", 1);
+		monitor.beginTask("Export CSV", IProgressMonitor.UNKNOWN);
 
 		if (gui.getResultsTable() != null && gui.getResultsTable().getTableViewer() != null && gui.getResultsTable().getTableViewer().getTable() != null) {
 			new DisplayThreadExecutor(gui.getShell()).execute(new Runnable() {
@@ -53,60 +54,48 @@ public class ExportCsvJob extends Job {
 			});
 
 			try (final StringWriter sw = new StringWriter()) {
-				final String[] fileName = new String[1];
-				new DisplayThreadExecutor(gui.getResultsTable().getTableViewer().getTable()).execute(new Runnable() {
+				final Table table = gui.getResultsTable().getTableViewer().getTable();
+				final Variables vars = new Variables();
+				new DisplayThreadExecutor(table).execute(new Runnable() {
 					@Override
 					public void run() {
 						try (final BufferedWriter bw = new BufferedWriter(sw)) {
-							// Head
-							for (int i = 0; i < gui.getResultsTable().getTableViewer().getTable().getColumnCount(); i++) {
-								if (i != 0) {
-									bw.append(CSV_FIELD_SEPARATOR);
-								}
-								bw.write(gui.getResultsTable().getTableViewer().getTable().getColumn(i).getText());
-							}
-							bw.newLine();
-							// Body
-							for (int i = 0; i < gui.getResultsTable().getTableViewer().getTable().getItemCount(); i++) {
-								for (int j = 0; j < gui.getResultsTable().getTableViewer().getTable().getColumnCount(); j++) {
-									if (j != 0) {
-										bw.append(CSV_FIELD_SEPARATOR);
-									}
-									bw.write(gui.getResultsTable().getTableViewer().getTable().getItem(i).getText(j));
-								}
-								bw.newLine();
-							}
+							writeCsv(table, bw);
 						}
-						catch (final IOException e) {
-							logger.log(Level.SEVERE, e.toString(), e);
-							throw new IllegalStateException(e);
+						catch (final Exception e) {
+							final String message = Messages.get("err.job.csv.create");
+							logger.log(Level.SEVERE, message, e);
+							EnhancedErrorDialog.openError(gui.getShell(), Messages.get("lbl.window.title"), message, IStatus.ERROR, e, Images.getMainIcons());
+							vars.setException(e);
 						}
 						finally {
 							gui.getShell().setCursor(null);
 						}
-						final FileDialog saveDialog = new FileDialog(gui.getShell(), SWT.SAVE);
-						saveDialog.setFilterExtensions(new String[] { "*.CSV;*.csv" });
-						saveDialog.setFileName("earthquakes_" + dateFormat.format(new Date()) + ".csv");
-						saveDialog.setOverwrite(true);
-						fileName[0] = saveDialog.open();
-						gui.getShell().setCursor(gui.getShell().getDisplay().getSystemCursor(SWT.CURSOR_WAIT));
+						if (vars.getException() == null) {
+							vars.setFileName(openSaveDialog());
+							gui.getShell().setCursor(gui.getShell().getDisplay().getSystemCursor(SWT.CURSOR_WAIT));
+						}
 					}
 				});
 
-				// Salvare su disco
-				if (fileName[0] != null) {
-					try (final FileWriter fw = new FileWriter(fileName[0]); final BufferedWriter bw = new BufferedWriter(fw)) {
+				if (vars.getException() != null) {
+					return Status.CANCEL_STATUS;
+				}
+
+				// Save file (outside the UI thread)
+				if (vars.getFileName() != null) {
+					try (final FileWriter fw = new FileWriter(vars.getFileName()); final BufferedWriter bw = new BufferedWriter(fw)) {
 						bw.write(sw.toString());
 					}
 				}
 			}
 			catch (final Exception e) {
-				final String message = Messages.get("err.job.csv");
+				final String message = Messages.get("err.job.csv.save");
 				logger.log(Level.WARNING, message, e);
 				new DisplayThreadExecutor(gui.getShell()).execute(new Runnable() {
 					@Override
 					public void run() {
-						EnhancedErrorDialog.openError(gui.getShell(), Messages.get("lbl.window.title"), message, IStatus.ERROR, e, Images.getMainIcons());
+						EnhancedErrorDialog.openError(gui.getShell(), Messages.get("lbl.window.title"), message, IStatus.WARNING, e, Images.getMainIcons());
 					}
 				});
 			}
@@ -121,6 +110,54 @@ public class ExportCsvJob extends Job {
 
 		monitor.done();
 		return Status.OK_STATUS;
+	}
+
+	private void writeCsv(final Table table, final BufferedWriter writer) throws IOException {
+		for (int i = 0; i < table.getColumnCount(); i++) { // Head
+			if (i != 0) {
+				writer.append(CSV_FIELD_SEPARATOR);
+			}
+			writer.write(table.getColumn(i).getText());
+		}
+		writer.newLine();
+		for (int i = 0; i < table.getItemCount(); i++) { // Body
+			for (int j = 0; j < table.getColumnCount(); j++) {
+				if (j != 0) {
+					writer.append(CSV_FIELD_SEPARATOR);
+				}
+				writer.write(table.getItem(i).getText(j));
+			}
+			writer.newLine();
+		}
+	}
+
+	private String openSaveDialog() {
+		final FileDialog saveDialog = new FileDialog(gui.getShell(), SWT.SAVE);
+		saveDialog.setFilterExtensions(new String[] { "*.CSV;*.csv" });
+		saveDialog.setFileName(String.format("earthquakebulletin_%s.csv", dateFormat.format(new Date())));
+		saveDialog.setOverwrite(true);
+		return saveDialog.open();
+	}
+
+	private class Variables {
+		private String fileName;
+		private Exception exception;
+
+		private String getFileName() {
+			return fileName;
+		}
+
+		private void setFileName(final String fileName) {
+			this.fileName = fileName;
+		}
+
+		private Exception getException() {
+			return exception;
+		}
+
+		private void setException(final Exception exception) {
+			this.exception = exception;
+		}
 	}
 
 }

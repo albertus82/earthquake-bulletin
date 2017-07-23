@@ -1,7 +1,6 @@
 package it.albertus.earthquake.gui.job;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
@@ -47,7 +46,7 @@ public class SearchJob extends Job {
 
 	@Override
 	protected IStatus run(final IProgressMonitor monitor) {
-		monitor.beginTask("Search", 1);
+		monitor.beginTask("Search", IProgressMonitor.UNKNOWN);
 
 		final SearchJobVars jobVariables = new SearchJobVars();
 
@@ -71,7 +70,7 @@ public class SearchJob extends Job {
 					gui.getSearchForm().updateButtons();
 					gui.getShell().setCursor(gui.getShell().getDisplay().getSystemCursor(SWT.CURSOR_WAIT));
 
-					// Parametri di ricerca
+					// Search parameters
 					final SearchForm form = gui.getSearchForm();
 
 					for (final Entry<Format, Button> entry : form.getFormatRadios().entrySet()) {
@@ -115,12 +114,11 @@ public class SearchJob extends Job {
 			});
 
 			try {
-				final List<Earthquake> earthquakes = provider.getEarthquakes(jobVariables);
+				final Earthquake[] newData = provider.getEarthquakes(jobVariables).toArray(new Earthquake[0]);
 
 				new DisplayThreadExecutor(gui.getShell()).execute(new Runnable() {
 					@Override
 					public void run() {
-						final Earthquake[] newData = earthquakes.toArray(new Earthquake[0]);
 						final Earthquake[] oldData = (Earthquake[]) gui.getResultsTable().getTableViewer().getInput();
 						gui.getResultsTable().getTableViewer().setInput(newData);
 						gui.getTrayIcon().updateToolTipText(newData.length > 0 ? newData[0] : null);

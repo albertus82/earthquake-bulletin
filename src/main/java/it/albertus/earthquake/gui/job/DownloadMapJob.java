@@ -12,6 +12,7 @@ import org.eclipse.swt.SWT;
 
 import it.albertus.earthquake.gui.EarthquakeBulletinGui;
 import it.albertus.earthquake.gui.Images;
+import it.albertus.earthquake.gui.MapCanvas;
 import it.albertus.earthquake.model.Earthquake;
 import it.albertus.earthquake.model.MapImage;
 import it.albertus.earthquake.resources.Messages;
@@ -42,7 +43,7 @@ public class DownloadMapJob extends Job {
 
 	@Override
 	protected IStatus run(final IProgressMonitor monitor) {
-		monitor.beginTask("Image download", 1);
+		monitor.beginTask("Map download", IProgressMonitor.UNKNOWN);
 
 		if (earthquake.getEnclosure() != null) {
 			new DisplayThreadExecutor(gui.getShell()).execute(new Runnable() {
@@ -52,17 +53,18 @@ public class DownloadMapJob extends Job {
 				}
 			});
 
+			final MapCanvas mapCanvas = gui.getMapCanvas();
 			try {
 				final MapImage image = ImageDownloader.downloadImage(earthquake.getEnclosure(), etag);
 
-				new DisplayThreadExecutor(gui.getMapCanvas().getCanvas()).execute(new Runnable() {
+				new DisplayThreadExecutor(mapCanvas.getCanvas()).execute(new Runnable() {
 					@Override
 					public void run() {
 						if (image != null) {
-							gui.getMapCanvas().setImage(earthquake.getGuid(), image);
+							mapCanvas.setImage(earthquake.getGuid(), image);
 						}
-						else if (gui.getMapCanvas().getCache().contains(earthquake.getGuid())) { // Not modified
-							gui.getMapCanvas().setImage(earthquake.getGuid(), gui.getMapCanvas().getCache().get(earthquake.getGuid()));
+						else if (mapCanvas.getCache().contains(earthquake.getGuid())) { // Not modified
+							mapCanvas.setImage(earthquake.getGuid(), mapCanvas.getCache().get(earthquake.getGuid()));
 						}
 					}
 				});
@@ -83,8 +85,8 @@ public class DownloadMapJob extends Job {
 				new DisplayThreadExecutor(gui.getShell()).execute(new Runnable() {
 					@Override
 					public void run() {
-						if (gui.getMapCanvas().getCache().contains(earthquake.getGuid())) { // silently use cached version if available
-							gui.getMapCanvas().setImage(earthquake.getGuid(), gui.getMapCanvas().getCache().get(earthquake.getGuid()));
+						if (mapCanvas.getCache().contains(earthquake.getGuid())) { // silently use cached version if available
+							mapCanvas.setImage(earthquake.getGuid(), mapCanvas.getCache().get(earthquake.getGuid()));
 						}
 						else {
 							EnhancedErrorDialog.openError(gui.getShell(), Messages.get("lbl.window.title"), message, IStatus.WARNING, e, Images.getMainIcons());
@@ -93,7 +95,7 @@ public class DownloadMapJob extends Job {
 				});
 			}
 
-			new DisplayThreadExecutor(gui.getMapCanvas().getCanvas()).execute(new Runnable() {
+			new DisplayThreadExecutor(mapCanvas.getCanvas()).execute(new Runnable() {
 				@Override
 				public void run() {
 					gui.getShell().setCursor(null);
