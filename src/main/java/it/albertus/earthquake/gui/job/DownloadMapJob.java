@@ -33,7 +33,7 @@ public class DownloadMapJob extends Job {
 	}
 
 	public DownloadMapJob(final EarthquakeBulletinGui gui, final Earthquake earthquake, final String etag) {
-		super("Image download");
+		super("Map download");
 		this.gui = gui;
 		this.earthquake = earthquake;
 		this.etag = etag;
