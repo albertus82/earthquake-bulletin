@@ -5,9 +5,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map.Entry;
-import java.util.TreeSet;
 import java.util.zip.GZIPInputStream;
 
 import javax.xml.bind.JAXBContext;
@@ -29,7 +29,7 @@ import it.albertus.util.NewLine;
 public class GeofonBulletinProvider implements BulletinProvider {
 
 	@Override
-	public Collection<Earthquake> getEarthquakes(final SearchJobVars jobVariables) throws FetchException, DecodeException {
+	public List<Earthquake> getEarthquakes(final SearchJobVars jobVariables) throws FetchException, DecodeException {
 		final StringBuilder url = new StringBuilder(EarthquakeBulletin.BASE_URL).append("/eqinfo/list.php?fmt=").append(jobVariables.getParams().get("fmt"));
 		for (final Entry<String, String> param : jobVariables.getParams().entrySet()) {
 			if (param.getValue() != null && !param.getValue().isEmpty() && !"fmt".equals(param.getKey())) {
@@ -73,7 +73,7 @@ public class GeofonBulletinProvider implements BulletinProvider {
 		}
 
 		// Decode
-		final Collection<Earthquake> earthquakes = new TreeSet<>();
+		final List<Earthquake> earthquakes = new ArrayList<>();
 		try {
 			if (Format.RSS.equals(jobVariables.getFormat())) {
 				earthquakes.addAll(RssItemTransformer.fromRss(rss));

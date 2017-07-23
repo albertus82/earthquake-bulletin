@@ -1,10 +1,9 @@
 package it.albertus.earthquake.service;
 
+import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
+import java.util.List;
 import java.util.Random;
-import java.util.Set;
-import java.util.TreeSet;
 import java.util.UUID;
 
 import it.albertus.earthquake.model.Depth;
@@ -16,8 +15,8 @@ import it.albertus.earthquake.model.Status;
 public class RandomBulletinProvider implements BulletinProvider {
 
 	@Override
-	public Collection<Earthquake> getEarthquakes(final SearchJobVars jobVariables) {
-		final Set<Earthquake> earthquakes = new TreeSet<>();
+	public List<Earthquake> getEarthquakes(final SearchJobVars jobVariables) {
+		final List<Earthquake> earthquakes = new ArrayList<>();
 		for (int i = 0; i < 20; i++) {
 			final Calendar date = Calendar.getInstance();
 			date.setLenient(false);

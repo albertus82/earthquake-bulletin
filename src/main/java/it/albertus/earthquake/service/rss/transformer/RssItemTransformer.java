@@ -5,10 +5,10 @@ import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 import java.util.TimeZone;
-import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -48,8 +48,8 @@ public class RssItemTransformer {
 		}
 	}
 
-	public static Set<Earthquake> fromRss(final Rss rss) {
-		final Set<Earthquake> earthquakes = new TreeSet<>();
+	public static List<Earthquake> fromRss(final Rss rss) {
+		final List<Earthquake> earthquakes = new ArrayList<>();
 		if (rss != null && rss.getChannel() != null && rss.getChannel().getItem() != null) {
 			for (final Item item : rss.getChannel().getItem()) {
 				earthquakes.add(RssItemTransformer.fromRss(item));

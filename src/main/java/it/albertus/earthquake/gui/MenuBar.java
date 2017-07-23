@@ -10,6 +10,8 @@ import org.eclipse.swt.widgets.MenuItem;
 
 import it.albertus.earthquake.gui.listener.AboutListener;
 import it.albertus.earthquake.gui.listener.CloseListener;
+import it.albertus.earthquake.gui.listener.ExportCsvListener;
+import it.albertus.earthquake.gui.listener.FileMenuArmListener;
 import it.albertus.earthquake.gui.listener.PreferencesListener;
 import it.albertus.earthquake.resources.Messages;
 import it.albertus.jface.cocoa.CocoaEnhancerException;
@@ -27,10 +29,9 @@ public class MenuBar {
 
 	private static final Logger logger = LoggerFactory.getLogger(MenuBar.class);
 
-	private Menu bar;
-
-	private Menu fileMenu;
-	private MenuItem fileMenuHeader;
+	private final Menu fileMenu;
+	private final MenuItem fileMenuHeader;
+	private final MenuItem fileExportCsvItem;
 	private MenuItem fileExitItem;
 
 	private Menu toolsMenu;
@@ -42,26 +43,23 @@ public class MenuBar {
 	private MenuItem helpAboutItem;
 
 	public MenuBar(final EarthquakeBulletinGui gui) {
+		final CloseListener closeListener = new CloseListener(gui);
+		final AboutListener aboutListener = new AboutListener(gui);
+		final PreferencesListener preferencesListener = new PreferencesListener(gui);
+
+		boolean cocoaMenuCreated = false;
+
 		if (Util.isCocoa()) {
-			createCocoaMenu(gui);
+			try {
+				new CocoaUIEnhancer(gui.getShell().getDisplay()).hookApplicationMenu(closeListener, aboutListener, preferencesListener);
+				cocoaMenuCreated = true;
+			}
+			catch (final CocoaEnhancerException cee) {
+				logger.log(Level.WARNING, Messages.get("err.cocoa.enhancer"), cee);
+			}
 		}
-		else {
-			createStandardMenu(gui);
-		}
-	}
 
-	private void createCocoaMenu(final EarthquakeBulletinGui gui) {
-		try {
-			new CocoaUIEnhancer(gui.getShell().getDisplay()).hookApplicationMenu(new CloseListener(gui), new AboutListener(gui), new PreferencesListener(gui));
-		}
-		catch (final CocoaEnhancerException cce) {
-			logger.log(Level.WARNING, Messages.get("err.cocoa.enhancer"), cce);
-			createStandardMenu(gui); // fail-safe
-		}
-	}
-
-	private void createStandardMenu(final EarthquakeBulletinGui gui) {
-		bar = new Menu(gui.getShell(), SWT.BAR); // Bar
+		final Menu bar = new Menu(gui.getShell(), SWT.BAR); // Bar
 
 		// File
 		fileMenu = new Menu(gui.getShell(), SWT.DROP_DOWN);
@@ -69,29 +67,39 @@ public class MenuBar {
 		fileMenuHeader.setText(Messages.get("lbl.menu.header.file"));
 		fileMenuHeader.setMenu(fileMenu);
 
-		fileExitItem = new MenuItem(fileMenu, SWT.PUSH);
-		fileExitItem.setText(Messages.get("lbl.menu.item.exit"));
-		fileExitItem.addSelectionListener(new CloseListener(gui));
+		fileExportCsvItem = new MenuItem(fileMenu, SWT.PUSH);
+		fileExportCsvItem.setText(Messages.get("lbl.menu.item.export.csv"));
+		fileExportCsvItem.addSelectionListener(new ExportCsvListener(gui));
 
-		// Tools
-		toolsMenu = new Menu(gui.getShell(), SWT.DROP_DOWN);
-		toolsMenuHeader = new MenuItem(bar, SWT.CASCADE);
-		toolsMenuHeader.setText(Messages.get("lbl.menu.header.tools"));
-		toolsMenuHeader.setMenu(toolsMenu);
+		if (!cocoaMenuCreated) {
+			new MenuItem(fileMenu, SWT.SEPARATOR);
 
-		toolsPreferencesMenuItem = new MenuItem(toolsMenu, SWT.PUSH);
-		toolsPreferencesMenuItem.setText(Messages.get("lbl.menu.item.preferences"));
-		toolsPreferencesMenuItem.addSelectionListener(new PreferencesListener(gui));
+			fileExitItem = new MenuItem(fileMenu, SWT.PUSH);
+			fileExitItem.setText(Messages.get("lbl.menu.item.exit"));
+			fileExitItem.addSelectionListener(new CloseListener(gui));
 
-		// Help
-		helpMenu = new Menu(gui.getShell(), SWT.DROP_DOWN);
-		helpMenuHeader = new MenuItem(bar, SWT.CASCADE);
-		helpMenuHeader.setText(Messages.get("lbl.menu.header.help"));
-		helpMenuHeader.setMenu(helpMenu);
+			// Tools
+			toolsMenu = new Menu(gui.getShell(), SWT.DROP_DOWN);
+			toolsMenuHeader = new MenuItem(bar, SWT.CASCADE);
+			toolsMenuHeader.setText(Messages.get("lbl.menu.header.tools"));
+			toolsMenuHeader.setMenu(toolsMenu);
 
-		helpAboutItem = new MenuItem(helpMenu, SWT.PUSH);
-		helpAboutItem.setText(Messages.get("lbl.menu.item.about"));
-		helpAboutItem.addSelectionListener(new AboutListener(gui));
+			toolsPreferencesMenuItem = new MenuItem(toolsMenu, SWT.PUSH);
+			toolsPreferencesMenuItem.setText(Messages.get("lbl.menu.item.preferences"));
+			toolsPreferencesMenuItem.addSelectionListener(new PreferencesListener(gui));
+
+			// Help
+			helpMenu = new Menu(gui.getShell(), SWT.DROP_DOWN);
+			helpMenuHeader = new MenuItem(bar, SWT.CASCADE);
+			helpMenuHeader.setText(Messages.get("lbl.menu.header.help"));
+			helpMenuHeader.setMenu(helpMenu);
+
+			helpAboutItem = new MenuItem(helpMenu, SWT.PUSH);
+			helpAboutItem.setText(Messages.get("lbl.menu.item.about"));
+			helpAboutItem.addSelectionListener(new AboutListener(gui));
+		}
+
+		fileMenuHeader.addArmListener(new FileMenuArmListener(gui));
 
 		gui.getShell().setMenuBar(bar);
 	}
@@ -99,6 +107,9 @@ public class MenuBar {
 	public void updateTexts() {
 		if (fileMenuHeader != null && !fileMenuHeader.isDisposed()) {
 			fileMenuHeader.setText(Messages.get("lbl.menu.header.file"));
+		}
+		if (fileExportCsvItem != null && !fileExportCsvItem.isDisposed()) {
+			fileExportCsvItem.setText(Messages.get("lbl.menu.item.export.csv"));
 		}
 		if (fileExitItem != null && !fileExitItem.isDisposed()) {
 			fileExitItem.setText(Messages.get("lbl.menu.item.exit"));
@@ -117,16 +128,16 @@ public class MenuBar {
 		}
 	}
 
-	public Menu getBar() {
-		return bar;
-	}
-
 	public Menu getFileMenu() {
 		return fileMenu;
 	}
 
 	public MenuItem getFileMenuHeader() {
 		return fileMenuHeader;
+	}
+
+	public MenuItem getFileExportCsvItem() {
+		return fileExportCsvItem;
 	}
 
 	public MenuItem getFileExitItem() {

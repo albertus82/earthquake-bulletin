@@ -1,7 +1,7 @@
 package it.albertus.earthquake.gui.job;
 
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
@@ -115,7 +115,7 @@ public class SearchJob extends Job {
 			});
 
 			try {
-				final Collection<Earthquake> earthquakes = provider.getEarthquakes(jobVariables);
+				final List<Earthquake> earthquakes = provider.getEarthquakes(jobVariables);
 
 				new DisplayThreadExecutor(gui.getShell()).execute(new Runnable() {
 					@Override

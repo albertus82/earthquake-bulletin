@@ -4,11 +4,11 @@ import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 import java.util.TimeZone;
-import java.util.TreeSet;
 
 import it.albertus.earthquake.EarthquakeBulletin;
 import it.albertus.earthquake.model.Depth;
@@ -63,8 +63,8 @@ public class HtmlTableDataTransformer {
 		}
 	}
 
-	public static Set<Earthquake> fromHtml(final TableData tableData) {
-		final Set<Earthquake> earthquakes = new TreeSet<>();
+	public static List<Earthquake> fromHtml(final TableData tableData) {
+		final List<Earthquake> earthquakes = new ArrayList<>();
 		if (tableData != null && tableData.getItems().size() > 1) {
 			// Discards first and last <td>
 			for (int index = 1; index < tableData.getItems().size() - 1; index++) {
