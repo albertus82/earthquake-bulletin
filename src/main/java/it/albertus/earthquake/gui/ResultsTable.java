@@ -28,6 +28,7 @@ import it.albertus.earthquake.EarthquakeBulletin;
 import it.albertus.earthquake.config.EarthquakeBulletinConfiguration;
 import it.albertus.earthquake.gui.job.ExportCsvJob;
 import it.albertus.earthquake.gui.listener.CopyLinkSelectionListener;
+import it.albertus.earthquake.gui.listener.ExportCsvListener;
 import it.albertus.earthquake.gui.listener.GoogleMapsBrowserSelectionListener;
 import it.albertus.earthquake.gui.listener.GoogleMapsPopupSelectionListener;
 import it.albertus.earthquake.gui.listener.OpenInBrowserSelectionListener;
@@ -136,6 +137,7 @@ public class ResultsTable {
 	private final MenuItem copyLinkMenuItem;
 	private final MenuItem googleMapsBrowserMenuItem;
 	private final MenuItem googleMapsPopupMenuItem;
+	private final MenuItem exportCsvMenuItem;
 
 	private boolean initialized = false;
 
@@ -202,6 +204,12 @@ public class ResultsTable {
 		googleMapsBrowserMenuItem = new MenuItem(contextMenu, SWT.PUSH);
 		googleMapsBrowserMenuItem.setText(Messages.get("lbl.menu.item.google.maps.browser"));
 		googleMapsBrowserMenuItem.addSelectionListener(new GoogleMapsBrowserSelectionListener(this));
+
+		new MenuItem(contextMenu, SWT.SEPARATOR);
+
+		exportCsvMenuItem = new MenuItem(contextMenu, SWT.PUSH);
+		exportCsvMenuItem.setText(Messages.get("lbl.menu.item.export.csv"));
+		exportCsvMenuItem.addSelectionListener(new ExportCsvListener(gui));
 
 		table.addMenuDetectListener(new ResultsTableContextMenuDetectListener(this));
 	}
@@ -391,6 +399,7 @@ public class ResultsTable {
 		copyLinkMenuItem.setText(Messages.get("lbl.menu.item.copy.link"));
 		googleMapsPopupMenuItem.setText(Messages.get("lbl.menu.item.google.maps.popup"));
 		googleMapsBrowserMenuItem.setText(Messages.get("lbl.menu.item.google.maps.browser"));
+		exportCsvMenuItem.setText(Messages.get("lbl.menu.item.export.csv"));
 	}
 
 	public TableViewer getTableViewer() {
@@ -419,6 +428,10 @@ public class ResultsTable {
 
 	public MenuItem getCopyLinkMenuItem() {
 		return copyLinkMenuItem;
+	}
+
+	public MenuItem getExportCsvMenuItem() {
+		return exportCsvMenuItem;
 	}
 
 	public ExportCsvJob getExportCsvJob() {
