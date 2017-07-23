@@ -28,7 +28,7 @@ import it.albertus.earthquake.EarthquakeBulletin;
 import it.albertus.earthquake.config.EarthquakeBulletinConfiguration;
 import it.albertus.earthquake.gui.job.ExportCsvJob;
 import it.albertus.earthquake.gui.listener.CopyLinkSelectionListener;
-import it.albertus.earthquake.gui.listener.ExportCsvListener;
+import it.albertus.earthquake.gui.listener.ExportCsvSelectionListener;
 import it.albertus.earthquake.gui.listener.GoogleMapsBrowserSelectionListener;
 import it.albertus.earthquake.gui.listener.GoogleMapsPopupSelectionListener;
 import it.albertus.earthquake.gui.listener.OpenInBrowserSelectionListener;
@@ -209,7 +209,7 @@ public class ResultsTable {
 
 		exportCsvMenuItem = new MenuItem(contextMenu, SWT.PUSH);
 		exportCsvMenuItem.setText(Messages.get("lbl.menu.item.export.csv"));
-		exportCsvMenuItem.addSelectionListener(new ExportCsvListener(gui));
+		exportCsvMenuItem.addSelectionListener(new ExportCsvSelectionListener(gui));
 
 		table.addMenuDetectListener(new ResultsTableContextMenuDetectListener(this));
 	}

@@ -10,8 +10,8 @@ import org.eclipse.swt.widgets.MenuItem;
 
 import it.albertus.earthquake.gui.listener.AboutListener;
 import it.albertus.earthquake.gui.listener.CloseListener;
-import it.albertus.earthquake.gui.listener.ExportCsvListener;
-import it.albertus.earthquake.gui.listener.FileMenuArmListener;
+import it.albertus.earthquake.gui.listener.ExportCsvSelectionListener;
+import it.albertus.earthquake.gui.listener.FileMenuListener;
 import it.albertus.earthquake.gui.listener.PreferencesListener;
 import it.albertus.earthquake.resources.Messages;
 import it.albertus.jface.cocoa.CocoaEnhancerException;
@@ -69,7 +69,7 @@ public class MenuBar {
 
 		fileExportCsvItem = new MenuItem(fileMenu, SWT.PUSH);
 		fileExportCsvItem.setText(Messages.get("lbl.menu.item.export.csv"));
-		fileExportCsvItem.addSelectionListener(new ExportCsvListener(gui));
+		fileExportCsvItem.addSelectionListener(new ExportCsvSelectionListener(gui));
 
 		if (!cocoaMenuCreated) {
 			new MenuItem(fileMenu, SWT.SEPARATOR);
@@ -99,7 +99,9 @@ public class MenuBar {
 			helpAboutItem.addSelectionListener(new AboutListener(gui));
 		}
 
-		fileMenuHeader.addArmListener(new FileMenuArmListener(gui));
+		final FileMenuListener fileMenuListener = new FileMenuListener(gui);
+		fileMenu.addMenuListener(fileMenuListener);
+		fileMenuHeader.addArmListener(fileMenuListener);
 
 		gui.getShell().setMenuBar(bar);
 	}

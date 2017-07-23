@@ -22,9 +22,7 @@ public class ResultsTableContextMenuDetectListener implements MenuDetectListener
 		resultsTable.getOpenBrowserMenuItem().setEnabled(selection != null && selection.getLink() != null);
 		resultsTable.getGoogleMapsBrowserMenuItem().setEnabled(selection != null);
 		resultsTable.getGoogleMapsPopupMenuItem().setEnabled(selection != null);
-		final Object input = resultsTable.getTableViewer().getInput();
-		final boolean enabled = input instanceof Object[] && ((Object[]) input).length > 0;
-		resultsTable.getExportCsvMenuItem().setEnabled(enabled);
+		resultsTable.getExportCsvMenuItem().setEnabled(resultsTable.getTableViewer().getTable() != null && resultsTable.getTableViewer().getTable().getItemCount() > 0);
 		resultsTable.getContextMenu().setVisible(true);
 	}
 

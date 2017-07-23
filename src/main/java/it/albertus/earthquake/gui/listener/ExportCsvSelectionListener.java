@@ -8,11 +8,11 @@ import it.albertus.earthquake.gui.EarthquakeBulletinGui;
 import it.albertus.earthquake.gui.ResultsTable;
 import it.albertus.earthquake.gui.job.ExportCsvJob;
 
-public class ExportCsvListener extends SelectionAdapter {
+public class ExportCsvSelectionListener extends SelectionAdapter {
 
 	private final EarthquakeBulletinGui gui;
 
-	public ExportCsvListener(final EarthquakeBulletinGui gui) {
+	public ExportCsvSelectionListener(final EarthquakeBulletinGui gui) {
 		this.gui = gui;
 	}
 
