@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.zip.GZIPInputStream;
@@ -23,7 +22,6 @@ import it.albertus.earthquake.service.html.transformer.HtmlTableDataTransformer;
 import it.albertus.earthquake.service.net.HttpConnector;
 import it.albertus.earthquake.service.rss.transformer.RssItemTransformer;
 import it.albertus.earthquake.service.rss.xml.Rss;
-import it.albertus.util.IOUtils;
 import it.albertus.util.NewLine;
 
 public class GeofonBulletinProvider implements BulletinProvider {
@@ -39,57 +37,44 @@ public class GeofonBulletinProvider implements BulletinProvider {
 
 		Rss rss = null;
 		TableData html = null;
-		InputStream innerStream = null;
-		InputStream wrapperStream = null;
-		// Fetch
 		try {
 			final HttpURLConnection urlConnection = openConnection(url.toString());
 			final String responseContentEncoding = urlConnection.getContentEncoding(); // Connection starts here
 			final boolean gzip = responseContentEncoding != null && responseContentEncoding.toLowerCase().contains("gzip");
-			innerStream = urlConnection.getInputStream();
-			if (gzip) {
-				wrapperStream = new GZIPInputStream(innerStream);
+			try (final InputStream internalInputStream = urlConnection.getInputStream(); final InputStream inputStream = gzip ? new GZIPInputStream(internalInputStream) : internalInputStream) {
+				if (Format.RSS.equals(jobVariables.getFormat())) {
+					rss = fetchRss(inputStream);
+				}
+				else if (Format.HTML.equals(jobVariables.getFormat())) {
+					html = fetchHtml(inputStream);
+				}
+				else {
+					throw new UnsupportedOperationException(String.valueOf(jobVariables.getFormat()));
+				}
 			}
-			else {
-				wrapperStream = innerStream;
-			}
-
-			if (Format.RSS.equals(jobVariables.getFormat())) {
-				rss = fetchRss(wrapperStream);
+			finally {
 				urlConnection.disconnect();
-			}
-			else if (Format.HTML.equals(jobVariables.getFormat())) {
-				html = fetchHtml(wrapperStream);
-			}
-			else {
-				throw new UnsupportedOperationException(String.valueOf(jobVariables.getFormat()));
 			}
 		}
 		catch (final Exception e) {
 			throw new FetchException(Messages.get("err.job.fetch"), e);
 		}
-		finally {
-			IOUtils.closeQuietly(wrapperStream, innerStream);
-		}
 
 		// Decode
-		final List<Earthquake> earthquakes = new ArrayList<>();
 		try {
-			if (Format.RSS.equals(jobVariables.getFormat())) {
-				earthquakes.addAll(RssItemTransformer.fromRss(rss));
+			if (rss != null) {
+				return RssItemTransformer.fromRss(rss);
 			}
-			else if (Format.HTML.equals(jobVariables.getFormat())) {
-				earthquakes.addAll(HtmlTableDataTransformer.fromHtml(html));
+			else if (html != null) {
+				return HtmlTableDataTransformer.fromHtml(html);
 			}
 			else {
-				throw new UnsupportedOperationException(String.valueOf(jobVariables.getFormat()));
+				throw new IllegalStateException();
 			}
 		}
 		catch (final Exception e) {
 			throw new DecodeException(Messages.get("err.job.decode"), e);
 		}
-
-		return earthquakes;
 	}
 
 	private Rss fetchRss(final InputStream is) throws JAXBException {
