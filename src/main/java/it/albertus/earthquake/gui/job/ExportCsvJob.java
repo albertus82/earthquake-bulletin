@@ -14,12 +14,13 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Table;
 
-import it.albertus.earthquake.gui.EarthquakeBulletinGui;
 import it.albertus.earthquake.gui.Images;
+import it.albertus.earthquake.gui.ResultsTable;
 import it.albertus.earthquake.resources.Messages;
 import it.albertus.jface.DisplayThreadExecutor;
 import it.albertus.jface.EnhancedErrorDialog;
@@ -30,14 +31,18 @@ public class ExportCsvJob extends Job {
 	private static final Logger logger = LoggerFactory.getLogger(ExportCsvJob.class);
 
 	private static final char CSV_FIELD_SEPARATOR = ';';
+	private static final String[] CSV_FILE_EXTENSIONS = { "*.CSV;*.csv" };
 
-	private static final DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+	private static final DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+	private static final DateFormat timeFormat = new SimpleDateFormat("HHmmss");
 
-	private final EarthquakeBulletinGui gui;
+	private final IShellProvider gui;
+	private final ResultsTable resultsTable;
 
-	public ExportCsvJob(final EarthquakeBulletinGui gui) {
+	public ExportCsvJob(final IShellProvider gui, final ResultsTable resultsTable) {
 		super("Export CSV");
 		this.gui = gui;
+		this.resultsTable = resultsTable;
 		this.setUser(true);
 	}
 
@@ -45,7 +50,7 @@ public class ExportCsvJob extends Job {
 	protected IStatus run(final IProgressMonitor monitor) {
 		monitor.beginTask("Export CSV", IProgressMonitor.UNKNOWN);
 
-		if (gui.getResultsTable() != null && gui.getResultsTable().getTableViewer() != null && gui.getResultsTable().getTableViewer().getTable() != null) {
+		if (resultsTable != null && resultsTable.getTableViewer() != null && resultsTable.getTableViewer().getTable() != null) {
 			new DisplayThreadExecutor(gui.getShell()).execute(new Runnable() {
 				@Override
 				public void run() {
@@ -54,7 +59,7 @@ public class ExportCsvJob extends Job {
 			});
 
 			try (final StringWriter sw = new StringWriter()) {
-				final Table table = gui.getResultsTable().getTableViewer().getTable();
+				final Table table = resultsTable.getTableViewer().getTable();
 				final Variables vars = new Variables();
 				new DisplayThreadExecutor(table).execute(new Runnable() {
 					@Override
@@ -100,7 +105,7 @@ public class ExportCsvJob extends Job {
 				});
 			}
 
-			new DisplayThreadExecutor(gui.getMapCanvas().getCanvas()).execute(new Runnable() {
+			new DisplayThreadExecutor(gui.getShell()).execute(new Runnable() {
 				@Override
 				public void run() {
 					gui.getShell().setCursor(null);
@@ -133,8 +138,9 @@ public class ExportCsvJob extends Job {
 
 	private String openSaveDialog() {
 		final FileDialog saveDialog = new FileDialog(gui.getShell(), SWT.SAVE);
-		saveDialog.setFilterExtensions(new String[] { "*.CSV;*.csv" });
-		saveDialog.setFileName(String.format("earthquakebulletin_%s.csv", dateFormat.format(new Date())));
+		saveDialog.setFilterExtensions(CSV_FILE_EXTENSIONS);
+		final Date sysdate = new Date();
+		saveDialog.setFileName(String.format("earthquakebulletin_%s_%s.csv", dateFormat.format(sysdate), timeFormat.format(sysdate)));
 		saveDialog.setOverwrite(true);
 		return saveDialog.open();
 	}

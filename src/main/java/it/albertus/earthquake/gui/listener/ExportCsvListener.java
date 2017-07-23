@@ -20,10 +20,9 @@ public class ExportCsvListener extends SelectionAdapter {
 	public void widgetSelected(final SelectionEvent e) {
 		final ResultsTable resultsTable = gui.getResultsTable();
 		if (resultsTable != null && (resultsTable.getExportCsvJob() == null || resultsTable.getExportCsvJob().getState() == Job.NONE)) {
-			resultsTable.setExportCsvJob(new ExportCsvJob(gui));
+			resultsTable.setExportCsvJob(new ExportCsvJob(gui, resultsTable));
 			resultsTable.getExportCsvJob().schedule();
 		}
 	}
 
 }
-
