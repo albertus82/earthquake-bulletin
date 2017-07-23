@@ -37,8 +37,9 @@ public class GeofonBulletinProvider implements BulletinProvider {
 
 		Rss rss = null;
 		TableData html = null;
+		HttpURLConnection urlConnection = null;
 		try {
-			final HttpURLConnection urlConnection = openConnection(url.toString());
+			urlConnection = openConnection(url.toString());
 			final String responseContentEncoding = urlConnection.getContentEncoding(); // Connection starts here
 			final boolean gzip = responseContentEncoding != null && responseContentEncoding.toLowerCase().contains("gzip");
 			try (final InputStream internalInputStream = urlConnection.getInputStream(); final InputStream inputStream = gzip ? new GZIPInputStream(internalInputStream) : internalInputStream) {
@@ -52,12 +53,14 @@ public class GeofonBulletinProvider implements BulletinProvider {
 					throw new UnsupportedOperationException(String.valueOf(jobVariables.getFormat()));
 				}
 			}
-			finally {
-				urlConnection.disconnect();
-			}
 		}
 		catch (final Exception e) {
 			throw new FetchException(Messages.get("err.job.fetch"), e);
+		}
+		finally {
+			if (urlConnection != null) {
+				urlConnection.disconnect();
+			}
 		}
 
 		// Decode
@@ -102,8 +105,8 @@ public class GeofonBulletinProvider implements BulletinProvider {
 
 	private HttpURLConnection openConnection(final String url) throws IOException {
 		final HttpURLConnection urlConnection = HttpConnector.openConnection(url);
-		urlConnection.addRequestProperty("Accept", "*/html,*/xml");
-		urlConnection.addRequestProperty("Accept-Encoding", "gzip");
+		urlConnection.setRequestProperty("Accept", "*/html,*/xml,*/*;q=0.9");
+		urlConnection.setRequestProperty("Accept-Encoding", "gzip");
 		return urlConnection;
 	}
 

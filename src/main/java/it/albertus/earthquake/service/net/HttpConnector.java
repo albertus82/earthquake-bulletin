@@ -31,7 +31,7 @@ public class HttpConnector {
 		final HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
 		urlConnection.setConnectTimeout(configuration.getInt("http.connection.timeout.ms", Defaults.CONNECTION_TIMEOUT_IN_MILLIS));
 		urlConnection.setReadTimeout(configuration.getInt("http.read.timeout.ms", Defaults.READ_TIMEOUT_IN_MILLIS));
-		urlConnection.addRequestProperty("User-Agent", USER_AGENT);
+		urlConnection.setRequestProperty("User-Agent", USER_AGENT);
 		return urlConnection;
 	}
 

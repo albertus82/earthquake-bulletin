@@ -22,26 +22,25 @@ public class ImageDownloader {
 	}
 
 	public static MapImage downloadImage(final URL url, final String etag) throws IOException {
-		InputStream is = null;
 		HttpURLConnection urlConnection = null;
-		try (final ByteArrayOutputStream buffer = new ByteArrayOutputStream()) {
+		try {
 			urlConnection = HttpConnector.openConnection(url);
-			urlConnection.addRequestProperty("Accept", "image/*");
+			urlConnection.setRequestProperty("Accept", "image/*,*/*;0.9");
 			if (etag != null && !etag.isEmpty()) {
 				urlConnection.setReadTimeout(Math.min(3000, configuration.getInt("http.read.timeout.ms", HttpConnector.Defaults.READ_TIMEOUT_IN_MILLIS)));
-				urlConnection.addRequestProperty("If-None-Match", etag);
+				urlConnection.setRequestProperty("If-None-Match", etag);
 			}
 			if (urlConnection.getResponseCode() == HttpURLConnection.HTTP_NOT_MODIFIED) {
 				return null;
 			}
 			else {
-				is = urlConnection.getInputStream();
-				IOUtils.copy(is, buffer, BUFFER_SIZE);
-				return new MapImage(buffer.toByteArray(), urlConnection.getHeaderField("etag"));
+				try (final InputStream is = urlConnection.getInputStream(); final ByteArrayOutputStream buffer = new ByteArrayOutputStream()) {
+					IOUtils.copy(is, buffer, BUFFER_SIZE);
+					return new MapImage(buffer.toByteArray(), urlConnection.getHeaderField("etag"));
+				}
 			}
 		}
 		finally {
-			IOUtils.closeQuietly(is);
 			if (urlConnection != null) {
 				urlConnection.disconnect();
 			}
