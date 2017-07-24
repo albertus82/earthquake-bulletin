@@ -1,7 +1,11 @@
 package it.albertus.earthquake.gui.listener;
 
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+
+import it.albertus.earthquake.gui.EarthquakeBulletinGui;
 import it.albertus.earthquake.gui.Images;
-import it.albertus.earthquake.gui.ResultsTable;
 import it.albertus.earthquake.model.Earthquake;
 import it.albertus.earthquake.resources.Messages;
 import it.albertus.jface.google.maps.MapControl;
@@ -10,22 +14,20 @@ import it.albertus.jface.google.maps.MapMarker;
 import it.albertus.jface.google.maps.MapOptions;
 import it.albertus.jface.google.maps.MapType;
 
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-
 public class GoogleMapsPopupSelectionListener extends SelectionAdapter {
 
-	private final ResultsTable resultsTable;
+	private final EarthquakeBulletinGui gui;
 
-	public GoogleMapsPopupSelectionListener(final ResultsTable resultsTable) {
-		this.resultsTable = resultsTable;
+	public GoogleMapsPopupSelectionListener(final EarthquakeBulletinGui gui) {
+		this.gui = gui;
 	}
 
 	@Override
 	public void widgetSelected(final SelectionEvent se) {
-		final Earthquake selection = (Earthquake) resultsTable.getTableViewer().getStructuredSelection().getFirstElement();
-		if (selection != null && !resultsTable.getTableViewer().getTable().isDisposed()) {
-			final MapDialog epicenterMapDialog = new MapDialog(resultsTable.getTableViewer().getTable().getShell());
+		final TableViewer tableViewer = gui.getResultsTable().getTableViewer();
+		final Earthquake selection = (Earthquake) tableViewer.getStructuredSelection().getFirstElement();
+		if (selection != null && !tableViewer.getTable().isDisposed()) {
+			final MapDialog epicenterMapDialog = new MapDialog(tableViewer.getTable().getShell());
 			epicenterMapDialog.setText(Messages.get("lbl.map.epicenter.title"));
 			epicenterMapDialog.setImages(Images.getMainIcons());
 			final MapOptions options = epicenterMapDialog.getOptions();
