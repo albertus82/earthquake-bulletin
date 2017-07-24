@@ -49,10 +49,14 @@ public class HttpConnector {
 					}
 				});
 			}
+			else {
+				Authenticator.setDefault(null);
+			}
 			final Proxy proxy = new Proxy(Proxy.Type.valueOf(configuration.getString("proxy.type", Defaults.PROXY_TYPE.name())), new InetSocketAddress(configuration.getString("proxy.address", Defaults.PROXY_ADDRESS), configuration.getInt("proxy.port", Defaults.PROXY_PORT)));
 			connection = url.openConnection(proxy);
 		}
 		else {
+			Authenticator.setDefault(null);
 			connection = url.openConnection(/* DIRECT */);
 		}
 		if (connection instanceof HttpURLConnection) {
