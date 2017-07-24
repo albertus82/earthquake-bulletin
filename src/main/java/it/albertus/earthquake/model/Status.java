@@ -1,19 +1,15 @@
 package it.albertus.earthquake.model;
 
+import it.albertus.earthquake.resources.Messages;
+
 public enum Status {
 
-	A("automatic"),
-	C("confirmed"),
-	M("manually revised");
-
-	private final String description;
-
-	Status(final String description) {
-		this.description = description;
-	}
+	A,
+	C,
+	M;
 
 	public String getDescription() {
-		return description;
+		return Messages.get("lbl.status." + name().toLowerCase());
 	}
 
 }

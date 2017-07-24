@@ -19,8 +19,8 @@ public class ExportCsvSelectionListener extends SelectionAdapter {
 	@Override
 	public void widgetSelected(final SelectionEvent e) {
 		final ResultsTable resultsTable = gui.getResultsTable();
-		if (resultsTable != null && (resultsTable.getExportCsvJob() == null || resultsTable.getExportCsvJob().getState() == Job.NONE)) {
-			resultsTable.setExportCsvJob(new ExportCsvJob(gui, resultsTable));
+		if (resultsTable != null && resultsTable.getTableViewer() != null && resultsTable.getTableViewer().getTable() != null && resultsTable.getTableViewer().getTable().getItemCount() > 0 && (resultsTable.getExportCsvJob() == null || resultsTable.getExportCsvJob().getState() == Job.NONE)) {
+			resultsTable.setExportCsvJob(new ExportCsvJob(resultsTable));
 			resultsTable.getExportCsvJob().schedule();
 		}
 	}

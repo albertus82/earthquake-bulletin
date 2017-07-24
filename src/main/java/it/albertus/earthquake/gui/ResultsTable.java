@@ -9,6 +9,7 @@ import java.util.TimeZone;
 import org.eclipse.jface.resource.FontRegistry;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
@@ -51,6 +52,13 @@ public class ResultsTable {
 		}
 	}
 
+	private static final String LBL_MENU_ITEM_COPY_LINK = "lbl.menu.item.copy.link";
+	private static final String LBL_MENU_ITEM_EXPORT_CSV = "lbl.menu.item.export.csv";
+	private static final String LBL_MENU_ITEM_GOOGLE_MAPS_BROWSER = "lbl.menu.item.google.maps.browser";
+	private static final String LBL_MENU_ITEM_GOOGLE_MAPS_POPUP = "lbl.menu.item.google.maps.popup";
+	private static final String LBL_MENU_ITEM_OPEN_BROWSER = "lbl.menu.item.open.browser";
+	private static final String LBL_MENU_ITEM_SHOW_MAP = "lbl.menu.item.show.map";
+
 	private static final int NUMBER_OF_COLUMNS = 7;
 
 	private static final String TABLE_FONT = "TABLE_FONT";
@@ -80,7 +88,7 @@ public class ResultsTable {
 			return direction == 1 ? SWT.DOWN : SWT.UP;
 		}
 
-		public void setColumn(int column) {
+		public void setColumn(final int column) {
 			if (column == this.propertyIndex) {
 				direction = 1 - direction;
 			}
@@ -91,7 +99,7 @@ public class ResultsTable {
 		}
 
 		@Override
-		public int compare(Viewer viewer, Object e1, Object e2) {
+		public int compare(final Viewer viewer, final Object e1, final Object e2) {
 			final Earthquake eq1 = (Earthquake) e1;
 			final Earthquake eq2 = (Earthquake) e2;
 			int rc;
@@ -170,6 +178,7 @@ public class ResultsTable {
 		table.setLinesVisible(true);
 		table.addListener(SWT.DefaultSelection, new ShowMapListener(gui));
 		tableViewer.setContentProvider(new ArrayContentProvider());
+		ColumnViewerToolTipSupport.enableFor(tableViewer);
 		comparator = new EarthquakeViewerComparator();
 		tableViewer.setComparator(comparator);
 
@@ -177,7 +186,7 @@ public class ResultsTable {
 
 		// Show map...
 		showMapMenuItem = new MenuItem(contextMenu, SWT.PUSH);
-		showMapMenuItem.setText(Messages.get("lbl.menu.item.show.map"));
+		showMapMenuItem.setText(Messages.get(LBL_MENU_ITEM_SHOW_MAP));
 		showMapMenuItem.addListener(SWT.Selection, new ShowMapListener(gui));
 		contextMenu.setDefaultItem(showMapMenuItem);
 
@@ -185,30 +194,30 @@ public class ResultsTable {
 
 		// Open in browser...
 		openBrowserMenuItem = new MenuItem(contextMenu, SWT.PUSH);
-		openBrowserMenuItem.setText(Messages.get("lbl.menu.item.open.browser"));
+		openBrowserMenuItem.setText(Messages.get(LBL_MENU_ITEM_OPEN_BROWSER));
 		openBrowserMenuItem.addSelectionListener(new OpenInBrowserSelectionListener(this));
 
 		// Copy link...
 		copyLinkMenuItem = new MenuItem(contextMenu, SWT.PUSH);
-		copyLinkMenuItem.setText(Messages.get("lbl.menu.item.copy.link"));
+		copyLinkMenuItem.setText(Messages.get(LBL_MENU_ITEM_COPY_LINK));
 		copyLinkMenuItem.addSelectionListener(new CopyLinkSelectionListener(this));
 
 		new MenuItem(contextMenu, SWT.SEPARATOR);
 
 		// Google Maps Popup...
 		googleMapsPopupMenuItem = new MenuItem(contextMenu, SWT.PUSH);
-		googleMapsPopupMenuItem.setText(Messages.get("lbl.menu.item.google.maps.popup"));
+		googleMapsPopupMenuItem.setText(Messages.get(LBL_MENU_ITEM_GOOGLE_MAPS_POPUP));
 		googleMapsPopupMenuItem.addSelectionListener(new GoogleMapsPopupSelectionListener(this));
 
 		// Google Maps in browser...
 		googleMapsBrowserMenuItem = new MenuItem(contextMenu, SWT.PUSH);
-		googleMapsBrowserMenuItem.setText(Messages.get("lbl.menu.item.google.maps.browser"));
+		googleMapsBrowserMenuItem.setText(Messages.get(LBL_MENU_ITEM_GOOGLE_MAPS_BROWSER));
 		googleMapsBrowserMenuItem.addSelectionListener(new GoogleMapsBrowserSelectionListener(this));
 
 		new MenuItem(contextMenu, SWT.SEPARATOR);
 
 		exportCsvMenuItem = new MenuItem(contextMenu, SWT.PUSH);
-		exportCsvMenuItem.setText(Messages.get("lbl.menu.item.export.csv"));
+		exportCsvMenuItem.setText(Messages.get(LBL_MENU_ITEM_EXPORT_CSV));
 		exportCsvMenuItem.addSelectionListener(new ExportCsvSelectionListener(gui));
 
 		table.addMenuDetectListener(new ResultsTableContextMenuDetectListener(this));
@@ -347,6 +356,17 @@ public class ResultsTable {
 				final Earthquake earthquake = (Earthquake) element;
 				return parent.getDisplay().getSystemColor(Status.A.equals(earthquake.getStatus()) ? SWT.COLOR_RED : SWT.COLOR_DARK_GREEN);
 			}
+
+			@Override
+			public String getToolTipText(final Object element) {
+				final Earthquake earthquake = (Earthquake) element;
+				return earthquake.getStatus().getDescription();
+			}
+
+			@Override
+			public int getToolTipTimeDisplayed(final Object object) {
+				return 5000;
+			}
 		});
 
 		col = createTableViewerColumn(labelsMap.get(6).getString(), 6);
@@ -379,7 +399,7 @@ public class ResultsTable {
 	private SelectionAdapter createSelectionAdapter(final TableColumn column, final int index) {
 		return new SelectionAdapter() {
 			@Override
-			public void widgetSelected(SelectionEvent e) {
+			public void widgetSelected(final SelectionEvent e) {
 				comparator.setColumn(index);
 				tableViewer.getTable().setSortDirection(comparator.getDirection());
 				tableViewer.getTable().setSortColumn(column);
@@ -392,14 +412,13 @@ public class ResultsTable {
 		final Table table = tableViewer.getTable();
 		for (final Entry<Integer, Localized> e : labelsMap.entrySet()) {
 			table.getColumn(e.getKey()).setText(e.getValue().getString());
-			table.getColumn(e.getKey()).setText(e.getValue().getString());
 		}
-		showMapMenuItem.setText(Messages.get("lbl.menu.item.show.map"));
-		openBrowserMenuItem.setText(Messages.get("lbl.menu.item.open.browser"));
-		copyLinkMenuItem.setText(Messages.get("lbl.menu.item.copy.link"));
-		googleMapsPopupMenuItem.setText(Messages.get("lbl.menu.item.google.maps.popup"));
-		googleMapsBrowserMenuItem.setText(Messages.get("lbl.menu.item.google.maps.browser"));
-		exportCsvMenuItem.setText(Messages.get("lbl.menu.item.export.csv"));
+		showMapMenuItem.setText(Messages.get(LBL_MENU_ITEM_SHOW_MAP));
+		openBrowserMenuItem.setText(Messages.get(LBL_MENU_ITEM_OPEN_BROWSER));
+		copyLinkMenuItem.setText(Messages.get(LBL_MENU_ITEM_COPY_LINK));
+		googleMapsPopupMenuItem.setText(Messages.get(LBL_MENU_ITEM_GOOGLE_MAPS_POPUP));
+		googleMapsBrowserMenuItem.setText(Messages.get(LBL_MENU_ITEM_GOOGLE_MAPS_BROWSER));
+		exportCsvMenuItem.setText(Messages.get(LBL_MENU_ITEM_EXPORT_CSV));
 	}
 
 	public TableViewer getTableViewer() {

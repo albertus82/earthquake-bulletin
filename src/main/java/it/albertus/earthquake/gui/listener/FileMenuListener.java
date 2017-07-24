@@ -17,18 +17,20 @@ public class FileMenuListener implements ArmListener, MenuListener {
 
 	@Override
 	public void widgetArmed(final ArmEvent e) {
-		execute();
+		manageExportCsvItem();
 	}
 
 	@Override
 	public void menuShown(final MenuEvent e) {
-		execute();
+		manageExportCsvItem();
 	}
 
 	@Override
-	public void menuHidden(final MenuEvent e) {/* Ignore */}
+	public void menuHidden(final MenuEvent e) {
+		gui.getMenuBar().getFileExportCsvItem().setEnabled(true); // re-enable the accelerator
+	}
 
-	private void execute() {
+	private void manageExportCsvItem() {
 		gui.getMenuBar().getFileExportCsvItem().setEnabled(gui.getResultsTable() != null && gui.getResultsTable().getTableViewer() != null && gui.getResultsTable().getTableViewer().getTable() != null && gui.getResultsTable().getTableViewer().getTable().getItemCount() > 0);
 	}
 
