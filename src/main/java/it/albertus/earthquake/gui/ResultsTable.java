@@ -133,13 +133,7 @@ public class ResultsTable {
 	private final EarthquakeViewerComparator comparator;
 	private final HashMap<Integer, Localized> labelsMap = new HashMap<>(NUMBER_OF_COLUMNS);
 
-	private final Menu contextMenu;
-	private final MenuItem showMapMenuItem;
-	private final MenuItem openBrowserMenuItem;
-	private final MenuItem copyLinkMenuItem;
-	private final MenuItem googleMapsBrowserMenuItem;
-	private final MenuItem googleMapsPopupMenuItem;
-	private final MenuItem exportCsvMenuItem;
+	private final ContextMenu contextMenu;
 
 	private boolean initialized = false;
 
@@ -176,46 +170,7 @@ public class ResultsTable {
 		comparator = new EarthquakeViewerComparator();
 		tableViewer.setComparator(comparator);
 
-		contextMenu = new Menu(table);
-
-		// Show map...
-		showMapMenuItem = new MenuItem(contextMenu, SWT.PUSH);
-		showMapMenuItem.setText(Messages.get(MenuBar.LBL_MENU_ITEM_SHOW_MAP));
-		showMapMenuItem.addListener(SWT.Selection, new ShowMapListener(gui));
-		contextMenu.setDefaultItem(showMapMenuItem);
-
-		new MenuItem(contextMenu, SWT.SEPARATOR);
-
-		// Open in browser...
-		openBrowserMenuItem = new MenuItem(contextMenu, SWT.PUSH);
-		openBrowserMenuItem.setText(Messages.get(MenuBar.LBL_MENU_ITEM_OPEN_BROWSER));
-		openBrowserMenuItem.addSelectionListener(new OpenInBrowserSelectionListener(gui));
-
-		// Copy link...
-		copyLinkMenuItem = new MenuItem(contextMenu, SWT.PUSH);
-		copyLinkMenuItem.setText(Messages.get(MenuBar.LBL_MENU_ITEM_COPY_LINK));
-		copyLinkMenuItem.addSelectionListener(new CopyLinkSelectionListener(gui));
-
-		new MenuItem(contextMenu, SWT.SEPARATOR);
-
-		// Google Maps Popup...
-		googleMapsPopupMenuItem = new MenuItem(contextMenu, SWT.PUSH);
-		googleMapsPopupMenuItem.setText(Messages.get(MenuBar.LBL_MENU_ITEM_GOOGLE_MAPS_POPUP));
-		googleMapsPopupMenuItem.addSelectionListener(new GoogleMapsPopupSelectionListener(gui));
-
-		// Google Maps in browser...
-		googleMapsBrowserMenuItem = new MenuItem(contextMenu, SWT.PUSH);
-		googleMapsBrowserMenuItem.setText(Messages.get(MenuBar.LBL_MENU_ITEM_GOOGLE_MAPS_BROWSER));
-		googleMapsBrowserMenuItem.addSelectionListener(new GoogleMapsBrowserSelectionListener(gui));
-
-		new MenuItem(contextMenu, SWT.SEPARATOR);
-
-		exportCsvMenuItem = new MenuItem(contextMenu, SWT.PUSH);
-		exportCsvMenuItem.setText(Messages.get(MenuBar.LBL_MENU_ITEM_EXPORT_CSV) + SwtUtils.getMod1ShortcutLabel(SwtUtils.KEY_SAVE));
-		exportCsvMenuItem.addSelectionListener(new ExportCsvSelectionListener(gui));
-		exportCsvMenuItem.setAccelerator(SWT.MOD1 | SwtUtils.KEY_SAVE);
-
-		table.addMenuDetectListener(new ResultsTableContextMenuDetectListener(this));
+		contextMenu = new ContextMenu(gui);
 	}
 
 	private void createColumns(final Composite parent, final TableViewer viewer) {
@@ -408,44 +363,15 @@ public class ResultsTable {
 		for (final Entry<Integer, Localized> e : labelsMap.entrySet()) {
 			table.getColumn(e.getKey()).setText(e.getValue().getString());
 		}
-		showMapMenuItem.setText(Messages.get(MenuBar.LBL_MENU_ITEM_SHOW_MAP));
-		openBrowserMenuItem.setText(Messages.get(MenuBar.LBL_MENU_ITEM_OPEN_BROWSER));
-		copyLinkMenuItem.setText(Messages.get(MenuBar.LBL_MENU_ITEM_COPY_LINK));
-		googleMapsPopupMenuItem.setText(Messages.get(MenuBar.LBL_MENU_ITEM_GOOGLE_MAPS_POPUP));
-		googleMapsBrowserMenuItem.setText(Messages.get(MenuBar.LBL_MENU_ITEM_GOOGLE_MAPS_BROWSER));
-		exportCsvMenuItem.setText(Messages.get(MenuBar.LBL_MENU_ITEM_EXPORT_CSV));
+		contextMenu.updateTexts();
 	}
 
 	public TableViewer getTableViewer() {
 		return tableViewer;
 	}
 
-	public Menu getContextMenu() {
+	public ContextMenu getContextMenu() {
 		return contextMenu;
-	}
-
-	public MenuItem getGoogleMapsBrowserMenuItem() {
-		return googleMapsBrowserMenuItem;
-	}
-
-	public MenuItem getGoogleMapsPopupMenuItem() {
-		return googleMapsPopupMenuItem;
-	}
-
-	public MenuItem getShowMapMenuItem() {
-		return showMapMenuItem;
-	}
-
-	public MenuItem getOpenBrowserMenuItem() {
-		return openBrowserMenuItem;
-	}
-
-	public MenuItem getCopyLinkMenuItem() {
-		return copyLinkMenuItem;
-	}
-
-	public MenuItem getExportCsvMenuItem() {
-		return exportCsvMenuItem;
 	}
 
 	public ExportCsvJob getExportCsvJob() {
@@ -454,6 +380,59 @@ public class ResultsTable {
 
 	public void setExportCsvJob(final ExportCsvJob exportCsvJob) {
 		this.exportCsvJob = exportCsvJob;
+	}
+
+	public class ContextMenu extends AbstractMenu {
+
+		private final Menu menu;
+
+		public ContextMenu(final EarthquakeBulletinGui gui) {
+			final Table table = ResultsTable.this.getTableViewer().getTable();
+			menu = new Menu(table);
+
+			// Show map...
+			showMapMenuItem = new MenuItem(menu, SWT.PUSH);
+			showMapMenuItem.setText(Messages.get(LBL_MENU_ITEM_SHOW_MAP));
+			showMapMenuItem.addListener(SWT.Selection, new ShowMapListener(gui));
+			menu.setDefaultItem(showMapMenuItem);
+
+			new MenuItem(menu, SWT.SEPARATOR);
+
+			// Open in browser...
+			openBrowserMenuItem = new MenuItem(menu, SWT.PUSH);
+			openBrowserMenuItem.setText(Messages.get(LBL_MENU_ITEM_OPEN_BROWSER));
+			openBrowserMenuItem.addSelectionListener(new OpenInBrowserSelectionListener(gui));
+
+			// Copy link...
+			copyLinkMenuItem = new MenuItem(menu, SWT.PUSH);
+			copyLinkMenuItem.setText(Messages.get(LBL_MENU_ITEM_COPY_LINK));
+			copyLinkMenuItem.addSelectionListener(new CopyLinkSelectionListener(gui));
+
+			new MenuItem(menu, SWT.SEPARATOR);
+
+			// Google Maps Popup...
+			googleMapsPopupMenuItem = new MenuItem(menu, SWT.PUSH);
+			googleMapsPopupMenuItem.setText(Messages.get(LBL_MENU_ITEM_GOOGLE_MAPS_POPUP));
+			googleMapsPopupMenuItem.addSelectionListener(new GoogleMapsPopupSelectionListener(gui));
+
+			// Google Maps in browser...
+			googleMapsBrowserMenuItem = new MenuItem(menu, SWT.PUSH);
+			googleMapsBrowserMenuItem.setText(Messages.get(LBL_MENU_ITEM_GOOGLE_MAPS_BROWSER));
+			googleMapsBrowserMenuItem.addSelectionListener(new GoogleMapsBrowserSelectionListener(gui));
+
+			new MenuItem(menu, SWT.SEPARATOR);
+
+			exportCsvMenuItem = new MenuItem(menu, SWT.PUSH);
+			exportCsvMenuItem.setText(Messages.get(LBL_MENU_ITEM_EXPORT_CSV) + SwtUtils.getMod1ShortcutLabel(SwtUtils.KEY_SAVE));
+			exportCsvMenuItem.addSelectionListener(new ExportCsvSelectionListener(gui));
+			exportCsvMenuItem.setAccelerator(SWT.MOD1 | SwtUtils.KEY_SAVE);
+
+			table.addMenuDetectListener(new ResultsTableContextMenuDetectListener(ResultsTable.this));
+		}
+
+		public Menu getMenu() {
+			return menu;
+		}
 	}
 
 }

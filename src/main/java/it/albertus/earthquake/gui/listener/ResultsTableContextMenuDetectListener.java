@@ -17,13 +17,13 @@ public class ResultsTableContextMenuDetectListener implements MenuDetectListener
 	@Override
 	public void menuDetected(final MenuDetectEvent mde) {
 		final Earthquake selection = (Earthquake) resultsTable.getTableViewer().getStructuredSelection().getFirstElement();
-		resultsTable.getShowMapMenuItem().setEnabled(selection != null && selection.getEnclosure() != null);
-		resultsTable.getCopyLinkMenuItem().setEnabled(selection != null && selection.getLink() != null);
-		resultsTable.getOpenBrowserMenuItem().setEnabled(selection != null && selection.getLink() != null);
-		resultsTable.getGoogleMapsBrowserMenuItem().setEnabled(selection != null);
-		resultsTable.getGoogleMapsPopupMenuItem().setEnabled(selection != null);
-		resultsTable.getExportCsvMenuItem().setEnabled(resultsTable.getTableViewer().getTable() != null && resultsTable.getTableViewer().getTable().getItemCount() > 0);
-		resultsTable.getContextMenu().setVisible(true);
+		resultsTable.getContextMenu().getShowMapMenuItem().setEnabled(selection != null && selection.getEnclosure() != null);
+		resultsTable.getContextMenu().getCopyLinkMenuItem().setEnabled(selection != null && selection.getLink() != null);
+		resultsTable.getContextMenu().getOpenBrowserMenuItem().setEnabled(selection != null && selection.getLink() != null);
+		resultsTable.getContextMenu().getGoogleMapsBrowserMenuItem().setEnabled(selection != null);
+		resultsTable.getContextMenu().getGoogleMapsPopupMenuItem().setEnabled(selection != null);
+		resultsTable.getContextMenu().getExportCsvMenuItem().setEnabled(resultsTable.getTableViewer().getTable() != null && resultsTable.getTableViewer().getTable().getItemCount() > 0);
+		resultsTable.getContextMenu().getMenu().setVisible(true);
 	}
 
 }

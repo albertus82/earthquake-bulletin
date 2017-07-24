@@ -29,12 +29,12 @@ public class FileMenuListener implements ArmListener, MenuListener {
 
 	@Override
 	public void menuHidden(final MenuEvent e) {
-		gui.getMenuBar().getFileExportCsvItem().setEnabled(true); // re-enable the accelerator
+		gui.getMenuBar().getExportCsvMenuItem().setEnabled(true); // re-enable the accelerator
 	}
 
 	private void manageExportCsvItem() {
 		final ResultsTable resultsTable = gui.getResultsTable();
-		gui.getMenuBar().getFileExportCsvItem().setEnabled(resultsTable != null && resultsTable.getTableViewer() != null && resultsTable.getTableViewer().getTable() != null && resultsTable.getTableViewer().getTable().getItemCount() > 0 && (resultsTable.getExportCsvJob() == null || resultsTable.getExportCsvJob().getState() == Job.NONE));
+		gui.getMenuBar().getExportCsvMenuItem().setEnabled(resultsTable != null && resultsTable.getTableViewer() != null && resultsTable.getTableViewer().getTable() != null && resultsTable.getTableViewer().getTable().getItemCount() > 0 && (resultsTable.getExportCsvJob() == null || resultsTable.getExportCsvJob().getState() == Job.NONE));
 	}
 
 }

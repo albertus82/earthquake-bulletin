@@ -32,17 +32,11 @@ import it.albertus.util.logging.LoggerFactory;
  * combinazioni di tasti, gli acceleratori non funzioneranno e le relative
  * combinazioni di tasti saranno ignorate.
  */
-public class MenuBar {
+public class MenuBar extends AbstractMenu {
 
 	private static final String LBL_MENU_HEADER_FILE = "lbl.menu.header.file";
-	public static final String LBL_MENU_ITEM_EXPORT_CSV = "lbl.menu.item.export.csv";
 	private static final String LBL_MENU_ITEM_EXIT = "lbl.menu.item.exit";
 	private static final String LBL_MENU_HEADER_EVENT = "lbl.menu.header.event";
-	public static final String LBL_MENU_ITEM_COPY_LINK = "lbl.menu.item.copy.link";
-	public static final String LBL_MENU_ITEM_GOOGLE_MAPS_BROWSER = "lbl.menu.item.google.maps.browser";
-	public static final String LBL_MENU_ITEM_GOOGLE_MAPS_POPUP = "lbl.menu.item.google.maps.popup";
-	public static final String LBL_MENU_ITEM_OPEN_BROWSER = "lbl.menu.item.open.browser";
-	public static final String LBL_MENU_ITEM_SHOW_MAP = "lbl.menu.item.show.map";
 	private static final String LBL_MENU_HEADER_TOOLS = "lbl.menu.header.tools";
 	private static final String LBL_MENU_ITEM_PREFERENCES = "lbl.menu.item.preferences";
 	private static final String LBL_MENU_HEADER_HELP = "lbl.menu.header.help";
@@ -52,16 +46,10 @@ public class MenuBar {
 
 	private final Menu fileMenu;
 	private final MenuItem fileMenuHeader;
-	private final MenuItem fileExportCsvItem;
 	private MenuItem fileExitItem;
 
 	private final Menu eventMenu;
 	private final MenuItem eventMenuHeader;
-	private final MenuItem showMapMenuItem;
-	private final MenuItem openBrowserMenuItem;
-	private final MenuItem copyLinkMenuItem;
-	private final MenuItem googleMapsBrowserMenuItem;
-	private final MenuItem googleMapsPopupMenuItem;
 
 	private Menu toolsMenu;
 	private MenuItem toolsMenuHeader;
@@ -96,10 +84,10 @@ public class MenuBar {
 		fileMenuHeader.setText(Messages.get(LBL_MENU_HEADER_FILE));
 		fileMenuHeader.setMenu(fileMenu);
 
-		fileExportCsvItem = new MenuItem(fileMenu, SWT.PUSH);
-		fileExportCsvItem.setText(Messages.get(LBL_MENU_ITEM_EXPORT_CSV) + SwtUtils.getMod1ShortcutLabel(SwtUtils.KEY_SAVE));
-		fileExportCsvItem.setAccelerator(SWT.MOD1 | SwtUtils.KEY_SAVE);
-		fileExportCsvItem.addSelectionListener(new ExportCsvSelectionListener(gui));
+		exportCsvMenuItem = new MenuItem(fileMenu, SWT.PUSH);
+		exportCsvMenuItem.setText(Messages.get(LBL_MENU_ITEM_EXPORT_CSV) + SwtUtils.getMod1ShortcutLabel(SwtUtils.KEY_SAVE));
+		exportCsvMenuItem.setAccelerator(SWT.MOD1 | SwtUtils.KEY_SAVE);
+		exportCsvMenuItem.addSelectionListener(new ExportCsvSelectionListener(gui));
 
 		if (!cocoaMenuCreated) {
 			new MenuItem(fileMenu, SWT.SEPARATOR);
@@ -176,18 +164,14 @@ public class MenuBar {
 		gui.getShell().setMenuBar(bar);
 	}
 
+	@Override
 	public void updateTexts() {
+		super.updateTexts();
 		fileMenuHeader.setText(Messages.get(LBL_MENU_HEADER_FILE));
-		fileExportCsvItem.setText(Messages.get(LBL_MENU_ITEM_EXPORT_CSV));
 		if (fileExitItem != null && !fileExitItem.isDisposed()) {
 			fileExitItem.setText(Messages.get(LBL_MENU_ITEM_EXIT));
 		}
 		eventMenuHeader.setText(Messages.get(LBL_MENU_HEADER_EVENT));
-		showMapMenuItem.setText(Messages.get(MenuBar.LBL_MENU_ITEM_SHOW_MAP));
-		openBrowserMenuItem.setText(Messages.get(MenuBar.LBL_MENU_ITEM_OPEN_BROWSER));
-		copyLinkMenuItem.setText(Messages.get(MenuBar.LBL_MENU_ITEM_COPY_LINK));
-		googleMapsPopupMenuItem.setText(Messages.get(MenuBar.LBL_MENU_ITEM_GOOGLE_MAPS_POPUP));
-		googleMapsBrowserMenuItem.setText(Messages.get(MenuBar.LBL_MENU_ITEM_GOOGLE_MAPS_BROWSER));
 		if (toolsMenuHeader != null && !toolsMenuHeader.isDisposed()) {
 			toolsMenuHeader.setText(Messages.get(LBL_MENU_HEADER_TOOLS));
 		}
@@ -200,66 +184,6 @@ public class MenuBar {
 		if (helpAboutItem != null && !helpAboutItem.isDisposed()) {
 			helpAboutItem.setText(Messages.get(LBL_MENU_ITEM_ABOUT));
 		}
-	}
-
-	public Menu getFileMenu() {
-		return fileMenu;
-	}
-
-	public MenuItem getFileMenuHeader() {
-		return fileMenuHeader;
-	}
-
-	public MenuItem getFileExportCsvItem() {
-		return fileExportCsvItem;
-	}
-
-	public MenuItem getFileExitItem() {
-		return fileExitItem;
-	}
-
-	public MenuItem getShowMapMenuItem() {
-		return showMapMenuItem;
-	}
-
-	public MenuItem getOpenBrowserMenuItem() {
-		return openBrowserMenuItem;
-	}
-
-	public MenuItem getCopyLinkMenuItem() {
-		return copyLinkMenuItem;
-	}
-
-	public MenuItem getGoogleMapsBrowserMenuItem() {
-		return googleMapsBrowserMenuItem;
-	}
-
-	public MenuItem getGoogleMapsPopupMenuItem() {
-		return googleMapsPopupMenuItem;
-	}
-
-	public Menu getToolsMenu() {
-		return toolsMenu;
-	}
-
-	public MenuItem getToolsMenuHeader() {
-		return toolsMenuHeader;
-	}
-
-	public MenuItem getToolsPreferencesMenuItem() {
-		return toolsPreferencesMenuItem;
-	}
-
-	public Menu getHelpMenu() {
-		return helpMenu;
-	}
-
-	public MenuItem getHelpMenuHeader() {
-		return helpMenuHeader;
-	}
-
-	public MenuItem getHelpAboutItem() {
-		return helpAboutItem;
 	}
 
 }
