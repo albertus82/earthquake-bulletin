@@ -5,6 +5,7 @@ import static it.albertus.earthquake.gui.preference.PageDefinition.CRITERIA;
 import static it.albertus.earthquake.gui.preference.PageDefinition.GENERAL;
 import static it.albertus.earthquake.gui.preference.PageDefinition.LOGGING;
 
+import java.net.Proxy.Type;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.Locale;
@@ -44,8 +45,10 @@ import it.albertus.jface.preference.field.DefaultComboFieldEditor;
 import it.albertus.jface.preference.field.DefaultRadioGroupFieldEditor;
 import it.albertus.jface.preference.field.EnhancedDirectoryFieldEditor;
 import it.albertus.jface.preference.field.EnhancedIntegerFieldEditor;
+import it.albertus.jface.preference.field.EnhancedStringFieldEditor;
 import it.albertus.jface.preference.field.FloatFieldEditor;
 import it.albertus.jface.preference.field.ListFieldEditor;
+import it.albertus.jface.preference.field.PasswordFieldEditor;
 import it.albertus.jface.preference.field.ScaleIntegerFieldEditor;
 import it.albertus.jface.preference.page.IPageDefinition;
 import it.albertus.util.Localized;
@@ -69,6 +72,14 @@ public enum Preference implements IPreference {
 
 	HTTP_CONNECTION_TIMEOUT_MS(new PreferenceDetailsBuilder(CONNECTION).defaultValue(HttpConnector.Defaults.CONNECTION_TIMEOUT_IN_MILLIS).build(), new FieldEditorDetailsBuilder(EnhancedIntegerFieldEditor.class).build()),
 	HTTP_READ_TIMEOUT_MS(new PreferenceDetailsBuilder(CONNECTION).defaultValue(HttpConnector.Defaults.READ_TIMEOUT_IN_MILLIS).build(), new FieldEditorDetailsBuilder(EnhancedIntegerFieldEditor.class).build()),
+
+	PROXY_ENABLED(new PreferenceDetailsBuilder(CONNECTION).defaultValue(HttpConnector.Defaults.PROXY_ENABLED).separate().build(), new FieldEditorDetailsBuilder(DefaultBooleanFieldEditor.class).build()),
+	PROXY_TYPE(new PreferenceDetailsBuilder(CONNECTION).parent(PROXY_ENABLED).defaultValue(HttpConnector.Defaults.PROXY_TYPE.name()).build(), new FieldEditorDetailsBuilder(DefaultComboFieldEditor.class).labelsAndValues(getProxyTypeComboOptions()).boldCustomValues(false).build()),
+	PROXY_ADDRESS(new PreferenceDetailsBuilder(CONNECTION).parent(PROXY_ENABLED).defaultValue(HttpConnector.Defaults.PROXY_ADDRESS).build(), new FieldEditorDetailsBuilder(EnhancedStringFieldEditor.class).textLimit(253).emptyStringAllowed(false).boldCustomValues(false).build()),
+	PROXY_PORT(new PreferenceDetailsBuilder(CONNECTION).parent(PROXY_ENABLED).defaultValue(HttpConnector.Defaults.PROXY_PORT).build(), new FieldEditorDetailsBuilder(EnhancedIntegerFieldEditor.class).numberValidRange(1, 65535).boldCustomValues(false).build()),
+	PROXY_AUTH_REQUIRED(new PreferenceDetailsBuilder(CONNECTION).parent(PROXY_ENABLED).defaultValue(HttpConnector.Defaults.PROXY_ENABLED).build(), new FieldEditorDetailsBuilder(DefaultBooleanFieldEditor.class).build()),
+	PROXY_USERNAME(new PreferenceDetailsBuilder(CONNECTION).parent(PROXY_AUTH_REQUIRED).build(), new FieldEditorDetailsBuilder(EnhancedStringFieldEditor.class).build()),
+	PROXY_PASSWORD(new PreferenceDetailsBuilder(CONNECTION).parent(PROXY_AUTH_REQUIRED).build(), new FieldEditorDetailsBuilder(PasswordFieldEditor.class).build()),
 
 	CRITERIA_PERIOD_FROM(new PreferenceDetailsBuilder(CRITERIA).label(new Localized() {
 		@Override
@@ -271,7 +282,7 @@ public enum Preference implements IPreference {
 		final Map<Integer, Level> levels = LoggingSupport.getLevels();
 		final StaticLabelsAndValues options = new StaticLabelsAndValues(levels.size());
 		for (final Level level : levels.values()) {
-			options.put(level.getName(), level.getName());
+			options.put(level.toString(), level.getName());
 		}
 		return options;
 	}
@@ -282,6 +293,17 @@ public enum Preference implements IPreference {
 		final StaticLabelsAndValues options = new StaticLabelsAndValues(zones.length);
 		for (final String zone : zones) {
 			options.put(zone, zone);
+		}
+		return options;
+	}
+
+	public static StaticLabelsAndValues getProxyTypeComboOptions() {
+		final Type[] types = Type.values();
+		final StaticLabelsAndValues options = new StaticLabelsAndValues(types.length - 1);
+		for (final Type type : types) {
+			if (!Type.DIRECT.equals(type)) {
+				options.put(type.toString(), type.name());
+			}
 		}
 		return options;
 	}
