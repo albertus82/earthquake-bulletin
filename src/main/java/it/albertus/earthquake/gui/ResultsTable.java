@@ -174,48 +174,15 @@ public class ResultsTable {
 	}
 
 	private void createColumns(final Composite parent, final TableViewer viewer) {
-		labelsMap.put(0, new Localized() {
-			@Override
-			public String getString() {
-				return Messages.get("lbl.table.time");
-			}
-		});
-		labelsMap.put(1, new Localized() {
-			@Override
-			public String getString() {
-				return Messages.get("lbl.table.magnitudo");
-			}
-		});
-		labelsMap.put(2, new Localized() {
-			@Override
-			public String getString() {
-				return Messages.get("lbl.table.latitude");
-			}
-		});
-		labelsMap.put(3, new Localized() {
-			@Override
-			public String getString() {
-				return Messages.get("lbl.table.longitude");
-			}
-		});
-		labelsMap.put(4, new Localized() {
-			@Override
-			public String getString() {
-				return Messages.get("lbl.table.depth");
-			}
-		});
-		labelsMap.put(5, new Localized() {
-			@Override
-			public String getString() {
-				return Messages.get("lbl.table.status");
-			}
-		});
-		labelsMap.put(6, new Localized() {
-			@Override
-			public String getString() {
-				return Messages.get("lbl.table.region");
-			}
-		});
+		int i = 0;
+		for (final String suffix : new String[] { "time", "magnitude", "latitude", "longitude", "depth", "status", "region" }) {
+			labelsMap.put(i++, new Localized() {
+				@Override
+				public String getString() {
+					return Messages.get("lbl.table." + suffix);
+				}
+			});
+		}
 
 		TableViewerColumn col = createTableViewerColumn(labelsMap.get(0).getString(), 0);
 		col.setLabelProvider(new EarthquakeColumnLabelProvider() {
