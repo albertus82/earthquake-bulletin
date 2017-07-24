@@ -3,6 +3,7 @@ package it.albertus.earthquake.service.net;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
 
 import it.albertus.earthquake.config.EarthquakeBulletinConfiguration;
 import it.albertus.util.Configuration;
@@ -27,16 +28,21 @@ public class HttpConnector {
 		throw new IllegalAccessError();
 	}
 
-	public static HttpURLConnection openConnection(final URL url) throws IOException {
-		final HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-		urlConnection.setConnectTimeout(configuration.getInt("http.connection.timeout.ms", Defaults.CONNECTION_TIMEOUT_IN_MILLIS));
-		urlConnection.setReadTimeout(configuration.getInt("http.read.timeout.ms", Defaults.READ_TIMEOUT_IN_MILLIS));
-		urlConnection.setRequestProperty("User-Agent", USER_AGENT);
-		return urlConnection;
+	public static HttpURLConnection getConnection(final URL url) throws IOException {
+		final URLConnection connection = url.openConnection();
+		if (connection instanceof HttpURLConnection) {
+			connection.setConnectTimeout(configuration.getInt("http.connection.timeout.ms", Defaults.CONNECTION_TIMEOUT_IN_MILLIS));
+			connection.setReadTimeout(configuration.getInt("http.read.timeout.ms", Defaults.READ_TIMEOUT_IN_MILLIS));
+			connection.setRequestProperty("User-Agent", USER_AGENT);
+			return (HttpURLConnection) connection;
+		}
+		else {
+			throw new IllegalArgumentException(String.valueOf(url));
+		}
 	}
 
-	public static HttpURLConnection openConnection(final String url) throws IOException {
-		return openConnection(new URL(url));
+	public static HttpURLConnection getConnection(final String url) throws IOException {
+		return getConnection(new URL(url));
 	}
 
 }

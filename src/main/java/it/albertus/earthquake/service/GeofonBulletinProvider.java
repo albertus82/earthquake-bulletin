@@ -39,7 +39,7 @@ public class GeofonBulletinProvider implements BulletinProvider {
 		TableData html = null;
 		HttpURLConnection urlConnection = null;
 		try {
-			urlConnection = openConnection(url.toString());
+			urlConnection = getConnection(url.toString());
 			final String responseContentEncoding = urlConnection.getContentEncoding(); // Connection starts here
 			final boolean gzip = responseContentEncoding != null && responseContentEncoding.toLowerCase().contains("gzip");
 			try (final InputStream internalInputStream = urlConnection.getInputStream(); final InputStream inputStream = gzip ? new GZIPInputStream(internalInputStream) : internalInputStream) {
@@ -103,8 +103,8 @@ public class GeofonBulletinProvider implements BulletinProvider {
 		return td;
 	}
 
-	private HttpURLConnection openConnection(final String url) throws IOException {
-		final HttpURLConnection urlConnection = HttpConnector.openConnection(url);
+	private HttpURLConnection getConnection(final String url) throws IOException {
+		final HttpURLConnection urlConnection = HttpConnector.getConnection(url);
 		urlConnection.setRequestProperty("Accept", "*/html,*/xml,*/*;q=0.9");
 		urlConnection.setRequestProperty("Accept-Encoding", "gzip");
 		return urlConnection;
