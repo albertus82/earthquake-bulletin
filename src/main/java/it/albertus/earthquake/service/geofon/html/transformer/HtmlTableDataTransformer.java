@@ -1,4 +1,4 @@
-package it.albertus.earthquake.service.html.transformer;
+package it.albertus.earthquake.service.geofon.html.transformer;
 
 import java.net.URL;
 import java.text.DateFormat;
@@ -10,13 +10,15 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
-import it.albertus.earthquake.EarthquakeBulletin;
+import it.albertus.earthquake.config.EarthquakeBulletinConfiguration;
 import it.albertus.earthquake.model.Depth;
 import it.albertus.earthquake.model.Earthquake;
 import it.albertus.earthquake.model.Latitude;
 import it.albertus.earthquake.model.Longitude;
 import it.albertus.earthquake.model.Status;
-import it.albertus.earthquake.service.html.TableData;
+import it.albertus.earthquake.service.geofon.GeofonBulletinProvider;
+import it.albertus.earthquake.service.geofon.html.TableData;
+import it.albertus.util.Configuration;
 import it.albertus.util.NewLine;
 
 public class HtmlTableDataTransformer {
@@ -49,6 +51,8 @@ public class HtmlTableDataTransformer {
 			return dateFormat;
 		}
 	};
+
+	private static final Configuration configuration = EarthquakeBulletinConfiguration.getInstance();
 
 	private HtmlTableDataTransformer() {
 		throw new IllegalAccessError();
@@ -90,21 +94,18 @@ public class HtmlTableDataTransformer {
 			if ("S".equalsIgnoreCase(lines[2].substring(lines[2].indexOf(latitudeSignPrefix) + latitudeSignPrefix.length(), lines[2].indexOf(latitudeSignSuffix)).trim())) {
 				latitude *= -1;
 			}
-
 			float longitude = Float.parseFloat(lines[3].substring(lines[3].indexOf(longitudePrefix) + longitudePrefix.length(), lines[3].indexOf(longitudeSuffix)).trim());
 			if ("W".equalsIgnoreCase(lines[3].substring(lines[3].indexOf(longitudeSignPrefix) + longitudeSignPrefix.length(), lines[3].indexOf(longitudeSignSuffix)).trim())) {
 				longitude *= -1;
 			}
 
 			final int depth = Integer.parseInt(lines[4].substring(lines[4].indexOf(magnitudePrefix) + magnitudePrefix.length(), lines[4].indexOf(depthSuffix)).trim());
-
 			final Status status = Status.valueOf(lines[5].substring(lines[5].lastIndexOf(statusPrefix) + statusPrefix.length(), lines[5].indexOf(statusSuffix)).trim());
-
 			final String region = lines[6].substring(lines[6].lastIndexOf(regionPrefix) + regionPrefix.length(), lines[6].lastIndexOf(regionSuffix)).trim();
 
-			final URL link = new URL(EarthquakeBulletin.BASE_URL + "/eqinfo/event.php?id=" + guid);
-
-			final URL enclosure = new URL(EarthquakeBulletin.BASE_URL + "/data/alerts/" + time.get(Calendar.YEAR) + "/" + guid + "/" + guid + ".jpg");
+			final String baseUrl = configuration.getString("url.base", GeofonBulletinProvider.BASE_URL);
+			final URL link = new URL(baseUrl + "/eqinfo/event.php?id=" + guid);
+			final URL enclosure = new URL(baseUrl + "/data/alerts/" + time.get(Calendar.YEAR) + "/" + guid + "/" + guid + ".jpg");
 
 			return new Earthquake(guid, time.getTime(), magnitude, new Latitude(latitude), new Longitude(longitude), new Depth(depth), status, region, link, enclosure);
 		}

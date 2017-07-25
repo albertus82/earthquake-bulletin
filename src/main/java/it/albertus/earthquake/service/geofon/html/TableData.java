@@ -1,4 +1,4 @@
-package it.albertus.earthquake.service.html;
+package it.albertus.earthquake.service.geofon.html;
 
 import java.util.LinkedList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package it.albertus.earthquake.service.rss.xml;
+package it.albertus.earthquake.service.geofon.rss.xml;
 
 public class Item {
 

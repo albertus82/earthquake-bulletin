@@ -1,8 +1,8 @@
 package it.albertus.earthquake.model;
 
-public class Latitude extends FloatValue {
+public class Latitude extends Coordinate {
 
-	private static final long serialVersionUID = 2434704076425121073L;
+	private static final long serialVersionUID = -7954277797187606026L;
 
 	public Latitude(final float value) {
 		super(value);
@@ -10,7 +10,7 @@ public class Latitude extends FloatValue {
 
 	@Override
 	public String toString() {
-		return Float.toString(Math.abs(value)) + '\u00B0' + (value > 0 ? 'N' : 'S');
+		return numberFormats.get().format(Math.abs(value)) + '\u00B0' + (value > 0 ? 'N' : 'S');
 	}
 
 }

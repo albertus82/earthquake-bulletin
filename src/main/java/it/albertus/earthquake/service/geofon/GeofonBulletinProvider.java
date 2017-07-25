@@ -1,4 +1,4 @@
-package it.albertus.earthquake.service;
+package it.albertus.earthquake.service.geofon;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,22 +13,31 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
-import it.albertus.earthquake.EarthquakeBulletin;
+import it.albertus.earthquake.config.EarthquakeBulletinConfiguration;
 import it.albertus.earthquake.model.Earthquake;
 import it.albertus.earthquake.model.Format;
 import it.albertus.earthquake.resources.Messages;
-import it.albertus.earthquake.service.html.TableData;
-import it.albertus.earthquake.service.html.transformer.HtmlTableDataTransformer;
+import it.albertus.earthquake.service.BulletinProvider;
+import it.albertus.earthquake.service.DecodeException;
+import it.albertus.earthquake.service.FetchException;
+import it.albertus.earthquake.service.SearchJobVars;
+import it.albertus.earthquake.service.geofon.html.TableData;
+import it.albertus.earthquake.service.geofon.html.transformer.HtmlTableDataTransformer;
+import it.albertus.earthquake.service.geofon.rss.transformer.RssItemTransformer;
+import it.albertus.earthquake.service.geofon.rss.xml.Rss;
 import it.albertus.earthquake.service.net.HttpConnector;
-import it.albertus.earthquake.service.rss.transformer.RssItemTransformer;
-import it.albertus.earthquake.service.rss.xml.Rss;
+import it.albertus.util.Configuration;
 import it.albertus.util.NewLine;
 
 public class GeofonBulletinProvider implements BulletinProvider {
 
+	public static final String BASE_URL = "http://geofon.gfz-potsdam.de";
+
+	private static final Configuration configuration = EarthquakeBulletinConfiguration.getInstance();
+
 	@Override
 	public List<Earthquake> getEarthquakes(final SearchJobVars jobVariables) throws FetchException, DecodeException {
-		final StringBuilder url = new StringBuilder(EarthquakeBulletin.BASE_URL).append("/eqinfo/list.php?fmt=").append(jobVariables.getParams().get("fmt"));
+		final StringBuilder url = new StringBuilder(configuration.getString("url.base", BASE_URL)).append("/eqinfo/list.php?fmt=").append(jobVariables.getParams().get("fmt"));
 		for (final Entry<String, String> param : jobVariables.getParams().entrySet()) {
 			if (param.getValue() != null && !param.getValue().isEmpty() && !"fmt".equals(param.getKey())) {
 				url.append('&').append(param.getKey()).append('=').append(param.getValue());
