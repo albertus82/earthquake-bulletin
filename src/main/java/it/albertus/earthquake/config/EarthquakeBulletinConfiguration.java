@@ -45,7 +45,7 @@ public class EarthquakeBulletinConfiguration extends Configuration {
 		init();
 	}
 
-	public static synchronized EarthquakeBulletinConfiguration getInstance() throws InitializationException {
+	public static synchronized EarthquakeBulletinConfiguration getInstance() {
 		if (instance == null) {
 			try {
 				instance = new EarthquakeBulletinConfiguration();
