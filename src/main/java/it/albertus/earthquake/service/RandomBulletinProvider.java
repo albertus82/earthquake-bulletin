@@ -2,6 +2,7 @@ package it.albertus.earthquake.service;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
@@ -31,6 +32,7 @@ public class RandomBulletinProvider implements BulletinProvider {
 			final Status status = Status.values()[new Random().nextInt(Status.values().length)];
 			earthquakes.add(new Earthquake(uuid, date.getTime(), magnitude, new Latitude(latitude), new Longitude(longitude), new Depth(depth), status, uuid, null, null));
 		}
+		Collections.sort(earthquakes);
 		return earthquakes;
 	}
 
