@@ -24,7 +24,7 @@ public class FormFieldTraverseListener implements TraverseListener {
 				form.getSearchButton().notifyListeners(SWT.Selection, null);
 			}
 			else if (form.isValid() && form.getSearchJob() != null && form.getSearchJob().getState() != Job.NONE) {
-				final MessageBox dialog = new MessageBox(form.getFormComposite().getShell(), SWT.ICON_INFORMATION);
+				final MessageBox dialog = new MessageBox(form.getFormComposite().getShell(), SWT.ICON_WARNING);
 				dialog.setText(Messages.get("lbl.window.title"));
 				dialog.setMessage(Messages.get("msg.form.search.ongoing.message"));
 				dialog.open();
