@@ -187,11 +187,10 @@ public class ResultsTable {
 		TableViewerColumn col = createTableViewerColumn(labelsMap.get(0).getString(), 0);
 		col.setLabelProvider(new EarthquakeColumnLabelProvider() {
 			@Override
-			public String getText(final Object element) {
-				final Earthquake earthquake = (Earthquake) element;
+			protected String getText(final Earthquake element) {
 				final DateFormat df = dateFormat.get();
 				df.setTimeZone(TimeZone.getTimeZone(configuration.getString("timezone", EarthquakeBulletin.Defaults.TIME_ZONE_ID)));
-				return df.format(earthquake.getTime());
+				return df.format(element.getTime());
 			}
 		});
 
@@ -199,15 +198,13 @@ public class ResultsTable {
 		col.getColumn().setAlignment(SWT.CENTER);
 		col.setLabelProvider(new EarthquakeColumnLabelProvider() {
 			@Override
-			public String getText(final Object element) {
-				final Earthquake earthquake = (Earthquake) element;
-				return Float.toString(earthquake.getMagnitude());
+			protected String getText(final Earthquake element) {
+				return Float.toString(element.getMagnitude());
 			}
 
 			@Override
-			public Color getForeground(final Object element) {
-				final Earthquake earthquake = (Earthquake) element;
-				if (earthquake.getMagnitude() >= configuration.getFloat("magnitude.xxl", Defaults.MAGNITUDE_XXL)) {
+			protected Color getForeground(final Earthquake element) {
+				if (element.getMagnitude() >= configuration.getFloat("magnitude.xxl", Defaults.MAGNITUDE_XXL)) {
 					return table.getDisplay().getSystemColor(SWT.COLOR_RED);
 				}
 				else {
@@ -216,9 +213,8 @@ public class ResultsTable {
 			}
 
 			@Override
-			public Font getFont(final Object element) {
-				final Earthquake earthquake = (Earthquake) element;
-				if (earthquake.getMagnitude() >= configuration.getFloat("magnitude.big", Defaults.MAGNITUDE_BIG) && getTableViewer().getTable().getItemCount() != 0) {
+			protected Font getFont(final Earthquake element) {
+				if (element.getMagnitude() >= configuration.getFloat("magnitude.big", Defaults.MAGNITUDE_BIG) && getTableViewer().getTable().getItemCount() != 0) {
 					final FontRegistry fontRegistry = JFaceResources.getFontRegistry();
 					if (!fontRegistry.hasValueFor(TABLE_FONT)) {
 						fontRegistry.put(TABLE_FONT, getTableViewer().getTable().getItem(0).getFont(0).getFontData());
@@ -233,9 +229,8 @@ public class ResultsTable {
 		col.getColumn().setAlignment(SWT.RIGHT);
 		col.setLabelProvider(new EarthquakeColumnLabelProvider() {
 			@Override
-			public String getText(final Object element) {
-				final Earthquake earthquake = (Earthquake) element;
-				return String.valueOf(earthquake.getLatitude());
+			protected String getText(final Earthquake element) {
+				return String.valueOf(element.getLatitude());
 			}
 		});
 
@@ -243,9 +238,8 @@ public class ResultsTable {
 		col.getColumn().setAlignment(SWT.RIGHT);
 		col.setLabelProvider(new EarthquakeColumnLabelProvider() {
 			@Override
-			public String getText(final Object element) {
-				final Earthquake earthquake = (Earthquake) element;
-				return String.valueOf(earthquake.getLongitude());
+			protected String getText(final Earthquake element) {
+				return String.valueOf(element.getLongitude());
 			}
 		});
 
@@ -253,9 +247,8 @@ public class ResultsTable {
 		col.getColumn().setAlignment(SWT.RIGHT);
 		col.setLabelProvider(new EarthquakeColumnLabelProvider() {
 			@Override
-			public String getText(final Object element) {
-				final Earthquake earthquake = (Earthquake) element;
-				return String.valueOf(earthquake.getDepth());
+			protected String getText(final Earthquake element) {
+				return String.valueOf(element.getDepth());
 			}
 		});
 
@@ -263,21 +256,18 @@ public class ResultsTable {
 		col.getColumn().setAlignment(SWT.CENTER);
 		col.setLabelProvider(new EarthquakeColumnLabelProvider() {
 			@Override
-			public String getText(final Object element) {
-				final Earthquake earthquake = (Earthquake) element;
-				return String.valueOf(earthquake.getStatus());
+			protected String getText(final Earthquake element) {
+				return String.valueOf(element.getStatus());
 			}
 
 			@Override
-			public Color getForeground(final Object element) {
-				final Earthquake earthquake = (Earthquake) element;
-				return table.getDisplay().getSystemColor(Status.A.equals(earthquake.getStatus()) ? SWT.COLOR_RED : SWT.COLOR_DARK_GREEN);
+			protected Color getForeground(final Earthquake element) {
+				return table.getDisplay().getSystemColor(Status.A.equals(element.getStatus()) ? SWT.COLOR_RED : SWT.COLOR_DARK_GREEN);
 			}
 
 			@Override
-			public String getToolTipText(final Object element) {
-				final Earthquake earthquake = (Earthquake) element;
-				return earthquake.getStatus().getDescription();
+			protected String getToolTipText(final Earthquake element) {
+				return element.getStatus().getDescription();
 			}
 
 			@Override
@@ -289,9 +279,8 @@ public class ResultsTable {
 		col = createTableViewerColumn(labelsMap.get(6).getString(), 6);
 		col.setLabelProvider(new EarthquakeColumnLabelProvider() {
 			@Override
-			public String getText(final Object element) {
-				final Earthquake earthquake = (Earthquake) element;
-				return String.valueOf(earthquake.getRegion());
+			protected String getText(final Earthquake element) {
+				return String.valueOf(element.getRegion());
 			}
 		});
 
