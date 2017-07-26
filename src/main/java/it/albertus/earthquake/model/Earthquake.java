@@ -15,6 +15,7 @@ public class Earthquake implements Serializable, Comparable<Earthquake> {
 	private final Longitude longitude;
 	private final Depth depth;
 	private final Status status;
+	private URL momentTensor;
 	private final String region;
 	private final URL link;
 	private final URL enclosure;
@@ -60,6 +61,14 @@ public class Earthquake implements Serializable, Comparable<Earthquake> {
 		return status;
 	}
 
+	public URL getMomentTensor() {
+		return momentTensor;
+	}
+
+	public void setMomentTensor(final URL momentTensor) {
+		this.momentTensor = momentTensor;
+	}
+
 	public String getRegion() {
 		return region;
 	}
@@ -78,7 +87,7 @@ public class Earthquake implements Serializable, Comparable<Earthquake> {
 
 	@Override
 	public String toString() {
-		return "Earthquake [guid=" + guid + ", time=" + time + ", magnitude=" + magnitude + ", latitude=" + latitude + ", longitude=" + longitude + ", depth=" + depth + ", status=" + status + ", region=" + region + ", link=" + link + ", enclosure=" + enclosure + "]";
+		return "Earthquake [guid=" + guid + ", time=" + time + ", magnitude=" + magnitude + ", latitude=" + latitude + ", longitude=" + longitude + ", depth=" + depth + ", status=" + status + ", momentTensor=" + momentTensor + ", region=" + region + ", link=" + link + ", enclosure=" + enclosure + "]";
 	}
 
 	@Override

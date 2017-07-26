@@ -159,8 +159,8 @@ public class ResultsTable {
 				}
 			}
 		};
-		createColumns(parent, tableViewer);
 		final Table table = tableViewer.getTable();
+		createColumns(table);
 		table.setLayoutData(layoutData);
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
@@ -173,7 +173,7 @@ public class ResultsTable {
 		contextMenu = new ContextMenu(gui);
 	}
 
-	private void createColumns(final Composite parent, final TableViewer viewer) {
+	private void createColumns(final Table table) {
 		int i = 0;
 		for (final String suffix : new String[] { "time", "magnitude", "latitude", "longitude", "depth", "status", "region" }) {
 			labelsMap.put(i++, new Localized() {
@@ -208,7 +208,7 @@ public class ResultsTable {
 			public Color getForeground(final Object element) {
 				final Earthquake earthquake = (Earthquake) element;
 				if (earthquake.getMagnitude() >= configuration.getFloat("magnitude.xxl", Defaults.MAGNITUDE_XXL)) {
-					return parent.getDisplay().getSystemColor(SWT.COLOR_RED);
+					return table.getDisplay().getSystemColor(SWT.COLOR_RED);
 				}
 				else {
 					return super.getForeground(element);
@@ -271,7 +271,7 @@ public class ResultsTable {
 			@Override
 			public Color getForeground(final Object element) {
 				final Earthquake earthquake = (Earthquake) element;
-				return parent.getDisplay().getSystemColor(Status.A.equals(earthquake.getStatus()) ? SWT.COLOR_RED : SWT.COLOR_DARK_GREEN);
+				return table.getDisplay().getSystemColor(Status.A.equals(earthquake.getStatus()) ? SWT.COLOR_RED : SWT.COLOR_DARK_GREEN);
 			}
 
 			@Override
@@ -295,7 +295,6 @@ public class ResultsTable {
 			}
 		});
 
-		final Table table = viewer.getTable();
 		table.setRedraw(false);
 		for (int j = 0; j < table.getColumns().length; j++) {
 			table.getColumn(j).pack();

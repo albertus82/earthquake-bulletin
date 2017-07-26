@@ -23,6 +23,8 @@ import it.albertus.util.NewLine;
 
 public class HtmlTableDataTransformer {
 
+	private static final String MOMENT_TENSOR_FILENAME = "mt.txt";
+
 	private static final String guidPrefix = "id=";
 	private static final String guidSuffix = "'>";
 	private static final String timePrefix = guidSuffix;
@@ -105,9 +107,16 @@ public class HtmlTableDataTransformer {
 
 			final String baseUrl = configuration.getString("url.base", GeofonBulletinProvider.BASE_URL);
 			final URL link = new URL(baseUrl + "/eqinfo/event.php?id=" + guid);
-			final URL enclosure = new URL(baseUrl + "/data/alerts/" + time.get(Calendar.YEAR) + "/" + guid + "/" + guid + ".jpg");
+			final String eventBaseUrl = baseUrl + "/data/alerts/" + time.get(Calendar.YEAR) + "/" + guid + "/";
+			final URL enclosure = new URL(eventBaseUrl + guid + ".jpg");
 
-			return new Earthquake(guid, time.getTime(), magnitude, new Latitude(latitude), new Longitude(longitude), new Depth(depth), status, region, link, enclosure);
+			final Earthquake earthquake = new Earthquake(guid, time.getTime(), magnitude, new Latitude(latitude), new Longitude(longitude), new Depth(depth), status, region, link, enclosure);
+
+			if (lines[6].contains(MOMENT_TENSOR_FILENAME)) {
+				earthquake.setMomentTensor(new URL(eventBaseUrl + MOMENT_TENSOR_FILENAME));
+			}
+
+			return earthquake;
 		}
 		catch (final Exception e) {
 			throw new IllegalArgumentException(td, e);
