@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -29,12 +30,6 @@ import it.albertus.util.logging.LoggerFactory;
 public class ExportCsvJob extends Job {
 
 	private static final Logger logger = LoggerFactory.getLogger(ExportCsvJob.class);
-
-	private static final char CSV_FIELD_SEPARATOR = ';';
-	private static final String[] CSV_FILE_EXTENSIONS = { "*.CSV;*.csv" };
-
-	private static final DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
-	private static final DateFormat timeFormat = new SimpleDateFormat("HHmmss");
 
 	private final ResultsTable resultsTable;
 
@@ -64,28 +59,7 @@ public class ExportCsvJob extends Job {
 
 			try (final StringWriter sw = new StringWriter()) {
 				final Variables vars = new Variables();
-				new DisplayThreadExecutor(table).execute(new Runnable() {
-					@Override
-					public void run() {
-						final Shell shell = table.getShell();
-						try (final BufferedWriter bw = new BufferedWriter(sw)) {
-							writeCsv(table, bw);
-						}
-						catch (final Exception e) {
-							final String message = Messages.get("err.job.csv.create");
-							logger.log(Level.SEVERE, message, e);
-							EnhancedErrorDialog.openError(shell, Messages.get("lbl.window.title"), message, IStatus.ERROR, e, Images.getMainIcons());
-							vars.setException(e);
-						}
-						finally {
-							shell.setCursor(null);
-						}
-						if (vars.getException() == null) {
-							vars.setFileName(openSaveDialog(shell));
-							shell.setCursor(shell.getDisplay().getSystemCursor(SWT.CURSOR_WAIT));
-						}
-					}
-				});
+				new DisplayThreadExecutor(table).execute(new CsvBuilderJob(table, sw, vars));
 
 				if (vars.getException() != null) {
 					return Status.CANCEL_STATUS;
@@ -121,32 +95,72 @@ public class ExportCsvJob extends Job {
 		return Status.OK_STATUS;
 	}
 
-	private void writeCsv(final Table table, final BufferedWriter writer) throws IOException {
-		for (int i = 0; i < table.getColumnCount(); i++) { // Head
-			if (i != 0) {
-				writer.append(CSV_FIELD_SEPARATOR);
-			}
-			writer.write(table.getColumn(i).getText());
+	private static class CsvBuilderJob implements Runnable {
+
+		private static final char CSV_FIELD_SEPARATOR = ';';
+		private static final String[] CSV_FILE_EXTENSIONS = { "*.CSV;*.csv" };
+
+		private static final DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+		private static final DateFormat timeFormat = new SimpleDateFormat("HHmmss");
+
+		private final Table table;
+		private final Writer writer;
+		private final Variables vars;
+
+		public CsvBuilderJob(final Table source, final Writer destination, final Variables vars) {
+			this.table = source;
+			this.writer = destination;
+			this.vars = vars;
 		}
-		writer.newLine();
-		for (int i = 0; i < table.getItemCount(); i++) { // Body
-			for (int j = 0; j < table.getColumnCount(); j++) {
-				if (j != 0) {
+
+		@Override
+		public void run() {
+			final Shell shell = table.getShell();
+			try (final BufferedWriter bw = new BufferedWriter(writer)) {
+				writeCsv(table, bw);
+			}
+			catch (final Exception e) {
+				final String message = Messages.get("err.job.csv.create");
+				logger.log(Level.SEVERE, message, e);
+				EnhancedErrorDialog.openError(shell, Messages.get("lbl.window.title"), message, IStatus.ERROR, e, Images.getMainIcons());
+				vars.setException(e);
+			}
+			finally {
+				shell.setCursor(null);
+			}
+			if (vars.getException() == null) {
+				vars.setFileName(openSaveDialog(shell));
+				shell.setCursor(shell.getDisplay().getSystemCursor(SWT.CURSOR_WAIT));
+			}
+		}
+
+		private void writeCsv(final Table table, final BufferedWriter writer) throws IOException {
+			for (int i = 0; i < table.getColumnCount(); i++) { // Head
+				if (i != 0) {
 					writer.append(CSV_FIELD_SEPARATOR);
 				}
-				writer.write(table.getItem(i).getText(j));
+				writer.write(table.getColumn(i).getText());
 			}
 			writer.newLine();
+			for (int i = 0; i < table.getItemCount(); i++) { // Body
+				for (int j = 0; j < table.getColumnCount(); j++) {
+					if (j != 0) {
+						writer.append(CSV_FIELD_SEPARATOR);
+					}
+					writer.write(table.getItem(i).getText(j));
+				}
+				writer.newLine();
+			}
 		}
-	}
 
-	private String openSaveDialog(final Shell shell) {
-		final FileDialog saveDialog = new FileDialog(shell, SWT.SAVE);
-		saveDialog.setFilterExtensions(CSV_FILE_EXTENSIONS);
-		final Date sysdate = new Date();
-		saveDialog.setFileName(String.format("earthquakebulletin_%s_%s.csv", dateFormat.format(sysdate), timeFormat.format(sysdate)));
-		saveDialog.setOverwrite(true);
-		return saveDialog.open();
+		private String openSaveDialog(final Shell shell) {
+			final FileDialog saveDialog = new FileDialog(shell, SWT.SAVE);
+			saveDialog.setFilterExtensions(CSV_FILE_EXTENSIONS);
+			final Date sysdate = new Date();
+			saveDialog.setFileName(String.format("earthquakebulletin_%s_%s.csv", dateFormat.format(sysdate), timeFormat.format(sysdate)));
+			saveDialog.setOverwrite(true);
+			return saveDialog.open();
+		}
 	}
 
 	private class Variables {
