@@ -15,3 +15,5 @@ A cross-platform desktop client for **GEOFON Program GFZ Potsdam Earthquake Bull
 Locations were obtained from the GEOFON programme of the GFZ German Research Centre for Geosciences using data from the GEVN partner networks.
 
 Seismic data were obtained from the GEOFON data centre of the GFZ German Research Centre for Geosciences.
+
+This application includes software developed by the Eclipse Foundation that is distributed under the [Eclipse Public License](https://eclipse.org/org/documents/epl-v10.php).
