@@ -8,7 +8,7 @@ A cross-platform desktop client for **GEOFON Program GFZ Potsdam Earthquake Bull
 
 ![Screenshot](https://user-images.githubusercontent.com/8672431/28755268-208fa9be-7557-11e7-9f69-ef70c9f38027.png)
 
-## [Downloads](https://github.com/Albertus82/EarthquakeBulletin/releases/latest)
+## [Download](https://github.com/Albertus82/EarthquakeBulletin/releases/latest)
 
 ## Acknowledgements
 
