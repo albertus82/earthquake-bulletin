@@ -100,8 +100,7 @@ public class ExportCsvJob extends Job {
 		private static final char CSV_FIELD_SEPARATOR = ';';
 		private static final String[] CSV_FILE_EXTENSIONS = { "*.CSV;*.csv" };
 
-		private static final DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
-		private static final DateFormat timeFormat = new SimpleDateFormat("HHmmss");
+		private static final DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
 
 		private final Table table;
 		private final Writer writer;
@@ -159,8 +158,7 @@ public class ExportCsvJob extends Job {
 		private String openSaveDialog(final Shell shell) {
 			final FileDialog saveDialog = new FileDialog(shell, SWT.SAVE);
 			saveDialog.setFilterExtensions(CSV_FILE_EXTENSIONS);
-			final Date sysdate = new Date();
-			saveDialog.setFileName(String.format("earthquakebulletin_%s_%s.csv", dateFormat.format(sysdate), timeFormat.format(sysdate)));
+			saveDialog.setFileName("earthquakebulletin_" + dateFormat.format(new Date()) + ".csv");
 			saveDialog.setOverwrite(true);
 			return saveDialog.open();
 		}
