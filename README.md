@@ -1,6 +1,7 @@
 Earthquake Bulletin
 ===================
 
+[![Release](https://img.shields.io/github/release/Albertus82/EarthquakeBulletin.svg)](https://github.com/Albertus82/EarthquakeBulletin/releases/latest)
 [![Build Status](https://travis-ci.org/Albertus82/EarthquakeBulletin.svg?branch=master)](https://travis-ci.org/Albertus82/EarthquakeBulletin)
 [![Build status](https://ci.appveyor.com/api/projects/status/github/Albertus82/EarthquakeBulletin?branch=master&svg=true)](https://ci.appveyor.com/project/Albertus82/EarthquakeBulletin)
 
@@ -8,7 +9,7 @@ A cross-platform desktop client for **GEOFON Program GFZ Potsdam Earthquake Bull
 
 ![Screenshot](https://user-images.githubusercontent.com/8672431/28755268-208fa9be-7557-11e7-9f69-ef70c9f38027.png)
 
-## [Download](https://github.com/Albertus82/EarthquakeBulletin/releases/latest)
+### [Download latest release](https://github.com/Albertus82/EarthquakeBulletin/releases/latest)
 
 ## Acknowledgements
 
