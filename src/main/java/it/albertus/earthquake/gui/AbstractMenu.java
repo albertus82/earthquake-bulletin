@@ -21,12 +21,12 @@ public abstract class AbstractMenu {
 	protected MenuItem showMapMenuItem;
 
 	public void updateTexts() {
-		getCopyLinkMenuItem().setText(Messages.get(LBL_MENU_ITEM_COPY_LINK));
-		getExportCsvMenuItem().setText(Messages.get(LBL_MENU_ITEM_EXPORT_CSV));
-		getGoogleMapsBrowserMenuItem().setText(Messages.get(LBL_MENU_ITEM_GOOGLE_MAPS_BROWSER));
-		getGoogleMapsPopupMenuItem().setText(Messages.get(LBL_MENU_ITEM_GOOGLE_MAPS_POPUP));
-		getOpenBrowserMenuItem().setText(Messages.get(LBL_MENU_ITEM_OPEN_BROWSER));
-		getShowMapMenuItem().setText(Messages.get(LBL_MENU_ITEM_SHOW_MAP));
+		copyLinkMenuItem.setText(Messages.get(LBL_MENU_ITEM_COPY_LINK));
+		exportCsvMenuItem.setText(Messages.get(LBL_MENU_ITEM_EXPORT_CSV));
+		googleMapsBrowserMenuItem.setText(Messages.get(LBL_MENU_ITEM_GOOGLE_MAPS_BROWSER));
+		googleMapsPopupMenuItem.setText(Messages.get(LBL_MENU_ITEM_GOOGLE_MAPS_POPUP));
+		openBrowserMenuItem.setText(Messages.get(LBL_MENU_ITEM_OPEN_BROWSER));
+		showMapMenuItem.setText(Messages.get(LBL_MENU_ITEM_SHOW_MAP));
 	}
 
 	public MenuItem getCopyLinkMenuItem() {
