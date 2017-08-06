@@ -73,7 +73,7 @@ public class DownloadMapJob extends Job {
 			catch (final FileNotFoundException e) {
 				final String message = Messages.get("err.job.map.not.found");
 				logger.log(Level.INFO, message, e);
-				new DisplayThreadExecutor(gui.getShell()).execute(new Runnable() {
+				new DisplayThreadExecutor(gui.getShell()).execute(new Runnable() { // always show error dialog in this case
 					@Override
 					public void run() {
 						EnhancedErrorDialog.openError(gui.getShell(), Messages.get("lbl.window.title"), message, IStatus.INFO, e, Images.getMainIcons());
@@ -83,12 +83,14 @@ public class DownloadMapJob extends Job {
 			catch (final Exception e) {
 				final String message = Messages.get("err.job.map");
 				logger.log(Level.WARNING, message, e);
-				new DisplayThreadExecutor(gui.getShell()).execute(new Runnable() {
-					@Override
-					public void run() {
-						EnhancedErrorDialog.openError(gui.getShell(), Messages.get("lbl.window.title"), message, IStatus.WARNING, e, Images.getMainIcons());
-					}
-				});
+				if (!mapCanvas.getCache().contains(earthquake.getGuid())) { // show error dialog only if not present in cache
+					new DisplayThreadExecutor(gui.getShell()).execute(new Runnable() {
+						@Override
+						public void run() {
+							EnhancedErrorDialog.openError(gui.getShell(), Messages.get("lbl.window.title"), message, IStatus.WARNING, e, Images.getMainIcons());
+						}
+					});
+				}
 			}
 
 			new DisplayThreadExecutor(mapCanvas.getCanvas()).execute(new Runnable() {
