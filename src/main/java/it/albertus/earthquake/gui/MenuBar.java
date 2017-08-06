@@ -16,6 +16,7 @@ import it.albertus.earthquake.gui.listener.ExportCsvSelectionListener;
 import it.albertus.earthquake.gui.listener.FileMenuListener;
 import it.albertus.earthquake.gui.listener.GoogleMapsBrowserSelectionListener;
 import it.albertus.earthquake.gui.listener.GoogleMapsPopupSelectionListener;
+import it.albertus.earthquake.gui.listener.HelpMenuListener;
 import it.albertus.earthquake.gui.listener.OpenInBrowserSelectionListener;
 import it.albertus.earthquake.gui.listener.PreferencesListener;
 import it.albertus.earthquake.gui.listener.ShowMapListener;
@@ -23,6 +24,7 @@ import it.albertus.earthquake.resources.Messages;
 import it.albertus.jface.SwtUtils;
 import it.albertus.jface.cocoa.CocoaEnhancerException;
 import it.albertus.jface.cocoa.CocoaUIEnhancer;
+import it.albertus.jface.listener.SystemPropertiesListener;
 import it.albertus.util.logging.LoggerFactory;
 
 /**
@@ -40,6 +42,8 @@ public class MenuBar extends AbstractMenu {
 	private static final String LBL_MENU_HEADER_TOOLS = "lbl.menu.header.tools";
 	private static final String LBL_MENU_ITEM_PREFERENCES = "lbl.menu.item.preferences";
 	private static final String LBL_MENU_HEADER_HELP = "lbl.menu.header.help";
+	private static final String LBL_MENU_HEADER_HELP_COCOA = "lbl.menu.header.help.cocoa";
+	private static final String LBL_MENU_ITEM_SYSTEM_PROPERTIES = "lbl.menu.item.system.properties";
 	private static final String LBL_MENU_ITEM_ABOUT = "lbl.menu.item.about";
 
 	private static final Logger logger = LoggerFactory.getLogger(MenuBar.class);
@@ -55,8 +59,9 @@ public class MenuBar extends AbstractMenu {
 	private MenuItem toolsMenuHeader;
 	private MenuItem toolsPreferencesMenuItem;
 
-	private Menu helpMenu;
-	private MenuItem helpMenuHeader;
+	private final Menu helpMenu;
+	private final MenuItem helpMenuHeader;
+	private final MenuItem helpSystemPropertiesItem;
 	private MenuItem helpAboutItem;
 
 	public MenuBar(final EarthquakeBulletinGui gui) {
@@ -145,12 +150,20 @@ public class MenuBar extends AbstractMenu {
 			toolsPreferencesMenuItem = new MenuItem(toolsMenu, SWT.PUSH);
 			toolsPreferencesMenuItem.setText(Messages.get(LBL_MENU_ITEM_PREFERENCES));
 			toolsPreferencesMenuItem.addSelectionListener(new PreferencesListener(gui));
+		}
 
-			// Help
-			helpMenu = new Menu(gui.getShell(), SWT.DROP_DOWN);
-			helpMenuHeader = new MenuItem(bar, SWT.CASCADE);
-			helpMenuHeader.setText(Messages.get(LBL_MENU_HEADER_HELP));
-			helpMenuHeader.setMenu(helpMenu);
+		// Help
+		helpMenu = new Menu(gui.getShell(), SWT.DROP_DOWN);
+		helpMenuHeader = new MenuItem(bar, SWT.CASCADE);
+		helpMenuHeader.setText(Messages.get(Util.isCocoa() ? LBL_MENU_HEADER_HELP_COCOA : LBL_MENU_HEADER_HELP));
+		helpMenuHeader.setMenu(helpMenu);
+
+		helpSystemPropertiesItem = new MenuItem(helpMenu, SWT.PUSH);
+		helpSystemPropertiesItem.setText(Messages.get(LBL_MENU_ITEM_SYSTEM_PROPERTIES));
+		helpSystemPropertiesItem.addSelectionListener(new SystemPropertiesListener(gui));
+
+		if (!cocoaMenuCreated) {
+			new MenuItem(helpMenu, SWT.SEPARATOR);
 
 			helpAboutItem = new MenuItem(helpMenu, SWT.PUSH);
 			helpAboutItem.setText(Messages.get(LBL_MENU_ITEM_ABOUT));
@@ -160,6 +173,10 @@ public class MenuBar extends AbstractMenu {
 		final FileMenuListener fileMenuListener = new FileMenuListener(gui);
 		fileMenu.addMenuListener(fileMenuListener);
 		fileMenuHeader.addArmListener(fileMenuListener);
+
+		final HelpMenuListener helpMenuListener = new HelpMenuListener(helpSystemPropertiesItem);
+		helpMenu.addMenuListener(helpMenuListener);
+		helpMenuHeader.addArmListener(helpMenuListener);
 
 		gui.getShell().setMenuBar(bar);
 	}
@@ -178,9 +195,8 @@ public class MenuBar extends AbstractMenu {
 		if (toolsPreferencesMenuItem != null && !toolsPreferencesMenuItem.isDisposed()) {
 			toolsPreferencesMenuItem.setText(Messages.get(LBL_MENU_ITEM_PREFERENCES));
 		}
-		if (helpMenuHeader != null && !helpMenuHeader.isDisposed()) {
-			helpMenuHeader.setText(Messages.get(LBL_MENU_HEADER_HELP));
-		}
+		helpMenuHeader.setText(Messages.get(Util.isCocoa() ? LBL_MENU_HEADER_HELP_COCOA : LBL_MENU_HEADER_HELP));
+		helpSystemPropertiesItem.setText(Messages.get(LBL_MENU_ITEM_SYSTEM_PROPERTIES));
 		if (helpAboutItem != null && !helpAboutItem.isDisposed()) {
 			helpAboutItem.setText(Messages.get(LBL_MENU_ITEM_ABOUT));
 		}
