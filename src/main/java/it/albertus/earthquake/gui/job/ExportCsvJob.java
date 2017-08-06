@@ -108,7 +108,7 @@ public class ExportCsvJob extends Job {
 
 		public CsvBuilderJob(final Table source, final Writer destination, final Variables vars) {
 			if (source == null || vars == null) {
-				throw new IllegalArgumentException("null");
+				throw new NullPointerException();
 			}
 			this.table = source;
 			this.writer = destination;
