@@ -46,28 +46,29 @@ public class DownloadMapJob extends Job {
 		monitor.beginTask("Map download", IProgressMonitor.UNKNOWN);
 
 		if (earthquake.getEnclosure() != null) {
+			final MapCanvas mapCanvas = gui.getMapCanvas();
+
 			new DisplayThreadExecutor(gui.getShell()).execute(new Runnable() {
 				@Override
 				public void run() {
 					gui.getShell().setCursor(gui.getShell().getDisplay().getSystemCursor(SWT.CURSOR_WAIT));
+					if (mapCanvas.getCache().contains(earthquake.getGuid())) { // show cached map immediately if available
+						mapCanvas.setImage(earthquake.getGuid(), mapCanvas.getCache().get(earthquake.getGuid()));
+					}
 				}
 			});
 
-			final MapCanvas mapCanvas = gui.getMapCanvas();
 			try {
 				final MapImage image = ImageDownloader.downloadImage(earthquake.getEnclosure(), etag);
 
-				new DisplayThreadExecutor(mapCanvas.getCanvas()).execute(new Runnable() {
-					@Override
-					public void run() {
-						if (image != null) {
+				if (image != null) {
+					new DisplayThreadExecutor(mapCanvas.getCanvas()).execute(new Runnable() {
+						@Override
+						public void run() {
 							mapCanvas.setImage(earthquake.getGuid(), image);
 						}
-						else if (mapCanvas.getCache().contains(earthquake.getGuid())) { // Not modified
-							mapCanvas.setImage(earthquake.getGuid(), mapCanvas.getCache().get(earthquake.getGuid()));
-						}
-					}
-				});
+					});
+				}
 			}
 			catch (final FileNotFoundException e) {
 				final String message = Messages.get("err.job.map.not.found");
@@ -85,12 +86,7 @@ public class DownloadMapJob extends Job {
 				new DisplayThreadExecutor(gui.getShell()).execute(new Runnable() {
 					@Override
 					public void run() {
-						if (mapCanvas.getCache().contains(earthquake.getGuid())) { // silently use cached version if available
-							mapCanvas.setImage(earthquake.getGuid(), mapCanvas.getCache().get(earthquake.getGuid()));
-						}
-						else {
-							EnhancedErrorDialog.openError(gui.getShell(), Messages.get("lbl.window.title"), message, IStatus.WARNING, e, Images.getMainIcons());
-						}
+						EnhancedErrorDialog.openError(gui.getShell(), Messages.get("lbl.window.title"), message, IStatus.WARNING, e, Images.getMainIcons());
 					}
 				});
 			}
