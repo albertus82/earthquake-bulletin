@@ -5,6 +5,8 @@ import java.util.logging.Logger;
 
 import org.eclipse.jface.util.Util;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 
@@ -24,7 +26,7 @@ import it.albertus.earthquake.resources.Messages;
 import it.albertus.jface.SwtUtils;
 import it.albertus.jface.cocoa.CocoaEnhancerException;
 import it.albertus.jface.cocoa.CocoaUIEnhancer;
-import it.albertus.jface.listener.SystemInformationListener;
+import it.albertus.jface.sysinfo.SystemInformationDialog;
 import it.albertus.util.logging.LoggerFactory;
 
 /**
@@ -42,7 +44,7 @@ public class MenuBar extends AbstractMenu {
 	private static final String LBL_MENU_HEADER_TOOLS = "lbl.menu.header.tools";
 	private static final String LBL_MENU_ITEM_PREFERENCES = "lbl.menu.item.preferences";
 	private static final String LBL_MENU_HEADER_HELP = "lbl.menu.header.help";
-	private static final String LBL_MENU_HEADER_HELP_COCOA = "lbl.menu.header.help.cocoa";
+	private static final String LBL_MENU_HEADER_HELP_WINDOWS = "lbl.menu.header.help.windows";
 	private static final String LBL_MENU_ITEM_SYSTEM_INFO = "lbl.menu.item.system.info";
 	private static final String LBL_MENU_ITEM_ABOUT = "lbl.menu.item.about";
 
@@ -155,12 +157,17 @@ public class MenuBar extends AbstractMenu {
 		// Help
 		helpMenu = new Menu(gui.getShell(), SWT.DROP_DOWN);
 		helpMenuHeader = new MenuItem(bar, SWT.CASCADE);
-		helpMenuHeader.setText(Messages.get(Util.isCocoa() ? LBL_MENU_HEADER_HELP_COCOA : LBL_MENU_HEADER_HELP));
+		helpMenuHeader.setText(Messages.get(Util.isWindows() ? LBL_MENU_HEADER_HELP_WINDOWS : LBL_MENU_HEADER_HELP));
 		helpMenuHeader.setMenu(helpMenu);
 
 		helpSystemInfoItem = new MenuItem(helpMenu, SWT.PUSH);
 		helpSystemInfoItem.setText(Messages.get(LBL_MENU_ITEM_SYSTEM_INFO));
-		helpSystemInfoItem.addSelectionListener(new SystemInformationListener(gui));
+		helpSystemInfoItem.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(final SelectionEvent e) {
+				SystemInformationDialog.open(gui.getShell());
+			}
+		});
 
 		if (!cocoaMenuCreated) {
 			new MenuItem(helpMenu, SWT.SEPARATOR);
@@ -195,7 +202,7 @@ public class MenuBar extends AbstractMenu {
 		if (toolsPreferencesMenuItem != null && !toolsPreferencesMenuItem.isDisposed()) {
 			toolsPreferencesMenuItem.setText(Messages.get(LBL_MENU_ITEM_PREFERENCES));
 		}
-		helpMenuHeader.setText(Messages.get(Util.isCocoa() ? LBL_MENU_HEADER_HELP_COCOA : LBL_MENU_HEADER_HELP));
+		helpMenuHeader.setText(Messages.get(Util.isWindows() ? LBL_MENU_HEADER_HELP_WINDOWS : LBL_MENU_HEADER_HELP));
 		helpSystemInfoItem.setText(Messages.get(LBL_MENU_ITEM_SYSTEM_INFO));
 		if (helpAboutItem != null && !helpAboutItem.isDisposed()) {
 			helpAboutItem.setText(Messages.get(LBL_MENU_ITEM_ABOUT));
