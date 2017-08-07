@@ -1,12 +1,19 @@
 package it.albertus.earthquake.gui.listener;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.eclipse.swt.events.ArmEvent;
 import org.eclipse.swt.events.ArmListener;
 import org.eclipse.swt.events.MenuEvent;
 import org.eclipse.swt.events.MenuListener;
 import org.eclipse.swt.widgets.MenuItem;
 
+import it.albertus.util.logging.LoggerFactory;
+
 public class HelpMenuListener implements ArmListener, MenuListener {
+
+	private static final Logger logger = LoggerFactory.getLogger(HelpMenuListener.class);
 
 	private final MenuItem item;
 
@@ -34,6 +41,7 @@ public class HelpMenuListener implements ArmListener, MenuListener {
 				securityManager.checkPropertiesAccess();
 			}
 			catch (final SecurityException e) {
+				logger.log(Level.FINE, e.toString(), e);
 				item.setEnabled(false);
 			}
 		}
