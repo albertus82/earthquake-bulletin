@@ -6,7 +6,7 @@ import org.eclipse.swt.events.MenuEvent;
 import org.eclipse.swt.events.MenuListener;
 import org.eclipse.swt.widgets.MenuItem;
 
-import it.albertus.jface.SystemInformationDialog;
+import it.albertus.jface.sysinfo.SystemInformationDialog;
 
 public class HelpMenuListener implements ArmListener, MenuListener {
 
