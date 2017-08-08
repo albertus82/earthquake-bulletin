@@ -50,23 +50,19 @@ public class MenuBar extends AbstractMenu {
 
 	private static final Logger logger = LoggerFactory.getLogger(MenuBar.class);
 
-	private final Menu fileMenu;
 	private final MenuItem fileMenuHeader;
 	private MenuItem fileExitItem;
 
-	private final Menu eventMenu;
 	private final MenuItem eventMenuHeader;
 
-	private Menu toolsMenu;
 	private MenuItem toolsMenuHeader;
 	private MenuItem toolsPreferencesMenuItem;
 
-	private final Menu helpMenu;
 	private final MenuItem helpMenuHeader;
 	private final MenuItem helpSystemInfoItem;
 	private MenuItem helpAboutItem;
 
-	public MenuBar(final EarthquakeBulletinGui gui) {
+	MenuBar(final EarthquakeBulletinGui gui) {
 		final CloseListener closeListener = new CloseListener(gui);
 		final AboutListener aboutListener = new AboutListener(gui);
 		final PreferencesListener preferencesListener = new PreferencesListener(gui);
@@ -86,7 +82,7 @@ public class MenuBar extends AbstractMenu {
 		final Menu bar = new Menu(gui.getShell(), SWT.BAR); // Bar
 
 		// File
-		fileMenu = new Menu(gui.getShell(), SWT.DROP_DOWN);
+		final Menu fileMenu = new Menu(gui.getShell(), SWT.DROP_DOWN);
 		fileMenuHeader = new MenuItem(bar, SWT.CASCADE);
 		fileMenuHeader.setText(Messages.get(LBL_MENU_HEADER_FILE));
 		fileMenuHeader.setMenu(fileMenu);
@@ -104,8 +100,12 @@ public class MenuBar extends AbstractMenu {
 			fileExitItem.addSelectionListener(new CloseListener(gui));
 		}
 
+		final FileMenuListener fileMenuListener = new FileMenuListener(gui);
+		fileMenu.addMenuListener(fileMenuListener);
+		fileMenuHeader.addArmListener(fileMenuListener);
+
 		// Event
-		eventMenu = new Menu(gui.getShell(), SWT.DROP_DOWN);
+		final Menu eventMenu = new Menu(gui.getShell(), SWT.DROP_DOWN);
 		eventMenuHeader = new MenuItem(bar, SWT.CASCADE);
 		eventMenuHeader.setText(Messages.get(LBL_MENU_HEADER_EVENT));
 		eventMenuHeader.setMenu(eventMenu);
@@ -144,7 +144,7 @@ public class MenuBar extends AbstractMenu {
 
 		if (!cocoaMenuCreated) {
 			// Tools
-			toolsMenu = new Menu(gui.getShell(), SWT.DROP_DOWN);
+			final Menu toolsMenu = new Menu(gui.getShell(), SWT.DROP_DOWN);
 			toolsMenuHeader = new MenuItem(bar, SWT.CASCADE);
 			toolsMenuHeader.setText(Messages.get(LBL_MENU_HEADER_TOOLS));
 			toolsMenuHeader.setMenu(toolsMenu);
@@ -155,7 +155,7 @@ public class MenuBar extends AbstractMenu {
 		}
 
 		// Help
-		helpMenu = new Menu(gui.getShell(), SWT.DROP_DOWN);
+		final Menu helpMenu = new Menu(gui.getShell(), SWT.DROP_DOWN);
 		helpMenuHeader = new MenuItem(bar, SWT.CASCADE);
 		helpMenuHeader.setText(Messages.get(Util.isWindows() ? LBL_MENU_HEADER_HELP_WINDOWS : LBL_MENU_HEADER_HELP));
 		helpMenuHeader.setMenu(helpMenu);
@@ -176,10 +176,6 @@ public class MenuBar extends AbstractMenu {
 			helpAboutItem.setText(Messages.get(LBL_MENU_ITEM_ABOUT));
 			helpAboutItem.addSelectionListener(new AboutListener(gui));
 		}
-
-		final FileMenuListener fileMenuListener = new FileMenuListener(gui);
-		fileMenu.addMenuListener(fileMenuListener);
-		fileMenuHeader.addArmListener(fileMenuListener);
 
 		final HelpMenuListener helpMenuListener = new HelpMenuListener(helpSystemInfoItem);
 		helpMenu.addMenuListener(helpMenuListener);
