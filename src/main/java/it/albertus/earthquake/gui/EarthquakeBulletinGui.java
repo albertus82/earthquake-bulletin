@@ -97,7 +97,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 		resultsTable = new ResultsTable(sashForm, GridDataFactory.fillDefaults().grab(true, true).create(), this);
 
 		mapCanvas = new MapCanvas(sashForm);
-		sashForm.setWeights(SASH_WEIGHTS);
+		sashForm.setWeights(new int[] { configuration.getInt("sash.weight.0", SASH_WEIGHTS[0]), configuration.getInt("sash.weight.1", SASH_WEIGHTS[1]) });
 
 		return parent;
 	}
@@ -107,8 +107,13 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 		final int code = super.open();
 
 		// Fix invisible (transparent) shell bug with some Linux distibutions
-		if (configuration.getBoolean("start.minimized", Defaults.START_MINIMIZED) && Util.isGtk()) {
-			getShell().setMinimized(true);
+		if (configuration.getBoolean("start.minimized", Defaults.START_MINIMIZED)) {
+			if (Util.isGtk()) {
+				getShell().setMinimized(true);
+			}
+		}
+		else if (configuration.getBoolean("shell.maximized", false)) {
+			getShell().setMaximized(true);
 		}
 
 		for (final Button radio : searchForm.getFormatRadios().values()) {
@@ -138,7 +143,17 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 		final Shell shell = getShell();
 		final Point preferredSize = shell.computeSize(SWT.DEFAULT, SWT.DEFAULT, true);
 		shell.setMinimumSize(preferredSize);
-		// shell.setSize(preferredSize.x, shell.getSize().y);
+
+		final Integer sizeX = configuration.getInt("shell.size.x");
+		final Integer sizeY = configuration.getInt("shell.size.y");
+		if (sizeX != null && sizeY != null) {
+			shell.setSize(Math.max(sizeX, preferredSize.x), Math.max(sizeY, preferredSize.y));
+		}
+		final Integer locationX = configuration.getInt("shell.location.x");
+		final Integer locationY = configuration.getInt("shell.location.y");
+		if (locationX != null && locationY != null) {
+			shell.setLocation(locationX, locationY);
+		}
 
 		// Fix invisible (transparent) shell bug with some Linux distibutions
 		if (configuration.getBoolean("start.minimized", Defaults.START_MINIMIZED) && !Util.isGtk()) {
