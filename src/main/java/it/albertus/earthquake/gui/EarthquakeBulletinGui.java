@@ -97,7 +97,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 		resultsTable = new ResultsTable(sashForm, GridDataFactory.fillDefaults().grab(true, true).create(), this);
 
 		mapCanvas = new MapCanvas(sashForm);
-		sashForm.setWeights(new int[] { configuration.getInt("sash.weight.0", SASH_WEIGHTS[0]), configuration.getInt("sash.weight.1", SASH_WEIGHTS[1]) });
+		sashForm.setWeights(new int[] { configuration.getInt("shell.sash.weight.0", SASH_WEIGHTS[0]), configuration.getInt("shell.sash.weight.1", SASH_WEIGHTS[1]) });
 
 		return parent;
 	}

@@ -1,14 +1,14 @@
 package it.albertus.earthquake.gui.listener;
 
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Display;
@@ -18,6 +18,7 @@ import org.eclipse.swt.widgets.Shell;
 
 import it.albertus.earthquake.config.EarthquakeBulletinConfiguration;
 import it.albertus.earthquake.gui.CloseDialog;
+import it.albertus.earthquake.gui.EarthquakeBulletinGui;
 import it.albertus.util.Configuration;
 import it.albertus.util.logging.LoggerFactory;
 
@@ -27,20 +28,20 @@ public class CloseListener implements Listener, SelectionListener {
 
 	private static final Configuration configuration = EarthquakeBulletinConfiguration.getInstance();
 
-	private final IShellProvider provider;
+	private final EarthquakeBulletinGui gui;
 
-	public CloseListener(final IShellProvider provider) {
-		this.provider = provider;
+	public CloseListener(final EarthquakeBulletinGui gui) {
+		this.gui = gui;
 	}
 
 	private boolean canClose() {
-		return !CloseDialog.mustShow() || CloseDialog.open(provider.getShell()) == SWT.YES;
+		return !CloseDialog.mustShow() || CloseDialog.open(gui.getShell()) == SWT.YES;
 	}
 
 	private void disposeShellAndDisplay() {
-		final Shell shell = provider.getShell();
+		final Shell shell = gui.getShell();
 		if (shell != null && !shell.isDisposed()) {
-			saveShellStatus(shell);
+			saveShellStatus(gui);
 			shell.dispose();
 		}
 		final Display display = Display.getCurrent();
@@ -71,15 +72,10 @@ public class CloseListener implements Listener, SelectionListener {
 		}
 	}
 
-	private static void saveShellStatus(final Shell shell) {
-		if (shell.getSize() != null && shell.getLocation() != null && configuration != null && configuration.getFileName() != null) {
-			final Properties properties = new Properties();
-			try (final FileInputStream fis = new FileInputStream(configuration.getFileName())) {
-				properties.load(fis);
-			}
-			catch (final IOException e) {
-				logger.log(Level.WARNING, e.toString(), e);
-			}
+	private static void saveShellStatus(final EarthquakeBulletinGui gui) {
+		final Shell shell = gui.getShell();
+		if (shell.getSize() != null && shell.getLocation() != null && configuration != null) {
+			final Properties properties = configuration.getProperties();
 
 			properties.setProperty("shell.size.x", Integer.toString(shell.getSize().x));
 			properties.setProperty("shell.size.y", Integer.toString(shell.getSize().y));
@@ -87,9 +83,15 @@ public class CloseListener implements Listener, SelectionListener {
 			properties.setProperty("shell.location.y", Integer.toString(shell.getLocation().y));
 			properties.setProperty("shell.maximized", Boolean.toString(shell.getMaximized()));
 
-			try (final FileOutputStream fos = new FileOutputStream(configuration.getFileName())) {
-				properties.store(fos, null);
-				logger.log(Level.FINE, "Shell size [{0}], location [{1}] & maximized [{2}] saved into {3}", new Object[] { shell.getSize(), shell.getLocation(), shell.getMaximized(), configuration.getFileName() });
+			final SashForm sashForm = gui.getSashForm();
+			if (sashForm != null && !sashForm.isDisposed()) {
+				for (int i = 0; i < sashForm.getWeights().length; i++) {
+					properties.setProperty("shell.sash.weight." + i, Integer.toString(sashForm.getWeights()[i]));
+				}
+			}
+
+			try (final OutputStream os = new FileOutputStream(configuration.getFileName())) {
+				properties.store(os, null); // save configuration
 			}
 			catch (final IOException e) {
 				logger.log(Level.WARNING, e.toString(), e);
