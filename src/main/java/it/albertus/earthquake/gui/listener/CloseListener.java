@@ -84,8 +84,9 @@ public class CloseListener implements Listener, SelectionListener {
 		if (shell.getSize() != null && shell.getLocation() != null && configuration != null) {
 			final Properties properties = configuration.getProperties();
 
-			properties.setProperty(SHELL_MAXIMIZED, Boolean.toString(shell.getMaximized()));
-			if (shell.getMaximized()) { // if maximized, discard the other values
+			final boolean maximized = gui.isMaximized();
+			properties.setProperty(SHELL_MAXIMIZED, Boolean.toString(maximized));
+			if (maximized) { // if maximized, discard the other values
 				properties.remove(SHELL_SIZE_X);
 				properties.remove(SHELL_SIZE_Y);
 				properties.remove(SHELL_LOCATION_X);

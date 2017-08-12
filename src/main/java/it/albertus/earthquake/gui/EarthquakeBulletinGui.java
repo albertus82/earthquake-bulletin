@@ -13,6 +13,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Layout;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TableColumn;
 
@@ -56,6 +57,8 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 	private TrayIcon trayIcon;
 	private MenuBar menuBar;
 
+	private boolean maximized = configuration.getBoolean(SHELL_MAXIMIZED, Defaults.SHELL_MAXIMIZED);
+
 	public EarthquakeBulletinGui() {
 		super(null);
 	}
@@ -87,6 +90,12 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 		super.configureShell(shell);
 		shell.setImages(Images.getMainIcons());
 		shell.setText(Messages.get("lbl.window.title"));
+		shell.addListener(SWT.Resize, new Listener() {
+			@Override
+			public void handleEvent(final Event event) {
+				maximized = shell.getMaximized();
+			}
+		});
 	}
 
 	@Override
@@ -230,6 +239,10 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 
 	public MenuBar getMenuBar() {
 		return menuBar;
+	}
+
+	public boolean isMaximized() {
+		return maximized;
 	}
 
 }
