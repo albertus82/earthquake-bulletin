@@ -99,9 +99,6 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 		super.configureShell(shell);
 		shell.setImages(Images.getMainIcons());
 		shell.setText(Messages.get("lbl.window.title"));
-		final ShellStatusListener listener = new ShellStatusListener();
-		shell.addListener(SWT.Resize, listener);
-		shell.addListener(SWT.Move, listener);
 	}
 
 	@Override
@@ -128,11 +125,14 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 	@Override
 	public int open() {
 		final int code = super.open();
+
 		shellSize = getShell().getSize();
 		shellLocation = getShell().getLocation();
-		shellMaximized = getShell().getMaximized();
+		final ShellStatusListener listener = new ShellStatusListener();
+		getShell().addListener(SWT.Resize, listener);
+		getShell().addListener(SWT.Move, listener);
 
-		if (SwtUtils.isGtk3()) { // fix invisible (transparent) shell bug with some Linux distibutions
+		if (SwtUtils.isGtk3()) { // fixes invisible (transparent) shell bug with some Linux distibutions
 			setMinimizedMaximizedShellStatus();
 		}
 
@@ -175,7 +175,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 			shell.setLocation(locationX, locationY);
 		}
 
-		if (!SwtUtils.isGtk3()) { // fix invisible (transparent) shell bug with some Linux distibutions
+		if (!SwtUtils.isGtk3()) { // fixes invisible (transparent) shell bug with some Linux distibutions
 			setMinimizedMaximizedShellStatus();
 		}
 	}
@@ -266,7 +266,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 		@Override
 		public void handleEvent(final Event event) {
 			final Shell shell = getShell();
-			if (shell != null) {
+			if (shell != null && !shell.isDisposed()) {
 				shellMaximized = shell.getMaximized();
 				if (!shellMaximized) {
 					shellSize = shell.getSize();

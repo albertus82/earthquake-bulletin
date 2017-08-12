@@ -52,8 +52,8 @@ public class CloseListener implements Listener, SelectionListener {
 			shell.dispose();
 		}
 		final Display display = Display.getCurrent();
-		if (display != null) {
-			display.dispose(); // fix close not working on Windows 10 when iconified
+		if (display != null && !display.isDisposed()) {
+			display.dispose(); // fixes close not working on Windows 10 when iconified
 		}
 	}
 
