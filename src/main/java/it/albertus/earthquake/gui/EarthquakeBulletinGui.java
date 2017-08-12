@@ -1,5 +1,8 @@
 package it.albertus.earthquake.gui;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
@@ -25,6 +28,7 @@ import it.albertus.jface.EnhancedErrorDialog;
 import it.albertus.jface.SwtUtils;
 import it.albertus.util.Configuration;
 import it.albertus.util.Version;
+import it.albertus.util.logging.LoggerFactory;
 
 public class EarthquakeBulletinGui extends ApplicationWindow {
 
@@ -48,6 +52,8 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 
 	private static final float SASH_MAGNIFICATION_FACTOR = 1.5f;
 
+	private static final Logger logger = LoggerFactory.getLogger(EarthquakeBulletinGui.class);
+
 	private final Configuration configuration = EarthquakeBulletinConfiguration.getInstance();
 
 	private SearchForm searchForm;
@@ -57,12 +63,13 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 	private TrayIcon trayIcon;
 	private MenuBar menuBar;
 
-	private boolean maximized;//= configuration.getBoolean(SHELL_MAXIMIZED, Defaults.SHELL_MAXIMIZED);
-	private Point size;
-	private Point location;
+	private boolean shellMaximized = configuration.getBoolean(SHELL_MAXIMIZED, Defaults.SHELL_MAXIMIZED);
+	private Point shellSize;
+	private Point shellLocation;
 
 	public EarthquakeBulletinGui() {
 		super(null);
+		logger.log(Level.CONFIG, "{0}", configuration);
 	}
 
 	public static void run(final InitializationException e) {
@@ -121,9 +128,9 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 	@Override
 	public int open() {
 		final int code = super.open();
-		size = getShell().getSize();
-		location = getShell().getLocation();
-		maximized = getShell().getMaximized();
+		shellSize = getShell().getSize();
+		shellLocation = getShell().getLocation();
+		shellMaximized = getShell().getMaximized();
 
 		if (SwtUtils.isGtk3()) { // fix invisible (transparent) shell bug with some Linux distibutions
 			setMinimizedMaximizedShellStatus();
@@ -243,16 +250,16 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 		return menuBar;
 	}
 
-	public boolean isMaximized() {
-		return maximized;
+	public boolean isShellMaximized() {
+		return shellMaximized;
 	}
 
-	public Point getSize() {
-		return size;
+	public Point getShellSize() {
+		return shellSize;
 	}
 
-	public Point getLocation() {
-		return location;
+	public Point getShellLocation() {
+		return shellLocation;
 	}
 
 	public class ShellStatusListener implements Listener {
@@ -260,10 +267,10 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 		public void handleEvent(final Event event) {
 			final Shell shell = getShell();
 			if (shell != null) {
-				maximized = shell.getMaximized();
-				if (!maximized) {
-					size = shell.getSize();
-					location = shell.getLocation();
+				shellMaximized = shell.getMaximized();
+				if (!shellMaximized) {
+					shellSize = shell.getSize();
+					shellLocation = shell.getLocation();
 				}
 			}
 		}

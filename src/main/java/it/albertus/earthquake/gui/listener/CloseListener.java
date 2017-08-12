@@ -79,15 +79,15 @@ public class CloseListener implements Listener, SelectionListener {
 		}
 	}
 
-	private static void saveShellStatus(final EarthquakeBulletinGui gui) {
-		if (gui.getSize() != null && gui.getLocation() != null && configuration != null) {
+	private static void saveShellStatus(final EarthquakeBulletinGui gui) { // TODO move
+		if (gui.getShellSize() != null && gui.getShellLocation() != null && configuration != null) {
 			final Properties properties = configuration.getProperties();
 
-			properties.setProperty(SHELL_MAXIMIZED, Boolean.toString(gui.isMaximized()));
-			properties.setProperty(SHELL_SIZE_X, Integer.toString(gui.getSize().x));
-			properties.setProperty(SHELL_SIZE_Y, Integer.toString(gui.getSize().y));
-			properties.setProperty(SHELL_LOCATION_X, Integer.toString(gui.getLocation().x));
-			properties.setProperty(SHELL_LOCATION_Y, Integer.toString(gui.getLocation().y));
+			properties.setProperty(SHELL_MAXIMIZED, Boolean.toString(gui.isShellMaximized()));
+			properties.setProperty(SHELL_SIZE_X, Integer.toString(gui.getShellSize().x));
+			properties.setProperty(SHELL_SIZE_Y, Integer.toString(gui.getShellSize().y));
+			properties.setProperty(SHELL_LOCATION_X, Integer.toString(gui.getShellLocation().x));
+			properties.setProperty(SHELL_LOCATION_Y, Integer.toString(gui.getShellLocation().y));
 
 			// Save sash weights
 			final SashForm sashForm = gui.getSashForm();
@@ -96,6 +96,8 @@ public class CloseListener implements Listener, SelectionListener {
 					properties.setProperty(SHELL_SASH_WEIGHT + '.' + i, Integer.toString(sashForm.getWeights()[i]));
 				}
 			}
+
+			logger.log(Level.CONFIG, "{0}", configuration);
 
 			try (final OutputStream os = new FileOutputStream(configuration.getFileName())) {
 				properties.store(os, null); // save configuration
