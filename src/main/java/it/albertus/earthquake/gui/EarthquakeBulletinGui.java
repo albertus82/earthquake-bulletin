@@ -3,7 +3,6 @@ package it.albertus.earthquake.gui;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
-import org.eclipse.jface.util.Util;
 import org.eclipse.jface.window.ApplicationWindow;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
@@ -22,6 +21,7 @@ import it.albertus.earthquake.gui.listener.CloseListener;
 import it.albertus.earthquake.resources.Messages;
 import it.albertus.earthquake.util.InitializationException;
 import it.albertus.jface.EnhancedErrorDialog;
+import it.albertus.jface.SwtUtils;
 import it.albertus.util.Configuration;
 import it.albertus.util.Version;
 
@@ -114,7 +114,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 	public int open() {
 		final int code = super.open();
 
-		if (Util.isGtk()) { // fix invisible (transparent) shell bug with some Linux distibutions
+		if (SwtUtils.isGtk3()) { // fix invisible (transparent) shell bug with some Linux distibutions
 			setMinimizedMaximizedShellStatus();
 		}
 
@@ -157,7 +157,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 			shell.setLocation(locationX, locationY);
 		}
 
-		if (!Util.isGtk()) { // fix invisible (transparent) shell bug with some Linux distibutions
+		if (!SwtUtils.isGtk3()) { // fix invisible (transparent) shell bug with some Linux distibutions
 			setMinimizedMaximizedShellStatus();
 		}
 	}
