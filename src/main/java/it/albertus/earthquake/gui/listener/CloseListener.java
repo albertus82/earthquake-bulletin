@@ -1,5 +1,12 @@
 package it.albertus.earthquake.gui.listener;
 
+import static it.albertus.earthquake.gui.EarthquakeBulletinGui.SHELL_LOCATION_X;
+import static it.albertus.earthquake.gui.EarthquakeBulletinGui.SHELL_LOCATION_Y;
+import static it.albertus.earthquake.gui.EarthquakeBulletinGui.SHELL_MAXIMIZED;
+import static it.albertus.earthquake.gui.EarthquakeBulletinGui.SHELL_SASH_WEIGHT;
+import static it.albertus.earthquake.gui.EarthquakeBulletinGui.SHELL_SIZE_X;
+import static it.albertus.earthquake.gui.EarthquakeBulletinGui.SHELL_SIZE_Y;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -46,11 +53,11 @@ public class CloseListener implements Listener, SelectionListener {
 		}
 		final Display display = Display.getCurrent();
 		if (display != null) {
-			display.dispose(); // Fix close not working on Windows 10 when iconified
+			display.dispose(); // fix close not working on Windows 10 when iconified
 		}
 	}
 
-	/* Shell close command & OS X Menu */
+	// Shell close command & macOS menu
 	@Override
 	public void handleEvent(final Event event) {
 		if (canClose()) {
@@ -61,7 +68,7 @@ public class CloseListener implements Listener, SelectionListener {
 		}
 	}
 
-	/* Menu */
+	// Menu
 	@Override
 	public void widgetSelected(final SelectionEvent event) {
 		if (canClose()) {
@@ -77,16 +84,25 @@ public class CloseListener implements Listener, SelectionListener {
 		if (shell.getSize() != null && shell.getLocation() != null && configuration != null) {
 			final Properties properties = configuration.getProperties();
 
-			properties.setProperty("shell.size.x", Integer.toString(shell.getSize().x));
-			properties.setProperty("shell.size.y", Integer.toString(shell.getSize().y));
-			properties.setProperty("shell.location.x", Integer.toString(shell.getLocation().x));
-			properties.setProperty("shell.location.y", Integer.toString(shell.getLocation().y));
-			properties.setProperty("shell.maximized", Boolean.toString(shell.getMaximized()));
+			properties.setProperty(SHELL_MAXIMIZED, Boolean.toString(shell.getMaximized()));
+			if (shell.getMaximized()) { // if maximized, discard the other values
+				properties.remove(SHELL_SIZE_X);
+				properties.remove(SHELL_SIZE_Y);
+				properties.remove(SHELL_LOCATION_X);
+				properties.remove(SHELL_LOCATION_Y);
+			}
+			else { // if not maximized, save window size & location
+				properties.setProperty(SHELL_SIZE_X, Integer.toString(shell.getSize().x));
+				properties.setProperty(SHELL_SIZE_Y, Integer.toString(shell.getSize().y));
+				properties.setProperty(SHELL_LOCATION_X, Integer.toString(shell.getLocation().x));
+				properties.setProperty(SHELL_LOCATION_Y, Integer.toString(shell.getLocation().y));
+			}
 
+			// Save sash weights
 			final SashForm sashForm = gui.getSashForm();
 			if (sashForm != null && !sashForm.isDisposed()) {
 				for (int i = 0; i < sashForm.getWeights().length; i++) {
-					properties.setProperty("shell.sash.weight." + i, Integer.toString(sashForm.getWeights()[i]));
+					properties.setProperty(SHELL_SASH_WEIGHT + '.' + i, Integer.toString(sashForm.getWeights()[i]));
 				}
 			}
 

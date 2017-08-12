@@ -22,6 +22,7 @@ import org.eclipse.swt.widgets.TrayItem;
 
 import it.albertus.earthquake.EarthquakeBulletin;
 import it.albertus.earthquake.config.EarthquakeBulletinConfiguration;
+import it.albertus.earthquake.gui.listener.ShellManagementListener;
 import it.albertus.earthquake.gui.listener.CloseListener;
 import it.albertus.earthquake.model.Earthquake;
 import it.albertus.earthquake.resources.Messages;
@@ -84,20 +85,20 @@ public class TrayIcon {
 					trayIcon = getTrayIcon();
 					trayItem.setImage(trayIcon);
 					trayItem.setToolTipText(Messages.get("lbl.tray.tooltip"));
-					final TrayRestoreListener trayRestoreListener = new TrayRestoreListener(gui.getShell(), trayItem);
+					final TrayRestoreListener trayRestoreListener = new ShellManagementListener(gui.getShell(), trayItem);
 
 					for (final int icon : new int[] { SWT.ICON_INFORMATION, SWT.ICON_WARNING, SWT.ICON_ERROR }) {
 						final ToolTip toolTip = new ToolTip(gui.getShell(), SWT.BALLOON | icon);
 						toolTip.setVisible(false);
 						toolTip.setAutoHide(true);
-						toolTip.addListener(SWT.Selection, trayRestoreListener);
+						toolTip.addSelectionListener(trayRestoreListener);
 						toolTips.put(icon, toolTip);
 					}
 
 					trayMenu = new Menu(gui.getShell(), SWT.POP_UP);
 					showMenuItem = new MenuItem(trayMenu, SWT.PUSH);
 					showMenuItem.setText(Messages.get("lbl.tray.show"));
-					showMenuItem.addListener(SWT.Selection, trayRestoreListener);
+					showMenuItem.addSelectionListener(trayRestoreListener);
 					trayMenu.setDefaultItem(showMenuItem);
 
 					new MenuItem(trayMenu, SWT.SEPARATOR);
@@ -112,7 +113,7 @@ public class TrayIcon {
 						}
 					});
 
-					trayItem.addListener(SWT.Selection, trayRestoreListener);
+					trayItem.addSelectionListener(trayRestoreListener);
 					if (!Util.isLinux()) {
 						gui.getShell().addShellListener(trayRestoreListener);
 					}
@@ -160,7 +161,7 @@ public class TrayIcon {
 				trayItem.getDisplay().syncExec(new Runnable() {
 					@Override
 					public void run() {
-						logger.log(Level.INFO, "{0}", text);
+						logger.log(Level.FINE, "{0}", text);
 						trayItem.setToolTip(toolTip);
 						toolTip.setText(text.toString().trim());
 						toolTip.setMessage(message.toString().trim());

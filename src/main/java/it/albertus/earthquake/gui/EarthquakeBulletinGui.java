@@ -27,9 +27,18 @@ import it.albertus.util.Version;
 
 public class EarthquakeBulletinGui extends ApplicationWindow {
 
+	public static final String SHELL_SASH_WEIGHT = "shell.sash.weight";
+	public static final String SHELL_SIZE_X = "shell.size.x";
+	public static final String SHELL_SIZE_Y = "shell.size.y";
+	public static final String SHELL_LOCATION_X = "shell.location.x";
+	public static final String SHELL_LOCATION_Y = "shell.location.y";
+	public static final String SHELL_MAXIMIZED = "shell.maximized";
+
 	public static class Defaults {
 		public static final boolean START_MINIMIZED = false;
 		public static final boolean SEARCH_ON_START = false;
+		public static final boolean SHELL_MAXIMIZED = false;
+		private static final int[] SASH_WEIGHTS = { 3, 2 };
 
 		private Defaults() {
 			throw new IllegalAccessError("Constants class");
@@ -37,7 +46,6 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 	}
 
 	private static final float SASH_MAGNIFICATION_FACTOR = 1.5f;
-	private static final int[] SASH_WEIGHTS = { 3, 2 };
 
 	private final Configuration configuration = EarthquakeBulletinConfiguration.getInstance();
 
@@ -97,7 +105,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 		resultsTable = new ResultsTable(sashForm, GridDataFactory.fillDefaults().grab(true, true).create(), this);
 
 		mapCanvas = new MapCanvas(sashForm);
-		sashForm.setWeights(new int[] { configuration.getInt("shell.sash.weight.0", SASH_WEIGHTS[0]), configuration.getInt("shell.sash.weight.1", SASH_WEIGHTS[1]) });
+		sashForm.setWeights(new int[] { configuration.getInt(SHELL_SASH_WEIGHT + ".0", Defaults.SASH_WEIGHTS[0]), configuration.getInt(SHELL_SASH_WEIGHT + ".1", Defaults.SASH_WEIGHTS[1]) });
 
 		return parent;
 	}
@@ -106,14 +114,8 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 	public int open() {
 		final int code = super.open();
 
-		// Fix invisible (transparent) shell bug with some Linux distibutions
-		if (configuration.getBoolean("start.minimized", Defaults.START_MINIMIZED)) {
-			if (Util.isGtk()) {
-				getShell().setMinimized(true);
-			}
-		}
-		else if (configuration.getBoolean("shell.maximized", false)) {
-			getShell().setMaximized(true);
+		if (Util.isGtk()) { // fix invisible (transparent) shell bug with some Linux distibutions
+			setMinimizedMaximizedShellStatus();
 		}
 
 		for (final Button radio : searchForm.getFormatRadios().values()) {
@@ -144,20 +146,28 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 		final Point preferredSize = shell.computeSize(SWT.DEFAULT, SWT.DEFAULT, true);
 		shell.setMinimumSize(preferredSize);
 
-		final Integer sizeX = configuration.getInt("shell.size.x");
-		final Integer sizeY = configuration.getInt("shell.size.y");
+		final Integer sizeX = configuration.getInt(SHELL_SIZE_X);
+		final Integer sizeY = configuration.getInt(SHELL_SIZE_Y);
 		if (sizeX != null && sizeY != null) {
 			shell.setSize(Math.max(sizeX, preferredSize.x), Math.max(sizeY, preferredSize.y));
 		}
-		final Integer locationX = configuration.getInt("shell.location.x");
-		final Integer locationY = configuration.getInt("shell.location.y");
+		final Integer locationX = configuration.getInt(SHELL_LOCATION_X);
+		final Integer locationY = configuration.getInt(SHELL_LOCATION_Y);
 		if (locationX != null && locationY != null) {
 			shell.setLocation(locationX, locationY);
 		}
 
-		// Fix invisible (transparent) shell bug with some Linux distibutions
-		if (configuration.getBoolean("start.minimized", Defaults.START_MINIMIZED) && !Util.isGtk()) {
-			shell.setMinimized(true);
+		if (!Util.isGtk()) { // fix invisible (transparent) shell bug with some Linux distibutions
+			setMinimizedMaximizedShellStatus();
+		}
+	}
+
+	private void setMinimizedMaximizedShellStatus() {
+		if (configuration.getBoolean("start.minimized", Defaults.START_MINIMIZED)) {
+			getShell().setMinimized(true);
+		}
+		else if (configuration.getBoolean(SHELL_MAXIMIZED, Defaults.SHELL_MAXIMIZED)) {
+			getShell().setMaximized(true);
 		}
 	}
 
