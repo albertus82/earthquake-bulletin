@@ -55,6 +55,8 @@ public class ResultsTable {
 
 	private static final int NUMBER_OF_COLUMNS = 7;
 
+	private static final int TOOLTIP_TIME_DISPLAYED = 5000;
+
 	private static final String TABLE_FONT = "TABLE_FONT";
 
 	private static final Configuration configuration = EarthquakeBulletinConfiguration.getInstance();
@@ -272,7 +274,7 @@ public class ResultsTable {
 
 			@Override
 			public int getToolTipTimeDisplayed(final Object object) {
-				return 5000;
+				return TOOLTIP_TIME_DISPLAYED;
 			}
 		});
 
