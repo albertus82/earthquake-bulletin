@@ -80,24 +80,14 @@ public class CloseListener implements Listener, SelectionListener {
 	}
 
 	private static void saveShellStatus(final EarthquakeBulletinGui gui) {
-		final Shell shell = gui.getShell();
-		if (shell.getSize() != null && shell.getLocation() != null && configuration != null) {
+		if (gui.getSize() != null && gui.getLocation() != null && configuration != null) {
 			final Properties properties = configuration.getProperties();
 
-			final boolean maximized = gui.isMaximized();
-			properties.setProperty(SHELL_MAXIMIZED, Boolean.toString(maximized));
-			if (maximized) { // if maximized, discard the other values
-				properties.remove(SHELL_SIZE_X);
-				properties.remove(SHELL_SIZE_Y);
-				properties.remove(SHELL_LOCATION_X);
-				properties.remove(SHELL_LOCATION_Y);
-			}
-			else { // if not maximized, save window size & location
-				properties.setProperty(SHELL_SIZE_X, Integer.toString(shell.getSize().x));
-				properties.setProperty(SHELL_SIZE_Y, Integer.toString(shell.getSize().y));
-				properties.setProperty(SHELL_LOCATION_X, Integer.toString(shell.getLocation().x));
-				properties.setProperty(SHELL_LOCATION_Y, Integer.toString(shell.getLocation().y));
-			}
+			properties.setProperty(SHELL_MAXIMIZED, Boolean.toString(gui.isMaximized()));
+			properties.setProperty(SHELL_SIZE_X, Integer.toString(gui.getSize().x));
+			properties.setProperty(SHELL_SIZE_Y, Integer.toString(gui.getSize().y));
+			properties.setProperty(SHELL_LOCATION_X, Integer.toString(gui.getLocation().x));
+			properties.setProperty(SHELL_LOCATION_Y, Integer.toString(gui.getLocation().y));
 
 			// Save sash weights
 			final SashForm sashForm = gui.getSashForm();

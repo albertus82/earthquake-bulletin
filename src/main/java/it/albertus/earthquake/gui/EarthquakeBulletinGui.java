@@ -57,7 +57,9 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 	private TrayIcon trayIcon;
 	private MenuBar menuBar;
 
-	private boolean maximized = configuration.getBoolean(SHELL_MAXIMIZED, Defaults.SHELL_MAXIMIZED);
+	private boolean maximized;//= configuration.getBoolean(SHELL_MAXIMIZED, Defaults.SHELL_MAXIMIZED);
+	private Point size;
+	private Point location;
 
 	public EarthquakeBulletinGui() {
 		super(null);
@@ -90,12 +92,9 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 		super.configureShell(shell);
 		shell.setImages(Images.getMainIcons());
 		shell.setText(Messages.get("lbl.window.title"));
-		shell.addListener(SWT.Resize, new Listener() {
-			@Override
-			public void handleEvent(final Event event) {
-				maximized = shell.getMaximized();
-			}
-		});
+		final ShellStatusListener listener = new ShellStatusListener();
+		shell.addListener(SWT.Resize, listener);
+		shell.addListener(SWT.Move, listener);
 	}
 
 	@Override
@@ -122,6 +121,9 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 	@Override
 	public int open() {
 		final int code = super.open();
+		size = getShell().getSize();
+		location = getShell().getLocation();
+		maximized = getShell().getMaximized();
 
 		if (SwtUtils.isGtk3()) { // fix invisible (transparent) shell bug with some Linux distibutions
 			setMinimizedMaximizedShellStatus();
@@ -243,6 +245,28 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 
 	public boolean isMaximized() {
 		return maximized;
+	}
+
+	public Point getSize() {
+		return size;
+	}
+
+	public Point getLocation() {
+		return location;
+	}
+
+	public class ShellStatusListener implements Listener {
+		@Override
+		public void handleEvent(final Event event) {
+			final Shell shell = getShell();
+			if (shell != null) {
+				maximized = shell.getMaximized();
+				if (!maximized) {
+					size = shell.getSize();
+					location = shell.getLocation();
+				}
+			}
+		}
 	}
 
 }
