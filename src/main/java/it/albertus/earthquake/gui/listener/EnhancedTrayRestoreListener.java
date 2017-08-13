@@ -8,22 +8,23 @@ import org.eclipse.swt.widgets.TrayItem;
 
 import it.albertus.earthquake.config.EarthquakeBulletinConfiguration;
 import it.albertus.earthquake.gui.EarthquakeBulletinGui.Defaults;
+import it.albertus.earthquake.gui.TrayIcon;
 import it.albertus.jface.listener.TrayRestoreListener;
 import it.albertus.util.Configuration;
 
-public class ShellManagementListener extends TrayRestoreListener {
+public class EnhancedTrayRestoreListener extends TrayRestoreListener {
 
 	private static final Configuration configuration = EarthquakeBulletinConfiguration.getInstance();
 
 	private boolean firstTime = true;
 
-	public ShellManagementListener(final Shell shell, final TrayItem trayItem) {
+	public EnhancedTrayRestoreListener(final Shell shell, final TrayItem trayItem) {
 		super(shell, trayItem);
 	}
 
 	@Override
 	public void widgetSelected(final SelectionEvent e) {
-		if (firstTime && !getShell().isDisposed() && configuration.getBoolean(SHELL_MAXIMIZED, Defaults.SHELL_MAXIMIZED)) {
+		if (firstTime && !getShell().isDisposed() && configuration.getBoolean("minimize.tray", TrayIcon.Defaults.MINIMIZE_TRAY) && configuration.getBoolean(SHELL_MAXIMIZED, Defaults.SHELL_MAXIMIZED)) {
 			firstTime = false;
 			getShell().setMaximized(true);
 		}

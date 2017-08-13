@@ -22,7 +22,7 @@ import org.eclipse.swt.widgets.TrayItem;
 
 import it.albertus.earthquake.EarthquakeBulletin;
 import it.albertus.earthquake.config.EarthquakeBulletinConfiguration;
-import it.albertus.earthquake.gui.listener.ShellManagementListener;
+import it.albertus.earthquake.gui.listener.EnhancedTrayRestoreListener;
 import it.albertus.earthquake.gui.listener.CloseListener;
 import it.albertus.earthquake.model.Earthquake;
 import it.albertus.earthquake.resources.Messages;
@@ -85,7 +85,7 @@ public class TrayIcon {
 					trayIcon = getTrayIcon();
 					trayItem.setImage(trayIcon);
 					trayItem.setToolTipText(Messages.get("lbl.tray.tooltip"));
-					final TrayRestoreListener trayRestoreListener = new ShellManagementListener(gui.getShell(), trayItem);
+					final TrayRestoreListener trayRestoreListener = new EnhancedTrayRestoreListener(gui.getShell(), trayItem);
 
 					for (final int icon : new int[] { SWT.ICON_INFORMATION, SWT.ICON_WARNING, SWT.ICON_ERROR }) {
 						final ToolTip toolTip = new ToolTip(gui.getShell(), SWT.BALLOON | icon);
