@@ -79,15 +79,19 @@ public class CloseListener implements Listener, SelectionListener {
 		}
 	}
 
-	private static void saveShellStatus(final EarthquakeBulletinGui gui) { // TODO move
-		if (gui.getShellSize() != null && gui.getShellLocation() != null && configuration != null) {
+	private static void saveShellStatus(final EarthquakeBulletinGui gui) {
+		if (configuration != null) {
 			final Properties properties = configuration.getProperties();
 
 			properties.setProperty(SHELL_MAXIMIZED, Boolean.toString(gui.isShellMaximized()));
-			properties.setProperty(SHELL_SIZE_X, Integer.toString(gui.getShellSize().x));
-			properties.setProperty(SHELL_SIZE_Y, Integer.toString(gui.getShellSize().y));
-			properties.setProperty(SHELL_LOCATION_X, Integer.toString(gui.getShellLocation().x));
-			properties.setProperty(SHELL_LOCATION_Y, Integer.toString(gui.getShellLocation().y));
+			if (gui.getShellSize() != null) {
+				properties.setProperty(SHELL_SIZE_X, Integer.toString(gui.getShellSize().x));
+				properties.setProperty(SHELL_SIZE_Y, Integer.toString(gui.getShellSize().y));
+			}
+			if (gui.getShellLocation() != null) {
+				properties.setProperty(SHELL_LOCATION_X, Integer.toString(gui.getShellLocation().x));
+				properties.setProperty(SHELL_LOCATION_Y, Integer.toString(gui.getShellLocation().y));
+			}
 
 			// Save sash weights
 			final SashForm sashForm = gui.getSashForm();

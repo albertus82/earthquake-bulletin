@@ -1,5 +1,6 @@
 package it.albertus.earthquake.gui;
 
+import java.io.Serializable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -39,6 +40,8 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 	public static final String SHELL_LOCATION_Y = "shell.location.y";
 	public static final String SHELL_MAXIMIZED = "shell.maximized";
 
+	public static final String START_MINIMIZED = "start.minimized";
+
 	public static class Defaults {
 		public static final boolean START_MINIMIZED = false;
 		public static final boolean SEARCH_ON_START = false;
@@ -63,7 +66,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 	private TrayIcon trayIcon;
 	private MenuBar menuBar;
 
-	private boolean shellMaximized = configuration.getBoolean(SHELL_MAXIMIZED, Defaults.SHELL_MAXIMIZED);
+	private boolean shellMaximized;
 	private Point shellSize;
 	private Point shellLocation;
 
@@ -126,11 +129,10 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 	public int open() {
 		final int code = super.open();
 
-		shellSize = getShell().getSize();
-		shellLocation = getShell().getLocation();
 		final ShellStatusListener listener = new ShellStatusListener();
 		getShell().addListener(SWT.Resize, listener);
 		getShell().addListener(SWT.Move, listener);
+		getShell().notifyListeners(SWT.Resize, null); // populate fields
 
 		if (SwtUtils.isGtk3()) { // fixes invisible (transparent) shell bug with some Linux distibutions
 			setMinimizedMaximizedShellStatus();
@@ -181,7 +183,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 	}
 
 	private void setMinimizedMaximizedShellStatus() {
-		if (configuration.getBoolean("start.minimized", Defaults.START_MINIMIZED)) {
+		if (configuration.getBoolean(START_MINIMIZED, Defaults.START_MINIMIZED)) {
 			getShell().setMinimized(true);
 		}
 		else if (configuration.getBoolean(SHELL_MAXIMIZED, Defaults.SHELL_MAXIMIZED)) {
@@ -254,10 +256,20 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 		return shellMaximized;
 	}
 
+	/**
+	 * Returns the shell size. May be null in some circumstances.
+	 * 
+	 * @return the shell size.
+	 */
 	public Point getShellSize() {
 		return shellSize;
 	}
 
+	/**
+	 * Returns the shell location. May be null in some circumstances.
+	 * 
+	 * @return the shell location.
+	 */
 	public Point getShellLocation() {
 		return shellLocation;
 	}
@@ -273,6 +285,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 					shellLocation = shell.getLocation();
 				}
 			}
+			logger.log(Level.FINE, "shellMaximized: {0} - shellSize: {1} - shellLocation: {2}", new Serializable[] { shellMaximized, shellSize, shellLocation });
 		}
 	}
 
