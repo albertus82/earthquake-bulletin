@@ -132,6 +132,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 		final ShellStatusListener listener = new ShellStatusListener();
 		getShell().addListener(SWT.Resize, listener);
 		getShell().addListener(SWT.Move, listener);
+		getShell().addListener(SWT.Activate, new MaximizeShellListener());
 		getShell().notifyListeners(SWT.Resize, null); // populate fields
 
 		if (SwtUtils.isGtk3()) { // fixes invisible (transparent) shell bug with some Linux distibutions
@@ -274,7 +275,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 		return shellLocation;
 	}
 
-	public class ShellStatusListener implements Listener {
+	private class ShellStatusListener implements Listener {
 		@Override
 		public void handleEvent(final Event event) {
 			final Shell shell = getShell();
@@ -284,8 +285,22 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 					shellSize = shell.getSize();
 					shellLocation = shell.getLocation();
 				}
+				logger.log(Level.FINE, "{0}", event);
 			}
 			logger.log(Level.FINE, "shellMaximized: {0} - shellSize: {1} - shellLocation: {2}", new Serializable[] { shellMaximized, shellSize, shellLocation });
+		}
+	}
+
+	private class MaximizeShellListener implements Listener {
+		private boolean firstTime = true;
+
+		@Override
+		public void handleEvent(final Event event) {
+			if (firstTime && !getShell().isDisposed() && !configuration.getBoolean("minimize.tray", TrayIcon.Defaults.MINIMIZE_TRAY) && configuration.getBoolean(START_MINIMIZED, Defaults.START_MINIMIZED) && configuration.getBoolean(SHELL_MAXIMIZED, Defaults.SHELL_MAXIMIZED)) {
+				firstTime = false;
+				getShell().setMaximized(true);
+				logger.log(Level.FINE, "{0}", event);
+			}
 		}
 	}
 

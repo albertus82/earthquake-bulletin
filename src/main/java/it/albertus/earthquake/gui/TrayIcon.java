@@ -22,8 +22,8 @@ import org.eclipse.swt.widgets.TrayItem;
 
 import it.albertus.earthquake.EarthquakeBulletin;
 import it.albertus.earthquake.config.EarthquakeBulletinConfiguration;
-import it.albertus.earthquake.gui.listener.EnhancedTrayRestoreListener;
 import it.albertus.earthquake.gui.listener.CloseListener;
+import it.albertus.earthquake.gui.listener.EnhancedTrayRestoreListener;
 import it.albertus.earthquake.model.Earthquake;
 import it.albertus.earthquake.resources.Messages;
 import it.albertus.jface.listener.TrayRestoreListener;
@@ -42,6 +42,8 @@ public class TrayIcon {
 			throw new IllegalAccessError("Constants class");
 		}
 	}
+
+	public static final String MINIMIZE_TRAY = "minimize.tray";
 
 	private static final Configuration configuration = EarthquakeBulletinConfiguration.getInstance();
 
@@ -63,7 +65,7 @@ public class TrayIcon {
 		gui.getShell().addShellListener(new ShellAdapter() {
 			@Override
 			public void shellIconified(final ShellEvent se) {
-				if (configuration.getBoolean("minimize.tray", Defaults.MINIMIZE_TRAY)) {
+				if (configuration.getBoolean(MINIMIZE_TRAY, Defaults.MINIMIZE_TRAY)) {
 					iconify();
 				}
 			}
