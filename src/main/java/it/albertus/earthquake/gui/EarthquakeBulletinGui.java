@@ -1,6 +1,10 @@
 package it.albertus.earthquake.gui;
 
+import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -27,7 +31,6 @@ import it.albertus.earthquake.resources.Messages;
 import it.albertus.earthquake.util.InitializationException;
 import it.albertus.jface.EnhancedErrorDialog;
 import it.albertus.jface.SwtUtils;
-import it.albertus.util.Configuration;
 import it.albertus.util.Version;
 import it.albertus.util.logging.LoggerFactory;
 
@@ -57,7 +60,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 
 	private static final Logger logger = LoggerFactory.getLogger(EarthquakeBulletinGui.class);
 
-	private final Configuration configuration = EarthquakeBulletinConfiguration.getInstance();
+	private final EarthquakeBulletinConfiguration configuration = EarthquakeBulletinConfiguration.getInstance();
 
 	private SearchForm searchForm;
 	private ResultsTable resultsTable;
@@ -129,10 +132,11 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 	public int open() {
 		final int code = super.open();
 
-		final ShellStatusListener listener = new ShellStatusListener();
+		final UpdateShellStatusListener listener = new UpdateShellStatusListener();
 		getShell().addListener(SWT.Resize, listener);
 		getShell().addListener(SWT.Move, listener);
 		getShell().addListener(SWT.Activate, new MaximizeShellListener());
+		getShell().addListener(SWT.Deactivate, new DeactivateShellListener());
 		getShell().notifyListeners(SWT.Resize, null); // populate fields
 
 		if (SwtUtils.isGtk3()) { // fixes invisible (transparent) shell bug with some Linux distibutions
@@ -275,9 +279,10 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 		return shellLocation;
 	}
 
-	private class ShellStatusListener implements Listener {
+	private class UpdateShellStatusListener implements Listener {
 		@Override
 		public void handleEvent(final Event event) {
+			logger.log(Level.FINE, "{0}", event);
 			final Shell shell = getShell();
 			if (shell != null && !shell.isDisposed()) {
 				shellMaximized = shell.getMaximized();
@@ -285,7 +290,6 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 					shellSize = shell.getSize();
 					shellLocation = shell.getLocation();
 				}
-				logger.log(Level.FINE, "{0}", event);
 			}
 			logger.log(Level.FINE, "shellMaximized: {0} - shellSize: {1} - shellLocation: {2}", new Serializable[] { shellMaximized, shellSize, shellLocation });
 		}
@@ -296,12 +300,73 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 
 		@Override
 		public void handleEvent(final Event event) {
+			logger.log(Level.FINE, "{0}", event);
 			if (firstTime && !getShell().isDisposed() && !configuration.getBoolean("minimize.tray", TrayIcon.Defaults.MINIMIZE_TRAY) && configuration.getBoolean(START_MINIMIZED, Defaults.START_MINIMIZED) && configuration.getBoolean(SHELL_MAXIMIZED, Defaults.SHELL_MAXIMIZED)) {
 				firstTime = false;
 				getShell().setMaximized(true);
-				logger.log(Level.FINE, "{0}", event);
 			}
 		}
+	}
+
+	private class DeactivateShellListener implements Listener {
+		private boolean firstTime = true;
+
+		@Override
+		public void handleEvent(final Event event) {
+			logger.log(Level.FINE, "{0}", event);
+			if (firstTime && configuration.getBoolean(START_MINIMIZED, Defaults.START_MINIMIZED)) {
+				firstTime = false;
+			}
+			else {
+				saveShellStatus();
+			}
+		}
+	}
+
+	public void saveShellStatus() {
+		final List<Integer> sashWeights = new ArrayList<>();
+		if (sashForm != null && !sashForm.isDisposed()) {
+			for (final int weight : sashForm.getWeights()) {
+				sashWeights.add(weight);
+			}
+		}
+		new Thread("Save shell status") { // don't perform I/O in UI thread
+			@Override
+			public void run() {
+				try {
+					configuration.reload(); // make sure the properties are up-to-date
+				}
+				catch (final IOException e) {
+					logger.log(Level.WARNING, e.toString(), e);
+					return; // abort
+				}
+				final Properties properties = configuration.getProperties();
+
+				properties.setProperty(SHELL_MAXIMIZED, Boolean.toString(isShellMaximized()));
+				if (getShellSize() != null) {
+					properties.setProperty(SHELL_SIZE_X, Integer.toString(getShellSize().x));
+					properties.setProperty(SHELL_SIZE_Y, Integer.toString(getShellSize().y));
+				}
+				if (getShellLocation() != null) {
+					properties.setProperty(SHELL_LOCATION_X, Integer.toString(getShellLocation().x));
+					properties.setProperty(SHELL_LOCATION_Y, Integer.toString(getShellLocation().y));
+				}
+
+				// Save sash weights
+				for (int i = 0; i < sashWeights.size(); i++) {
+					properties.setProperty(SHELL_SASH_WEIGHT + '.' + i, Integer.toString(sashWeights.get(i)));
+				}
+
+				logger.log(Level.CONFIG, "{0}", configuration);
+
+				try {
+					configuration.save(); // save configuration
+				}
+				catch (final IOException e) {
+					logger.log(Level.WARNING, e.toString(), e);
+				}
+			}
+		}.start();
 	}
 
 }

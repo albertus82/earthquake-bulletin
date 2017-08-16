@@ -1,21 +1,6 @@
 package it.albertus.earthquake.gui.listener;
 
-import static it.albertus.earthquake.gui.EarthquakeBulletinGui.SHELL_LOCATION_X;
-import static it.albertus.earthquake.gui.EarthquakeBulletinGui.SHELL_LOCATION_Y;
-import static it.albertus.earthquake.gui.EarthquakeBulletinGui.SHELL_MAXIMIZED;
-import static it.albertus.earthquake.gui.EarthquakeBulletinGui.SHELL_SASH_WEIGHT;
-import static it.albertus.earthquake.gui.EarthquakeBulletinGui.SHELL_SIZE_X;
-import static it.albertus.earthquake.gui.EarthquakeBulletinGui.SHELL_SIZE_Y;
-
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Display;
@@ -23,17 +8,10 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 
-import it.albertus.earthquake.config.EarthquakeBulletinConfiguration;
 import it.albertus.earthquake.gui.CloseDialog;
 import it.albertus.earthquake.gui.EarthquakeBulletinGui;
-import it.albertus.util.Configuration;
-import it.albertus.util.logging.LoggerFactory;
 
 public class CloseListener implements Listener, SelectionListener {
-
-	private static final Logger logger = LoggerFactory.getLogger(CloseListener.class);
-
-	private static final Configuration configuration = EarthquakeBulletinConfiguration.getInstance();
 
 	private final EarthquakeBulletinGui gui;
 
@@ -48,7 +26,7 @@ public class CloseListener implements Listener, SelectionListener {
 	private void disposeShellAndDisplay() {
 		final Shell shell = gui.getShell();
 		if (shell != null && !shell.isDisposed()) {
-			saveShellStatus(gui);
+			gui.saveShellStatus();
 			shell.dispose();
 		}
 		final Display display = Display.getCurrent();
@@ -76,39 +54,6 @@ public class CloseListener implements Listener, SelectionListener {
 		}
 		else if (event != null) {
 			event.doit = false;
-		}
-	}
-
-	private static void saveShellStatus(final EarthquakeBulletinGui gui) {
-		if (configuration != null) {
-			final Properties properties = configuration.getProperties();
-
-			properties.setProperty(SHELL_MAXIMIZED, Boolean.toString(gui.isShellMaximized()));
-			if (gui.getShellSize() != null) {
-				properties.setProperty(SHELL_SIZE_X, Integer.toString(gui.getShellSize().x));
-				properties.setProperty(SHELL_SIZE_Y, Integer.toString(gui.getShellSize().y));
-			}
-			if (gui.getShellLocation() != null) {
-				properties.setProperty(SHELL_LOCATION_X, Integer.toString(gui.getShellLocation().x));
-				properties.setProperty(SHELL_LOCATION_Y, Integer.toString(gui.getShellLocation().y));
-			}
-
-			// Save sash weights
-			final SashForm sashForm = gui.getSashForm();
-			if (sashForm != null && !sashForm.isDisposed()) {
-				for (int i = 0; i < sashForm.getWeights().length; i++) {
-					properties.setProperty(SHELL_SASH_WEIGHT + '.' + i, Integer.toString(sashForm.getWeights()[i]));
-				}
-			}
-
-			logger.log(Level.CONFIG, "{0}", configuration);
-
-			try (final OutputStream os = new FileOutputStream(configuration.getFileName())) {
-				properties.store(os, null); // save configuration
-			}
-			catch (final IOException e) {
-				logger.log(Level.WARNING, e.toString(), e);
-			}
 		}
 	}
 
