@@ -45,6 +45,8 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 
 	public static final String START_MINIMIZED = "start.minimized";
 
+	private static final Point POINT_ZERO = new Point(0, 0);
+
 	public static class Defaults {
 		public static final boolean START_MINIMIZED = false;
 		public static final boolean SEARCH_ON_START = false;
@@ -286,7 +288,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 			final Shell shell = getShell();
 			if (shell != null && !shell.isDisposed()) {
 				shellMaximized = shell.getMaximized();
-				if (!shellMaximized) {
+				if (!shellMaximized && !POINT_ZERO.equals(shell.getSize())) {
 					shellSize = shell.getSize();
 					shellLocation = shell.getLocation();
 				}
