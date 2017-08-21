@@ -71,8 +71,13 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 	private TrayIcon trayIcon;
 	private MenuBar menuBar;
 
-	private boolean shellMaximized;
+	/** Shell maximized status. May be null in some circumstances. */
+	private Boolean shellMaximized;
+
+	/** Shell size. May be null in some circumstances. */
 	private Point shellSize;
+
+	/** Shell location. May be null in some circumstances. */
 	private Point shellLocation;
 
 	public EarthquakeBulletinGui() {
@@ -139,7 +144,6 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 		getShell().addListener(SWT.Move, listener);
 		getShell().addListener(SWT.Activate, new MaximizeShellListener());
 		getShell().addListener(SWT.Deactivate, new DeactivateShellListener());
-		getShell().notifyListeners(SWT.Resize, null); // populate fields
 
 		if (SwtUtils.isGtk3()) { // fixes invisible (transparent) shell bug with some Linux distibutions
 			setMinimizedMaximizedShellStatus();
@@ -259,28 +263,6 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 		return menuBar;
 	}
 
-	public boolean isShellMaximized() {
-		return shellMaximized;
-	}
-
-	/**
-	 * Returns the shell size. May be null in some circumstances.
-	 * 
-	 * @return the shell size.
-	 */
-	public Point getShellSize() {
-		return shellSize;
-	}
-
-	/**
-	 * Returns the shell location. May be null in some circumstances.
-	 * 
-	 * @return the shell location.
-	 */
-	public Point getShellLocation() {
-		return shellLocation;
-	}
-
 	private class UpdateShellStatusListener implements Listener {
 		@Override
 		public void handleEvent(final Event event) {
@@ -344,14 +326,16 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 				}
 				final Properties properties = configuration.getProperties();
 
-				properties.setProperty(SHELL_MAXIMIZED, Boolean.toString(isShellMaximized()));
-				if (getShellSize() != null) {
-					properties.setProperty(SHELL_SIZE_X, Integer.toString(getShellSize().x));
-					properties.setProperty(SHELL_SIZE_Y, Integer.toString(getShellSize().y));
+				if (shellMaximized != null) {
+					properties.setProperty(SHELL_MAXIMIZED, Boolean.toString(shellMaximized));
 				}
-				if (getShellLocation() != null) {
-					properties.setProperty(SHELL_LOCATION_X, Integer.toString(getShellLocation().x));
-					properties.setProperty(SHELL_LOCATION_Y, Integer.toString(getShellLocation().y));
+				if (shellSize != null) {
+					properties.setProperty(SHELL_SIZE_X, Integer.toString(shellSize.x));
+					properties.setProperty(SHELL_SIZE_Y, Integer.toString(shellSize.y));
+				}
+				if (shellLocation != null) {
+					properties.setProperty(SHELL_LOCATION_X, Integer.toString(shellLocation.x));
+					properties.setProperty(SHELL_LOCATION_Y, Integer.toString(shellLocation.y));
 				}
 
 				// Save sash weights
