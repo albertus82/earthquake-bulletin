@@ -50,10 +50,10 @@ public class FERegion {
 			arg1 = tmp;
 		}
 		if (arg0.endsWith("W")) {
-			arg0 = "-" + arg0;
+			arg0 = '-' + arg0;
 		}
 		if (arg1.endsWith("S")) {
-			arg1 = "-" + arg1;
+			arg1 = '-' + arg1;
 		}
 		arg0 = arg0.replaceAll("E|W", "");
 		arg1 = arg1.replaceAll("N|S", "");
@@ -68,7 +68,7 @@ public class FERegion {
 			System.exit(1);
 		}
 
-		String fename = getName(lng, lat);
+		final String fename = getName(lng, lat);
 
 		System.out.println(fename);
 	}
