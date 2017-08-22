@@ -10,8 +10,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import it.albertus.util.NewLine;
-
 public class FERegion {
 
 	public static void main(String[] args) throws IOException {
@@ -155,6 +153,9 @@ public class FERegion {
 //		foreach $quad (@quadorder) {
 		Map<String, int[]> lonsperlat = new LinkedHashMap<>();
 		Map<String, int[]> latbegins = new LinkedHashMap<>();
+		
+		Map<String, int[]> mlons = new LinkedHashMap<>();
+		Map<String, int[]> mfenums = new LinkedHashMap<>();
 
 		for (int i = 0; i < aquadorder.length; i++ ) {
 			String vquad2 = aquadorder[i];
@@ -185,13 +186,13 @@ public class FERegion {
 			int end = -1;
 			int n = 0;
 			List<Integer> lbegins = new ArrayList<>();
-			for (int item :aquadindex) {
+			for (int item : aquadindex) {
 				n++;
 				begin = end+1;
 				lbegins.add(begin);
 				end += item;
 				if ( n <= 10) {
-					System.out.printf("%s %d %d %d%s",vquad2, item, begin, end, System.lineSeparator());
+//					System.out.printf("%s %d %d %d%s",vquad2, item, begin, end, System.lineSeparator());
 				}
 			}
 			int[] abegins = new int[lbegins.size()];
@@ -200,7 +201,6 @@ public class FERegion {
 			}
 			latbegins.put(vquad2, abegins);
 			
-//
 //		    $sectfile = shift @sectfiles;
 //		    $SECTFILE = "<$sectfile";
 //		    open SECTFILE  or  die " * Can't open $SECTFILE ... $!";
@@ -211,7 +211,26 @@ public class FERegion {
 //		       push @sect, @newnums;
 //		    }
 //		    close SECTFILE;
-//
+			
+			String vsectfile = asectfiles[i];
+			int[] asect = null;
+			List<Integer> lsect = new ArrayList<>();
+			try (final InputStream is = FERegion.class.getResourceAsStream(vsectfile); final InputStreamReader isr = new InputStreamReader(is); final BufferedReader br = new BufferedReader(isr)) {
+				String line;
+				while ((line = br.readLine()) != null) {
+					for (String s : line.split("\\s")) {
+						if (!s.trim().isEmpty()) {
+							lsect.add(Integer.valueOf(s));
+						}
+					}
+				}
+				asect = new int[lsect.size()];
+				for (int j = 0; j < asect.length; j++) {
+					asect[j] = lsect.get(j);
+				}
+			}
+//			System.out.println(Arrays.toString(asect));
+
 //		    @lons = ();
 //		    @fenums = ();
 //		    $n = 0;
@@ -224,7 +243,34 @@ public class FERegion {
 //		    $fenums{$quad} = [ @fenums ];
 //
 //		}
+			List<Integer> llons = new ArrayList<>();
+			List<Integer> lfenums = new ArrayList<>();
+			int[] alons = null;
+			int[] afenums = null;
+			int o = 0;
+			for (int item : asect) {
+				o++;
+				if (o%2!=0) {
+					llons.add(item);
+				}
+				else {
+					lfenums.add(item);
+				}
+			}
+			alons = new int[llons.size()];
+			for (int j = 0; j < alons.length; j++) {
+				alons[j] = llons.get(j);
+			}
+			mlons.put(vquad2, alons);
 			
+			afenums = new int[lfenums.size()];
+			for (int j = 0; j < afenums.length; j++) {
+				afenums[j] = lfenums.get(j);
+			}
+			mfenums.put(vquad2, afenums);
+			
+			System.out.println(Arrays.toString(alons));System.out.println();
+			System.out.println(Arrays.toString(afenums));System.out.println();
 		}
 		
 			
