@@ -73,26 +73,22 @@ public class FERegion {
 		System.out.println(fename);
 	}
 
-	public static String getName(double vlng, final double vlat) throws IOException {
-		if (vlng <= -180.0) {
-			vlng += 360.0;
+	public static String getName(double lng, final double lat) throws IOException {
+		if (lng <= -180.0) {
+			lng += 360.0;
 		}
-		if (vlng > 180.0) {
-			vlng -= 360.0;
+		if (lng > 180.0) {
+			lng -= 360.0;
 		}
 
-		// Take absolute values...
-		double valat = Math.abs(vlat);
-		double valon = Math.abs(vlng);
-
-		// Truncate absolute values to integers...
-		int vlt = (int) valat;
-		int vln = (int) valon;
+		// Take absolute values & truncate to integers...
+		final int lt = (int) Math.abs(lat);
+		final int ln = (int) Math.abs(lng);
 
 		// Get quadrant
 		final String myquad;
-		if (vlat >= 0.0) {
-			if (vlng >= 0.0) {
+		if (lat >= 0.0) {
+			if (lng >= 0.0) {
 				myquad = "ne";
 			}
 			else {
@@ -100,7 +96,7 @@ public class FERegion {
 			}
 		}
 		else {
-			if (vlng >= 0.0) {
+			if (lng >= 0.0) {
 				myquad = "se";
 			}
 			else {
@@ -184,8 +180,8 @@ public class FERegion {
 		}
 
 		// Find location of the latitude tier in the appropriate quadrant file.
-		final int beg = latbegins.get(myquad).get(vlt); // Location of first item for latitude lt.
-		final int num = lonsperlat.get(myquad).get(vlt); // Number of items for latitude lt.
+		final int beg = latbegins.get(myquad).get(lt); // Location of first item for latitude lt.
+		final int num = lonsperlat.get(myquad).get(lt); // Number of items for latitude lt.
 
 		// Extract this tier of longitude and f-e numbers for latitude lt.
 		final List<Integer> mylons = mlons.get(myquad).subList(beg, beg + num);
@@ -193,7 +189,7 @@ public class FERegion {
 
 		int n = 0;
 		for (final int item : mylons) {
-			if (item > vln) {
+			if (item > ln) {
 				break;
 			}
 			n++;

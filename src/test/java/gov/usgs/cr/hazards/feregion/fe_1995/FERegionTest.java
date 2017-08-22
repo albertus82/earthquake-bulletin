@@ -35,6 +35,10 @@ public class FERegionTest {
 				}
 			}
 		}
+		catch (final Throwable t) {
+			t.printStackTrace();
+			throw t;
+		}
 	}
 
 }
