@@ -33,6 +33,54 @@ public class FERegion {
 	private static final String[] quadorder = { "ne", "nw", "se", "sw" };
 	private static final String[] sectfiles = { "nesect.asc", "nwsect.asc", "sesect.asc", "swsect.asc" };
 
+	private static final List<String> names = new ArrayList<>(757);
+	private static final List<Integer> quadsindex = new ArrayList<>(91 * quadorder.length);
+	private static final Map<String, List<Integer>> sects = new HashMap<>(quadorder.length);
+
+	static {
+		// Read the file of region names...
+		try (final InputStream is = FERegion.class.getResourceAsStream(NAMES); final InputStreamReader isr = new InputStreamReader(is); final BufferedReader br = new BufferedReader(isr)) {
+			String line;
+			while ((line = br.readLine()) != null) {
+				names.add(line.trim());
+				// System.out.println(WordUtils.capitalize(line.trim().toLowerCase(), '-', ' ').replace(" Of ", " of "));
+			}
+		}
+		catch (final IOException e) {
+			throw new RuntimeException(e);
+		}
+
+		// The quadsindex file contains a list for all 4 quadrants of the number of longitude entries for each integer latitude in the "sectfiles".
+		try (final InputStream is = FERegion.class.getResourceAsStream(QUADSINDEX); final InputStreamReader isr = new InputStreamReader(is); final BufferedReader br = new BufferedReader(isr)) {
+			String line;
+			while ((line = br.readLine()) != null) {
+				for (final String index : line.trim().split("\\s+")) {
+					quadsindex.add(Integer.valueOf(index));
+				}
+			}
+		}
+		catch (final IOException e) {
+			throw new RuntimeException(e);
+		}
+		logger.log(Level.FINE, "  * Numitems in quadsindex = {0}", quadsindex.size());
+
+		for (int i = 0; i < sectfiles.length; i++) {
+			final List<Integer> sect = new ArrayList<>(2000);
+			try (final InputStream is = FERegion.class.getResourceAsStream(sectfiles[i]); final InputStreamReader isr = new InputStreamReader(is); final BufferedReader br = new BufferedReader(isr)) {
+				String line;
+				while ((line = br.readLine()) != null) {
+					for (final String s : line.trim().split("\\s+")) {
+						sect.add(Integer.valueOf(s));
+					}
+				}
+				sects.put(quadorder[i], sect);
+			}
+			catch (final IOException e) {
+				throw new RuntimeException(e);
+			}
+		}
+	}
+
 	public static void main(final String[] args) throws IOException {
 		if (args.length != 2) {
 			System.err.println("   Usage:  FERegion  <lon> <lat>");
@@ -105,28 +153,6 @@ public class FERegion {
 		}
 		logger.log(Level.FINE, " * quad, lt, ln  = {0} {1} {2}", new Object[] { myquad, lt, ln });
 
-		// Read the file of region names...
-		final List<String> names = new ArrayList<>(757);
-		try (final InputStream is = FERegion.class.getResourceAsStream(NAMES); final InputStreamReader isr = new InputStreamReader(is); final BufferedReader br = new BufferedReader(isr)) {
-			String line;
-			while ((line = br.readLine()) != null) {
-				names.add(line.trim());
-				// System.out.println(WordUtils.capitalize(line.trim().toLowerCase(), '-', ' ').replace(" Of ", " of "));
-			}
-		}
-
-		// The quadsindex file contains a list for all 4 quadrants of the number of longitude entries for each integer latitude in the "sectfiles".
-		final List<Integer> quadsindex = new ArrayList<>(91 * quadorder.length);
-		try (final InputStream is = FERegion.class.getResourceAsStream(QUADSINDEX); final InputStreamReader isr = new InputStreamReader(is); final BufferedReader br = new BufferedReader(isr)) {
-			String line;
-			while ((line = br.readLine()) != null) {
-				for (final String index : line.trim().split("\\s+")) {
-					quadsindex.add(Integer.valueOf(index));
-				}
-			}
-		}
-		logger.log(Level.FINE, "  * Numitems in quadsindex = {0}", quadsindex.size());
-
 		final Map<String, List<Integer>> lonsperlat = new HashMap<>(quadorder.length);
 		final Map<String, List<Integer>> latbegins = new HashMap<>(quadorder.length);
 
@@ -156,16 +182,7 @@ public class FERegion {
 			}
 			latbegins.put(quad, begins);
 
-			final List<Integer> sect = new ArrayList<>(2000);
-			try (final InputStream is = FERegion.class.getResourceAsStream(sectfiles[i]); final InputStreamReader isr = new InputStreamReader(is); final BufferedReader br = new BufferedReader(isr)) {
-				String line;
-				while ((line = br.readLine()) != null) {
-					for (final String s : line.trim().split("\\s+")) {
-						sect.add(Integer.valueOf(s));
-					}
-				}
-			}
-
+			final List<Integer> sect = sects.get(myquad);
 			final List<Integer> lons = new ArrayList<>(sect.size() / 2);
 			final List<Integer> fenums = new ArrayList<>(sect.size() / 2);
 			int o = 0;
