@@ -36,6 +36,7 @@ public class FERegionTest {
 				System.out.print(".");
 			}
 		}
+		System.out.println();
 	}
 
 }

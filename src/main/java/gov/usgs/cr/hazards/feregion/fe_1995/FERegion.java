@@ -105,7 +105,7 @@ public class FERegion {
 		}
 
 		// Read the file of region names...
-		final List<String> names = new ArrayList<>();
+		final List<String> names = new ArrayList<>(757);
 		try (final InputStream is = FERegion.class.getResourceAsStream(NAMES); final InputStreamReader isr = new InputStreamReader(is); final BufferedReader br = new BufferedReader(isr)) {
 			String line;
 			while ((line = br.readLine()) != null) {
@@ -114,7 +114,7 @@ public class FERegion {
 		}
 
 		// The quadsindex file contains a list for all 4 quadrants of the number of longitude entries for each integer latitude in the "sectfiles".
-		final List<Integer> quadsindex = new ArrayList<>();
+		final List<Integer> quadsindex = new ArrayList<>(91 * quadorder.length);
 		try (final InputStream is = FERegion.class.getResourceAsStream(QUADSINDEX); final InputStreamReader isr = new InputStreamReader(is); final BufferedReader br = new BufferedReader(isr)) {
 			String line;
 			while ((line = br.readLine()) != null) {
@@ -124,25 +124,25 @@ public class FERegion {
 			}
 		}
 
-		final Map<String, List<Integer>> lonsperlat = new HashMap<>();
-		final Map<String, List<Integer>> latbegins = new HashMap<>();
+		final Map<String, List<Integer>> lonsperlat = new HashMap<>(quadorder.length);
+		final Map<String, List<Integer>> latbegins = new HashMap<>(quadorder.length);
 
-		final Map<String, List<Integer>> mlons = new HashMap<>();
-		final Map<String, List<Integer>> mfenums = new HashMap<>();
+		final Map<String, List<Integer>> mlons = new HashMap<>(quadorder.length);
+		final Map<String, List<Integer>> mfenums = new HashMap<>(quadorder.length);
 
 		for (int i = 0; i < quadorder.length; i++) {
 			final String quad = quadorder[i];
 			// Break the quadindex array into 4 arrays, one for each quadrant.
-			final List<Integer> aquadindex = quadsindex.subList(91 * i, 91 * (i + 1));
-			lonsperlat.put(quad, aquadindex);
+			final List<Integer> quadindex = quadsindex.subList(91 * i, 91 * (i + 1));
+			lonsperlat.put(quad, quadindex);
 
 			// Convert the lonsperlat array, which counts how many longitude items there are for each latitude,
 			// into an array that tells the location of the beginning item in a quadrant's latitude stripe.
 			int begin = 0;
 			int end = -1;
 			int n = 0;
-			final List<Integer> begins = new ArrayList<>();
-			for (int item : aquadindex) {
+			final List<Integer> begins = new ArrayList<>(quadindex.size());
+			for (final int item : quadindex) {
 				n++;
 				begin = end + 1;
 				begins.add(begin);
@@ -153,7 +153,7 @@ public class FERegion {
 			}
 			latbegins.put(quad, begins);
 
-			final List<Integer> sect = new ArrayList<>();
+			final List<Integer> sect = new ArrayList<>(2000);
 			try (final InputStream is = FERegion.class.getResourceAsStream(sectfiles[i]); final InputStreamReader isr = new InputStreamReader(is); final BufferedReader br = new BufferedReader(isr)) {
 				String line;
 				while ((line = br.readLine()) != null) {
@@ -163,8 +163,8 @@ public class FERegion {
 				}
 			}
 
-			final List<Integer> lons = new ArrayList<>();
-			final List<Integer> fenums = new ArrayList<>();
+			final List<Integer> lons = new ArrayList<>(sect.size() / 2);
+			final List<Integer> fenums = new ArrayList<>(sect.size() / 2);
 			int o = 0;
 			for (final int item : sect) { // Split pairs of items into two separate arrays:
 				o++;
