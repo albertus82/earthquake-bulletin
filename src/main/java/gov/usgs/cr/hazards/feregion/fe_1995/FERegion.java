@@ -23,17 +23,11 @@ public class FERegion {
 
 	private final FECache cache;
 
-	/** Initializes internal cache. Reuse the instance if possible. */
+	/**
+	 * Initializes a internal cache. Reuse the instance whenever possible.
+	 */
 	public FERegion() throws IOException {
 		cache = new FECache();
-	}
-
-	public String getName(double lng, final double lat) {
-		final int fenum = getNumber(lng, lat);
-		final String fename = cache.getNames().get(fenum - 1);
-		logger.log(Level.FINE, "{0} {1}", new Object[] { fenum, fename });
-
-		return fename;
 	}
 
 	public int getNumber(double lng, final double lat) {
@@ -89,9 +83,17 @@ public class FERegion {
 
 		final int feindex = n - 1;
 		final int fenum = myfenums.get(feindex);
-		logger.log(Level.FINE, "{0} {1} {2}", new Object[] { n, feindex, fenum });
+		logger.log(Level.FINE, "{0} {1} {2}", new int[] { n, feindex, fenum });
 
 		return fenum;
+	}
+
+	public String getName(final double lng, final double lat) {
+		final int fenum = getNumber(lng, lat);
+		final String fename = cache.getNames().get(fenum - 1);
+		logger.log(Level.FINE, "{0} {1}", new Object[] { fenum, fename });
+
+		return fename;
 	}
 
 	public static void main(final String[] args) throws IOException {

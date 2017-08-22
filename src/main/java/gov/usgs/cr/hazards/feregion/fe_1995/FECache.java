@@ -42,7 +42,7 @@ public class FECache {
 
 	FECache() throws IOException {
 		// Read the file of region names...
-		try (final InputStream is = FERegion.class.getResourceAsStream("names.asc"); final InputStreamReader isr = new InputStreamReader(is); final BufferedReader br = new BufferedReader(isr)) {
+		try (final InputStream is = getClass().getResourceAsStream("names.asc"); final InputStreamReader isr = new InputStreamReader(is); final BufferedReader br = new BufferedReader(isr)) {
 			String line;
 			while ((line = br.readLine()) != null) {
 				names.add(WordUtils.capitalize(line.trim().toLowerCase(), ' ', '-', '.').replace(" Of ", " of ")); // Improved text case.
@@ -51,7 +51,7 @@ public class FECache {
 
 		// The quadsindex file contains a list for all 4 quadrants of the number of longitude entries for each integer latitude in the "sectfiles".
 		final List<Integer> quadsindex = new ArrayList<>(91 * quadorder.length);
-		try (final InputStream is = FERegion.class.getResourceAsStream("quadsidx.asc"); final InputStreamReader isr = new InputStreamReader(is); final BufferedReader br = new BufferedReader(isr)) {
+		try (final InputStream is = getClass().getResourceAsStream("quadsidx.asc"); final InputStreamReader isr = new InputStreamReader(is); final BufferedReader br = new BufferedReader(isr)) {
 			String line;
 			while ((line = br.readLine()) != null) {
 				for (final String index : line.trim().split("\\s+")) {
@@ -64,7 +64,7 @@ public class FECache {
 		final Map<String, List<Integer>> sects = new HashMap<>(quadorder.length);
 		for (int i = 0; i < sectfiles.length; i++) {
 			final List<Integer> sect = new ArrayList<>(2000);
-			try (final InputStream is = FERegion.class.getResourceAsStream(sectfiles[i]); final InputStreamReader isr = new InputStreamReader(is); final BufferedReader br = new BufferedReader(isr)) {
+			try (final InputStream is = getClass().getResourceAsStream(sectfiles[i]); final InputStreamReader isr = new InputStreamReader(is); final BufferedReader br = new BufferedReader(isr)) {
 				String line;
 				while ((line = br.readLine()) != null) {
 					for (final String s : line.trim().split("\\s+")) {
@@ -77,6 +77,7 @@ public class FECache {
 
 		for (int i = 0; i < quadorder.length; i++) {
 			final String quad = quadorder[i];
+
 			// Break the quadindex array into 4 arrays, one for each quadrant.
 			final List<Integer> quadindex = quadsindex.subList(91 * i, 91 * (i + 1));
 			lonsperlat.put(quad, quadindex);
