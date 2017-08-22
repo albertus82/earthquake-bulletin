@@ -19,21 +19,15 @@ public class FERegionTest {
 
 	@Test
 	public void test_5_5() throws IOException {
-		final int step = 5;
-		try (final InputStream is = getClass().getResourceAsStream(String.format("feregion_%d_%d.txt.gz", step, step)); final GZIPInputStream gzis = new GZIPInputStream(is); final InputStreamReader isr = new InputStreamReader(gzis); final BufferedReader br = new BufferedReader(isr)) {
-			for (int i = -180; i <= 180; i += step) {
-				for (int j = -90; j <= 90; j += step) {
-					final String name = FERegion.getName(i, j);
-					logger.log(Level.INFO, "{0}, {1}: {2}", new Object[] { i, j, name });
-					Assert.assertEquals(name, br.readLine());
-				}
-			}
-		}
+		test(5);
 	}
 
 	@Test
 	public void test_3_3() throws IOException {
-		final int step = 3;
+		test(3);
+	}
+
+	private void test(final int step) throws IOException {
 		try (final InputStream is = getClass().getResourceAsStream(String.format("feregion_%d_%d.txt.gz", step, step)); final GZIPInputStream gzis = new GZIPInputStream(is); final InputStreamReader isr = new InputStreamReader(gzis); final BufferedReader br = new BufferedReader(isr)) {
 			for (int i = -180; i <= 180; i += step) {
 				for (int j = -90; j <= 90; j += step) {
