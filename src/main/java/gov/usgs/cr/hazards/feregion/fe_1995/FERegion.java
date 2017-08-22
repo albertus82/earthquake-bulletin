@@ -103,6 +103,7 @@ public class FERegion {
 				myquad = "sw";
 			}
 		}
+		logger.log(Level.FINE, " * quad, lt, ln  = {0} {1} {2}", new Object[] { myquad, lt, ln });
 
 		// Read the file of region names...
 		final List<String> names = new ArrayList<>(757);
@@ -110,6 +111,7 @@ public class FERegion {
 			String line;
 			while ((line = br.readLine()) != null) {
 				names.add(line.trim());
+				// System.out.println(WordUtils.capitalize(line.trim().toLowerCase(), '-', ' ').replace(" Of ", " of "));
 			}
 		}
 
@@ -123,6 +125,7 @@ public class FERegion {
 				}
 			}
 		}
+		logger.log(Level.FINE, "  * Numitems in quadsindex = {0}", quadsindex.size());
 
 		final Map<String, List<Integer>> lonsperlat = new HashMap<>(quadorder.length);
 		final Map<String, List<Integer>> latbegins = new HashMap<>(quadorder.length);
@@ -182,10 +185,13 @@ public class FERegion {
 		// Find location of the latitude tier in the appropriate quadrant file.
 		final int beg = latbegins.get(myquad).get(lt); // Location of first item for latitude lt.
 		final int num = lonsperlat.get(myquad).get(lt); // Number of items for latitude lt.
+		logger.log(Level.FINE, " * beg = {0} num = {1}", new int[] { beg, num });
 
 		// Extract this tier of longitude and f-e numbers for latitude lt.
 		final List<Integer> mylons = mlons.get(myquad).subList(beg, beg + num);
 		final List<Integer> myfenums = mfenums.get(myquad).subList(beg, beg + num);
+		logger.log(Level.FINE, "mylons: {0}", mylons);
+		logger.log(Level.FINE, "myfenums: {0}", myfenums);
 
 		int n = 0;
 		for (final int item : mylons) {
@@ -197,8 +203,10 @@ public class FERegion {
 
 		final int feindex = n - 1;
 		final int fenum = myfenums.get(feindex);
+		final String fename = names.get(fenum - 1);
+		logger.log(Level.FINE, "{0} {1} {2} {3}", new Object[] { n, feindex, fenum, fename });
 
-		return names.get(fenum - 1);
+		return fename;
 	}
 
 }
