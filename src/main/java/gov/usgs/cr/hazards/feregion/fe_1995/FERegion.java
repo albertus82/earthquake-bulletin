@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import it.albertus.util.WordUtils;
 import it.albertus.util.logging.LoggerFactory;
 
 /**
@@ -37,13 +38,18 @@ public class FERegion {
 	private static final List<Integer> quadsindex = new ArrayList<>(91 * quadorder.length);
 	private static final Map<String, List<Integer>> sects = new HashMap<>(quadorder.length);
 
+	private static final Map<String, List<Integer>> lonsperlat = new HashMap<>(quadorder.length);
+	private static final Map<String, List<Integer>> latbegins = new HashMap<>(quadorder.length);
+
+	private static final Map<String, List<Integer>> mlons = new HashMap<>(quadorder.length);
+	private static final Map<String, List<Integer>> mfenums = new HashMap<>(quadorder.length);
+
 	static {
 		// Read the file of region names...
 		try (final InputStream is = FERegion.class.getResourceAsStream(NAMES); final InputStreamReader isr = new InputStreamReader(is); final BufferedReader br = new BufferedReader(isr)) {
 			String line;
 			while ((line = br.readLine()) != null) {
-				names.add(line.trim());
-				// System.out.println(WordUtils.capitalize(line.trim().toLowerCase(), '-', ' ').replace(" Of ", " of "));
+				names.add(WordUtils.capitalize(line.trim().toLowerCase(), '-', ' ').replace(" Of ", " of "));
 			}
 		}
 		catch (final IOException e) {
@@ -79,9 +85,49 @@ public class FERegion {
 				throw new RuntimeException(e);
 			}
 		}
+
+		for (int i = 0; i < quadorder.length; i++) {
+			final String quad = quadorder[i];
+			// Break the quadindex array into 4 arrays, one for each quadrant.
+			final List<Integer> quadindex = quadsindex.subList(91 * i, 91 * (i + 1));
+			lonsperlat.put(quad, quadindex);
+
+			// Convert the lonsperlat array, which counts how many longitude items there are for each latitude,
+			// into an array that tells the location of the beginning item in a quadrant's latitude stripe.
+			int begin = 0;
+			int end = -1;
+			int n = 0;
+			final List<Integer> begins = new ArrayList<>(quadindex.size());
+			for (final int item : quadindex) {
+				n++;
+				begin = end + 1;
+				begins.add(begin);
+				end += item;
+				if (logger.isLoggable(Level.FINE) && n <= 10) {
+					logger.log(Level.FINE, "{0} {1} {2} {3}", new Object[] { quad, item, begin, end });
+				}
+			}
+			latbegins.put(quad, begins);
+
+			final List<Integer> sect = sects.get(quad);
+			final List<Integer> lons = new ArrayList<>(sect.size() / 2);
+			final List<Integer> fenums = new ArrayList<>(sect.size() / 2);
+			int o = 0;
+			for (final int item : sect) { // Split pairs of items into two separate arrays:
+				o++;
+				if (o % 2 != 0) {
+					lons.add(item);
+				}
+				else {
+					fenums.add(item);
+				}
+			}
+			mlons.put(quad, lons);
+			mfenums.put(quad, fenums);
+		}
 	}
 
-	public static void main(final String[] args) throws IOException {
+	public static void main(final String[] args) {
 		if (args.length != 2) {
 			System.err.println("   Usage:  FERegion  <lon> <lat>");
 			System.err.println("   As In:  FERegion  -122.5  36.2");
@@ -121,7 +167,7 @@ public class FERegion {
 		System.out.println(fename);
 	}
 
-	public static String getName(double lng, final double lat) throws IOException {
+	public static String getName(double lng, final double lat) {
 		if (lng <= -180.0) {
 			lng += 360.0;
 		}
@@ -152,52 +198,6 @@ public class FERegion {
 			}
 		}
 		logger.log(Level.FINE, " * quad, lt, ln  = {0} {1} {2}", new Object[] { myquad, lt, ln });
-
-		final Map<String, List<Integer>> lonsperlat = new HashMap<>(quadorder.length);
-		final Map<String, List<Integer>> latbegins = new HashMap<>(quadorder.length);
-
-		final Map<String, List<Integer>> mlons = new HashMap<>(quadorder.length);
-		final Map<String, List<Integer>> mfenums = new HashMap<>(quadorder.length);
-
-		for (int i = 0; i < quadorder.length; i++) {
-			final String quad = quadorder[i];
-			// Break the quadindex array into 4 arrays, one for each quadrant.
-			final List<Integer> quadindex = quadsindex.subList(91 * i, 91 * (i + 1));
-			lonsperlat.put(quad, quadindex);
-
-			// Convert the lonsperlat array, which counts how many longitude items there are for each latitude,
-			// into an array that tells the location of the beginning item in a quadrant's latitude stripe.
-			int begin = 0;
-			int end = -1;
-			int n = 0;
-			final List<Integer> begins = new ArrayList<>(quadindex.size());
-			for (final int item : quadindex) {
-				n++;
-				begin = end + 1;
-				begins.add(begin);
-				end += item;
-				if (logger.isLoggable(Level.FINE) && n <= 10) {
-					logger.log(Level.FINE, "{0} {1} {2} {3}", new Object[] { quad, item, begin, end });
-				}
-			}
-			latbegins.put(quad, begins);
-
-			final List<Integer> sect = sects.get(myquad);
-			final List<Integer> lons = new ArrayList<>(sect.size() / 2);
-			final List<Integer> fenums = new ArrayList<>(sect.size() / 2);
-			int o = 0;
-			for (final int item : sect) { // Split pairs of items into two separate arrays:
-				o++;
-				if (o % 2 != 0) {
-					lons.add(item);
-				}
-				else {
-					fenums.add(item);
-				}
-			}
-			mlons.put(quad, lons);
-			mfenums.put(quad, fenums);
-		}
 
 		// Find location of the latitude tier in the appropriate quadrant file.
 		final int beg = latbegins.get(myquad).get(lt); // Location of first item for latitude lt.

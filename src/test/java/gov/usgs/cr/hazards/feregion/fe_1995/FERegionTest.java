@@ -31,7 +31,7 @@ public class FERegionTest {
 			for (int i = -180; i <= 180; i += step) {
 				for (int j = -90; j <= 90; j += step) {
 					final String name = FERegion.getName(i, j);
-					Assert.assertEquals(i + ", " + j, name, br.readLine());
+					Assert.assertEquals(i + ", " + j, name.toLowerCase(), br.readLine().toLowerCase());
 				}
 				System.out.print(".");
 			}
