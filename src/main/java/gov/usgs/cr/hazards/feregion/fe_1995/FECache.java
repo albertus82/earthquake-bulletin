@@ -29,8 +29,8 @@ public class FECache {
 	private static final Logger logger = LoggerFactory.getLogger(FECache.class);
 
 	// Names of files containing Flinn-Engdahl Regionalization info.
-	private static final String[] quadorder = { "ne", "nw", "se", "sw" };
 	private static final String[] sectfiles = { "nesect.asc", "nwsect.asc", "sesect.asc", "swsect.asc" };
+	private static final String[] quadorder = { "ne", "nw", "se", "sw" };
 
 	private final List<String> names = new ArrayList<>(757);
 
@@ -129,11 +129,11 @@ public class FECache {
 		return latbegins;
 	}
 
-	Map<String, List<Integer>> getMlons() {
+	Map<String, List<Integer>> getLons() {
 		return mlons;
 	}
 
-	Map<String, List<Integer>> getMfenums() {
+	Map<String, List<Integer>> getFenums() {
 		return mfenums;
 	}
 

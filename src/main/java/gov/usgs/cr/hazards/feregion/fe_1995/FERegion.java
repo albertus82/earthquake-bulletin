@@ -43,33 +43,33 @@ public class FERegion {
 		final int ln = (int) Math.abs(lng);
 
 		// Get quadrant
-		final String myquad;
+		final String quad;
 		if (lat >= 0.0) {
 			if (lng >= 0.0) {
-				myquad = "ne";
+				quad = "ne";
 			}
 			else {
-				myquad = "nw";
+				quad = "nw";
 			}
 		}
 		else {
 			if (lng >= 0.0) {
-				myquad = "se";
+				quad = "se";
 			}
 			else {
-				myquad = "sw";
+				quad = "sw";
 			}
 		}
-		logger.log(Level.FINE, " * quad, lt, ln  = {0} {1} {2}", new Object[] { myquad, lt, ln });
+		logger.log(Level.FINE, " * quad, lt, ln  = {0} {1} {2}", new Object[] { quad, lt, ln });
 
 		// Find location of the latitude tier in the appropriate quadrant file.
-		final int beg = cache.getLatbegins().get(myquad).get(lt); // Location of first item for latitude lt.
-		final int num = cache.getLonsperlat().get(myquad).get(lt); // Number of items for latitude lt.
+		final int beg = cache.getLatbegins().get(quad).get(lt); // Location of first item for latitude lt.
+		final int num = cache.getLonsperlat().get(quad).get(lt); // Number of items for latitude lt.
 		logger.log(Level.FINE, " * beg = {0} num = {1}", new int[] { beg, num });
 
 		// Extract this tier of longitude and f-e numbers for latitude lt.
-		final List<Integer> mylons = cache.getMlons().get(myquad).subList(beg, beg + num);
-		final List<Integer> myfenums = cache.getMfenums().get(myquad).subList(beg, beg + num);
+		final List<Integer> mylons = cache.getLons().get(quad).subList(beg, beg + num);
+		final List<Integer> myfenums = cache.getFenums().get(quad).subList(beg, beg + num);
 		logger.log(Level.FINE, "mylons: {0}", mylons);
 		logger.log(Level.FINE, "myfenums: {0}", myfenums);
 
