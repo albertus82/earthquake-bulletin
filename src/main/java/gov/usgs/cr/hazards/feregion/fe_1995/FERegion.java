@@ -5,10 +5,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import it.albertus.util.logging.LoggerFactory;
 
 /**
  * Returns Flinn-Engdahl Region name from decimal lon,lat values given on
@@ -22,41 +25,55 @@ import java.util.Map;
  */
 public class FERegion {
 
-	public static void main(String[] args) throws IOException {
+	private static final Logger logger = LoggerFactory.getLogger(FERegion.class);
+
+	// Names of files containing Flinn-Engdahl Regionalization info.
+	private static final String NAMES = "names.asc";
+	private static final String QUADSINDEX = "quadsidx.asc";
+	private static final String[] quadorder = { "ne", "nw", "se", "sw" };
+	private static final String[] sectfiles = { "nesect.asc", "nwsect.asc", "sesect.asc", "swsect.asc" };
+
+	public static void main(final String[] args) throws IOException {
 		if (args.length != 2) {
 			System.err.println("   Usage:  FERegion  <lon> <lat>");
 			System.err.println("   As In:  FERegion  -122.5  36.2");
 			System.err.println("   As In:  FERegion   122.5W 36.2N");
 			System.exit(0);
 		}
-		String vlon = args[0];
-		String vlat2 = args[1];
+		String arg0 = args[0];
+		String arg1 = args[1];
 
 		// Allow for NSEW and switching of arguments.
-		if (vlon.endsWith("N") || vlon.endsWith("S")) {
-			String vtmp = vlon;
-			vlon = vlat2;
-			vlat2 = vtmp;
+		if (arg0.endsWith("N") || arg0.endsWith("S")) {
+			final String tmp = arg0;
+			arg0 = arg1;
+			arg1 = tmp;
 		}
-		if (vlon.endsWith("W")) {
-			vlon = "-" + vlon;
+		if (arg0.endsWith("W")) {
+			arg0 = "-" + arg0;
 		}
-		if (vlat2.endsWith("S")) {
-			vlat2 = "-" + vlat2;
+		if (arg1.endsWith("S")) {
+			arg1 = "-" + arg1;
 		}
-		vlon = vlon.replaceAll("E|W", "");
-		vlat2 = vlat2.replaceAll("N|S", "");
+		arg0 = arg0.replaceAll("E|W", "");
+		arg1 = arg1.replaceAll("N|S", "");
 
 		// Adjust lat-lon values...
-		double vlng = Double.parseDouble(vlon);
-		double vlat = Double.parseDouble(vlat2);
+		final double lng = Double.parseDouble(arg0);
+		final double lat = Double.parseDouble(arg1);
 
-		String vfename = getName(vlng, vlat);
+		if (Math.abs(lat) > 90.0 || Math.abs(lng) > 180.0) {
+			System.err.printf(" * bad latitude or longitude: %f %f", lat, lng);
+			System.err.println();
+			System.exit(1);
+		}
 
-		System.out.println(vfename);
+		String fename = getName(lng, lat);
+
+		System.out.println(fename);
 	}
 
-	public static String getName(double vlng, double vlat) throws IOException {
+	public static String getName(double vlng, final double vlat) throws IOException {
 		if (vlng <= -180.0) {
 			vlng += 360.0;
 		}
@@ -67,162 +84,125 @@ public class FERegion {
 		// Take absolute values...
 		double valat = Math.abs(vlat);
 		double valon = Math.abs(vlng);
-		if (valat > 90.0 || valon > 180.0) {
-			System.err.printf(" * bad latitude or longitude: %f %f", vlat, vlng);
-			System.err.println();
-			System.exit(1);
-		}
 
 		// Truncate absolute values to integers...
 		int vlt = (int) valat;
 		int vln = (int) valon;
 
 		// Get quadrant
-		final String vquad;
+		final String myquad;
 		if (vlat >= 0.0) {
 			if (vlng >= 0.0) {
-				vquad = "ne";
+				myquad = "ne";
 			}
 			else {
-				vquad = "nw";
+				myquad = "nw";
 			}
 		}
 		else {
 			if (vlng >= 0.0) {
-				vquad = "se";
+				myquad = "se";
 			}
 			else {
-				vquad = "sw";
+				myquad = "sw";
 			}
 		}
 
-		// Names of files containing Flinn-Engdahl Regionalization info.
-		String vnames = "names.asc";
-		String vquadsindex = "quadsidx.asc";
-		String[] aquadorder = new String[] { "ne", "nw", "se", "sw" };
-		String[] asectfiles = new String[] { "nesect.asc", "nwsect.asc", "sesect.asc", "swsect.asc" };
-
 		// Read the file of region names...
-		String[] anames = null;
-		List<String> lnames = new ArrayList<>();
-		try (final InputStream is = FERegion.class.getResourceAsStream(vnames); final InputStreamReader isr = new InputStreamReader(is); final BufferedReader br = new BufferedReader(isr)) {
+		final List<String> names = new ArrayList<>();
+		try (final InputStream is = FERegion.class.getResourceAsStream(NAMES); final InputStreamReader isr = new InputStreamReader(is); final BufferedReader br = new BufferedReader(isr)) {
 			String line;
 			while ((line = br.readLine()) != null) {
-				lnames.add(line.trim());
+				names.add(line.trim());
 			}
-			anames = lnames.toArray(new String[lnames.size()]);
 		}
 
 		// The quadsindex file contains a list for all 4 quadrants of the number of longitude entries for each integer latitude in the "sectfiles".
-		int[] aquadsindex = null;
-		List<Integer> lquadsindex = new ArrayList<>();
-		try (final InputStream is = FERegion.class.getResourceAsStream(vquadsindex); final InputStreamReader isr = new InputStreamReader(is); final BufferedReader br = new BufferedReader(isr)) {
+		final List<Integer> quadsindex = new ArrayList<>();
+		try (final InputStream is = FERegion.class.getResourceAsStream(QUADSINDEX); final InputStreamReader isr = new InputStreamReader(is); final BufferedReader br = new BufferedReader(isr)) {
 			String line;
 			while ((line = br.readLine()) != null) {
-				for (String s : line.trim().split("\\s+")) {
-					lquadsindex.add(Integer.valueOf(s));
+				for (final String index : line.trim().split("\\s+")) {
+					quadsindex.add(Integer.valueOf(index));
 				}
 			}
-			aquadsindex = new int[lquadsindex.size()];
-			for (int i = 0; i < aquadsindex.length; i++) {
-				aquadsindex[i] = lquadsindex.get(i);
-			}
 		}
-		Map<String, int[]> mlonsperlat = new LinkedHashMap<>();
-		Map<String, int[]> mlatbegins = new LinkedHashMap<>();
 
-		Map<String, int[]> mlons = new LinkedHashMap<>();
-		Map<String, int[]> mfenums = new LinkedHashMap<>();
+		final Map<String, List<Integer>> lonsperlat = new HashMap<>();
+		final Map<String, List<Integer>> latbegins = new HashMap<>();
 
-		for (int i = 0; i < aquadorder.length; i++) {
-			String vquad2 = aquadorder[i];
+		final Map<String, List<Integer>> mlons = new HashMap<>();
+		final Map<String, List<Integer>> mfenums = new HashMap<>();
+
+		for (int i = 0; i < quadorder.length; i++) {
+			final String quad = quadorder[i];
 			// Break the quadindex array into 4 arrays, one for each quadrant.
-			final int[] aquadindex = Arrays.copyOfRange(aquadsindex, 91 * i, 91 * (i + 1));
-			mlonsperlat.put(vquad2, aquadindex);
+			final List<Integer> aquadindex = quadsindex.subList(91 * i, 91 * (i + 1));
+			lonsperlat.put(quad, aquadindex);
 
 			// Convert the lonsperlat array, which counts how many longitude items there are for each latitude,
 			// into an array that tells the location of the beginning item in a quadrant's latitude stripe.
 			int begin = 0;
 			int end = -1;
 			int n = 0;
-			List<Integer> lbegins = new ArrayList<>();
+			final List<Integer> begins = new ArrayList<>();
 			for (int item : aquadindex) {
 				n++;
 				begin = end + 1;
-				lbegins.add(begin);
+				begins.add(begin);
 				end += item;
-				if (n <= 10) {
-					// System.out.printf("%s %d %d %d%s",vquad2, item, begin, end, System.lineSeparator());
+				if (logger.isLoggable(Level.FINE) && n <= 10) {
+					logger.log(Level.FINE, "{0} {1} {2} {3}", new Object[] { quad, item, begin, end });
 				}
 			}
-			int[] abegins = new int[lbegins.size()];
-			for (int j = 0; j < abegins.length; j++) {
-				abegins[j] = lbegins.get(j);
-			}
-			mlatbegins.put(vquad2, abegins);
+			latbegins.put(quad, begins);
 
-			String vsectfile = asectfiles[i];
-			int[] asect = null;
-			List<Integer> lsect = new ArrayList<>();
-			try (final InputStream is = FERegion.class.getResourceAsStream(vsectfile); final InputStreamReader isr = new InputStreamReader(is); final BufferedReader br = new BufferedReader(isr)) {
+			final List<Integer> sect = new ArrayList<>();
+			try (final InputStream is = FERegion.class.getResourceAsStream(sectfiles[i]); final InputStreamReader isr = new InputStreamReader(is); final BufferedReader br = new BufferedReader(isr)) {
 				String line;
 				while ((line = br.readLine()) != null) {
-					for (String s : line.trim().split("\\s+")) {
-						lsect.add(Integer.valueOf(s));
+					for (final String s : line.trim().split("\\s+")) {
+						sect.add(Integer.valueOf(s));
 					}
 				}
-				asect = new int[lsect.size()];
-				for (int j = 0; j < asect.length; j++) {
-					asect[j] = lsect.get(j);
-				}
 			}
 
-			List<Integer> llons = new ArrayList<>();
-			List<Integer> lfenums = new ArrayList<>();
-			int[] alons = null;
-			int[] afenums = null;
+			final List<Integer> lons = new ArrayList<>();
+			final List<Integer> fenums = new ArrayList<>();
 			int o = 0;
-			for (int item : asect) { // Split pairs of items into two separate arrays:
+			for (final int item : sect) { // Split pairs of items into two separate arrays:
 				o++;
 				if (o % 2 != 0) {
-					llons.add(item);
+					lons.add(item);
 				}
 				else {
-					lfenums.add(item);
+					fenums.add(item);
 				}
 			}
-			alons = new int[llons.size()];
-			for (int j = 0; j < alons.length; j++) {
-				alons[j] = llons.get(j);
-			}
-			mlons.put(vquad2, alons);
-
-			afenums = new int[lfenums.size()];
-			for (int j = 0; j < afenums.length; j++) {
-				afenums[j] = lfenums.get(j);
-			}
-			mfenums.put(vquad2, afenums);
+			mlons.put(quad, lons);
+			mfenums.put(quad, fenums);
 		}
 
 		// Find location of the latitude tier in the appropriate quadrant file.
-		int beg = mlatbegins.get(vquad)[vlt]; // Location of first item for latitude lt.
-		int num = mlonsperlat.get(vquad)[vlt]; // Number of items for latitude lt.
+		final int beg = latbegins.get(myquad).get(vlt); // Location of first item for latitude lt.
+		final int num = lonsperlat.get(myquad).get(vlt); // Number of items for latitude lt.
 
 		// Extract this tier of longitude and f-e numbers for latitude lt.
-		int[] amylons = Arrays.copyOfRange(mlons.get(vquad), beg, beg + num);
-		int[] amyfenums = Arrays.copyOfRange(mfenums.get(vquad), beg, beg + num);
+		final List<Integer> mylons = mlons.get(myquad).subList(beg, beg + num);
+		final List<Integer> myfenums = mfenums.get(myquad).subList(beg, beg + num);
 
 		int n = 0;
-		for (int item : amylons) {
+		for (final int item : mylons) {
 			if (item > vln) {
 				break;
 			}
 			n++;
 		}
 
-		int vfeindex = n - 1;
-		int vfenum = amyfenums[vfeindex];
-		return anames[vfenum - 1];
+		final int feindex = n - 1;
+		final int fenum = myfenums.get(feindex);
+
+		return names.get(fenum - 1);
 	}
 
 }
