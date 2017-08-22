@@ -33,11 +33,8 @@ public class FERegionTest {
 					final String name = FERegion.getName(i, j);
 					Assert.assertEquals(i + ", " + j, name, br.readLine());
 				}
+				System.out.print(".");
 			}
-		}
-		catch (final Throwable t) {
-			t.printStackTrace();
-			throw t;
 		}
 	}
 
