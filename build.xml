@@ -504,7 +504,7 @@
 			<classpath path="${dependencies.directory}/ant/jacoco/jacocoant.jar" />
 		</taskdef>
 		<jacoco:coverage destfile="${build.distDirectory}/jacoco.exec">
-			<junit printsummary="yes" haltonfailure="yes" fork="true" forkmode="once">
+			<junit printsummary="yes" haltonfailure="yes" fork="true" forkmode="once" maxmemory="32m">
 				<classpath path="${build.outputTestDirectory}">
 					<fileset dir="${dependencies.directory}">
 						<include name="test/*.jar" />
