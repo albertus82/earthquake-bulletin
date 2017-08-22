@@ -551,6 +551,6 @@
 		<echoproperties srcfile="sonar-project.properties" />
 	</target>
 
-	<target name="all" depends="clean, dist, sonar" />
+	<target name="all" depends="clean, dist, test, sonar" />
 
 </project>

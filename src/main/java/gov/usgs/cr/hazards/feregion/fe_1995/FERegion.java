@@ -50,6 +50,13 @@ public class FERegion {
 		// Adjust lat-lon values...
 		double vlng = Double.parseDouble(vlon);
 		double vlat = Double.parseDouble(vlat2);
+
+		String vfename = getName(vlng, vlat);
+
+		System.out.println(vfename);
+	}
+
+	public static String getName(double vlng, double vlat) throws IOException {
 		if (vlng <= -180.0) {
 			vlng += 360.0;
 		}
@@ -61,7 +68,8 @@ public class FERegion {
 		double valat = Math.abs(vlat);
 		double valon = Math.abs(vlng);
 		if (valat > 90.0 || valon > 180.0) {
-			System.err.printf(" * bad latitude or longitude: %f %f%s", vlat, vlng, System.lineSeparator());
+			System.err.printf(" * bad latitude or longitude: %f %f", vlat, vlng);
+			System.err.println();
 			System.exit(1);
 		}
 
@@ -100,9 +108,7 @@ public class FERegion {
 		try (final InputStream is = FERegion.class.getResourceAsStream(vnames); final InputStreamReader isr = new InputStreamReader(is); final BufferedReader br = new BufferedReader(isr)) {
 			String line;
 			while ((line = br.readLine()) != null) {
-				if (!line.trim().isEmpty()) {
-					lnames.add(line);
-				}
+				lnames.add(line.trim());
 			}
 			anames = lnames.toArray(new String[lnames.size()]);
 		}
@@ -216,9 +222,7 @@ public class FERegion {
 
 		int vfeindex = n - 1;
 		int vfenum = amyfenums[vfeindex];
-		String vfename = anames[vfenum - 1];
-
-		System.out.println(vfename);
+		return anames[vfenum - 1];
 	}
 
 }
