@@ -54,11 +54,11 @@ public class FERegion {
 //		$lt = int($alat);
 //		$ln = int($alon);
 		
-		int vlt = 0;
-		int vln = 0;
+		int vlt = 42;
+		int vln = 12;
 		
-		double vlat =0.0;
-	double vlng = 0.0;
+		double vlat =42.0;
+	double vlng = 12.0;
 //
 //		# Get quadrant
 //		if ($lat >= 0.0 && $lng >= 0.0) { $quad = "ne" }
@@ -151,8 +151,8 @@ public class FERegion {
 		
 		
 //		foreach $quad (@quadorder) {
-		Map<String, int[]> lonsperlat = new LinkedHashMap<>();
-		Map<String, int[]> latbegins = new LinkedHashMap<>();
+		Map<String, int[]> mlonsperlat = new LinkedHashMap<>();
+		Map<String, int[]> mlatbegins = new LinkedHashMap<>();
 		
 		Map<String, int[]> mlons = new LinkedHashMap<>();
 		Map<String, int[]> mfenums = new LinkedHashMap<>();
@@ -166,7 +166,7 @@ public class FERegion {
 //		    $lonsperlat{$quad} = [ @quadindex ];
 			
 			final int[] aquadindex = Arrays.copyOfRange(aquadsindex, 91 * i, 91 * (i + 1));
-			lonsperlat.put(vquad2, aquadindex);
+			mlonsperlat.put(vquad2, aquadindex);
 //			System.out.println(Arrays.toString(copyOfRange));
 
 //		    # Convert the lonsperlat array, which counts how many longitude items there are for each latitude,
@@ -197,9 +197,9 @@ public class FERegion {
 			}
 			int[] abegins = new int[lbegins.size()];
 			for (int j = 0; j < abegins.length; j++) {
-				abegins[i] = lbegins.get(j);
+				abegins[j] = lbegins.get(j);
 			}
-			latbegins.put(vquad2, abegins);
+			mlatbegins.put(vquad2, abegins);
 			
 //		    $sectfile = shift @sectfiles;
 //		    $SECTFILE = "<$sectfile";
@@ -269,39 +269,61 @@ public class FERegion {
 			}
 			mfenums.put(vquad2, afenums);
 			
-			System.out.println(Arrays.toString(alons));System.out.println();
-			System.out.println(Arrays.toString(afenums));System.out.println();
+//			System.out.println(Arrays.toString(alons));System.out.println();
+//			System.out.println(Arrays.toString(afenums));System.out.println();
 		}
-		
-			
-//
+
 //		# Find location of the latitude tier in the appropriate quadrant file.
 //		$beg =  @{$latbegins{$quad}}[$lt];  # Location of first item for latitude lt.
 //		$num = @{$lonsperlat{$quad}}[$lt];  # Number of items for latitude lt.
 //		# print " * beg = $beg num = $num\n";
-//
+		int beg = mlatbegins.get(vquad)[vlt];
+		int num = mlonsperlat.get(vquad)[vlt];
+	
+//		System.out.println(" * beg = " + beg + " num = " + num);
+		
+
 //		# Extract this tier of longitude and f-e numbers for latitude lt.
 //		@mylons = splice(@{$lons{$quad}},$beg,$num);
 //		@myfenums = splice(@{$fenums{$quad}},$beg,$num);
-//
+		
+		int[] amylons = Arrays.copyOfRange(mlons.get(vquad), beg, beg+num);
+		int[] amyfenums = Arrays.copyOfRange(mfenums.get(vquad), beg, beg+num);
+		
 //		#$mylons = join(" ",@mylons);
 //		#$myfenums = join(" ",@myfenums);
 //		#print "mylons\n$mylons\n";
 //		#print "myfenums\n$myfenums\n";
-//
+		System.out.println(Arrays.toString(amylons));
+		System.out.println(Arrays.toString(amyfenums));
+		
 //		$n = 0;
 //		foreach $long (@mylons) {
 //		   if ( $long > $ln ) { last; }
 //		   $n++;
 //		}
-//
+		int n = 0;
+		for (int item :amylons) {
+			if (item > vln)  {
+				break;
+			}
+			n++;
+		}
+		
 //		$feindex = $n - 1;
 //		$fenum = $myfenums[$feindex];
 //		$fename = $names[$fenum-1];
+		
+		int vfeindex = n - 1;
+		int vfenum = amyfenums[vfeindex];
+		String vfename = anames[vfenum-1];
+		
 //		# print " $long $n $feindex $fenum $fename\n";
 //		print "$fename\n";
-//
-//		exit;
+		
+		System.out.printf("%d %d %d %s", n, vfeindex, vfenum, vfename);
+		System.out.println();
+		System.out.println(vfename);
 	}
 
 	
