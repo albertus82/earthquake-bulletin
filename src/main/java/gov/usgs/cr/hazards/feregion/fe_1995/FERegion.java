@@ -112,8 +112,15 @@ public class FERegion {
 		latitude = latitude.replaceAll("N|S", "");
 
 		// Adjust lat-lon values...
-		final double lng = Double.parseDouble(longitude);
-		final double lat = Double.parseDouble(latitude);
+		final double lng;
+		final double lat;
+		try {
+			lng = Double.parseDouble(longitude);
+			lat = Double.parseDouble(latitude);
+		}
+		catch (final NumberFormatException e) {
+			throw new IllegalCoordinateException(String.format(" * bad latitude or longitude: %s %s", latitude, longitude), e);
+		}
 
 		if (Math.abs(lat) > 90.0 || Math.abs(lng) > 180.0) {
 			throw new IllegalCoordinateException(String.format(" * bad latitude or longitude: %f %f", lat, lng));
@@ -149,10 +156,15 @@ public class FERegion {
 	}
 
 	private static class IllegalCoordinateException extends IllegalArgumentException {
+
 		private static final long serialVersionUID = 8689517189532828488L;
 
-		public IllegalCoordinateException(final String s) {
+		private IllegalCoordinateException(final String s) {
 			super(s);
+		}
+
+		private IllegalCoordinateException(final String message, final Throwable cause) {
+			super(message, cause);
 		}
 	}
 
