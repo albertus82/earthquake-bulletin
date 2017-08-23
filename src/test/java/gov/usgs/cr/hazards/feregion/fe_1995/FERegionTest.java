@@ -38,6 +38,19 @@ public class FERegionTest {
 		test(2);
 	}
 
+	private void test(final int step) throws IOException {
+		try (final InputStream is = getClass().getResourceAsStream(String.format("feregion_%d_%d.txt.gz", step, step)); final GZIPInputStream gzis = new GZIPInputStream(is); final InputStreamReader isr = new InputStreamReader(gzis); final BufferedReader br = new BufferedReader(isr)) {
+			for (int i = -180; i <= 180; i += step) {
+				for (int j = -90; j <= 90; j += step) {
+					final String name = feRegion.getName(i, j, false);
+					Assert.assertEquals(i + ", " + j, br.readLine(), name);
+				}
+				System.out.print('.');
+			}
+		}
+		System.out.println();
+	}
+
 	@Test
 	public void testCli() throws IOException {
 		final PrintStream backup = System.out;
@@ -1130,15 +1143,11 @@ public class FERegionTest {
 		testCases.add(new TestCase("11.68N", "72.07W ", "Near North Coast of Colombia         "));
 		testCases.add(new TestCase("80.32N", "0.90E  ", "North of Svalbard                    "));
 
-		for (final TestCase tc : testCases) {
-			final PrintStream backup = System.out;
-			try (final ByteArrayOutputStream out = new ByteArrayOutputStream(); final PrintStream ps = new PrintStream(out)) {
-				System.setOut(ps);
+		final PrintStream backup = System.out;
 
-				FERegion.main(new String[] { tc.lon, tc.lat });
-				ps.flush();
-				final String fullActual = out.toString().trim().toUpperCase();
-				final String actual = fullActual.replace('-', ' ').replace("NORTHWESTERN B", "NW B").replace("OFF WEST ", "OFF W ");
+		try (final ByteArrayOutputStream out = new ByteArrayOutputStream(); final PrintStream ps = new PrintStream(out)) {
+			System.setOut(ps);
+			for (final TestCase tc : testCases) {
 				final String fullExpected = tc.name.toUpperCase();
 				String expected = fullExpected.replace('-', ' ');
 				if (expected.startsWith("VOGTLAND")) {
@@ -1147,26 +1156,19 @@ public class FERegionTest {
 				else if (expected.equals("MACEDONIA")) { // FIXME
 					expected = "ALBANIA";
 				}
+
+				FERegion.main(new String[] { tc.lon, tc.lat });
+				ps.flush();
+
+				final String fullActual = out.toString().trim().toUpperCase();
+				final String actual = fullActual.replace('-', ' ').replace("NORTHWESTERN B", "NW B").replace("OFF WEST ", "OFF W ");
+
 				Assert.assertEquals("lon: " + tc.lon + ", lat: " + tc.lat + ", expected: \"" + fullExpected + "\", actual: \"" + fullActual + "\"", expected.substring(0, Math.min(expected.length(), 5)), actual.substring(0, Math.min(actual.length(), 5)));
 				out.reset();
-				System.out.print(".");
-			}
-			finally {
-				System.setOut(backup);
 			}
 		}
-		System.out.println();
-	}
-
-	private void test(final int step) throws IOException {
-		try (final InputStream is = getClass().getResourceAsStream(String.format("feregion_%d_%d.txt.gz", step, step)); final GZIPInputStream gzis = new GZIPInputStream(is); final InputStreamReader isr = new InputStreamReader(gzis); final BufferedReader br = new BufferedReader(isr)) {
-			for (int i = -180; i <= 180; i += step) {
-				for (int j = -90; j <= 90; j += step) {
-					final String name = feRegion.getName(i, j, false);
-					Assert.assertEquals(i + ", " + j, br.readLine(), name);
-				}
-				System.out.print(".");
-			}
+		finally {
+			System.setOut(backup);
 		}
 		System.out.println();
 	}
