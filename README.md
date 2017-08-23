@@ -15,7 +15,12 @@ Download the [latest release](https://github.com/Albertus82/EarthquakeBulletin/r
 
 ## Bonus
 
-The package includes a port to Java of Bob Simpson & George Randall's [**`feregion.pl`**](ftp://hazards.cr.usgs.gov/feregion/fe_1995/feregion.pl) Perl script that returns [Flinn-Engdahl Region](https://earthquake.usgs.gov/learn/topics/flinn_engdahl.php) names from decimal lon, lat values given on command line. You can recall this program using the **`feregion`** shell script available in the *Earthquake Bulletin* application folder.
+This package includes a port to Java of Bob Simpson's [**`feregion.pl`**](ftp://hazards.cr.usgs.gov/feregion/fe_1995/feregion.pl) Perl script that returns [Flinn-Engdahl Region](https://earthquake.usgs.gov/learn/topics/flinn_engdahl.php) names from decimal longitude & latitude values given on command line. You can recall this program using the **`feregion`** shell script available in the *Earthquake Bulletin* application folder.
+```
+Usage:  feregion  <lon> <lat>
+As In:  feregion  -122.5  36.2
+As In:  feregion   122.5W 36.2N
+```
 
 ## Acknowledgements
 
