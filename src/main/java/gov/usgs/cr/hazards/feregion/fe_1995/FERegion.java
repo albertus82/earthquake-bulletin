@@ -82,8 +82,8 @@ public class FERegion {
 		return fenum;
 	}
 
-	public String getName(final double lng, final double lat, final boolean prettyPrint) {
-		final int fenum = getNumber(lng, lat);
+	public String getName(final double longitude, final double latitude, final boolean prettyPrint) {
+		final int fenum = getNumber(longitude, latitude);
 		final String fename = cache.getNames().get(fenum - 1);
 		logger.log(Level.FINE, "{0} {1}", new Object[] { fenum, fename });
 
@@ -93,6 +93,33 @@ public class FERegion {
 		else {
 			return fename;
 		}
+	}
+
+	public static String getName(final FERegion instance, String longitude, String latitude, final boolean prettyPrint) {
+		// Allow for NSEW and switching of arguments.
+		if (longitude.endsWith("N") || longitude.endsWith("S")) {
+			final String tmp = longitude;
+			longitude = latitude;
+			latitude = tmp;
+		}
+		if (longitude.endsWith("W")) {
+			longitude = '-' + longitude;
+		}
+		if (latitude.endsWith("S")) {
+			latitude = '-' + latitude;
+		}
+		longitude = longitude.replaceAll("E|W", "");
+		latitude = latitude.replaceAll("N|S", "");
+
+		// Adjust lat-lon values...
+		final double lng = Double.parseDouble(longitude);
+		final double lat = Double.parseDouble(latitude);
+
+		if (Math.abs(lat) > 90.0 || Math.abs(lng) > 180.0) {
+			throw new IllegalArgumentException(String.format(" * bad latitude or longitude: %f %f", lat, lng));
+		}
+
+		return instance.getName(lng, lat, prettyPrint);
 	}
 
 	/**
@@ -108,39 +135,17 @@ public class FERegion {
 			System.err.println("   Usage:  feregion  <lon> <lat>");
 			System.err.println("   As In:  feregion  -122.5  36.2");
 			System.err.println("   As In:  feregion   122.5W 36.2N");
-			System.exit(0);
 		}
-		String arg0 = args[0];
-		String arg1 = args[1];
-
-		// Allow for NSEW and switching of arguments.
-		if (arg0.endsWith("N") || arg0.endsWith("S")) {
-			final String tmp = arg0;
-			arg0 = arg1;
-			arg1 = tmp;
+		else {
+			try {
+				System.out.println(getName(new FERegion(), args[0], args[1], false));
+			}
+			catch (final IllegalArgumentException e) {
+				System.err.println(e.getMessage());
+				logger.log(Level.FINE, e.toString(), e);
+				System.exit(1);
+			}
 		}
-		if (arg0.endsWith("W")) {
-			arg0 = '-' + arg0;
-		}
-		if (arg1.endsWith("S")) {
-			arg1 = '-' + arg1;
-		}
-		arg0 = arg0.replaceAll("E|W", "");
-		arg1 = arg1.replaceAll("N|S", "");
-
-		// Adjust lat-lon values...
-		final double lng = Double.parseDouble(arg0);
-		final double lat = Double.parseDouble(arg1);
-
-		if (Math.abs(lat) > 90.0 || Math.abs(lng) > 180.0) {
-			System.err.printf(" * bad latitude or longitude: %f %f", lat, lng);
-			System.err.println();
-			System.exit(1);
-		}
-
-		final String fename = new FERegion().getName(lng, lat, false);
-
-		System.out.println(fename);
 	}
 
 }
