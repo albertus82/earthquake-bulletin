@@ -24,24 +24,10 @@ public class FERegionTest {
 	}
 
 	@Test
-	public void test_5_5() throws IOException {
-		test(5);
-	}
-
-	@Test
-	public void test_3_3() throws IOException {
-		test(3);
-	}
-
-	@Test
-	public void test_2_2() throws IOException {
-		test(2);
-	}
-
-	private void test(final int step) throws IOException {
-		try (final InputStream is = getClass().getResourceAsStream(String.format("feregion_%d_%d.txt.gz", step, step)); final GZIPInputStream gzis = new GZIPInputStream(is); final InputStreamReader isr = new InputStreamReader(gzis); final BufferedReader br = new BufferedReader(isr)) {
-			for (int i = -180; i <= 180; i += step) {
-				for (int j = -90; j <= 90; j += step) {
+	public void compareWithPerlOutput() throws IOException {
+		try (final InputStream is = getClass().getResourceAsStream("perl.out.gz"); final GZIPInputStream gzis = new GZIPInputStream(is); final InputStreamReader isr = new InputStreamReader(gzis); final BufferedReader br = new BufferedReader(isr)) {
+			for (int i = -180; i <= 180; i++) {
+				for (int j = -90; j <= 90; j++) {
 					final String name = feRegion.getName(i, j, false);
 					Assert.assertEquals(i + ", " + j, br.readLine(), name);
 				}
