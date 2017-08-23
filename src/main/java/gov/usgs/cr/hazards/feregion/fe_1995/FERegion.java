@@ -9,13 +9,6 @@ import it.albertus.util.WordUtils;
 import it.albertus.util.logging.LoggerFactory;
 
 /**
- * Returns Flinn-Engdahl Region name from decimal lon,lat values given on
- * command line.
- * 
- * Version 0.2 - Bob Simpson January, 2003 <simpson@usgs.gov>
- * 
- * With fix supplied by George Randall <ger@geophysics.lanl.gov> 2003-02-03
- * 
  * @author Bob Simpson
  */
 public class FERegion {
@@ -102,6 +95,14 @@ public class FERegion {
 		}
 	}
 
+	/**
+	 * Returns Flinn-Engdahl Region name from decimal lon,lat values given on
+	 * command line.
+	 * 
+	 * Version 0.2 - Bob Simpson January, 2003 <simpson@usgs.gov>
+	 * 
+	 * With fix supplied by George Randall <ger@geophysics.lanl.gov> 2003-02-03
+	 */
 	public static void main(final String[] args) throws IOException {
 		if (args.length != 2) {
 			System.err.println("   Usage:  FERegion  <lon> <lat>");
