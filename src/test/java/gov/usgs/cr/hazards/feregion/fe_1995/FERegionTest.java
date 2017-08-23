@@ -1,11 +1,9 @@
 package gov.usgs.cr.hazards.feregion.fe_1995;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
@@ -16,11 +14,11 @@ import org.junit.Test;
 
 public class FERegionTest {
 
-	private static FERegion feRegion;
+	private static FERegion instance;
 
 	@BeforeClass
 	public static void init() throws IOException {
-		feRegion = new FERegion();
+		instance = new FERegion();
 	}
 
 	@Test
@@ -28,89 +26,32 @@ public class FERegionTest {
 		try (final InputStream is = getClass().getResourceAsStream("perl.out.gz"); final GZIPInputStream gzis = new GZIPInputStream(is); final InputStreamReader isr = new InputStreamReader(gzis); final BufferedReader br = new BufferedReader(isr)) {
 			for (int i = -180; i <= 180; i++) {
 				for (int j = -90; j <= 90; j++) {
-					final String name = feRegion.getName(i, j, false);
-					Assert.assertEquals(i + ", " + j, br.readLine(), name);
+					final String name = FERegion.getName(instance, Integer.toString(i), Integer.toString(j), true);
+					Assert.assertEquals("lon: " + i + ", lat: " + j, br.readLine(), name);
 				}
-				System.out.print('.');
 			}
 		}
-		System.out.println();
 	}
 
 	@Test
 	public void testCli() throws IOException {
-		final PrintStream backup = System.out;
-		try (final ByteArrayOutputStream out = new ByteArrayOutputStream(); final PrintStream ps = new PrintStream(out)) {
-			System.setOut(ps);
+		testGetName("12", "42", "CENTRAL ITALY");
+		testGetName("+12", "+42", "CENTRAL ITALY");
+		testGetName("12E", "42N", "CENTRAL ITALY");
+		testGetName("42N", "12E", "CENTRAL ITALY");
+		testGetName("42S", "12E", "SOUTHWEST OF AFRICA");
+		testGetName("12E", "42S", "SOUTHWEST OF AFRICA");
+		testGetName("12", "-42", "SOUTHWEST OF AFRICA");
+		testGetName("-42", "12", "NORTH ATLANTIC OCEAN");
+		testGetName("42W", "12", "NORTH ATLANTIC OCEAN");
+		testGetName("42W", "12N", "NORTH ATLANTIC OCEAN");
+		testGetName("-12", "-42", "TRISTAN DA CUNHA REGION");
+		testGetName("12W", "42S", "TRISTAN DA CUNHA REGION");
+		testGetName("42S", "12W", "TRISTAN DA CUNHA REGION");
+	}
 
-			FERegion.main(new String[] { "12", "42" });
-			ps.flush();
-			Assert.assertEquals("CENTRAL ITALY", out.toString().trim().toUpperCase());
-			out.reset();
-
-			FERegion.main(new String[] { "+12", "+42" });
-			ps.flush();
-			Assert.assertEquals("CENTRAL ITALY", out.toString().trim().toUpperCase());
-			out.reset();
-
-			FERegion.main(new String[] { "12E", "42N" });
-			ps.flush();
-			Assert.assertEquals("CENTRAL ITALY", out.toString().trim().toUpperCase());
-			out.reset();
-
-			FERegion.main(new String[] { "42N", "12E" });
-			ps.flush();
-			Assert.assertEquals("CENTRAL ITALY", out.toString().trim().toUpperCase());
-			out.reset();
-
-			FERegion.main(new String[] { "42S", "12E" });
-			ps.flush();
-			Assert.assertEquals("SOUTHWEST OF AFRICA", out.toString().trim().toUpperCase());
-			out.reset();
-
-			FERegion.main(new String[] { "12E", "42S" });
-			ps.flush();
-			Assert.assertEquals("SOUTHWEST OF AFRICA", out.toString().trim().toUpperCase());
-			out.reset();
-
-			FERegion.main(new String[] { "12", "-42" });
-			ps.flush();
-			Assert.assertEquals("SOUTHWEST OF AFRICA", out.toString().trim().toUpperCase());
-			out.reset();
-
-			FERegion.main(new String[] { "-42", "12" });
-			ps.flush();
-			Assert.assertEquals("NORTH ATLANTIC OCEAN", out.toString().trim().toUpperCase());
-			out.reset();
-
-			FERegion.main(new String[] { "42W", "12" });
-			ps.flush();
-			Assert.assertEquals("NORTH ATLANTIC OCEAN", out.toString().trim().toUpperCase());
-			out.reset();
-
-			FERegion.main(new String[] { "42W", "12N" });
-			ps.flush();
-			Assert.assertEquals("NORTH ATLANTIC OCEAN", out.toString().trim().toUpperCase());
-			out.reset();
-
-			FERegion.main(new String[] { "-12", "-42" });
-			ps.flush();
-			Assert.assertEquals("TRISTAN DA CUNHA REGION", out.toString().trim().toUpperCase());
-			out.reset();
-
-			FERegion.main(new String[] { "12W", "42S" });
-			ps.flush();
-			Assert.assertEquals("TRISTAN DA CUNHA REGION", out.toString().trim().toUpperCase());
-			out.reset();
-
-			FERegion.main(new String[] { "42S", "12W" });
-			ps.flush();
-			Assert.assertEquals("TRISTAN DA CUNHA REGION", out.toString().trim().toUpperCase());
-			out.reset();
-		}
-		finally {
-			System.setOut(backup);
-		}
+	private void testGetName(final String arg0, final String arg1, final String expectedName) {
+		Assert.assertEquals("arg0: \"" + arg0 + "\", arg1: \"" + arg1 + '"', expectedName, FERegion.getName(instance, arg0, arg1, true));
 	}
 
 	private static class TestCase {
@@ -1129,26 +1070,14 @@ public class FERegionTest {
 		testCases.add(new TestCase("11.68N", "72.07W", "Near North Coast of Colombia"));
 		testCases.add(new TestCase("80.32N", "0.90E", "North of Svalbard"));
 
-		final PrintStream backup = System.out;
+		for (final TestCase tc : testCases) {
+			final String geofon = tc.name.toUpperCase();
+			final String expected = geofon.replace("VOGTLAND (GERMAN-CZECH BORDER REGION)", "GERMANY").replace("MACEDONIA", "ALBANIA").replace("NW BALKAN REGION", "NORTHWESTERN BALKAN REGION").replace("OFF WEST COAST OF NORTHERN SUMATRA", "OFF W COAST OF NORTHERN SUMATRA").replace('-', ' ').replace('/', ' ').replace(" ", "");
 
-		try (final ByteArrayOutputStream out = new ByteArrayOutputStream(); final PrintStream ps = new PrintStream(out)) {
-			System.setOut(ps);
-			for (final TestCase tc : testCases) {
-				final String geofon = tc.name.toUpperCase();
-				final String expected = geofon.replace("VOGTLAND (GERMAN-CZECH BORDER REGION)", "GERMANY").replace("MACEDONIA", "ALBANIA").replace("NW BALKAN REGION", "NORTHWESTERN BALKAN REGION").replace("OFF WEST COAST OF NORTHERN SUMATRA", "OFF W COAST OF NORTHERN SUMATRA").replace('-', ' ').replace('/', ' ').replace(" ", "");
+			final String feRegion = FERegion.getName(instance, tc.lon, tc.lat, true);
+			final String actual = feRegion.replace('-', ' ').replace('/', ' ').replace(" ", "");
 
-				FERegion.main(new String[] { tc.lon, tc.lat });
-				ps.flush();
-
-				final String feregion = out.toString().trim().toUpperCase();
-				final String actual = feregion.replace('-', ' ').replace('/', ' ').replace(" ", "");
-
-				Assert.assertEquals("lon: " + tc.lon + ", lat: " + tc.lat + ", expected: \"" + geofon + "\", actual: \"" + feregion + "\"", expected.substring(0, Math.min(expected.length(), 10)), actual.substring(0, Math.min(actual.length(), 10)));
-				out.reset();
-			}
-		}
-		finally {
-			System.setOut(backup);
+			Assert.assertEquals("lon: " + tc.lon + ", lat: " + tc.lat + ", expected: \"" + geofon + "\", actual: \"" + feRegion + "\"", expected.substring(0, Math.min(expected.length(), 10)), actual.substring(0, Math.min(actual.length(), 10)));
 		}
 	}
 

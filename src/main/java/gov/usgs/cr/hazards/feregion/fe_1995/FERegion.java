@@ -82,20 +82,20 @@ public class FERegion {
 		return fenum;
 	}
 
-	public String getName(final double longitude, final double latitude, final boolean prettyPrint) {
+	public String getName(final double longitude, final double latitude, final boolean uppercase) {
 		final int fenum = getNumber(longitude, latitude);
 		final String fename = cache.getNames().get(fenum - 1);
 		logger.log(Level.FINE, "{0} {1}", new Object[] { fenum, fename });
 
-		if (prettyPrint) {
-			return WordUtils.capitalize(fename.toLowerCase(), ' ', '-', '.').replace(" Of ", " of "); // Improved text case.
+		if (uppercase) {
+			return fename;
 		}
 		else {
-			return fename;
+			return WordUtils.capitalize(fename.toLowerCase(), ' ', '-', '.').replace(" Of ", " of "); // Improved text case.
 		}
 	}
 
-	public static String getName(final FERegion instance, String longitude, String latitude, final boolean prettyPrint) {
+	public static String getName(final FERegion instance, String longitude, String latitude, final boolean uppercase) {
 		// Allow for NSEW and switching of arguments.
 		if (longitude.endsWith("N") || longitude.endsWith("S")) {
 			final String tmp = longitude;
@@ -116,10 +116,10 @@ public class FERegion {
 		final double lat = Double.parseDouble(latitude);
 
 		if (Math.abs(lat) > 90.0 || Math.abs(lng) > 180.0) {
-			throw new IllegalArgumentException(String.format(" * bad latitude or longitude: %f %f", lat, lng));
+			throw new IllegalCoordinateException(String.format(" * bad latitude or longitude: %f %f", lat, lng));
 		}
 
-		return instance.getName(lng, lat, prettyPrint);
+		return instance.getName(lng, lat, uppercase);
 	}
 
 	/**
@@ -138,13 +138,21 @@ public class FERegion {
 		}
 		else {
 			try {
-				System.out.println(getName(new FERegion(), args[0], args[1], false));
+				System.out.println(getName(new FERegion(), args[0], args[1], true));
 			}
-			catch (final IllegalArgumentException e) {
+			catch (final IllegalCoordinateException e) {
 				System.err.println(e.getMessage());
 				logger.log(Level.FINE, e.toString(), e);
 				System.exit(1);
 			}
+		}
+	}
+
+	private static class IllegalCoordinateException extends IllegalArgumentException {
+		private static final long serialVersionUID = 8689517189532828488L;
+
+		public IllegalCoordinateException(final String s) {
+			super(s);
 		}
 	}
 
