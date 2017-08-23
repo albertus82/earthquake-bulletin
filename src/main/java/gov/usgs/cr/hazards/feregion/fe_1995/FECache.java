@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import it.albertus.util.WordUtils;
 import it.albertus.util.logging.LoggerFactory;
 
 /**
@@ -45,7 +44,7 @@ public class FECache {
 		try (final InputStream is = getClass().getResourceAsStream("names.asc"); final InputStreamReader isr = new InputStreamReader(is); final BufferedReader br = new BufferedReader(isr)) {
 			String line;
 			while ((line = br.readLine()) != null) {
-				names.add(WordUtils.capitalize(line.trim().toLowerCase(), ' ', '-', '.').replace(" Of ", " of ")); // Improved text case.
+				names.add(line.trim());
 			}
 		}
 

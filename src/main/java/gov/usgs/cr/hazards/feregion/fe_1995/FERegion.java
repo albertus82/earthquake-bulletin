@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import it.albertus.util.WordUtils;
 import it.albertus.util.logging.LoggerFactory;
 
 /**
@@ -88,12 +89,17 @@ public class FERegion {
 		return fenum;
 	}
 
-	public String getName(final double lng, final double lat) {
+	public String getName(final double lng, final double lat, final boolean prettyPrint) {
 		final int fenum = getNumber(lng, lat);
 		final String fename = cache.getNames().get(fenum - 1);
 		logger.log(Level.FINE, "{0} {1}", new Object[] { fenum, fename });
 
-		return fename;
+		if (prettyPrint) {
+			return WordUtils.capitalize(fename.toLowerCase(), ' ', '-', '.').replace(" Of ", " of "); // Improved text case.
+		}
+		else {
+			return fename;
+		}
 	}
 
 	public static void main(final String[] args) throws IOException {
@@ -131,7 +137,7 @@ public class FERegion {
 			System.exit(1);
 		}
 
-		final String fename = new FERegion().getName(lng, lat);
+		final String fename = new FERegion().getName(lng, lat, false);
 
 		System.out.println(fename);
 	}

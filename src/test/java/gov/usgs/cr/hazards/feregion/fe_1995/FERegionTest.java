@@ -116,8 +116,8 @@ public class FERegionTest {
 		try (final InputStream is = getClass().getResourceAsStream(String.format("feregion_%d_%d.txt.gz", step, step)); final GZIPInputStream gzis = new GZIPInputStream(is); final InputStreamReader isr = new InputStreamReader(gzis); final BufferedReader br = new BufferedReader(isr)) {
 			for (int i = -180; i <= 180; i += step) {
 				for (int j = -90; j <= 90; j += step) {
-					final String name = feRegion.getName(i, j);
-					Assert.assertEquals(i + ", " + j, br.readLine().toUpperCase(), name.toUpperCase());
+					final String name = feRegion.getName(i, j, false);
+					Assert.assertEquals(i + ", " + j, br.readLine(), name);
 				}
 				System.out.print(".");
 			}
