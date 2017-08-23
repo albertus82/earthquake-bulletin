@@ -155,7 +155,7 @@ public class FERegion {
 		}
 	}
 
-	private static class IllegalCoordinateException extends IllegalArgumentException {
+	static class IllegalCoordinateException extends IllegalArgumentException {
 
 		private static final long serialVersionUID = 8689517189532828488L;
 

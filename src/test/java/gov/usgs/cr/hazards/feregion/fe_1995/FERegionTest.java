@@ -12,6 +12,8 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import gov.usgs.cr.hazards.feregion.fe_1995.FERegion.IllegalCoordinateException;
+
 public class FERegionTest {
 
 	private static FERegion instance;
@@ -34,7 +36,14 @@ public class FERegionTest {
 	}
 
 	@Test
-	public void testCli() throws IOException {
+	public void testCli() {
+		testGetName("0", "0", "OFF S. COAST OF NORTHWEST AFRICA");
+
+		testGetName("180", "+90", "LOMONOSOV RIDGE");
+		testGetName("-180", "90", "LOMONOSOV RIDGE");
+		testGetName("+180E", "-90", "ANTARCTICA");
+		testGetName("180W", "-90", "ANTARCTICA");
+
 		testGetName("12", "42", "CENTRAL ITALY");
 		testGetName("+12", "+42", "CENTRAL ITALY");
 		testGetName("12E", "42N", "CENTRAL ITALY");
@@ -48,26 +57,80 @@ public class FERegionTest {
 		testGetName("-12", "-42", "TRISTAN DA CUNHA REGION");
 		testGetName("12W", "42S", "TRISTAN DA CUNHA REGION");
 		testGetName("42S", "12W", "TRISTAN DA CUNHA REGION");
+		testGetName("12", "42N", "CENTRAL ITALY");
+		testGetName("12E", "42", "CENTRAL ITALY");
+		testGetName("42N", "12", "CENTRAL ITALY");
 	}
 
-	private void testGetName(final String arg0, final String arg1, final String expectedName) {
-		Assert.assertEquals("arg0: \"" + arg0 + "\", arg1: \"" + arg1 + '"', expectedName, FERegion.getName(instance, arg0, arg1, true));
-	}
-
-	private static class TestCase {
-		private final String lat;
-		private final String lon;
-		private final String name;
-
-		private TestCase(final String lat, final String lon, final String name) {
-			this.lat = lat.trim();
-			this.lon = lon.trim();
-			this.name = name.trim();
+	@Test
+	public void testCliErrors() {
+		try {
+			testGetName("90", "91", null);
+			Assert.assertTrue(false);
+		}
+		catch (final IllegalCoordinateException e) {
+			Assert.assertTrue(true);
+		}
+		try {
+			testGetName("181", "90", null);
+			Assert.assertTrue(false);
+		}
+		catch (final IllegalCoordinateException e) {
+			Assert.assertTrue(true);
+		}
+		try {
+			testGetName("-90", "-91", null);
+			Assert.assertTrue(false);
+		}
+		catch (final IllegalCoordinateException e) {
+			Assert.assertTrue(true);
+		}
+		try {
+			testGetName("-180.1", "90", null);
+			Assert.assertTrue(false);
+		}
+		catch (final IllegalCoordinateException e) {
+			Assert.assertTrue(true);
+		}
+		try {
+			testGetName("-4873593.4834", "395953", null);
+			Assert.assertTrue(false);
+		}
+		catch (final IllegalCoordinateException e) {
+			Assert.assertTrue(true);
+		}
+		try {
+			testGetName("42Sx", "12W", null);
+			Assert.assertTrue(false);
+		}
+		catch (final IllegalCoordinateException e) {
+			Assert.assertTrue(true);
+		}
+		try {
+			testGetName("x", "y", null);
+			Assert.assertTrue(false);
+		}
+		catch (final IllegalCoordinateException e) {
+			Assert.assertTrue(true);
+		}
+		try {
+			testGetName("12R", "42N", null);
+			Assert.assertTrue(false);
+		}
+		catch (final IllegalCoordinateException e) {
+			Assert.assertTrue(true);
+		}
+		try {
+			testGetName("42", "12E", null);
+			Assert.assertTrue(false);
+		}
+		catch (final IllegalCoordinateException e) {
+			Assert.assertTrue(true);
 		}
 	}
 
 	@Test
-	public void testRealCases() throws IOException {
+	public void testRealCases() {
 		final List<TestCase> testCases = new ArrayList<>(1000);
 		testCases.add(new TestCase("11.03N", "124.90E", "Leyte, Philippines"));
 		testCases.add(new TestCase("14.30N", "93.26W", "Near Coast of Chiapas, Mexico"));
@@ -1078,6 +1141,22 @@ public class FERegionTest {
 			final String actual = feRegion.replace('-', ' ').replace('/', ' ').replace(" ", "");
 
 			Assert.assertEquals("lon: " + tc.lon + ", lat: " + tc.lat + ", expected: \"" + geofon + "\", actual: \"" + feRegion + "\"", expected.substring(0, Math.min(expected.length(), 10)), actual.substring(0, Math.min(actual.length(), 10)));
+		}
+	}
+
+	private void testGetName(final String arg0, final String arg1, final String expectedName) {
+		Assert.assertEquals("arg0: \"" + arg0 + "\", arg1: \"" + arg1 + '"', expectedName, FERegion.getName(instance, arg0, arg1, true));
+	}
+
+	private static class TestCase {
+		private final String lat;
+		private final String lon;
+		private final String name;
+
+		private TestCase(final String lat, final String lon, final String name) {
+			this.lat = lat.trim();
+			this.lon = lon.trim();
+			this.name = name.trim();
 		}
 	}
 
