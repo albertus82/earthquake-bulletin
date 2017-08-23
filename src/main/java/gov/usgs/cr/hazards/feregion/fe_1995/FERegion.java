@@ -105,9 +105,9 @@ public class FERegion {
 	 */
 	public static void main(final String[] args) throws IOException {
 		if (args.length != 2) {
-			System.err.println("   Usage:  FERegion  <lon> <lat>");
-			System.err.println("   As In:  FERegion  -122.5  36.2");
-			System.err.println("   As In:  FERegion   122.5W 36.2N");
+			System.err.println("   Usage:  feregion  <lon> <lat>");
+			System.err.println("   As In:  feregion  -122.5  36.2");
+			System.err.println("   As In:  feregion   122.5W 36.2N");
 			System.exit(0);
 		}
 		String arg0 = args[0];
