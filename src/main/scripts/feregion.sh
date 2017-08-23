@@ -11,6 +11,6 @@ while [ -h "$PRG" ]; do
 done
 PRGDIR=`dirname "$PRG"`
 if [ "$JAVA_HOME" != "" ]
-  then "$JAVA_HOME/bin/java" -Xms8m -Xmx32m -classpath "$PRGDIR/earthquake-bulletin.jar:$PRGDIR/lib/*" gov.usgs.cr.hazards.feregion.fe_1995.FERegion $1 $2
-  else java -Xms8m -Xmx32m -classpath "$PRGDIR/earthquake-bulletin.jar:$PRGDIR/lib/*" gov.usgs.cr.hazards.feregion.fe_1995.FERegion $1 $2
+  then "$JAVA_HOME/bin/java" -Xms4m -Xmx16m -classpath "$PRGDIR/earthquake-bulletin.jar:$PRGDIR/lib/*" gov.usgs.cr.hazards.feregion.fe_1995.FERegion $1 $2
+  else java -Xms4m -Xmx16m -classpath "$PRGDIR/earthquake-bulletin.jar:$PRGDIR/lib/*" gov.usgs.cr.hazards.feregion.fe_1995.FERegion $1 $2
 fi
