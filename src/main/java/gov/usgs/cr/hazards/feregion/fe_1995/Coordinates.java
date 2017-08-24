@@ -10,16 +10,16 @@ public class Coordinates implements Serializable {
 	private final double latitude;
 
 	public Coordinates(double lng, final double lat) throws IllegalCoordinateException {
-		if (Math.abs(lat) > 90.0 || Math.abs(lng) > 180.0) {
-			throw new IllegalCoordinateException(String.format(" * bad latitude or longitude: %f %f", lat, lng));
-		}
-
 		// Adjust lat-lon values...
 		if (lng <= -180.0) {
 			lng += 360.0;
 		}
 		if (lng > 180.0) {
 			lng -= 360.0;
+		}
+
+		if (Math.abs(lat) > 90.0 || Math.abs(lng) > 180.0) {
+			throw new IllegalCoordinateException(String.format(" * bad latitude or longitude: %f %f", lat, lng));
 		}
 
 		this.longitude = lng;

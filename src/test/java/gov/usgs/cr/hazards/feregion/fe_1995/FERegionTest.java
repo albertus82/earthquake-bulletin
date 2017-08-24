@@ -87,6 +87,8 @@ public class FERegionTest {
 		testGetName("12", "42N", "CENTRAL ITALY");
 		testGetName("12E", "42", "CENTRAL ITALY");
 		testGetName("42N", "12", "CENTRAL ITALY");
+		testGetName("181", "90", "LOMONOSOV RIDGE");
+		testGetName("540", "90", "LOMONOSOV RIDGE");
 	}
 
 	@Test
@@ -99,7 +101,21 @@ public class FERegionTest {
 			Assert.assertTrue(true);
 		}
 		try {
-			testGetName("181", "90", null);
+			testGetName("0", "90.1", null);
+			Assert.assertTrue(false);
+		}
+		catch (final IllegalCoordinateException e) {
+			Assert.assertTrue(true);
+		}
+		try {
+			testGetName("541", "90", null);
+			Assert.assertTrue(false);
+		}
+		catch (final IllegalCoordinateException e) {
+			Assert.assertTrue(true);
+		}
+		try {
+			testGetName("540.01", "90", null);
 			Assert.assertTrue(false);
 		}
 		catch (final IllegalCoordinateException e) {
@@ -113,7 +129,7 @@ public class FERegionTest {
 			Assert.assertTrue(true);
 		}
 		try {
-			testGetName("-180.1", "90", null);
+			testGetName("-540.01", "90", null);
 			Assert.assertTrue(false);
 		}
 		catch (final IllegalCoordinateException e) {
