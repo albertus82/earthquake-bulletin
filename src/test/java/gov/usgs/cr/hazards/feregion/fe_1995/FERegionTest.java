@@ -61,8 +61,8 @@ public class FERegionTest {
 			}
 		}
 		try (final InputStream is = getClass().getResourceAsStream("perlext.out.gz"); final GZIPInputStream gzis = new GZIPInputStream(is); final InputStreamReader isr = new InputStreamReader(gzis); final BufferedReader br = new BufferedReader(isr)) {
-			for (int lon = -540; lon <= 540; lon += 10) {
-				for (int lat = -90; lat <= 90; lat += 10) {
+			for (int lon = -540; lon <= 540; lon += 5) {
+				for (int lat = -90; lat <= 90; lat += 5) {
 					final String name = instance.getRegion(Integer.toString(lon), Integer.toString(lat)).getName(true);
 					Assert.assertEquals("lon: " + lon + ", lat: " + lat, br.readLine(), name);
 				}
