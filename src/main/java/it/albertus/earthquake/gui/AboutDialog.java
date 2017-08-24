@@ -18,12 +18,14 @@ import it.albertus.jface.listener.LinkSelectionListener;
 
 public class AboutDialog extends Dialog {
 
+	private static final double MONITOR_SIZE_DIVISOR = 1.2;
+
 	private String message = "";
 	private String applicationUrl = "";
 	private String iconUrl = "";
 
 	public AboutDialog(final Shell parent) {
-		this(parent, SWT.SHEET | SWT.RESIZE);
+		this(parent, SWT.SHEET);
 	}
 
 	public AboutDialog(final Shell parent, final int style) {
@@ -35,7 +37,7 @@ public class AboutDialog extends Dialog {
 		shell.setText(getText());
 		shell.setImage(shell.getDisplay().getSystemImage(SWT.ICON_INFORMATION));
 		createContents(shell);
-		shell.pack();
+		constrainShellSize(shell);
 		shell.open();
 	}
 
@@ -78,6 +80,19 @@ public class AboutDialog extends Dialog {
 		shell.setDefaultButton(okButton);
 	}
 
+	private void constrainShellSize(final Shell shell) {
+		final int preferredWidth = shell.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x;
+		final int clientWidth = shell.getMonitor().getClientArea().width;
+		if (preferredWidth > clientWidth / MONITOR_SIZE_DIVISOR) {
+			final int wHint = (int) (clientWidth / MONITOR_SIZE_DIVISOR);
+			shell.setSize(wHint, shell.computeSize(wHint, SWT.DEFAULT, true).y);
+		}
+		else {
+			shell.pack();
+		}
+		shell.setMinimumSize(shell.getSize());
+	}
+
 	public String getMessage() {
 		return message;
 	}
@@ -101,6 +116,7 @@ public class AboutDialog extends Dialog {
 	public void setIconUrl(String iconUrl) {
 		this.iconUrl = iconUrl;
 	}
+
 	/*
 	 * public static void main(String[] args) { Display display = new Display();
 	 * Shell shell = new Shell(display); GridLayout layout = new GridLayout();
