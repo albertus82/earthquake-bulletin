@@ -16,7 +16,7 @@ import it.albertus.util.logging.LoggerFactory;
 /**
  * @author Bob Simpson
  */
-public class FECache {
+class FECache {
 
 	private static final Logger logger = LoggerFactory.getLogger(FECache.class);
 
