@@ -65,7 +65,7 @@ public class Coordinates implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Coordinates [longitude=" + longitude + ", latitude=" + latitude + "]";
+		return Double.toString(Math.abs(longitude)) + '\u00B0' + (longitude > 0 ? 'E' : 'W') + ' ' + Math.abs(latitude) + '\u00B0' + (latitude > 0 ? 'N' : 'S');
 	}
 
 	@Override
