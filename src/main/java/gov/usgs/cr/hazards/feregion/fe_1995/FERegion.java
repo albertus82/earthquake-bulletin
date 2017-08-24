@@ -14,18 +14,19 @@ public class FERegion {
 
 	private static final Logger logger = LoggerFactory.getLogger(FERegion.class);
 
-	private final FECache cache;
+	private final Database database;
 
 	/**
-	 * Initializes a internal cache. Reuse the instance whenever possible.
+	 * Initializes the internal database. Reuse the same instance whenever
+	 * possible.
 	 */
 	public FERegion() throws IOException {
-		cache = new FECache();
+		database = new Database();
 	}
 
 	public Region getRegion(final Coordinates coordinates) {
 		final int fenum = getNumber(coordinates);
-		final String fename = cache.getNames().get(fenum - 1);
+		final String fename = database.getNames().get(fenum - 1);
 		logger.log(Level.FINE, "{0} {1}", new Object[] { fenum, fename });
 
 		return new Region(fenum, fename);
@@ -47,13 +48,13 @@ public class FERegion {
 		logger.log(Level.FINE, " * quad, lt, ln  = {0} {1} {2}", new Object[] { quad, lt, ln });
 
 		// Find location of the latitude tier in the appropriate quadrant file.
-		final int beg = cache.getLatbegins().get(quad).get(lt); // Location of first item for latitude lt.
-		final int num = cache.getLonsperlat().get(quad).get(lt); // Number of items for latitude lt.
+		final int beg = database.getLatbegins().get(quad).get(lt); // Location of first item for latitude lt.
+		final int num = database.getLonsperlat().get(quad).get(lt); // Number of items for latitude lt.
 		logger.log(Level.FINE, " * beg = {0} num = {1}", new int[] { beg, num });
 
 		// Extract this tier of longitude and f-e numbers for latitude lt.
-		final List<Integer> mylons = cache.getLons().get(quad).subList(beg, beg + num);
-		final List<Integer> myfenums = cache.getFenums().get(quad).subList(beg, beg + num);
+		final List<Integer> mylons = database.getLons().get(quad).subList(beg, beg + num);
+		final List<Integer> myfenums = database.getFenums().get(quad).subList(beg, beg + num);
 		logger.log(Level.FINE, "mylons: {0}", mylons);
 		logger.log(Level.FINE, "myfenums: {0}", myfenums);
 

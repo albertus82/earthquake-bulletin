@@ -16,9 +16,9 @@ import it.albertus.util.logging.LoggerFactory;
 /**
  * @author Bob Simpson
  */
-class FECache {
+class Database {
 
-	private static final Logger logger = LoggerFactory.getLogger(FECache.class);
+	private static final Logger logger = LoggerFactory.getLogger(Database.class);
 
 	// Names of files containing Flinn-Engdahl Regionalization info.
 	private static final String[] sectfiles = { "nesect.asc", "nwsect.asc", "sesect.asc", "swsect.asc" };
@@ -32,7 +32,7 @@ class FECache {
 	private final Map<String, List<Integer>> mlons = new HashMap<>(quadorder.length);
 	private final Map<String, List<Integer>> mfenums = new HashMap<>(quadorder.length);
 
-	FECache() throws IOException {
+	Database() throws IOException {
 		// Read the file of region names...
 		try (final InputStream is = getClass().getResourceAsStream("names.asc"); final InputStreamReader isr = new InputStreamReader(is); final BufferedReader br = new BufferedReader(isr)) {
 			String line;
