@@ -6,6 +6,8 @@ public class Coordinates implements Serializable {
 
 	private static final long serialVersionUID = -5672208470783902289L;
 
+	private static final char DEGREE_SIGN = '\u00B0';
+
 	private final double longitude;
 	private final double latitude;
 
@@ -65,7 +67,7 @@ public class Coordinates implements Serializable {
 
 	@Override
 	public String toString() {
-		return Double.toString(Math.abs(longitude)) + '\u00B0' + (longitude > 0 ? 'E' : 'W') + ' ' + Math.abs(latitude) + '\u00B0' + (latitude > 0 ? 'N' : 'S');
+		return Double.toString(Math.abs(longitude)) + DEGREE_SIGN + (longitude > 0 ? 'E' : 'W') + ' ' + Math.abs(latitude) + DEGREE_SIGN + (latitude > 0 ? 'N' : 'S');
 	}
 
 	@Override
