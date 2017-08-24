@@ -2,6 +2,8 @@ package gov.usgs.cr.hazards.feregion.fe_1995;
 
 import java.io.Serializable;
 
+import it.albertus.util.WordUtils;
+
 public class Region implements Serializable {
 
 	private static final long serialVersionUID = 5426148325885082610L;
@@ -21,8 +23,8 @@ public class Region implements Serializable {
 		return number;
 	}
 
-	public String getName() {
-		return name;
+	public String getName(final boolean uppercase) {
+		return uppercase ? name : WordUtils.capitalize(name.toLowerCase(), ' ', '-', '.').replace(" Of ", " of "); // Improved text case.
 	}
 
 	@Override

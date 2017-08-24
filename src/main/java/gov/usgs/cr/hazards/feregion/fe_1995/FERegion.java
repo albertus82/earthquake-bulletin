@@ -5,8 +5,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import gov.usgs.cr.hazards.feregion.fe_1995.Coordinates.IllegalCoordinatesException;
-import it.albertus.util.WordUtils;
+import gov.usgs.cr.hazards.feregion.fe_1995.Coordinates.IllegalCoordinateException;
 import it.albertus.util.logging.LoggerFactory;
 
 /**
@@ -25,7 +24,15 @@ public class FERegion {
 		cache = new FECache();
 	}
 
-	public int getNumber(final Coordinates coordinates) {
+	public Region getRegion(final Coordinates coordinates) {
+		final int fenum = getNumber(coordinates);
+		final String fename = cache.getNames().get(fenum - 1);
+		logger.log(Level.FINE, "{0} {1}", new Object[] { fenum, fename });
+
+		return new Region(fenum, fename);
+	}
+
+	private int getNumber(final Coordinates coordinates) {
 		// Take absolute values & truncate to integers...
 		final int lt = (int) Math.abs(coordinates.getLatitude());
 		final int ln = (int) Math.abs(coordinates.getLongitude());
@@ -66,23 +73,6 @@ public class FERegion {
 		return fenum;
 	}
 
-	public String getName(final Coordinates coordinates, final boolean uppercase) {
-		final int fenum = getNumber(coordinates);
-		final String fename = cache.getNames().get(fenum - 1);
-		logger.log(Level.FINE, "{0} {1}", new Object[] { fenum, fename });
-
-		if (uppercase) {
-			return fename;
-		}
-		else {
-			return WordUtils.capitalize(fename.toLowerCase(), ' ', '-', '.').replace(" Of ", " of "); // Improved text case.
-		}
-	}
-
-	public String getName(String longitude, String latitude, final boolean uppercase) {
-		return getName(Coordinates.parse(longitude, latitude), uppercase);
-	}
-
 	/**
 	 * Returns Flinn-Engdahl Region name from decimal lon,lat values given on
 	 * command line.
@@ -100,9 +90,9 @@ public class FERegion {
 		else {
 			final FERegion instance = new FERegion();
 			try {
-				System.out.println(instance.getName(args[0], args[1], true));
+				System.out.println(instance.getRegion(Coordinates.parse(args[0], args[1])).getName(true));
 			}
-			catch (final IllegalCoordinatesException e) {
+			catch (final IllegalCoordinateException e) {
 				System.err.println(e.getMessage());
 				logger.log(Level.FINE, e.toString(), e);
 				System.exit(1);

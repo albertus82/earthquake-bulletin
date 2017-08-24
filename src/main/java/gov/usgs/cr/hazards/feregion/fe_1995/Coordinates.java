@@ -9,9 +9,9 @@ public class Coordinates implements Serializable {
 	private final double longitude;
 	private final double latitude;
 
-	public Coordinates(double lng, final double lat) {
+	public Coordinates(double lng, final double lat) throws IllegalCoordinateException {
 		if (Math.abs(lat) > 90.0 || Math.abs(lng) > 180.0) {
-			throw new IllegalCoordinatesException(String.format(" * bad latitude or longitude: %f %f", lat, lng));
+			throw new IllegalCoordinateException(String.format(" * bad latitude or longitude: %f %f", lat, lng));
 		}
 
 		// Adjust lat-lon values...
@@ -26,7 +26,7 @@ public class Coordinates implements Serializable {
 		this.latitude = lat;
 	}
 
-	public static Coordinates parse(String longitude, String latitude) {
+	public static Coordinates parse(String longitude, String latitude) throws IllegalCoordinateException {
 		// Allow for NSEW and switching of arguments.
 		if (longitude.endsWith("N") || longitude.endsWith("S")) {
 			final String tmp = longitude;
@@ -49,7 +49,7 @@ public class Coordinates implements Serializable {
 			lat = Double.parseDouble(latitude);
 		}
 		catch (final NumberFormatException e) {
-			throw new IllegalCoordinatesException(String.format(" * bad latitude or longitude: %s %s", latitude, longitude), e);
+			throw new IllegalCoordinateException(String.format(" * bad latitude or longitude: %s %s", latitude, longitude), e);
 		}
 
 		return new Coordinates(lng, lat);
@@ -101,15 +101,15 @@ public class Coordinates implements Serializable {
 		return true;
 	}
 
-	static class IllegalCoordinatesException extends IllegalArgumentException {
+	static class IllegalCoordinateException extends IllegalArgumentException {
 
 		private static final long serialVersionUID = -3890490017282756938L;
 
-		private IllegalCoordinatesException(final String message) {
+		private IllegalCoordinateException(final String message) {
 			super(message);
 		}
 
-		private IllegalCoordinatesException(final String message, final Throwable cause) {
+		private IllegalCoordinateException(final String message, final Throwable cause) {
 			super(message, cause);
 		}
 	}
