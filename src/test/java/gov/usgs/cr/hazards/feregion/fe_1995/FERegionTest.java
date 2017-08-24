@@ -44,8 +44,8 @@ public class FERegionTest {
 		Assert.assertTrue(r1.equals(r3));
 		Assert.assertFalse(r2.equals(r3));
 		Assert.assertEquals(381, r1.getNumber());
-		Assert.assertEquals("CENTRAL ITALY", r1.getName(true));
-		Assert.assertEquals("Central Italy", r1.getName(false));
+		Assert.assertEquals("CENTRAL ITALY", r1.getName());
+		Assert.assertEquals("Central Italy", r1.toString());
 		Assert.assertEquals(0, r1.compareTo(r3));
 		Assert.assertTrue(r1.getNumber() + " < " + r2.getNumber(), r1.compareTo(r2) < 0);
 		Assert.assertTrue(r2.getNumber() + " > " + r1.getNumber(), r2.compareTo(r1) > 0);
@@ -56,7 +56,7 @@ public class FERegionTest {
 		try (final InputStream is = getClass().getResourceAsStream("perl.out.gz"); final GZIPInputStream gzis = new GZIPInputStream(is); final InputStreamReader isr = new InputStreamReader(gzis); final BufferedReader br = new BufferedReader(isr)) {
 			for (int lon = -180; lon <= 180; lon++) {
 				for (int lat = -90; lat <= 90; lat++) {
-					final String name = instance.getRegion(Integer.toString(lon), Integer.toString(lat)).getName(true);
+					final String name = instance.getRegion(Integer.toString(lon), Integer.toString(lat)).getName();
 					Assert.assertEquals("lon: " + lon + ", lat: " + lat, br.readLine(), name);
 				}
 			}
@@ -64,7 +64,7 @@ public class FERegionTest {
 		try (final InputStream is = getClass().getResourceAsStream("perlext.out.gz"); final GZIPInputStream gzis = new GZIPInputStream(is); final InputStreamReader isr = new InputStreamReader(gzis); final BufferedReader br = new BufferedReader(isr)) {
 			for (int lon = -540; lon <= 540; lon += 5) {
 				for (int lat = -90; lat <= 90; lat += 5) {
-					final String name = instance.getRegion(Integer.toString(lon), Integer.toString(lat)).getName(true);
+					final String name = instance.getRegion(Integer.toString(lon), Integer.toString(lat)).getName();
 					Assert.assertEquals("lon: " + lon + ", lat: " + lat, br.readLine(), name);
 				}
 			}
@@ -1189,7 +1189,7 @@ public class FERegionTest {
 			final String geofon = tc.name.toUpperCase();
 			final String expected = geofon.replace("VOGTLAND (GERMAN-CZECH BORDER REGION)", "GERMANY").replace("MACEDONIA", "ALBANIA").replace("NW BALKAN REGION", "NORTHWESTERN BALKAN REGION").replace("OFF WEST COAST OF NORTHERN SUMATRA", "OFF W COAST OF NORTHERN SUMATRA").replace('-', ' ').replace('/', ' ').replace(" ", "");
 
-			final String feRegion = instance.getRegion(tc.lon, tc.lat).getName(true);
+			final String feRegion = instance.getRegion(tc.lon, tc.lat).getName();
 			final String actual = feRegion.replace('-', ' ').replace('/', ' ').replace(" ", "");
 
 			Assert.assertEquals("lon: " + tc.lon + ", lat: " + tc.lat + ", expected: \"" + geofon + "\", actual: \"" + feRegion + "\"", expected.substring(0, Math.min(expected.length(), 10)), actual.substring(0, Math.min(actual.length(), 10)));
@@ -1197,7 +1197,7 @@ public class FERegionTest {
 	}
 
 	private void testGetName(final String arg0, final String arg1, final String expectedName) {
-		Assert.assertEquals("arg0: \"" + arg0 + "\", arg1: \"" + arg1 + '"', expectedName, instance.getRegion(arg0, arg1).getName(true));
+		Assert.assertEquals("arg0: \"" + arg0 + "\", arg1: \"" + arg1 + '"', expectedName, instance.getRegion(arg0, arg1).getName());
 	}
 
 	private static class TestCase {

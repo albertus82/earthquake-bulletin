@@ -93,7 +93,7 @@ public class FERegion {
 		else {
 			final FERegion instance = new FERegion();
 			try {
-				System.out.println(instance.getRegion(args[0], args[1]).getName(true));
+				System.out.println(instance.getRegion(args[0], args[1]).getName());
 			}
 			catch (final IllegalCoordinateException e) {
 				System.err.println(e.getMessage());

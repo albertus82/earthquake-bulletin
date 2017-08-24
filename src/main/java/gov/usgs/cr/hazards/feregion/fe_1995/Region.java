@@ -12,7 +12,7 @@ public class Region implements Serializable, Comparable<Region> {
 	private final String name;
 
 	Region(final int number, final String name) {
-		if (number < 1 || name.isEmpty()) {
+		if (number < 1 || name.isEmpty()) { // may throw NPE
 			throw new IllegalArgumentException();
 		}
 		this.number = number;
@@ -23,8 +23,8 @@ public class Region implements Serializable, Comparable<Region> {
 		return number;
 	}
 
-	public String getName(final boolean uppercase) {
-		return uppercase ? name : WordUtils.capitalize(name.toLowerCase(), ' ', '-', '.').replace(" Of ", " of "); // Improved text case.
+	public String getName() {
+		return name;
 	}
 
 	@Override
@@ -52,7 +52,7 @@ public class Region implements Serializable, Comparable<Region> {
 
 	@Override
 	public String toString() {
-		return "Region [number=" + number + ", name=" + name + "]";
+		return WordUtils.capitalize(name.toLowerCase(), ' ', '-', '.').replace(" Of ", " of "); // improved text case
 	}
 
 	@Override
