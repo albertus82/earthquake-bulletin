@@ -25,6 +25,7 @@ public class FERegion {
 	}
 
 	public int getNumber(double lng, final double lat) {
+		// Adjust lat-lon values...
 		if (lng <= -180.0) {
 			lng += 360.0;
 		}
@@ -39,20 +40,10 @@ public class FERegion {
 		// Get quadrant
 		final String quad;
 		if (lat >= 0.0) {
-			if (lng >= 0.0) {
-				quad = "ne";
-			}
-			else {
-				quad = "nw";
-			}
+			quad = lng >= 0.0 ? "ne" : "nw";
 		}
 		else {
-			if (lng >= 0.0) {
-				quad = "se";
-			}
-			else {
-				quad = "sw";
-			}
+			quad = lng >= 0.0 ? "se" : "sw";
 		}
 		logger.log(Level.FINE, " * quad, lt, ln  = {0} {1} {2}", new Object[] { quad, lt, ln });
 
@@ -111,7 +102,6 @@ public class FERegion {
 		longitude = longitude.replaceAll("E|W", "");
 		latitude = latitude.replaceAll("N|S", "");
 
-		// Adjust lat-lon values...
 		final double lng;
 		final double lat;
 		try {
