@@ -81,7 +81,7 @@ public class Coordinates implements Serializable {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (this == obj) {
 			return true;
 		}
@@ -96,19 +96,6 @@ public class Coordinates implements Serializable {
 			return false;
 		}
 		return Double.doubleToLongBits(longitude) == Double.doubleToLongBits(other.longitude);
-	}
-
-	static class IllegalCoordinateException extends IllegalArgumentException {
-
-		private static final long serialVersionUID = -3890490017282756938L;
-
-		private IllegalCoordinateException(final String message) {
-			super(message);
-		}
-
-		private IllegalCoordinateException(final String message, final Throwable cause) {
-			super(message, cause);
-		}
 	}
 
 }

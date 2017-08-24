@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import gov.usgs.cr.hazards.feregion.fe_1995.Coordinates.IllegalCoordinateException;
 import it.albertus.util.logging.LoggerFactory;
 
 /**

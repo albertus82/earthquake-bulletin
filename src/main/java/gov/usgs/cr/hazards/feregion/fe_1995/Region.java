@@ -4,9 +4,9 @@ import java.io.Serializable;
 
 import it.albertus.util.WordUtils;
 
-public class Region implements Serializable {
+public class Region implements Serializable, Comparable<Region> {
 
-	private static final long serialVersionUID = 5426148325885082610L;
+	private static final long serialVersionUID = -425945377738943037L;
 
 	private final int number;
 	private final String name;
@@ -36,7 +36,7 @@ public class Region implements Serializable {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (this == obj) {
 			return true;
 		}
@@ -53,6 +53,11 @@ public class Region implements Serializable {
 	@Override
 	public String toString() {
 		return "Region [number=" + number + ", name=" + name + "]";
+	}
+
+	@Override
+	public int compareTo(final Region o) {
+		return Integer.compare(number, o.number);
 	}
 
 }

@@ -12,8 +12,6 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import gov.usgs.cr.hazards.feregion.fe_1995.Coordinates.IllegalCoordinateException;
-
 public class FERegionTest {
 
 	private static FERegion instance;
@@ -48,6 +46,9 @@ public class FERegionTest {
 		Assert.assertEquals(381, r1.getNumber());
 		Assert.assertEquals("CENTRAL ITALY", r1.getName(true));
 		Assert.assertEquals("Central Italy", r1.getName(false));
+		Assert.assertEquals(0, r1.compareTo(r3));
+		Assert.assertTrue(r1.getNumber() + " < " + r2.getNumber(), r1.compareTo(r2) < 0);
+		Assert.assertTrue(r2.getNumber() + " > " + r1.getNumber(), r2.compareTo(r1) > 0);
 	}
 
 	@Test
@@ -96,7 +97,7 @@ public class FERegionTest {
 		testGetName("12E", "42", "CENTRAL ITALY");
 		testGetName("42N", "12", "CENTRAL ITALY");
 		testGetName("181", "90", "LOMONOSOV RIDGE");
-		testGetName("540", "90", "LOMONOSOV RIDGE");
+		testGetName("540", "-90", "ANTARCTICA");
 	}
 
 	@Test
