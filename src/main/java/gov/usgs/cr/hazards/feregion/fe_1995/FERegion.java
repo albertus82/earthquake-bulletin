@@ -95,7 +95,7 @@ public class FERegion {
 		}
 	}
 
-	public static String getName(final FERegion instance, String longitude, String latitude, final boolean uppercase) {
+	public String getName(String longitude, String latitude, final boolean uppercase) {
 		// Allow for NSEW and switching of arguments.
 		if (longitude.endsWith("N") || longitude.endsWith("S")) {
 			final String tmp = longitude;
@@ -126,7 +126,7 @@ public class FERegion {
 			throw new IllegalCoordinateException(String.format(" * bad latitude or longitude: %f %f", lat, lng));
 		}
 
-		return instance.getName(lng, lat, uppercase);
+		return getName(lng, lat, uppercase);
 	}
 
 	/**
@@ -144,8 +144,9 @@ public class FERegion {
 			System.err.println("   As In:  feregion   122.5W 36.2N");
 		}
 		else {
+			final FERegion instance = new FERegion();
 			try {
-				System.out.println(getName(new FERegion(), args[0], args[1], true));
+				System.out.println(instance.getName(args[0], args[1], true));
 			}
 			catch (final IllegalCoordinateException e) {
 				System.err.println(e.getMessage());
