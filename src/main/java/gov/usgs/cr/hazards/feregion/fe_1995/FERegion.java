@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import gov.usgs.cr.hazards.feregion.fe_1995.Coordinates.IllegalCoordinatesException;
 import it.albertus.util.WordUtils;
 import it.albertus.util.logging.LoggerFactory;
 
@@ -24,26 +25,18 @@ public class FERegion {
 		cache = new FECache();
 	}
 
-	public int getNumber(double lng, final double lat) {
-		// Adjust lat-lon values...
-		if (lng <= -180.0) {
-			lng += 360.0;
-		}
-		if (lng > 180.0) {
-			lng -= 360.0;
-		}
-
+	public int getNumber(final Coordinates coordinates) {
 		// Take absolute values & truncate to integers...
-		final int lt = (int) Math.abs(lat);
-		final int ln = (int) Math.abs(lng);
+		final int lt = (int) Math.abs(coordinates.getLatitude());
+		final int ln = (int) Math.abs(coordinates.getLongitude());
 
 		// Get quadrant
 		final String quad;
-		if (lat >= 0.0) {
-			quad = lng >= 0.0 ? "ne" : "nw";
+		if (coordinates.getLatitude() >= 0.0) {
+			quad = coordinates.getLongitude() >= 0.0 ? "ne" : "nw";
 		}
 		else {
-			quad = lng >= 0.0 ? "se" : "sw";
+			quad = coordinates.getLongitude() >= 0.0 ? "se" : "sw";
 		}
 		logger.log(Level.FINE, " * quad, lt, ln  = {0} {1} {2}", new Object[] { quad, lt, ln });
 
@@ -73,8 +66,8 @@ public class FERegion {
 		return fenum;
 	}
 
-	public String getName(final double longitude, final double latitude, final boolean uppercase) {
-		final int fenum = getNumber(longitude, latitude);
+	public String getName(final Coordinates coordinates, final boolean uppercase) {
+		final int fenum = getNumber(coordinates);
 		final String fename = cache.getNames().get(fenum - 1);
 		logger.log(Level.FINE, "{0} {1}", new Object[] { fenum, fename });
 
@@ -87,36 +80,7 @@ public class FERegion {
 	}
 
 	public String getName(String longitude, String latitude, final boolean uppercase) {
-		// Allow for NSEW and switching of arguments.
-		if (longitude.endsWith("N") || longitude.endsWith("S")) {
-			final String tmp = longitude;
-			longitude = latitude;
-			latitude = tmp;
-		}
-		if (longitude.endsWith("W")) {
-			longitude = '-' + longitude;
-		}
-		if (latitude.endsWith("S")) {
-			latitude = '-' + latitude;
-		}
-		longitude = longitude.replaceAll("E|W", "");
-		latitude = latitude.replaceAll("N|S", "");
-
-		final double lng;
-		final double lat;
-		try {
-			lng = Double.parseDouble(longitude);
-			lat = Double.parseDouble(latitude);
-		}
-		catch (final NumberFormatException e) {
-			throw new IllegalCoordinateException(String.format(" * bad latitude or longitude: %s %s", latitude, longitude), e);
-		}
-
-		if (Math.abs(lat) > 90.0 || Math.abs(lng) > 180.0) {
-			throw new IllegalCoordinateException(String.format(" * bad latitude or longitude: %f %f", lat, lng));
-		}
-
-		return getName(lng, lat, uppercase);
+		return getName(Coordinates.parse(longitude, latitude), uppercase);
 	}
 
 	/**
@@ -138,24 +102,11 @@ public class FERegion {
 			try {
 				System.out.println(instance.getName(args[0], args[1], true));
 			}
-			catch (final IllegalCoordinateException e) {
+			catch (final IllegalCoordinatesException e) {
 				System.err.println(e.getMessage());
 				logger.log(Level.FINE, e.toString(), e);
 				System.exit(1);
 			}
-		}
-	}
-
-	static class IllegalCoordinateException extends IllegalArgumentException {
-
-		private static final long serialVersionUID = 8689517189532828488L;
-
-		private IllegalCoordinateException(final String s) {
-			super(s);
-		}
-
-		private IllegalCoordinateException(final String message, final Throwable cause) {
-			super(message, cause);
 		}
 	}
 

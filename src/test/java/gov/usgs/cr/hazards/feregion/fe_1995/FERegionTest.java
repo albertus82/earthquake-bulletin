@@ -12,7 +12,7 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import gov.usgs.cr.hazards.feregion.fe_1995.FERegion.IllegalCoordinateException;
+import gov.usgs.cr.hazards.feregion.fe_1995.Coordinates.IllegalCoordinatesException;
 
 public class FERegionTest {
 
@@ -68,63 +68,63 @@ public class FERegionTest {
 			testGetName("90", "91", null);
 			Assert.assertTrue(false);
 		}
-		catch (final IllegalCoordinateException e) {
+		catch (final IllegalCoordinatesException e) {
 			Assert.assertTrue(true);
 		}
 		try {
 			testGetName("181", "90", null);
 			Assert.assertTrue(false);
 		}
-		catch (final IllegalCoordinateException e) {
+		catch (final IllegalCoordinatesException e) {
 			Assert.assertTrue(true);
 		}
 		try {
 			testGetName("-90", "-91", null);
 			Assert.assertTrue(false);
 		}
-		catch (final IllegalCoordinateException e) {
+		catch (final IllegalCoordinatesException e) {
 			Assert.assertTrue(true);
 		}
 		try {
 			testGetName("-180.1", "90", null);
 			Assert.assertTrue(false);
 		}
-		catch (final IllegalCoordinateException e) {
+		catch (final IllegalCoordinatesException e) {
 			Assert.assertTrue(true);
 		}
 		try {
 			testGetName("-4873593.4834", "395953", null);
 			Assert.assertTrue(false);
 		}
-		catch (final IllegalCoordinateException e) {
+		catch (final IllegalCoordinatesException e) {
 			Assert.assertTrue(true);
 		}
 		try {
 			testGetName("42Sx", "12W", null);
 			Assert.assertTrue(false);
 		}
-		catch (final IllegalCoordinateException e) {
+		catch (final IllegalCoordinatesException e) {
 			Assert.assertTrue(true);
 		}
 		try {
 			testGetName("x", "y", null);
 			Assert.assertTrue(false);
 		}
-		catch (final IllegalCoordinateException e) {
+		catch (final IllegalCoordinatesException e) {
 			Assert.assertTrue(true);
 		}
 		try {
 			testGetName("12R", "42N", null);
 			Assert.assertTrue(false);
 		}
-		catch (final IllegalCoordinateException e) {
+		catch (final IllegalCoordinatesException e) {
 			Assert.assertTrue(true);
 		}
 		try {
 			testGetName("42", "12E", null);
 			Assert.assertTrue(false);
 		}
-		catch (final IllegalCoordinateException e) {
+		catch (final IllegalCoordinatesException e) {
 			Assert.assertTrue(true);
 		}
 	}
