@@ -24,6 +24,33 @@ public class FERegionTest {
 	}
 
 	@Test
+	public void testCoordinates() {
+		final Coordinates c1 = new Coordinates(12, -34);
+		Assert.assertFalse(c1.equals(null));
+		Assert.assertFalse(c1.equals(new Object()));
+		final Coordinates c2 = new Coordinates(-56, 78);
+		Assert.assertFalse(c1.equals(c2));
+		final Coordinates c3 = Coordinates.parse("34S", "12E");
+		Assert.assertTrue(c1.equals(c3));
+		Assert.assertFalse(c2.equals(c3));
+	}
+
+	@Test
+	public void testRegion() {
+		final Region r1 = instance.getRegion(new Coordinates(12.5, 42.5));
+		Assert.assertFalse(r1.equals(null));
+		Assert.assertFalse(r1.equals(new Object()));
+		final Region r2 = instance.getRegion(new Coordinates(-12.5, -42.5));
+		Assert.assertFalse(r1.equals(r2));
+		final Region r3 = instance.getRegion("12E", "42");
+		Assert.assertTrue(r1.equals(r3));
+		Assert.assertFalse(r2.equals(r3));
+		Assert.assertEquals(381, r1.getNumber());
+		Assert.assertEquals("CENTRAL ITALY", r1.getName(true));
+		Assert.assertEquals("Central Italy", r1.getName(false));
+	}
+
+	@Test
 	public void compareWithPerlOutput() throws IOException {
 		try (final InputStream is = getClass().getResourceAsStream("perl.out.gz"); final GZIPInputStream gzis = new GZIPInputStream(is); final InputStreamReader isr = new InputStreamReader(gzis); final BufferedReader br = new BufferedReader(isr)) {
 			for (int lon = -180; lon <= 180; lon++) {

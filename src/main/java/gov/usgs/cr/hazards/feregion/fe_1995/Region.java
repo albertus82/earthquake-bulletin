@@ -11,7 +11,7 @@ public class Region implements Serializable {
 	private final int number;
 	private final String name;
 
-	public Region(final int number, final String name) {
+	Region(final int number, final String name) {
 		if (number < 1 || name.isEmpty()) {
 			throw new IllegalArgumentException();
 		}
@@ -47,10 +47,7 @@ public class Region implements Serializable {
 			return false;
 		}
 		Region other = (Region) obj;
-		if (number != other.number) {
-			return false;
-		}
-		return true;
+		return number == other.number;
 	}
 
 	@Override
