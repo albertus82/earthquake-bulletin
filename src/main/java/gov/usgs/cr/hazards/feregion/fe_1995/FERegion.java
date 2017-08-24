@@ -73,6 +73,10 @@ public class FERegion {
 		return fenum;
 	}
 
+	Region getRegion(final String arg0, final String arg1) {
+		return getRegion(Coordinates.parse(arg0, arg1));
+	}
+
 	/**
 	 * Returns Flinn-Engdahl Region name from decimal lon,lat values given on
 	 * command line.
@@ -90,7 +94,7 @@ public class FERegion {
 		else {
 			final FERegion instance = new FERegion();
 			try {
-				System.out.println(instance.getRegion(Coordinates.parse(args[0], args[1])).getName(true));
+				System.out.println(instance.getRegion(args[0], args[1]).getName(true));
 			}
 			catch (final IllegalCoordinateException e) {
 				System.err.println(e.getMessage());
