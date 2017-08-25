@@ -74,7 +74,7 @@ public class Region implements Serializable, Comparable<Region> {
 	 */
 	@Override
 	public String toString() {
-		return WordUtils.capitalize(name.toLowerCase(), ' ', '-', '.').replace(" Of ", " of "); // improved text case
+		return WordUtils.capitalize(name.toLowerCase(), ' ', '-', '.').replace(" Of ", " of ").replace(" Png.", " PNG."); // improved text case
 	}
 
 	@Override

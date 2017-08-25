@@ -193,21 +193,21 @@ public class FERegionTest {
 	}
 
 	@Test
-	public void testGetName() {
+	public void testGetRegionByNumber() {
 		try {
-			instance.getName(0);
+			instance.getRegion(0);
 			Assert.assertTrue(false);
 		}
 		catch (final IndexOutOfBoundsException e) {
 			Assert.assertNotNull(e);
 		}
 
-		Assert.assertEquals("CENTRAL ALASKA", instance.getName(1));
-		Assert.assertEquals("PYRENEES", instance.getName(378));
-		Assert.assertEquals("GALAPAGOS TRIPLE JUNCTION REGION", instance.getName(757));
+		Assert.assertEquals("CENTRAL ALASKA", instance.getRegion(1).getName());
+		Assert.assertEquals("PYRENEES", instance.getRegion(378).getName());
+		Assert.assertEquals("GALAPAGOS TRIPLE JUNCTION REGION", instance.getRegion(757).getName());
 
 		try {
-			instance.getName(758);
+			instance.getRegion(758);
 			Assert.assertTrue(false);
 		}
 		catch (final IndexOutOfBoundsException e) {

@@ -34,23 +34,23 @@ public class FERegion {
 	 */
 	public Region getRegion(final Coordinates coordinates) {
 		final int fenum = getNumber(coordinates);
-		final String fename = getName(fenum);
-		logger.log(Level.FINE, "{0} {1}", new Object[] { fenum, fename });
+		final Region region = getRegion(fenum);
+		logger.log(Level.FINE, "{0} {1}", new Object[] { region.getNumber(), region.getName() });
 
-		return new Region(fenum, fename);
+		return region;
 	}
 
 	/**
 	 * Given a Flinn-Engdahl geographical region number, returns the
-	 * corresponding F-E geographical region name.
+	 * corresponding F-E geographical region.
 	 * 
 	 * @param fenum the Flinn-Engdahl geographical region number
-	 * @return the F-E geographical region name that corrisponds to the given
-	 *         region number
+	 * @return the F-E geographical region that corrisponds to the given region
+	 *         number
 	 * @throws IndexOutOfBoundsException if the number specified is out of range
 	 */
-	public String getName(final int fenum) {
-		return database.getNames().get(fenum - 1);
+	public Region getRegion(final int fenum) {
+		return new Region(fenum, database.getNames().get(fenum - 1));
 	}
 
 	Region getRegion(final String arg0, final String arg1) {
