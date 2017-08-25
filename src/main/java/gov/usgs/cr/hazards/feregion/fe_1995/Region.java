@@ -5,7 +5,8 @@ import java.io.Serializable;
 import it.albertus.util.WordUtils;
 
 /**
- * This class represents a Flinn-Engdahl geographical region (number and name).
+ * This class represents a Flinn-Engdahl geographical region with its number and
+ * name.
  */
 public class Region implements Serializable, Comparable<Region> {
 
@@ -22,10 +23,21 @@ public class Region implements Serializable, Comparable<Region> {
 		this.name = name;
 	}
 
+	/**
+	 * Returns the region number.
+	 * 
+	 * @return the region number
+	 */
 	public int getNumber() {
 		return number;
 	}
 
+	/**
+	 * Returns the region name.
+	 * 
+	 * @return the region name
+	 * @see #toString()
+	 */
 	public String getName() {
 		return name;
 	}
@@ -53,6 +65,13 @@ public class Region implements Serializable, Comparable<Region> {
 		return number == other.number;
 	}
 
+	/**
+	 * Returns the region name with a fully capitalized text format that is
+	 * usually prettier than the one returned by {@link #getName()}.
+	 * 
+	 * @return the region name in a pretty text format
+	 * @see #getName()
+	 */
 	@Override
 	public String toString() {
 		return WordUtils.capitalize(name.toLowerCase(), ' ', '-', '.').replace(" Of ", " of "); // improved text case
