@@ -5,7 +5,9 @@ import java.util.Locale;
 
 public abstract class Coordinate extends FloatValue {
 
-	private static final long serialVersionUID = 8835516568988478846L;
+	private static final long serialVersionUID = 7312923076881011764L;
+
+	static final char DEGREE_SIGN = '\u00B0';
 
 	public Coordinate(final float value) {
 		super(value);
