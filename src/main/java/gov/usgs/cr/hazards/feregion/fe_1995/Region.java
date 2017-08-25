@@ -1,6 +1,7 @@
 package gov.usgs.cr.hazards.feregion.fe_1995;
 
 import java.io.Serializable;
+import java.util.Locale;
 
 import it.albertus.util.WordUtils;
 
@@ -74,7 +75,7 @@ public class Region implements Serializable, Comparable<Region> {
 	 */
 	@Override
 	public String toString() {
-		return WordUtils.capitalize(name.toLowerCase(), ' ', '-', '.').replace(" Of ", " of ").replace(" Png.", " PNG."); // improved text case
+		return WordUtils.capitalize(name.toLowerCase(Locale.ENGLISH), ' ', '-', '.').replace(" Of ", " of ").replace(" Png.", " PNG."); // improved text case
 	}
 
 	@Override
