@@ -26,11 +26,11 @@ class Database {
 
 	private final List<String> names = new ArrayList<>(757);
 
-	private final Map<String, List<Integer>> lonsperlat = new HashMap<>(quadorder.length);
-	private final Map<String, List<Integer>> latbegins = new HashMap<>(quadorder.length);
+	private final Map<String, List<Integer>> lonsperlat = new HashMap<>(quadorder.length * 2);
+	private final Map<String, List<Integer>> latbegins = new HashMap<>(quadorder.length * 2);
 
-	private final Map<String, List<Integer>> mlons = new HashMap<>(quadorder.length);
-	private final Map<String, List<Integer>> mfenums = new HashMap<>(quadorder.length);
+	private final Map<String, List<Integer>> mlons = new HashMap<>(quadorder.length * 2);
+	private final Map<String, List<Integer>> mfenums = new HashMap<>(quadorder.length * 2);
 
 	Database() throws IOException {
 		// Read the file of region names...
@@ -53,7 +53,7 @@ class Database {
 		}
 		logger.log(Level.FINE, "  * Numitems in quadsindex = {0}", quadsindex.size());
 
-		final Map<String, List<Integer>> sects = new HashMap<>(quadorder.length);
+		final Map<String, List<Integer>> sects = new HashMap<>(quadorder.length * 2);
 		for (int i = 0; i < sectfiles.length; i++) {
 			final List<Integer> sect = new ArrayList<>(2666);
 			try (final InputStream is = getClass().getResourceAsStream(sectfiles[i]); final InputStreamReader isr = new InputStreamReader(is); final BufferedReader br = new BufferedReader(isr)) {
