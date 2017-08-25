@@ -24,12 +24,36 @@ public class FERegion {
 		database = new Database();
 	}
 
+	/**
+	 * Given the geographical coordinates in decimal degrees, returns the
+	 * Flinn-Engdahl geographical region (number and name).
+	 * 
+	 * @param coordinates the geographical {@link Coordinates}
+	 * @return the {@link Region} object containing Flinn-Engdahl geographical
+	 *         region number and name.
+	 */
 	public Region getRegion(final Coordinates coordinates) {
 		final int fenum = getNumber(coordinates);
-		final String fename = database.getNames().get(fenum - 1);
+		final String fename = getName(fenum);
 		logger.log(Level.FINE, "{0} {1}", new Object[] { fenum, fename });
 
 		return new Region(fenum, fename);
+	}
+
+	/**
+	 * Given a Flinn-Engdahl geographical region number, returns the
+	 * corresponding F-E geographical region name.
+	 * 
+	 * @param fenum the Flinn-Engdahl geographical region number
+	 * @return the F-E geographical region name that corrisponds to the given
+	 *         region number
+	 */
+	public String getName(final int fenum) {
+		return database.getNames().get(fenum - 1);
+	}
+
+	Region getRegion(final String arg0, final String arg1) {
+		return getRegion(Coordinates.parse(arg0, arg1));
 	}
 
 	private int getNumber(final Coordinates coordinates) {
@@ -71,10 +95,6 @@ public class FERegion {
 		logger.log(Level.FINE, "{0} {1} {2}", new int[] { n, feindex, fenum });
 
 		return fenum;
-	}
-
-	Region getRegion(final String arg0, final String arg1) {
-		return getRegion(Coordinates.parse(arg0, arg1));
 	}
 
 	/**

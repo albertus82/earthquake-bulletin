@@ -4,6 +4,9 @@ import java.io.Serializable;
 
 import it.albertus.util.WordUtils;
 
+/**
+ * This class represents a Flinn-Engdahl geographical region (number and name).
+ */
 public class Region implements Serializable, Comparable<Region> {
 
 	private static final long serialVersionUID = -425945377738943037L;

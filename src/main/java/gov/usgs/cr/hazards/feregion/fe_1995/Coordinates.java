@@ -2,6 +2,10 @@ package gov.usgs.cr.hazards.feregion.fe_1995;
 
 import java.io.Serializable;
 
+/**
+ * This class represents geographical coordinates (longitude & latitude) in
+ * decimal degrees.
+ */
 public class Coordinates implements Serializable {
 
 	private static final long serialVersionUID = -5672208470783902289L;
@@ -11,6 +15,14 @@ public class Coordinates implements Serializable {
 	private final double longitude;
 	private final double latitude;
 
+	/**
+	 * Constructs a new {@code Coordinates} object given <em>longitude</em> and
+	 * <em>latitude</em> decimal values.
+	 * 
+	 * @param lng the longitude decimal value (e.g., 129, 129.524)
+	 * @param lat the latitude decimal value (e.g., -42, -42.89)
+	 * @throws IllegalCoordinateException if the arguments provided are invalid
+	 */
 	public Coordinates(double lng, final double lat) throws IllegalCoordinateException {
 		// Adjust lat-lon values...
 		if (lng <= -180.0) {
@@ -28,6 +40,18 @@ public class Coordinates implements Serializable {
 		this.latitude = lat;
 	}
 
+	/**
+	 * Given <em>longitude</em> and <em>latitude</em> decimal string values,
+	 * returns a new {@code Coordinates} object.
+	 * 
+	 * @param longitude the longitude decimal string value (e.g., 12, 12.52,
+	 *        12.52E)
+	 * @param latitude the latitude decimal string value (e.g., -42, -42.89,
+	 *        42.89S)
+	 * @return a new {@code Coordinates} object built with the provided
+	 *         geographical coordinates
+	 * @throws IllegalCoordinateException if the provided arguments are invalid
+	 */
 	public static Coordinates parse(String longitude, String latitude) throws IllegalCoordinateException {
 		// Allow for NSEW and switching of arguments.
 		if (longitude.endsWith("N") || longitude.endsWith("S")) {
