@@ -23,7 +23,7 @@ public class Coordinates implements Serializable {
 	 * @param lat the latitude decimal value (e.g., -42, -42.89)
 	 * @throws IllegalCoordinateException if the arguments provided are invalid
 	 */
-	public Coordinates(double lng, final double lat) throws IllegalCoordinateException {
+	public Coordinates(double lng, final double lat) {
 		// Adjust lat-lon values...
 		if (lng <= -180.0) {
 			lng += 360.0;
@@ -44,15 +44,15 @@ public class Coordinates implements Serializable {
 	 * Given <em>longitude</em> and <em>latitude</em> decimal string values,
 	 * returns a new {@code Coordinates} object.
 	 * 
-	 * @param longitude the longitude decimal string value (e.g., 12, 12.52,
-	 *        12.52E)
+	 * @param longitude the longitude decimal string value (e.g., 129, 129.524,
+	 *        129.524E)
 	 * @param latitude the latitude decimal string value (e.g., -42, -42.89,
 	 *        42.89S)
 	 * @return a new {@code Coordinates} object built with the provided
 	 *         geographical coordinates
 	 * @throws IllegalCoordinateException if the provided arguments are invalid
 	 */
-	public static Coordinates parse(String longitude, String latitude) throws IllegalCoordinateException {
+	public static Coordinates parse(String longitude, String latitude) {
 		// Allow for NSEW and switching of arguments.
 		if (longitude.endsWith("N") || longitude.endsWith("S")) {
 			final String tmp = longitude;
@@ -91,7 +91,7 @@ public class Coordinates implements Serializable {
 
 	@Override
 	public String toString() {
-		return Double.toString(Math.abs(longitude)) + DEGREE_SIGN + (longitude > 0 ? 'E' : 'W') + ' ' + Math.abs(latitude) + DEGREE_SIGN + (latitude > 0 ? 'N' : 'S');
+		return Double.toString(Math.abs(latitude)) + DEGREE_SIGN + (latitude < 0 ? 'S' : 'N') + ' ' + Math.abs(longitude) + DEGREE_SIGN + (longitude < 0 ? 'W' : 'E');
 	}
 
 	@Override

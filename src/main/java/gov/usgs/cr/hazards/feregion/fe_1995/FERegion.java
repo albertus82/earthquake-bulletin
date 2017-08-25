@@ -47,6 +47,7 @@ public class FERegion {
 	 * @param fenum the Flinn-Engdahl geographical region number
 	 * @return the F-E geographical region name that corrisponds to the given
 	 *         region number
+	 * @throws IndexOutOfBoundsException if the number specified is out of range
 	 */
 	public String getName(final int fenum) {
 		return database.getNames().get(fenum - 1);

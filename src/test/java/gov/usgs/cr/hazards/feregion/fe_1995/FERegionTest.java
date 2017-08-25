@@ -182,6 +182,29 @@ public class FERegionTest {
 	}
 
 	@Test
+	public void testGetName() {
+		try {
+			instance.getName(0);
+			Assert.assertTrue(false);
+		}
+		catch (final IndexOutOfBoundsException e) {
+			Assert.assertNotNull(e);
+		}
+
+		Assert.assertEquals("CENTRAL ALASKA", instance.getName(1));
+		Assert.assertEquals("PYRENEES", instance.getName(378));
+		Assert.assertEquals("GALAPAGOS TRIPLE JUNCTION REGION", instance.getName(757));
+
+		try {
+			instance.getName(758);
+			Assert.assertTrue(false);
+		}
+		catch (final IndexOutOfBoundsException e) {
+			Assert.assertNotNull(e);
+		}
+	}
+
+	@Test
 	public void testRealCases() {
 		final List<TestCase> testCases = new ArrayList<>(1000);
 		testCases.add(new TestCase("11.03N", "124.90E", "Leyte, Philippines"));
