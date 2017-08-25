@@ -6,13 +6,18 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import it.albertus.util.logging.LoggerFactory;
+
 public class FERegionTest {
+
+	private static final Logger logger = LoggerFactory.getLogger(FERegionTest.class);
 
 	private static FERegion instance;
 
@@ -24,11 +29,14 @@ public class FERegionTest {
 	@Test
 	public void testCoordinates() {
 		final Coordinates c1 = new Coordinates(12, -34);
+		logger.info(c1.toString());
 		Assert.assertFalse(c1.equals(null));
 		Assert.assertFalse(c1.equals(new Object()));
-		final Coordinates c2 = new Coordinates(-56, 78);
+		final Coordinates c2 = new Coordinates(-156, 78);
+		logger.info(c2.toString());
 		Assert.assertFalse(c1.equals(c2));
 		final Coordinates c3 = Coordinates.parse("34S", "12E");
+		logger.info(c3.toString());
 		Assert.assertTrue(c1.equals(c3));
 		Assert.assertFalse(c2.equals(c3));
 	}
@@ -36,11 +44,14 @@ public class FERegionTest {
 	@Test
 	public void testRegion() {
 		final Region r1 = instance.getRegion(new Coordinates(12.5, 42.5));
+		logger.info(r1.toString());
 		Assert.assertFalse(r1.equals(null));
 		Assert.assertFalse(r1.equals(new Object()));
 		final Region r2 = instance.getRegion(new Coordinates(-12.5, -42.5));
+		logger.info(r2.toString());
 		Assert.assertFalse(r1.equals(r2));
 		final Region r3 = instance.getRegion("12E", "42");
+		logger.info(r3.toString());
 		Assert.assertTrue(r1.equals(r3));
 		Assert.assertFalse(r2.equals(r3));
 		Assert.assertEquals(381, r1.getNumber());
@@ -1220,7 +1231,9 @@ public class FERegionTest {
 	}
 
 	private void testGetName(final String arg0, final String arg1, final String expectedName) {
-		Assert.assertEquals("arg0: \"" + arg0 + "\", arg1: \"" + arg1 + '"', expectedName, instance.getRegion(arg0, arg1).getName());
+		final Region region = instance.getRegion(arg0, arg1);
+		logger.info(region.toString());
+		Assert.assertEquals("arg0: \"" + arg0 + "\", arg1: \"" + arg1 + '"', expectedName, region.getName());
 	}
 
 	private static class TestCase {
