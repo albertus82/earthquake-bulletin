@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,7 +17,9 @@ import it.albertus.util.logging.LoggerFactory;
 /**
  * @author Bob Simpson
  */
-class Database {
+class Database implements Serializable {
+
+	private static final long serialVersionUID = -3690479189168351433L;
 
 	private static final Logger logger = LoggerFactory.getLogger(Database.class);
 
