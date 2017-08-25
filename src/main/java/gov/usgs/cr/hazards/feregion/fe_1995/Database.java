@@ -55,7 +55,7 @@ class Database {
 
 		final Map<String, List<Integer>> sects = new HashMap<>(quadorder.length);
 		for (int i = 0; i < sectfiles.length; i++) {
-			final List<Integer> sect = new ArrayList<>(2000);
+			final List<Integer> sect = new ArrayList<>(2666);
 			try (final InputStream is = getClass().getResourceAsStream(sectfiles[i]); final InputStreamReader isr = new InputStreamReader(is); final BufferedReader br = new BufferedReader(isr)) {
 				String line;
 				while ((line = br.readLine()) != null) {
