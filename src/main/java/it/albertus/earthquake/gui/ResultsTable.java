@@ -53,8 +53,6 @@ public class ResultsTable {
 		}
 	}
 
-	private static final int NUMBER_OF_COLUMNS = 7;
-
 	private static final int TOOLTIP_TIME_DISPLAYED = 5000;
 
 	private static final String TABLE_FONT = "TABLE_FONT";
@@ -133,7 +131,7 @@ public class ResultsTable {
 
 	private final TableViewer tableViewer;
 	private final EarthquakeViewerComparator comparator;
-	private final HashMap<Integer, Localized> labelsMap = new HashMap<>(NUMBER_OF_COLUMNS);
+	private final HashMap<Integer, Localized> labelsMap = new HashMap<>();
 
 	private final ContextMenu contextMenu;
 

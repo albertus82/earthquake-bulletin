@@ -52,7 +52,7 @@ public class TrayIcon {
 	private Tray tray;
 	private TrayItem trayItem;
 
-	private final Map<Integer, ToolTip> toolTips = new HashMap<>(3);
+	private final Map<Integer, ToolTip> toolTips = new HashMap<>(4);
 	private Menu trayMenu;
 	private MenuItem showMenuItem;
 	private MenuItem exitMenuItem;
