@@ -38,7 +38,7 @@ public class GoogleMapsPopupSelectionListener extends SelectionAdapter {
 			final double longitude = selection.getLongitude().doubleValue();
 			options.setCenterLat(latitude);
 			options.setCenterLng(longitude);
-			epicenterMapDialog.getMarkers().add(new MapMarker(latitude, longitude, Messages.get("lbl.map.epicenter.marker.title")));
+			epicenterMapDialog.getMarkers().add(new MapMarker(latitude, longitude, Messages.get("lbl.map.epicenter.marker.title", selection.getLatitude(), selection.getLongitude())));
 			epicenterMapDialog.open();
 		}
 	}
