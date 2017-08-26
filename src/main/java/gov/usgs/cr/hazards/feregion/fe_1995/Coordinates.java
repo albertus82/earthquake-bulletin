@@ -88,14 +88,25 @@ public class Coordinates implements Serializable {
 		return new Coordinates(lng, lat);
 	}
 
+	/**
+	 * Returns the longitude coordinate.
+	 * 
+	 * @return the longitude value
+	 */
 	public double getLongitude() {
 		return longitude;
 	}
 
+	/**
+	 * Returns the latitude coordinate.
+	 * 
+	 * @return the latitude value
+	 */
 	public double getLatitude() {
 		return latitude;
 	}
 
+	/** Returns a string representation of the geographical coordinates. */
 	@Override
 	public String toString() {
 		return Double.toString(Math.abs(latitude)) + DEGREE_SIGN + (latitude < 0 ? 'S' : 'N') + ' ' + Math.abs(longitude) + DEGREE_SIGN + (longitude < 0 ? 'W' : 'E');
