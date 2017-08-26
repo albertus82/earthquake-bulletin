@@ -5,6 +5,13 @@ import java.io.Serializable;
 /**
  * This class represents geographical coordinates (longitude & latitude) in
  * decimal degrees.
+ * <p>
+ * Originally written by Bob Simpson in Perl language, with fix supplied by
+ * George Randall (<tt>feregion.pl</tt>).
+ * 
+ * @see <a href="ftp://hazards.cr.usgs.gov/feregion/fe_1995/">1995 (latest)
+ *      revision of the Flinn-Engdahl (F-E) seismic and geographical
+ *      regionalization scheme and programs</a>
  */
 public class Coordinates implements Serializable {
 

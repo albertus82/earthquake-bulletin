@@ -14,7 +14,16 @@ import java.util.logging.Logger;
 import it.albertus.util.logging.LoggerFactory;
 
 /**
- * @author Bob Simpson
+ * This class represents the Flinn-Engdahl regions database used by
+ * {@link FERegion} to retrieve region informations.
+ * <p>
+ * Originally written by Bob Simpson in Perl language, with fix supplied by
+ * George Randall (<tt>feregion.pl</tt>).
+ * 
+ * @see {@link FERegion}
+ * @see <a href="ftp://hazards.cr.usgs.gov/feregion/fe_1995/">1995 (latest)
+ *      revision of the Flinn-Engdahl (F-E) seismic and geographical
+ *      regionalization scheme and programs</a>
  */
 class Database {
 

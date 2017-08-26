@@ -8,7 +8,14 @@ import java.util.logging.Logger;
 import it.albertus.util.logging.LoggerFactory;
 
 /**
- * @author Bob Simpson
+ * This class can provide Flinn-Engdahl region informations.
+ * <p>
+ * Originally written by Bob Simpson in Perl language, with fix supplied by
+ * George Randall (<tt>feregion.pl</tt>).
+ * 
+ * @see <a href="ftp://hazards.cr.usgs.gov/feregion/fe_1995/">1995 (latest)
+ *      revision of the Flinn-Engdahl (F-E) seismic and geographical
+ *      regionalization scheme and programs</a>
  */
 public class FERegion {
 
@@ -102,9 +109,8 @@ public class FERegion {
 	 * Returns Flinn-Engdahl Region name from decimal lon,lat values given on
 	 * command line.
 	 * 
-	 * Version 0.2 - Bob Simpson January, 2003 <simpson@usgs.gov>
-	 * 
-	 * With fix supplied by George Randall <ger@geophysics.lanl.gov> 2003-02-03
+	 * @param args command line arguments
+	 * @throws IOException if the <tt>asc</tt> resources aren't readable
 	 */
 	public static void main(final String[] args) throws IOException {
 		if (args.length != 2) {
