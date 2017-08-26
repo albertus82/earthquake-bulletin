@@ -363,6 +363,14 @@
 				<versionInfo fileversion="${version.number}.0" txtfileversion="${version.number}" filedescription="${name}" copyright="${name}" productversion="${version.number}.0" txtproductversion="${version.number}" productname="${name}" internalname="${ant.project.name}" originalfilename="${ant.project.name}.exe" />
 			</config>
 		</launch4j>
+		<launch4j bindir="${launch4j.bindir}">
+			<config outfile="${build.assemblyDirectory}/dist/win32-win32-x86_64/${artifactId}/${launch4j.feregion.name}.exe" jarpath="${ant.project.name}.jar" headertype="${launch4j.feregion.headerType}" dontwrapjar="${launch4j.dontWrapJar}" stayalive="${launch4j.stayAlive}" restartoncrash="${launch4j.restartOnCrash}" priority="${launch4j.priority}" errtitle="${launch4j.errTitle}" chdir=".">
+				<singleInstance mutexname="${launch4j.feregion.mainClass}" />
+				<jre minversion="${build.compiler.target}.0" jdkpreference="${launch4j.jdkPreference}" initialheapsize="${launch4j.feregion.initialHeapSize}" maxheapsize="${launch4j.feregion.maxHeapSize}" />
+				<classPath mainclass="${launch4j.feregion.mainClass}" cp="lib/*" />
+				<versionInfo fileversion="${version.number}.0" txtfileversion="${version.number}" filedescription="${launch4j.feregion.name}" copyright="${launch4j.feregion.name}" productversion="${version.number}.0" txtproductversion="${version.number}" productname="${launch4j.feregion.name}" internalname="${launch4j.feregion.name}" originalfilename="${launch4j.feregion.name}.exe" />
+			</config>
+		</launch4j>
 		<echo file="${build.assemblyDirectory}/dist/win32-win32-x86/setup.iss">
 			[Setup]
 			AppName=${name}
@@ -423,6 +431,14 @@
 				<jre runtimebits="64" minversion="${build.compiler.target}.0" jdkpreference="${launch4j.jdkPreference}" initialheapsize="${vm.initialHeapSize}" maxheapsize="${vm.maxHeapSize}" />
 				<classPath mainclass="${build.jar.archive.manifest.mainClass}" cp="lib/*" />
 				<versionInfo fileversion="${version.number}.0" txtfileversion="${version.number}" filedescription="${name}" copyright="${name}" productversion="${version.number}.0" txtproductversion="${version.number}" productname="${name}" internalname="${ant.project.name}" originalfilename="${ant.project.name}.exe" />
+			</config>
+		</launch4j>
+		<launch4j bindir="${launch4j.bindir}">
+			<config outfile="${build.assemblyDirectory}/dist/win32-win32-x86_64/${artifactId}/${launch4j.feregion.name}.exe" jarpath="${ant.project.name}.jar" headertype="${launch4j.feregion.headerType}" dontwrapjar="${launch4j.dontWrapJar}" stayalive="${launch4j.stayAlive}" restartoncrash="${launch4j.restartOnCrash}" priority="${launch4j.priority}" errtitle="${launch4j.errTitle}" chdir=".">
+				<singleInstance mutexname="${launch4j.feregion.mainClass}" />
+				<jre minversion="${build.compiler.target}.0" jdkpreference="${launch4j.jdkPreference}" initialheapsize="${launch4j.feregion.initialHeapSize}" maxheapsize="${launch4j.feregion.maxHeapSize}" />
+				<classPath mainclass="${launch4j.feregion.mainClass}" cp="lib/*" />
+				<versionInfo fileversion="${version.number}.0" txtfileversion="${version.number}" filedescription="${launch4j.feregion.name}" copyright="${launch4j.feregion.name}" productversion="${version.number}.0" txtproductversion="${version.number}" productname="${launch4j.feregion.name}" internalname="${launch4j.feregion.name}" originalfilename="${launch4j.feregion.name}.exe" />
 			</config>
 		</launch4j>
 		<echo file="${build.assemblyDirectory}/dist/win32-win32-x86_64/setup.iss">
