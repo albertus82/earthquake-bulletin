@@ -13,7 +13,7 @@ public class FEPlusNames {
 	private final Map<Integer, Map<FEPlusNameType, String>> names = new TreeMap<>();
 
 	/**
-	 * Initializes the internal database. Reuse the same instance whenever
+	 * Initializes the internal names database. Reuse the same instance whenever
 	 * possible.
 	 */
 	public FEPlusNames() throws IOException {
