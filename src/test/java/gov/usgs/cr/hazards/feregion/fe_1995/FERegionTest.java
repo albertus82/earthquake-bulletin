@@ -56,7 +56,6 @@ public class FERegionTest {
 		Assert.assertFalse(r2.equals(r3));
 		Assert.assertEquals(381, r1.getNumber());
 		Assert.assertEquals("CENTRAL ITALY", r1.getName());
-		Assert.assertEquals("Central Italy", r1.toString());
 		Assert.assertEquals(0, r1.compareTo(r3));
 		Assert.assertTrue(r1.getNumber() + " < " + r2.getNumber(), r1.compareTo(r2) < 0);
 		Assert.assertTrue(r2.getNumber() + " > " + r1.getNumber(), r2.compareTo(r1) > 0);

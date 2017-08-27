@@ -1,9 +1,6 @@
 package gov.usgs.cr.hazards.feregion.fe_1995;
 
 import java.io.Serializable;
-import java.util.Locale;
-
-import it.albertus.util.WordUtils;
 
 /**
  * This class represents a Flinn-Engdahl geographical region with its number and
@@ -25,7 +22,7 @@ public class Region implements Serializable, Comparable<Region> {
 	}
 
 	/**
-	 * Returns the region number.
+	 * Returns the Flinn-Engdahl region number.
 	 * 
 	 * @return the region number
 	 */
@@ -34,7 +31,7 @@ public class Region implements Serializable, Comparable<Region> {
 	}
 
 	/**
-	 * Returns the region name.
+	 * Returns the Flinn-Engdahl region name.
 	 * 
 	 * @return the region name
 	 * @see #toString()
@@ -67,15 +64,14 @@ public class Region implements Serializable, Comparable<Region> {
 	}
 
 	/**
-	 * Returns the region name with a fully capitalized text format that is
-	 * usually prettier than the one returned by {@link #getName()}.
+	 * Returns the Flinn-Engdahl region name.
 	 * 
-	 * @return the region name in a pretty text format
+	 * @return the region name
 	 * @see #getName()
 	 */
 	@Override
 	public String toString() {
-		return WordUtils.capitalize(name.toLowerCase(Locale.ENGLISH), ' ', '-', '.').replace(" Of ", " of ").replace(" Png.", " PNG."); // improved text case
+		return name;
 	}
 
 	@Override

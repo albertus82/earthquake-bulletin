@@ -1,6 +1,6 @@
 package gov.usgs.cr.hazards.feregion.feplus.source;
 
-public enum FENameType {
+public enum FEPlusNameType {
 
 	/** 32 char. */
 	S,

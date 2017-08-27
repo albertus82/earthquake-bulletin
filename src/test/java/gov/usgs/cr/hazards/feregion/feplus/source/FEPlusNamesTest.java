@@ -8,21 +8,21 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class FENamesTest {
+public class FEPlusNamesTest {
 
-	private static FENames fenames;
+	private static FEPlusNames fenames;
 
 	@BeforeClass
 	public static void init() throws IOException {
-		fenames = new FENames();
+		fenames = new FEPlusNames();
 	}
 
 	@Test
 	public void test() {
-		final Map<Integer, Map<FENameType, String>> names = fenames.getNames();
+		final Map<Integer, Map<FEPlusNameType, String>> names = fenames.getNames();
 		Assert.assertEquals(757, names.size());
-		for (final Entry<Integer, Map<FENameType, String>> entry : names.entrySet()) {
-			Assert.assertEquals(FENameType.values().length, entry.getValue().size());
+		for (final Entry<Integer, Map<FEPlusNameType, String>> entry : names.entrySet()) {
+			Assert.assertEquals(FEPlusNameType.values().length, entry.getValue().size());
 			for (final String s : entry.getValue().values()) {
 				Assert.assertNotNull(s);
 				Assert.assertNotEquals("", s);

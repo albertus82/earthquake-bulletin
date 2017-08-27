@@ -8,11 +8,15 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class FENames {
+public class FEPlusNames {
 
-	private final Map<Integer, Map<FENameType, String>> names = new TreeMap<>();
+	private final Map<Integer, Map<FEPlusNameType, String>> names = new TreeMap<>();
 
-	public FENames() throws IOException {
+	/**
+	 * Initializes the internal database. Reuse the same instance whenever
+	 * possible.
+	 */
+	public FEPlusNames() throws IOException {
 		try (final InputStream is = getClass().getResourceAsStream("fenames.asc"); final InputStreamReader isr = new InputStreamReader(is); final BufferedReader br = new BufferedReader(isr)) {
 			Integer fenum = null;
 			String line;
@@ -26,9 +30,9 @@ public class FENames {
 					sb.append(c);
 				}
 				if (sb.length() != 0) {
-					final FENameType type = FENameType.valueOf(sb.substring(0, 1));
-					if (FENameType.S.equals(type)) {
-						final Map<FENameType, String> value = new EnumMap<>(FENameType.class);
+					final FEPlusNameType type = FEPlusNameType.valueOf(sb.substring(0, 1));
+					if (FEPlusNameType.S.equals(type)) {
+						final Map<FEPlusNameType, String> value = new EnumMap<>(FEPlusNameType.class);
 						value.put(type, sb.substring(6).trim());
 						fenum = Integer.valueOf(sb.substring(2, 5).trim());
 						names.put(fenum, value);
@@ -41,7 +45,7 @@ public class FENames {
 		}
 	}
 
-	public Map<Integer, Map<FENameType, String>> getNames() {
+	public Map<Integer, Map<FEPlusNameType, String>> getNames() {
 		return names;
 	}
 
