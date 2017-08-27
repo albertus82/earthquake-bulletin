@@ -1,6 +1,7 @@
 package gov.usgs.cr.hazards.feregion.fe_1995;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -58,6 +59,14 @@ public class FERegion {
 	 */
 	public Region getRegion(final int fenum) {
 		return new Region(fenum, database.getNames().get(fenum - 1));
+	}
+
+	public List<Region> getAllRegions() {
+		final List<Region> regions = new ArrayList<>();
+		for (int fenum = 1; fenum < database.getNames().size(); fenum++) {
+			regions.add(new Region(fenum, database.getNames().get(fenum - 1)));
+		}
+		return regions;
 	}
 
 	Region getRegion(final String arg0, final String arg1) {
