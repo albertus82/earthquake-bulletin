@@ -5,6 +5,10 @@ import java.io.Serializable;
 /**
  * This class represents a Flinn-Engdahl geographical region with its number and
  * name.
+ * 
+ * @see <a href=
+ *      "https://earthquake.usgs.gov/learn/topics/flinn_engdahl_list.php">F-E
+ *      Regions List</a>
  */
 public class Region implements Serializable, Comparable<Region> {
 
