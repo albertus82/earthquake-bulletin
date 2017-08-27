@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 
@@ -1227,6 +1228,13 @@ public class FERegionTest {
 
 			Assert.assertEquals("lon: " + tc.lon + ", lat: " + tc.lat + ", expected: \"" + geofon + "\", actual: \"" + feRegion + "\"", expected.substring(0, Math.min(expected.length(), 10)), actual.substring(0, Math.min(actual.length(), 10)));
 		}
+	}
+
+	@Test
+	public void testGetAllRegions() {
+		final List<Region> allRegions = instance.getAllRegions();
+		Assert.assertEquals(757, allRegions.size());
+		logger.log(Level.FINE, "{0}", allRegions);
 	}
 
 	private void testGetName(final String arg0, final String arg1, final String expectedName) {

@@ -63,8 +63,8 @@ public class FERegion {
 
 	public List<Region> getAllRegions() {
 		final List<Region> regions = new ArrayList<>();
-		for (int fenum = 1; fenum < database.getNames().size(); fenum++) {
-			regions.add(new Region(fenum, database.getNames().get(fenum - 1)));
+		for (int fenum = 1; fenum <= database.getNames().size(); fenum++) {
+			regions.add(getRegion(fenum));
 		}
 		return regions;
 	}
