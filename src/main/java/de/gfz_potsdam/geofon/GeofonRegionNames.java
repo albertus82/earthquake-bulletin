@@ -18,8 +18,8 @@ public class GeofonRegionNames {
 	public GeofonRegionNames() throws IOException {
 		// Read the file of region names...
 		try (final InputStream is = getClass().getResourceAsStream("names.asc"); final InputStreamReader isr = new InputStreamReader(is); final BufferedReader br = new BufferedReader(isr)) {
-			String line;
 			int i = 1;
+			String line;
 			while ((line = br.readLine()) != null) {
 				names.put(i++, line.trim());
 			}
