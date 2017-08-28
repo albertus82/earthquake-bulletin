@@ -1,5 +1,7 @@
 package it.albertus.earthquake.gui;
 
+import java.text.DateFormat;
+
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
@@ -15,14 +17,11 @@ import org.eclipse.swt.widgets.Shell;
 import it.albertus.earthquake.resources.Messages;
 import it.albertus.jface.SwtUtils;
 import it.albertus.jface.listener.LinkSelectionListener;
+import it.albertus.util.Version;
 
 public class AboutDialog extends Dialog {
 
 	private static final double MONITOR_SIZE_DIVISOR = 1.2;
-
-	private String message = "";
-	private String applicationUrl = "";
-	private String iconUrl = "";
 
 	public AboutDialog(final Shell parent) {
 		this(parent, SWT.SHEET);
@@ -30,6 +29,7 @@ public class AboutDialog extends Dialog {
 
 	public AboutDialog(final Shell parent, final int style) {
 		super(parent, style);
+		this.setText(Messages.get("lbl.about.title"));
 	}
 
 	public void open() {
@@ -44,27 +44,27 @@ public class AboutDialog extends Dialog {
 	private void createContents(final Shell shell) {
 		GridLayoutFactory.swtDefaults().applyTo(shell);
 
-		final Label info = new Label(shell, SWT.WRAP);
+		final LinkSelectionListener linkSelectionListener = new LinkSelectionListener();
+
+		final Link info = new Link(shell, SWT.WRAP);
+		final Version version = Version.getInstance();
 		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.CENTER).grab(true, false).applyTo(info);
-		info.setText(this.message);
+		info.setText(buildAnchor(Messages.get("url"), Messages.get("msg.application.name")) + ' ' + Messages.get("msg.version", version.getNumber(), DateFormat.getDateInstance(DateFormat.MEDIUM, Messages.getLanguage().getLocale()).format(version.getDate())));
+		info.addSelectionListener(linkSelectionListener);
 
-		final Link linkProject = new Link(shell, SWT.WRAP);
-		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.CENTER).grab(true, false).applyTo(linkProject);
-		linkProject.setText("<a href=\"" + getApplicationUrl() + "\">" + getApplicationUrl() + "</a>");
-		linkProject.addSelectionListener(new LinkSelectionListener());
-
-		final Label acknowledgementsLocations = new Label(shell, SWT.WRAP);
+		final Link acknowledgementsLocations = new Link(shell, SWT.WRAP);
 		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.CENTER).grab(true, false).applyTo(acknowledgementsLocations);
-		acknowledgementsLocations.setText(Messages.get("lbl.about.acknowledgements.locations"));
+		acknowledgementsLocations.setText(Messages.get("lbl.about.acknowledgements.locations", buildAnchor(Messages.get("url.geofon"), Messages.get("lbl.geofon")), buildAnchor(Messages.get("url.gfz"), Messages.get("lbl.gfz"))));
+		acknowledgementsLocations.addSelectionListener(linkSelectionListener);
 
 		final Label acknowledgementsData = new Label(shell, SWT.WRAP);
 		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.CENTER).grab(true, false).applyTo(acknowledgementsData);
-		acknowledgementsData.setText(Messages.get("lbl.about.acknowledgements.data"));
+		acknowledgementsData.setText(Messages.get("lbl.about.acknowledgements.data", Messages.get("lbl.geofon"), Messages.get("lbl.gfz")));
 
-		final Link linkSource = new Link(shell, SWT.WRAP);
-		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.CENTER).grab(true, false).applyTo(linkSource);
-		linkSource.setText("<a href=\"http://geofon.gfz-potsdam.de\">http://geofon.gfz-potsdam.de</a>");
-		linkSource.addSelectionListener(new LinkSelectionListener());
+		final Link linkLicense = new Link(shell, SWT.WRAP);
+		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.CENTER).grab(true, false).applyTo(linkLicense);
+		linkLicense.setText(Messages.get("lbl.about.license.thirdparty", buildAnchor(Messages.get("url.epl"), Messages.get("lbl.epl"))));
+		linkLicense.addSelectionListener(linkSelectionListener);
 
 		final Button okButton = new Button(shell, SWT.PUSH);
 		okButton.setText(Messages.get("lbl.button.ok"));
@@ -93,28 +93,8 @@ public class AboutDialog extends Dialog {
 		shell.setMinimumSize(shell.getSize());
 	}
 
-	public String getMessage() {
-		return message;
-	}
-
-	public void setMessage(String message) {
-		this.message = message;
-	}
-
-	public String getApplicationUrl() {
-		return applicationUrl;
-	}
-
-	public void setApplicationUrl(String applicationUrl) {
-		this.applicationUrl = applicationUrl;
-	}
-
-	public String getIconUrl() {
-		return iconUrl;
-	}
-
-	public void setIconUrl(String iconUrl) {
-		this.iconUrl = iconUrl;
+	private static String buildAnchor(final String href, final String label) {
+		return new StringBuilder("<a href=\"").append(href).append("\">").append(label).append("</a>").toString();
 	}
 
 	/*
