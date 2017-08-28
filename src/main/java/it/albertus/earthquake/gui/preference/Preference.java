@@ -247,7 +247,7 @@ public enum Preference implements IPreference {
 
 	public static LocalizedLabelsAndValues getLanguageComboOptions() {
 		final Language[] values = Messages.Language.values();
-		final LocalizedLabelsAndValues options = new LocalizedLabelsAndValues(values.length);
+		final LocalizedLabelsAndValues options = new LocalizedLabelsAndValues(values.length * 2);
 		for (final Language language : values) {
 			final Locale locale = language.getLocale();
 			final String value = locale.getLanguage();
@@ -264,7 +264,7 @@ public enum Preference implements IPreference {
 
 	public static LocalizedLabelsAndValues getFormatRadioOptions() {
 		final Format[] values = Format.values();
-		final LocalizedLabelsAndValues options = new LocalizedLabelsAndValues(values.length);
+		final LocalizedLabelsAndValues options = new LocalizedLabelsAndValues(values.length * 2);
 		for (final Format format : values) {
 			final String value = format.getValue();
 			final Localized name = new Localized() {
@@ -280,7 +280,7 @@ public enum Preference implements IPreference {
 
 	public static StaticLabelsAndValues getLoggingComboOptions() {
 		final Map<Integer, Level> levels = LoggingSupport.getLevels();
-		final StaticLabelsAndValues options = new StaticLabelsAndValues(levels.size());
+		final StaticLabelsAndValues options = new StaticLabelsAndValues(levels.size() * 2);
 		for (final Level level : levels.values()) {
 			options.put(level.toString(), level.getName());
 		}
@@ -290,7 +290,7 @@ public enum Preference implements IPreference {
 	public static StaticLabelsAndValues getTimeZoneComboOptions() {
 		final String[] zones = TimeZone.getAvailableIDs();
 		Arrays.sort(zones);
-		final StaticLabelsAndValues options = new StaticLabelsAndValues(zones.length);
+		final StaticLabelsAndValues options = new StaticLabelsAndValues((int) (zones.length * 1.5));
 		for (final String zone : zones) {
 			options.put(zone, zone);
 		}
@@ -299,7 +299,7 @@ public enum Preference implements IPreference {
 
 	public static StaticLabelsAndValues getProxyTypeComboOptions() {
 		final Type[] types = Type.values();
-		final StaticLabelsAndValues options = new StaticLabelsAndValues(types.length - 1);
+		final StaticLabelsAndValues options = new StaticLabelsAndValues(types.length * 2);
 		for (final Type type : types) {
 			if (!Type.DIRECT.equals(type)) {
 				options.put(type.toString(), type.name());
