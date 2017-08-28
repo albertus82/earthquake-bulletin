@@ -21,7 +21,7 @@ public class MapCache {
 
 	private static final Configuration configuration = EarthquakeBulletinConfiguration.getInstance();
 
-	private final Map<String, MapImage> cache = new LinkedHashMap<>(configuration.getByte(MAP_CACHE_SIZE, Defaults.CACHE_SIZE));
+	private final Map<String, MapImage> cache = new LinkedHashMap<>();
 
 	public void put(final String guid, final MapImage map) {
 		cache.put(guid, map);
