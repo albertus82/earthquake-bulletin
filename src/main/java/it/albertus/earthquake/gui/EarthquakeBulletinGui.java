@@ -25,7 +25,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TableColumn;
 
-import it.albertus.earthquake.config.EarthquakeBulletinConfiguration;
+import it.albertus.earthquake.config.EarthquakeBulletinConfig;
 import it.albertus.earthquake.gui.listener.CloseListener;
 import it.albertus.earthquake.resources.Messages;
 import it.albertus.earthquake.util.InitializationException;
@@ -62,7 +62,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 
 	private static final Logger logger = LoggerFactory.getLogger(EarthquakeBulletinGui.class);
 
-	private final EarthquakeBulletinConfiguration configuration = EarthquakeBulletinConfiguration.getInstance();
+	private final EarthquakeBulletinConfig configuration = EarthquakeBulletinConfig.getInstance();
 
 	private SearchForm searchForm;
 	private ResultsTable resultsTable;

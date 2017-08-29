@@ -4,7 +4,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 
-import it.albertus.earthquake.config.EarthquakeBulletinConfiguration;
+import it.albertus.earthquake.config.EarthquakeBulletinConfig;
 import it.albertus.earthquake.resources.Messages;
 
 public class CloseDialog {
@@ -30,7 +30,7 @@ public class CloseDialog {
 	}
 
 	public static boolean mustShow() {
-		return EarthquakeBulletinConfiguration.getInstance().getBoolean("confirm.close", Defaults.CONFIRM_CLOSE);
+		return EarthquakeBulletinConfig.getInstance().getBoolean("confirm.close", Defaults.CONFIRM_CLOSE);
 	}
 
 }

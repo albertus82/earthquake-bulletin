@@ -1,6 +1,6 @@
 package it.albertus.earthquake;
 
-import it.albertus.earthquake.config.EarthquakeBulletinConfiguration;
+import it.albertus.earthquake.config.EarthquakeBulletinConfig;
 import it.albertus.earthquake.gui.EarthquakeBulletinGui;
 import it.albertus.earthquake.util.InitializationException;
 import it.albertus.util.logging.LoggingSupport;
@@ -24,7 +24,7 @@ public class EarthquakeBulletin {
 			LoggingSupport.setFormat(LOG_FORMAT);
 		}
 		try {
-			EarthquakeBulletinConfiguration.getInstance();
+			EarthquakeBulletinConfig.getInstance();
 		}
 		catch (final InitializationException e) {
 			initializationException = e;

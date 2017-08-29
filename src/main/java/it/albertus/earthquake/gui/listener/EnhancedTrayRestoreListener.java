@@ -11,7 +11,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TrayItem;
 
-import it.albertus.earthquake.config.EarthquakeBulletinConfiguration;
+import it.albertus.earthquake.config.EarthquakeBulletinConfig;
 import it.albertus.earthquake.gui.EarthquakeBulletinGui;
 import it.albertus.earthquake.gui.TrayIcon;
 import it.albertus.jface.listener.TrayRestoreListener;
@@ -22,7 +22,7 @@ public class EnhancedTrayRestoreListener extends TrayRestoreListener {
 
 	private static final Logger logger = LoggerFactory.getLogger(EnhancedTrayRestoreListener.class);
 
-	private static final Configuration configuration = EarthquakeBulletinConfiguration.getInstance();
+	private static final Configuration configuration = EarthquakeBulletinConfig.getInstance();
 
 	private boolean firstTime = true;
 

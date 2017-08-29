@@ -16,9 +16,9 @@ import it.albertus.util.logging.FileHandlerBuilder;
 import it.albertus.util.logging.LoggerFactory;
 import it.albertus.util.logging.LoggingSupport;
 
-public class EarthquakeBulletinConfiguration extends Configuration {
+public class EarthquakeBulletinConfig extends Configuration {
 
-	private static final Logger logger = LoggerFactory.getLogger(EarthquakeBulletinConfiguration.class);
+	private static final Logger logger = LoggerFactory.getLogger(EarthquakeBulletinConfig.class);
 
 	public static class Defaults {
 		public static final boolean LOGGING_FILES_ENABLED = true;
@@ -38,17 +38,17 @@ public class EarthquakeBulletinConfiguration extends Configuration {
 	private FileHandlerBuilder fileHandlerBuilder;
 	private Handler fileHandler;
 
-	private static EarthquakeBulletinConfiguration instance;
+	private static EarthquakeBulletinConfig instance;
 
-	private EarthquakeBulletinConfiguration() throws IOException {
+	private EarthquakeBulletinConfig() throws IOException {
 		super(Messages.get("msg.application.name") + File.separator + CFG_FILE_NAME, true);
 		init();
 	}
 
-	public static synchronized EarthquakeBulletinConfiguration getInstance() {
+	public static synchronized EarthquakeBulletinConfig getInstance() {
 		if (instance == null) {
 			try {
-				instance = new EarthquakeBulletinConfiguration();
+				instance = new EarthquakeBulletinConfig();
 			}
 			catch (final IOException e) {
 				final String message = Messages.get("err.open.cfg", CFG_FILE_NAME);

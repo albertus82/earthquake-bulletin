@@ -26,7 +26,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
 import it.albertus.earthquake.EarthquakeBulletin;
-import it.albertus.earthquake.config.EarthquakeBulletinConfiguration;
+import it.albertus.earthquake.config.EarthquakeBulletinConfig;
 import it.albertus.earthquake.gui.job.ExportCsvJob;
 import it.albertus.earthquake.gui.listener.CopyLinkSelectionListener;
 import it.albertus.earthquake.gui.listener.ExportCsvSelectionListener;
@@ -57,7 +57,7 @@ public class ResultsTable {
 
 	private static final String TABLE_FONT = "TABLE_FONT";
 
-	private static final Configuration configuration = EarthquakeBulletinConfiguration.getInstance();
+	private static final Configuration configuration = EarthquakeBulletinConfig.getInstance();
 
 	public static final ThreadLocal<DateFormat> dateFormat = new ThreadLocal<DateFormat>() {
 		@Override

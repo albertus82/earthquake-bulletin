@@ -21,7 +21,7 @@ import org.eclipse.swt.widgets.Tray;
 import org.eclipse.swt.widgets.TrayItem;
 
 import it.albertus.earthquake.EarthquakeBulletin;
-import it.albertus.earthquake.config.EarthquakeBulletinConfiguration;
+import it.albertus.earthquake.config.EarthquakeBulletinConfig;
 import it.albertus.earthquake.gui.listener.CloseListener;
 import it.albertus.earthquake.gui.listener.EnhancedTrayRestoreListener;
 import it.albertus.earthquake.model.Earthquake;
@@ -47,7 +47,7 @@ public class TrayIcon {
 
 	public static final String MINIMIZE_TRAY = "minimize.tray";
 
-	private static final Configuration configuration = EarthquakeBulletinConfiguration.getInstance();
+	private static final Configuration configuration = EarthquakeBulletinConfig.getInstance();
 
 	private final EarthquakeBulletinGui gui;
 
