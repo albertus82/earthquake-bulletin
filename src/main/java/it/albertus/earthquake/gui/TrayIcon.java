@@ -35,6 +35,8 @@ public class TrayIcon {
 
 	private static final Logger logger = LoggerFactory.getLogger(TrayIcon.class);
 
+	private static final int[] icons = { SWT.ICON_INFORMATION, SWT.ICON_WARNING, SWT.ICON_ERROR };
+
 	public static class Defaults {
 		public static final boolean MINIMIZE_TRAY = true;
 
@@ -52,7 +54,7 @@ public class TrayIcon {
 	private Tray tray;
 	private TrayItem trayItem;
 
-	private final Map<Integer, ToolTip> toolTips = new HashMap<>(4);
+	private final Map<Integer, ToolTip> toolTips = new HashMap<>(icons.length * 2);
 	private Menu trayMenu;
 	private MenuItem showMenuItem;
 	private MenuItem exitMenuItem;
@@ -89,7 +91,7 @@ public class TrayIcon {
 					trayItem.setToolTipText(Messages.get("lbl.tray.tooltip"));
 					final TrayRestoreListener trayRestoreListener = new EnhancedTrayRestoreListener(gui.getShell(), trayItem);
 
-					for (final int icon : new int[] { SWT.ICON_INFORMATION, SWT.ICON_WARNING, SWT.ICON_ERROR }) {
+					for (final int icon : icons) {
 						final ToolTip toolTip = new ToolTip(gui.getShell(), SWT.BALLOON | icon);
 						toolTip.setVisible(false);
 						toolTip.setAutoHide(true);
