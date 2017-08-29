@@ -24,7 +24,7 @@ As In:  feregion   122.5W 36.2N
 
 ## Acknowledgements
 
-Locations were obtained from the [GEOFON](http://geofon.gfz-potsdam.de) programme of the [GFZ](http://www.gfz-potsdam.de) German Research Centre for Geosciences using data from the GEVN partner networks.
+Locations were obtained from the [GEOFON](http://geofon.gfz-potsdam.de) programme of the [GFZ](http://www.gfz-potsdam.de) German Research Centre for Geosciences using data from the [GEVN](http://geofon.gfz-potsdam.de/eqinfo/gevn/) partner networks.
 
 Seismic data were obtained from the GEOFON data centre of the GFZ German Research Centre for Geosciences.
 
