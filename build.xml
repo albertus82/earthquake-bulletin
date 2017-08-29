@@ -66,15 +66,15 @@
 				<include name="*.jar" />
 			</fileset>
 		</copy>
-		<copy todir="${build.assemblyDirectory}/dist/cocoa-macosx-x86_64/${artifactId}/lib">
-			<fileset refid="lib" />
-			<fileset dir="${dependencies.directory}/platform/cocoa-macosx-x86_64">
-				<include name="*.jar" />
-			</fileset>
-		</copy>
 		<copy todir="${build.assemblyDirectory}/dist/gtk-linux-armhf/${artifactId}/lib">
 			<fileset refid="lib" />
 			<fileset dir="${dependencies.directory}/platform/gtk-linux-armhf">
+				<include name="*.jar" />
+			</fileset>
+		</copy>
+		<copy todir="${build.assemblyDirectory}/dist/cocoa-macosx-x86_64/${artifactId}/lib">
+			<fileset refid="lib" />
+			<fileset dir="${dependencies.directory}/platform/cocoa-macosx-x86_64">
 				<include name="*.jar" />
 			</fileset>
 		</copy>
@@ -108,16 +108,16 @@
 				</fileset>
 			</classpath>
 		</manifestclasspath>
-		<manifestclasspath property="classpath.cocoa-macosx-x86_64" jarfile="${build.assemblyDirectory}/dist/cocoa-macosx-x86_64/${artifactId}/${artifactId}.jar" maxParentLevels="0">
+		<manifestclasspath property="classpath.gtk-linux-armhf" jarfile="${build.assemblyDirectory}/dist/gtk-linux-armhf/${artifactId}/${artifactId}.jar" maxParentLevels="0">
 			<classpath>
-				<fileset dir="${build.assemblyDirectory}/dist/cocoa-macosx-x86_64/${artifactId}/lib">
+				<fileset dir="${build.assemblyDirectory}/dist/gtk-linux-armhf/${artifactId}/lib">
 					<include name="*.jar" />
 				</fileset>
 			</classpath>
 		</manifestclasspath>
-		<manifestclasspath property="classpath.gtk-linux-armhf" jarfile="${build.assemblyDirectory}/dist/gtk-linux-armhf/${artifactId}/${artifactId}.jar" maxParentLevels="0">
+		<manifestclasspath property="classpath.cocoa-macosx-x86_64" jarfile="${build.assemblyDirectory}/dist/cocoa-macosx-x86_64/${artifactId}/${artifactId}.jar" maxParentLevels="0">
 			<classpath>
-				<fileset dir="${build.assemblyDirectory}/dist/gtk-linux-armhf/${artifactId}/lib">
+				<fileset dir="${build.assemblyDirectory}/dist/cocoa-macosx-x86_64/${artifactId}/lib">
 					<include name="*.jar" />
 				</fileset>
 			</classpath>
@@ -139,10 +139,10 @@
 		<copy todir="${build.assemblyDirectory}/dist/gtk-linux-x86_64/${artifactId}" failonerror="false">
 			<fileset refid="config" />
 		</copy>
-		<copy todir="${build.assemblyDirectory}/dist/cocoa-macosx-x86_64/${artifactId}" failonerror="false">
+		<copy todir="${build.assemblyDirectory}/dist/gtk-linux-armhf/${artifactId}" failonerror="false">
 			<fileset refid="config" />
 		</copy>
-		<copy todir="${build.assemblyDirectory}/dist/gtk-linux-armhf/${artifactId}" failonerror="false">
+		<copy todir="${build.assemblyDirectory}/dist/cocoa-macosx-x86_64/${artifactId}" failonerror="false">
 			<fileset refid="config" />
 		</copy>
 	</target>
@@ -170,11 +170,11 @@
 		<copy todir="${build.assemblyDirectory}/dist/gtk-linux-x86_64/${artifactId}" failonerror="false">
 			<fileset refid="sh" />
 		</copy>
-		<copy todir="${build.assemblyDirectory}/dist/cocoa-macosx-x86_64/${artifactId}" failonerror="false">
-			<fileset refid="command" />
-		</copy>
 		<copy todir="${build.assemblyDirectory}/dist/gtk-linux-armhf/${artifactId}" failonerror="false">
 			<fileset refid="sh" />
+		</copy>
+		<copy todir="${build.assemblyDirectory}/dist/cocoa-macosx-x86_64/${artifactId}" failonerror="false">
+			<fileset refid="command" />
 		</copy>
 	</target>
 
@@ -197,10 +197,10 @@
 		<copy todir="${build.assemblyDirectory}/dist/gtk-linux-x86_64/${artifactId}">
 			<fileset refid="docs" />
 		</copy>
-		<copy todir="${build.assemblyDirectory}/dist/cocoa-macosx-x86_64/${artifactId}">
+		<copy todir="${build.assemblyDirectory}/dist/gtk-linux-armhf/${artifactId}">
 			<fileset refid="docs" />
 		</copy>
-		<copy todir="${build.assemblyDirectory}/dist/gtk-linux-armhf/${artifactId}">
+		<copy todir="${build.assemblyDirectory}/dist/cocoa-macosx-x86_64/${artifactId}">
 			<fileset refid="docs" />
 		</copy>
 	</target>
@@ -208,8 +208,8 @@
 	<target name="icons">
 		<copy file="${icons.directory}/main.ico" tofile="${build.assemblyDirectory}/dist/gtk-linux-x86/${artifactId}/${artifactId}.icns" failonerror="false" />
 		<copy file="${icons.directory}/main.ico" tofile="${build.assemblyDirectory}/dist/gtk-linux-x86_64/${artifactId}/${artifactId}.icns" failonerror="false" />
-		<copy file="${icons.directory}/main.icns" tofile="${build.assemblyDirectory}/dist/cocoa-macosx-x86_64/${artifactId}/${artifactId}.icns" failonerror="false" />
 		<copy file="${icons.directory}/main.ico" tofile="${build.assemblyDirectory}/dist/gtk-linux-armhf/${artifactId}/${artifactId}.icns" failonerror="false" />
+		<copy file="${icons.directory}/main.icns" tofile="${build.assemblyDirectory}/dist/cocoa-macosx-x86_64/${artifactId}/${artifactId}.icns" failonerror="false" />
 	</target>
 
 	<target name="jar" depends="compile, resources, config, scripts, docs, icons, lib">
@@ -257,10 +257,10 @@
 			</manifest>
 			<metainf refid="docs" />
 		</jar>
-		<jar destfile="${build.assemblyDirectory}/dist/cocoa-macosx-x86_64/${artifactId}/${artifactId}.jar" basedir="${build.outputDirectory}" level="9">
+		<jar destfile="${build.assemblyDirectory}/dist/gtk-linux-armhf/${artifactId}/${artifactId}.jar" basedir="${build.outputDirectory}" level="9">
 			<manifest>
 				<attribute name="Main-Class" value="${build.jar.archive.manifest.mainClass}" />
-				<attribute name="Class-Path" value="${classpath.cocoa-macosx-x86_64}" />
+				<attribute name="Class-Path" value="${classpath.gtk-linux-armhf}" />
 				<attribute name="Implementation-Title" value="${name}" />
 				<attribute name="Implementation-Version" value="${version.number}" />
 				<attribute name="X-Compile-Source-JDK" value="${build.compiler.source}" />
@@ -268,10 +268,10 @@
 			</manifest>
 			<metainf refid="docs" />
 		</jar>
-		<jar destfile="${build.assemblyDirectory}/dist/gtk-linux-armhf/${artifactId}/${artifactId}.jar" basedir="${build.outputDirectory}" level="9">
+		<jar destfile="${build.assemblyDirectory}/dist/cocoa-macosx-x86_64/${artifactId}/${artifactId}.jar" basedir="${build.outputDirectory}" level="9">
 			<manifest>
 				<attribute name="Main-Class" value="${build.jar.archive.manifest.mainClass}" />
-				<attribute name="Class-Path" value="${classpath.gtk-linux-armhf}" />
+				<attribute name="Class-Path" value="${classpath.cocoa-macosx-x86_64}" />
 				<attribute name="Implementation-Title" value="${name}" />
 				<attribute name="Implementation-Version" value="${version.number}" />
 				<attribute name="X-Compile-Source-JDK" value="${build.compiler.source}" />
