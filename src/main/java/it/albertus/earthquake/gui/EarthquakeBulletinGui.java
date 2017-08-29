@@ -145,7 +145,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 		getShell().addListener(SWT.Activate, new MaximizeShellListener());
 		getShell().addListener(SWT.Deactivate, new DeactivateShellListener());
 
-		if (SwtUtils.isGtk3()) { // fixes invisible (transparent) shell bug with some Linux distibutions
+		if (SwtUtils.isGtk3() == null || SwtUtils.isGtk3()) { // fixes invisible (transparent) shell bug with some Linux distibutions
 			setMinimizedMaximizedShellStatus();
 		}
 
@@ -188,7 +188,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 			shell.setLocation(locationX, locationY);
 		}
 
-		if (!SwtUtils.isGtk3()) { // fixes invisible (transparent) shell bug with some Linux distibutions
+		if (SwtUtils.isGtk3() != null && !SwtUtils.isGtk3()) { // fixes invisible (transparent) shell bug with some Linux distibutions
 			setMinimizedMaximizedShellStatus();
 		}
 	}
