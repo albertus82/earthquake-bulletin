@@ -405,7 +405,7 @@
 			Name: "{userstartup}\${name}"; Filename: "{app}\${ant.project.name}.exe"; Tasks: startupicon
 
 			[Files]
-			Source: "${artifactId}\*"; Excludes: "*.cfg,lib\*.log"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
+			Source: "${artifactId}\*"; Excludes: "*.cfg,${dependencies.directory}\*.log"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
 			Source: "${artifactId}\${dependencies.directory}\*.log"; DestDir: "{app}\${dependencies.directory}"; Flags: ignoreversion overwritereadonly uninsremovereadonly; Attribs: hidden readonly
 			Source: "${artifactId}\*.cfg"; DestDir: "{userappdata}\${name}"; Flags: onlyifdoesntexist
 
