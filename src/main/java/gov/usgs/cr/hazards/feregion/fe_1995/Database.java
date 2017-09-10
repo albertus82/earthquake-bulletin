@@ -41,6 +41,8 @@ class Database {
 	private final Map<String, List<Integer>> mlons = new HashMap<>(quadorder.length * 2);
 	private final Map<String, List<Integer>> mfenums = new HashMap<>(quadorder.length * 2);
 
+	private final List<Integer> seisreg = new ArrayList<>(757);
+
 	Database() throws IOException {
 		// Read the file of region names...
 		try (final InputStream is = getClass().getResourceAsStream("names.asc"); final InputStreamReader isr = new InputStreamReader(is); final BufferedReader br = new BufferedReader(isr)) {
@@ -116,6 +118,20 @@ class Database {
 			mlons.put(quad, lons);
 			mfenums.put(quad, fenums);
 		}
+
+		// mksrtb.for
+		try (final InputStream is = getClass().getResourceAsStream("seisrdef.asc"); final InputStreamReader isr = new InputStreamReader(is); final BufferedReader br = new BufferedReader(isr)) {
+			String line;
+			while ((line = br.readLine()) != null) {
+				final String[] row = line.trim().split("\\s+");
+				final Integer value = Integer.valueOf(row[0]);
+				final int from = Integer.parseInt(row[1]);
+				final int to = row.length > 2 ? Integer.parseInt(row[2]) : from;
+				for (int key = from; key <= to; key++) {
+					seisreg.add(value);
+				}
+			}
+		}
 	}
 
 	List<String> getNames() {
@@ -136,6 +152,10 @@ class Database {
 
 	Map<String, List<Integer>> getFenums() {
 		return mfenums;
+	}
+
+	List<Integer> getSeisreg() {
+		return seisreg;
 	}
 
 }
