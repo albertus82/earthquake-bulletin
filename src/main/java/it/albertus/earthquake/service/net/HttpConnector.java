@@ -10,7 +10,7 @@ import java.net.Proxy.Type;
 import java.net.URL;
 import java.net.URLConnection;
 
-import it.albertus.earthquake.config.EarthquakeBulletinConfiguration;
+import it.albertus.earthquake.config.EarthquakeBulletinConfig;
 import it.albertus.util.Configuration;
 import it.albertus.util.Version;
 
@@ -32,7 +32,7 @@ public class HttpConnector {
 
 	private static final String USER_AGENT = String.format("Mozilla/5.0 (%s; %s; %s) EarthquakeBulletin/%s (KHTML, like Gecko)", System.getProperty("os.name"), System.getProperty("os.arch"), System.getProperty("os.version"), Version.getInstance().getNumber());
 
-	private static final Configuration configuration = EarthquakeBulletinConfiguration.getInstance();
+	private static final Configuration configuration = EarthquakeBulletinConfig.getInstance();
 
 	private HttpConnector() {
 		throw new IllegalAccessError();

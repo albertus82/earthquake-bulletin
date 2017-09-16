@@ -10,7 +10,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
-import it.albertus.earthquake.config.EarthquakeBulletinConfiguration;
+import it.albertus.earthquake.config.EarthquakeBulletinConfig;
 import it.albertus.earthquake.model.Depth;
 import it.albertus.earthquake.model.Earthquake;
 import it.albertus.earthquake.model.Latitude;
@@ -54,7 +54,7 @@ public class HtmlTableDataTransformer {
 		}
 	};
 
-	private static final Configuration configuration = EarthquakeBulletinConfiguration.getInstance();
+	private static final Configuration configuration = EarthquakeBulletinConfig.getInstance();
 
 	private HtmlTableDataTransformer() {
 		throw new IllegalAccessError();

@@ -1,11 +1,17 @@
 package it.albertus.earthquake.gui.listener;
 
+import java.text.DateFormat;
+import java.util.TimeZone;
+
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 
+import it.albertus.earthquake.EarthquakeBulletin;
+import it.albertus.earthquake.config.EarthquakeBulletinConfig;
 import it.albertus.earthquake.gui.EarthquakeBulletinGui;
 import it.albertus.earthquake.gui.Images;
+import it.albertus.earthquake.gui.ResultsTable;
 import it.albertus.earthquake.model.Earthquake;
 import it.albertus.earthquake.resources.Messages;
 import it.albertus.jface.google.maps.MapControl;
@@ -13,8 +19,12 @@ import it.albertus.jface.google.maps.MapDialog;
 import it.albertus.jface.google.maps.MapMarker;
 import it.albertus.jface.google.maps.MapOptions;
 import it.albertus.jface.google.maps.MapType;
+import it.albertus.util.Configuration;
+import it.albertus.util.NewLine;
 
 public class GoogleMapsPopupSelectionListener extends SelectionAdapter {
+
+	private static final Configuration configuration = EarthquakeBulletinConfig.getInstance();
 
 	private final EarthquakeBulletinGui gui;
 
@@ -38,7 +48,19 @@ public class GoogleMapsPopupSelectionListener extends SelectionAdapter {
 			final double longitude = selection.getLongitude().doubleValue();
 			options.setCenterLat(latitude);
 			options.setCenterLng(longitude);
-			epicenterMapDialog.getMarkers().add(new MapMarker(latitude, longitude, Messages.get("lbl.map.epicenter.marker.title")));
+
+			final StringBuilder title = new StringBuilder("M ");
+			title.append(selection.getMagnitude()).append(", ").append(selection.getRegion());
+			title.append(NewLine.SYSTEM_LINE_SEPARATOR);
+			final DateFormat df = ResultsTable.dateFormat.get();
+			df.setTimeZone(TimeZone.getTimeZone(configuration.getString("timezone", EarthquakeBulletin.Defaults.TIME_ZONE_ID)));
+			title.append(df.format(selection.getTime())).append(' ');
+			title.append(selection.getLatitude()).append(' ');
+			title.append(selection.getLongitude()).append(' ');
+			title.append(selection.getDepth()).append(' ');
+			title.append(selection.getStatus());
+
+			epicenterMapDialog.getMarkers().add(new MapMarker(latitude, longitude, title.toString()));
 			epicenterMapDialog.open();
 		}
 	}

@@ -7,7 +7,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.zip.GZIPInputStream;
 
-import it.albertus.earthquake.config.EarthquakeBulletinConfiguration;
+import it.albertus.earthquake.config.EarthquakeBulletinConfig;
 import it.albertus.earthquake.model.MapImage;
 import it.albertus.util.Configuration;
 import it.albertus.util.IOUtils;
@@ -16,7 +16,7 @@ public class ImageDownloader {
 
 	private static final int BUFFER_SIZE = 8192;
 
-	private static final Configuration configuration = EarthquakeBulletinConfiguration.getInstance();
+	private static final Configuration configuration = EarthquakeBulletinConfig.getInstance();
 
 	private ImageDownloader() {
 		throw new IllegalAccessError();

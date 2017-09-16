@@ -10,7 +10,7 @@ public class Longitude extends Coordinate {
 
 	@Override
 	public String toString() {
-		return numberFormats.get().format(Math.abs(value)) + '\u00B0' + (value > 0 ? 'E' : 'W');
+		return numberFormats.get().format(Math.abs(value)) + DEGREE_SIGN + (value < 0 ? 'W' : 'E');
 	}
 
 }

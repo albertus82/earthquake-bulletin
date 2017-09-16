@@ -6,7 +6,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.RGB;
 
-import it.albertus.earthquake.config.EarthquakeBulletinConfiguration;
+import it.albertus.earthquake.config.EarthquakeBulletinConfig;
 import it.albertus.earthquake.model.Earthquake;
 import it.albertus.util.Configuration;
 
@@ -15,7 +15,7 @@ public class EarthquakeColumnLabelProvider extends ColumnLabelProvider {
 	private static final String EARTHQUAKE_BACKGROUND_BIG = "EARTHQUAKE_BACKGROUND_BIG";
 	private static final String EARTHQUAKE_BACKGROUND_XXL = "EARTHQUAKE_BACKGROUND_XXL";
 
-	private static final Configuration configuration = EarthquakeBulletinConfiguration.getInstance();
+	private static final Configuration configuration = EarthquakeBulletinConfig.getInstance();
 
 	static {
 		JFaceResources.getColorRegistry().put(EARTHQUAKE_BACKGROUND_XXL, new RGB(0xF8, 0xC8, 0xC8));

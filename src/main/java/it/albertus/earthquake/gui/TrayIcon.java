@@ -21,8 +21,9 @@ import org.eclipse.swt.widgets.Tray;
 import org.eclipse.swt.widgets.TrayItem;
 
 import it.albertus.earthquake.EarthquakeBulletin;
-import it.albertus.earthquake.config.EarthquakeBulletinConfiguration;
+import it.albertus.earthquake.config.EarthquakeBulletinConfig;
 import it.albertus.earthquake.gui.listener.CloseListener;
+import it.albertus.earthquake.gui.listener.EnhancedTrayRestoreListener;
 import it.albertus.earthquake.model.Earthquake;
 import it.albertus.earthquake.resources.Messages;
 import it.albertus.jface.listener.TrayRestoreListener;
@@ -34,6 +35,8 @@ public class TrayIcon {
 
 	private static final Logger logger = LoggerFactory.getLogger(TrayIcon.class);
 
+	private static final int[] icons = { SWT.ICON_INFORMATION, SWT.ICON_WARNING, SWT.ICON_ERROR };
+
 	public static class Defaults {
 		public static final boolean MINIMIZE_TRAY = true;
 
@@ -42,14 +45,16 @@ public class TrayIcon {
 		}
 	}
 
-	private static final Configuration configuration = EarthquakeBulletinConfiguration.getInstance();
+	public static final String MINIMIZE_TRAY = "minimize.tray";
+
+	private static final Configuration configuration = EarthquakeBulletinConfig.getInstance();
 
 	private final EarthquakeBulletinGui gui;
 
 	private Tray tray;
 	private TrayItem trayItem;
 
-	private final Map<Integer, ToolTip> toolTips = new HashMap<>(3);
+	private final Map<Integer, ToolTip> toolTips = new HashMap<>(icons.length * 2);
 	private Menu trayMenu;
 	private MenuItem showMenuItem;
 	private MenuItem exitMenuItem;
@@ -62,7 +67,7 @@ public class TrayIcon {
 		gui.getShell().addShellListener(new ShellAdapter() {
 			@Override
 			public void shellIconified(final ShellEvent se) {
-				if (configuration.getBoolean("minimize.tray", Defaults.MINIMIZE_TRAY)) {
+				if (configuration.getBoolean(MINIMIZE_TRAY, Defaults.MINIMIZE_TRAY)) {
 					iconify();
 				}
 			}
@@ -84,20 +89,20 @@ public class TrayIcon {
 					trayIcon = getTrayIcon();
 					trayItem.setImage(trayIcon);
 					trayItem.setToolTipText(Messages.get("lbl.tray.tooltip"));
-					final TrayRestoreListener trayRestoreListener = new TrayRestoreListener(gui.getShell(), trayItem);
+					final TrayRestoreListener trayRestoreListener = new EnhancedTrayRestoreListener(gui.getShell(), trayItem);
 
-					for (final int icon : new int[] { SWT.ICON_INFORMATION, SWT.ICON_WARNING, SWT.ICON_ERROR }) {
+					for (final int icon : icons) {
 						final ToolTip toolTip = new ToolTip(gui.getShell(), SWT.BALLOON | icon);
 						toolTip.setVisible(false);
 						toolTip.setAutoHide(true);
-						toolTip.addListener(SWT.Selection, trayRestoreListener);
+						toolTip.addSelectionListener(trayRestoreListener);
 						toolTips.put(icon, toolTip);
 					}
 
 					trayMenu = new Menu(gui.getShell(), SWT.POP_UP);
 					showMenuItem = new MenuItem(trayMenu, SWT.PUSH);
 					showMenuItem.setText(Messages.get("lbl.tray.show"));
-					showMenuItem.addListener(SWT.Selection, trayRestoreListener);
+					showMenuItem.addSelectionListener(trayRestoreListener);
 					trayMenu.setDefaultItem(showMenuItem);
 
 					new MenuItem(trayMenu, SWT.SEPARATOR);
@@ -112,7 +117,7 @@ public class TrayIcon {
 						}
 					});
 
-					trayItem.addListener(SWT.Selection, trayRestoreListener);
+					trayItem.addSelectionListener(trayRestoreListener);
 					if (!Util.isLinux()) {
 						gui.getShell().addShellListener(trayRestoreListener);
 					}
@@ -160,7 +165,7 @@ public class TrayIcon {
 				trayItem.getDisplay().syncExec(new Runnable() {
 					@Override
 					public void run() {
-						logger.log(Level.INFO, "{0}", text);
+						logger.log(Level.FINE, "{0}", text);
 						trayItem.setToolTip(toolTip);
 						toolTip.setText(text.toString().trim());
 						toolTip.setMessage(message.toString().trim());

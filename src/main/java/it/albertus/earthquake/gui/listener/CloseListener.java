@@ -1,36 +1,41 @@
 package it.albertus.earthquake.gui.listener;
 
-import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Shell;
 
 import it.albertus.earthquake.gui.CloseDialog;
+import it.albertus.earthquake.gui.EarthquakeBulletinGui;
 
 public class CloseListener implements Listener, SelectionListener {
 
-	private final IShellProvider provider;
+	private final EarthquakeBulletinGui gui;
 
-	public CloseListener(final IShellProvider provider) {
-		this.provider = provider;
+	public CloseListener(final EarthquakeBulletinGui gui) {
+		this.gui = gui;
 	}
 
 	private boolean canClose() {
-		return !CloseDialog.mustShow() || CloseDialog.open(provider.getShell()) == SWT.YES;
+		return !CloseDialog.mustShow() || CloseDialog.open(gui.getShell()) == SWT.YES;
 	}
 
 	private void disposeShellAndDisplay() {
-		provider.getShell().dispose();
+		final Shell shell = gui.getShell();
+		if (shell != null && !shell.isDisposed()) {
+			gui.saveShellStatus();
+			shell.dispose();
+		}
 		final Display display = Display.getCurrent();
-		if (display != null) {
-			display.dispose(); // Fix close not working on Windows 10 when iconified
+		if (display != null && !display.isDisposed()) {
+			display.dispose(); // fixes close not working on Windows 10 when iconified
 		}
 	}
 
-	/* Shell close command & OS X Menu */
+	// Shell close command & macOS menu
 	@Override
 	public void handleEvent(final Event event) {
 		if (canClose()) {
@@ -41,7 +46,7 @@ public class CloseListener implements Listener, SelectionListener {
 		}
 	}
 
-	/* Menu */
+	// Menu
 	@Override
 	public void widgetSelected(final SelectionEvent event) {
 		if (canClose()) {

@@ -14,7 +14,7 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 
 import it.albertus.earthquake.EarthquakeBulletin;
-import it.albertus.earthquake.config.EarthquakeBulletinConfiguration;
+import it.albertus.earthquake.config.EarthquakeBulletinConfig;
 import it.albertus.earthquake.gui.EarthquakeBulletinGui;
 import it.albertus.earthquake.gui.Images;
 import it.albertus.earthquake.gui.ResultsTable;
@@ -31,7 +31,7 @@ public class PreferencesListener extends SelectionAdapter implements Listener {
 
 	private static final Logger logger = LoggerFactory.getLogger(PreferencesListener.class);
 
-	private static final Configuration configuration = EarthquakeBulletinConfiguration.getInstance();
+	private static final Configuration configuration = EarthquakeBulletinConfig.getInstance();
 
 	private final EarthquakeBulletinGui gui;
 

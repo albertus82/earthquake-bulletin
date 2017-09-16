@@ -26,7 +26,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
 import it.albertus.earthquake.EarthquakeBulletin;
-import it.albertus.earthquake.config.EarthquakeBulletinConfiguration;
+import it.albertus.earthquake.config.EarthquakeBulletinConfig;
 import it.albertus.earthquake.gui.job.ExportCsvJob;
 import it.albertus.earthquake.gui.listener.CopyLinkSelectionListener;
 import it.albertus.earthquake.gui.listener.ExportCsvSelectionListener;
@@ -53,11 +53,11 @@ public class ResultsTable {
 		}
 	}
 
-	private static final int NUMBER_OF_COLUMNS = 7;
+	private static final int TOOLTIP_TIME_DISPLAYED = 5000;
 
 	private static final String TABLE_FONT = "TABLE_FONT";
 
-	private static final Configuration configuration = EarthquakeBulletinConfiguration.getInstance();
+	private static final Configuration configuration = EarthquakeBulletinConfig.getInstance();
 
 	public static final ThreadLocal<DateFormat> dateFormat = new ThreadLocal<DateFormat>() {
 		@Override
@@ -131,7 +131,7 @@ public class ResultsTable {
 
 	private final TableViewer tableViewer;
 	private final EarthquakeViewerComparator comparator;
-	private final HashMap<Integer, Localized> labelsMap = new HashMap<>(NUMBER_OF_COLUMNS);
+	private final HashMap<Integer, Localized> labelsMap = new HashMap<>();
 
 	private final ContextMenu contextMenu;
 
@@ -272,7 +272,7 @@ public class ResultsTable {
 
 			@Override
 			public int getToolTipTimeDisplayed(final Object object) {
-				return 5000;
+				return TOOLTIP_TIME_DISPLAYED;
 			}
 		});
 
