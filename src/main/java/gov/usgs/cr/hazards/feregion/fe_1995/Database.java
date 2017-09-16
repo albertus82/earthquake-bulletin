@@ -125,9 +125,9 @@ class Database {
 			while ((line = br.readLine()) != null) {
 				final String[] row = line.trim().split("\\s+");
 				final Integer value = Integer.valueOf(row[0]);
-				final int from = Integer.parseInt(row[1]);
-				final int to = row.length > 2 ? Integer.parseInt(row[2]) : from;
-				for (int key = from; key <= to; key++) {
+				final short from = Short.parseShort(row[1]);
+				final short to = row.length > 2 ? Short.parseShort(row[2]) : from;
+				for (short i = from; i <= to; i++) {
 					seisreg.add(value);
 				}
 			}
