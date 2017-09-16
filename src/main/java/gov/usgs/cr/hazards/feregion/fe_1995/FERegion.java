@@ -1,8 +1,9 @@
 package gov.usgs.cr.hazards.feregion.fe_1995;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -38,11 +39,11 @@ public class FERegion {
 	 * 
 	 * @param coordinates the geographical {@link Coordinates}
 	 * @return the {@link Region} object containing Flinn-Engdahl geographical
-	 *         region number and name.
+	 *         region number and name
 	 */
-	public Region getRegion(final Coordinates coordinates) {
-		final int fenum = getNumber(coordinates);
-		final Region region = getRegion(fenum);
+	public Region getGeographicRegion(final Coordinates coordinates) {
+		final int fenum = getGeographicRegionNumber(coordinates);
+		final Region region = getGeographicRegion(fenum);
 		logger.log(Level.FINE, "{0} {1}", new Object[] { region.getNumber(), region.getName() });
 
 		return region;
@@ -57,23 +58,32 @@ public class FERegion {
 	 *         number
 	 * @throws IndexOutOfBoundsException if the number specified is out of range
 	 */
-	public Region getRegion(final int fenum) {
+	public Region getGeographicRegion(final int fenum) {
 		return new Region(fenum, database.getNames().get(fenum - 1));
 	}
 
-	public List<Region> getAllRegions() {
-		final List<Region> regions = new ArrayList<>();
+	/**
+	 * Returns a map containing all the Flinn-Engdahl geographical regions.
+	 * 
+	 * @return a new map (F-E number, {@code Region}) containing all
+	 *         Flinn-Engdahl geographical regions
+	 */
+	public Map<Integer, Region> getAllGeographicRegions() {
+		final Map<Integer, Region> regions = new TreeMap<>();
 		for (int fenum = 1; fenum <= database.getNames().size(); fenum++) {
-			regions.add(getRegion(fenum));
+			regions.put(fenum, getGeographicRegion(fenum));
 		}
 		return regions;
 	}
 
-	Region getRegion(final String arg0, final String arg1) {
-		return getRegion(Coordinates.parse(arg0, arg1));
-	}
-
-	private int getNumber(final Coordinates coordinates) {
+	/**
+	 * Given the geographical coordinates in decimal degrees, returns the
+	 * Flinn-Engdahl geographical region number.
+	 * 
+	 * @param coordinates the geographical {@link Coordinates}
+	 * @return the Flinn-Engdahl geographical region number
+	 */
+	public int getGeographicRegionNumber(final Coordinates coordinates) {
 		// Take absolute values & truncate to integers...
 		final int lt = (int) Math.abs(coordinates.getLatitude());
 		final int ln = (int) Math.abs(coordinates.getLongitude());
@@ -115,6 +125,22 @@ public class FERegion {
 	}
 
 	/**
+	 * Given the Flinn-Engdahl <em>geographical</em> region number, returns the
+	 * Flinn-Engdahl <em>seismic</em> region number.
+	 * 
+	 * @param fenum the Flinn-Engdahl <b>geographical</b> region number
+	 * @return the Flinn-Engdahl <b>seismic</b> region number
+	 * @throws IndexOutOfBoundsException if the number specified is out of range
+	 */
+	public int getSeismicRegionNumber(final int fenum) {
+		return database.getSeisreg().get(fenum - 1);
+	}
+
+	Region getGeographicRegion(final String arg0, final String arg1) {
+		return getGeographicRegion(Coordinates.parse(arg0, arg1));
+	}
+
+	/**
 	 * Returns Flinn-Engdahl Region name from decimal lon,lat values given on
 	 * command line.
 	 * 
@@ -130,7 +156,7 @@ public class FERegion {
 		else {
 			final FERegion instance = new FERegion();
 			try {
-				System.out.println(instance.getRegion(args[0], args[1]).getName());
+				System.out.println(instance.getGeographicRegion(args[0], args[1]).getName());
 			}
 			catch (final IllegalCoordinateException e) {
 				System.err.println(e.getMessage());

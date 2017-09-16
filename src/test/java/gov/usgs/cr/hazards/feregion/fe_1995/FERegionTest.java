@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
@@ -44,14 +45,14 @@ public class FERegionTest {
 
 	@Test
 	public void testRegion() {
-		final Region r1 = instance.getRegion(new Coordinates(12.5, 42.5));
+		final Region r1 = instance.getGeographicRegion(new Coordinates(12.5, 42.5));
 		logger.info(r1.toString());
 		Assert.assertFalse(r1.equals(null));
 		Assert.assertFalse(r1.equals(new Object()));
-		final Region r2 = instance.getRegion(new Coordinates(-12.5, -42.5));
+		final Region r2 = instance.getGeographicRegion(new Coordinates(-12.5, -42.5));
 		logger.info(r2.toString());
 		Assert.assertFalse(r1.equals(r2));
-		final Region r3 = instance.getRegion("12E", "42");
+		final Region r3 = instance.getGeographicRegion("12E", "42");
 		logger.info(r3.toString());
 		Assert.assertTrue(r1.equals(r3));
 		Assert.assertFalse(r2.equals(r3));
@@ -67,7 +68,7 @@ public class FERegionTest {
 		try (final InputStream is = getClass().getResourceAsStream("perl.out.gz"); final GZIPInputStream gzis = new GZIPInputStream(is); final InputStreamReader isr = new InputStreamReader(gzis); final BufferedReader br = new BufferedReader(isr)) {
 			for (int lon = -180; lon <= 180; lon++) {
 				for (int lat = -90; lat <= 90; lat++) {
-					final String name = instance.getRegion(Integer.toString(lon), Integer.toString(lat)).getName();
+					final String name = instance.getGeographicRegion(Integer.toString(lon), Integer.toString(lat)).getName();
 					Assert.assertEquals("lon: " + lon + ", lat: " + lat, br.readLine(), name);
 				}
 			}
@@ -75,7 +76,7 @@ public class FERegionTest {
 		try (final InputStream is = getClass().getResourceAsStream("perlext.out.gz"); final GZIPInputStream gzis = new GZIPInputStream(is); final InputStreamReader isr = new InputStreamReader(gzis); final BufferedReader br = new BufferedReader(isr)) {
 			for (int lon = -540; lon <= 540; lon += 5) {
 				for (int lat = -90; lat <= 90; lat += 5) {
-					final String name = instance.getRegion(Integer.toString(lon), Integer.toString(lat)).getName();
+					final String name = instance.getGeographicRegion(Integer.toString(lon), Integer.toString(lat)).getName();
 					Assert.assertEquals("lon: " + lon + ", lat: " + lat, br.readLine(), name);
 				}
 			}
@@ -195,19 +196,19 @@ public class FERegionTest {
 	@Test
 	public void testGetRegionByNumber() {
 		try {
-			instance.getRegion(0);
+			instance.getGeographicRegion(0);
 			Assert.assertTrue(false);
 		}
 		catch (final IndexOutOfBoundsException e) {
 			Assert.assertNotNull(e);
 		}
 
-		Assert.assertEquals("CENTRAL ALASKA", instance.getRegion(1).getName());
-		Assert.assertEquals("PYRENEES", instance.getRegion(378).getName());
-		Assert.assertEquals("GALAPAGOS TRIPLE JUNCTION REGION", instance.getRegion(757).getName());
+		Assert.assertEquals("CENTRAL ALASKA", instance.getGeographicRegion(1).getName());
+		Assert.assertEquals("PYRENEES", instance.getGeographicRegion(378).getName());
+		Assert.assertEquals("GALAPAGOS TRIPLE JUNCTION REGION", instance.getGeographicRegion(757).getName());
 
 		try {
-			instance.getRegion(758);
+			instance.getGeographicRegion(758);
 			Assert.assertTrue(false);
 		}
 		catch (final IndexOutOfBoundsException e) {
@@ -1223,7 +1224,7 @@ public class FERegionTest {
 			final String geofon = tc.name.toUpperCase();
 			final String expected = geofon.replace("VOGTLAND (GERMAN-CZECH BORDER REGION)", "GERMANY").replace("MACEDONIA", "ALBANIA").replace("NW BALKAN REGION", "NORTHWESTERN BALKAN REGION").replace("OFF WEST COAST OF NORTHERN SUMATRA", "OFF W COAST OF NORTHERN SUMATRA").replace('-', ' ').replace('/', ' ').replace(" ", "");
 
-			final String feRegion = instance.getRegion(tc.lon, tc.lat).getName();
+			final String feRegion = instance.getGeographicRegion(tc.lon, tc.lat).getName();
 			final String actual = feRegion.replace('-', ' ').replace('/', ' ').replace(" ", "");
 
 			Assert.assertEquals("lon: " + tc.lon + ", lat: " + tc.lat + ", expected: \"" + geofon + "\", actual: \"" + feRegion + "\"", expected.substring(0, Math.min(expected.length(), 10)), actual.substring(0, Math.min(actual.length(), 10)));
@@ -1232,13 +1233,21 @@ public class FERegionTest {
 
 	@Test
 	public void testGetAllRegions() {
-		final List<Region> allRegions = instance.getAllRegions();
+		final Map<Integer, Region> allRegions = instance.getAllGeographicRegions();
 		Assert.assertEquals(757, allRegions.size());
 		logger.log(Level.FINE, "{0}", allRegions);
 	}
 
+	@Test
+	public void testGetSeismicRegionNumber() {
+		Assert.assertEquals(1, instance.getSeismicRegionNumber(17));
+		Assert.assertEquals(30, instance.getSeismicRegionNumber(360));
+		Assert.assertEquals(50, instance.getSeismicRegionNumber(727));
+		Assert.assertEquals(44, instance.getSeismicRegionNumber(757));
+	}
+
 	private void testGetName(final String arg0, final String arg1, final String expectedName) {
-		final Region region = instance.getRegion(arg0, arg1);
+		final Region region = instance.getGeographicRegion(arg0, arg1);
 		logger.info(region.toString());
 		Assert.assertEquals("arg0: \"" + arg0 + "\", arg1: \"" + arg1 + '"', expectedName, region.getName());
 	}
