@@ -98,7 +98,7 @@ public class EarthquakeBulletinConfig extends Configuration {
 	}
 
 	private void enableLoggingFileHandler() {
-		final String loggingPath = this.getString("logging.files.path", Defaults.LOGGING_FILES_PATH);
+		final String loggingPath = getString("logging.files.path", Defaults.LOGGING_FILES_PATH);
 		if (loggingPath != null && !loggingPath.isEmpty()) {
 			final FileHandlerConfig newConfig = new FileHandlerConfig();
 			newConfig.setPattern(loggingPath + File.separator + LOG_FILE_NAME);
