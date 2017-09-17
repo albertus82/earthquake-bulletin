@@ -2,7 +2,6 @@ package it.albertus.earthquake.config;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -12,7 +11,8 @@ import it.albertus.earthquake.util.InitializationException;
 import it.albertus.jface.JFaceMessages;
 import it.albertus.util.Configuration;
 import it.albertus.util.logging.CustomFormatter;
-import it.albertus.util.logging.FileHandlerBuilder;
+import it.albertus.util.logging.EnhancedFileHandler;
+import it.albertus.util.logging.FileHandlerConfig;
 import it.albertus.util.logging.LoggerFactory;
 import it.albertus.util.logging.LoggingSupport;
 
@@ -35,8 +35,7 @@ public class EarthquakeBulletinConfig extends Configuration {
 	public static final String CFG_FILE_NAME = "earthquake-bulletin.cfg";
 	public static final String LOG_FILE_NAME = "earthquake-bulletin.%g.log";
 
-	private FileHandlerBuilder fileHandlerBuilder;
-	private Handler fileHandler;
+	private EnhancedFileHandler fileHandler;
 
 	private static EarthquakeBulletinConfig instance;
 
@@ -101,18 +100,31 @@ public class EarthquakeBulletinConfig extends Configuration {
 	private void enableLoggingFileHandler() {
 		final String loggingPath = this.getString("logging.files.path", Defaults.LOGGING_FILES_PATH);
 		if (loggingPath != null && !loggingPath.isEmpty()) {
-			final FileHandlerBuilder builder = new FileHandlerBuilder().pattern(loggingPath + File.separator + LOG_FILE_NAME).limit(this.getInt("logging.files.limit", Defaults.LOGGING_FILES_LIMIT) * 1024).count(this.getInt("logging.files.count", Defaults.LOGGING_FILES_COUNT)).append(true).formatter(new CustomFormatter(EarthquakeBulletin.LOG_FORMAT));
-			if (fileHandlerBuilder == null || !builder.equals(fileHandlerBuilder)) {
-				if (fileHandler != null) {
+			final FileHandlerConfig newConfig = new FileHandlerConfig();
+			newConfig.setPattern(loggingPath + File.separator + LOG_FILE_NAME);
+			newConfig.setLimit(getInt("logging.files.limit", Defaults.LOGGING_FILES_LIMIT) * 1024);
+			newConfig.setCount(getInt("logging.files.count", Defaults.LOGGING_FILES_COUNT));
+			newConfig.setAppend(true);
+			newConfig.setFormatter(new CustomFormatter(EarthquakeBulletin.LOG_FORMAT));
+
+			if (fileHandler != null) {
+				final FileHandlerConfig oldConfig = FileHandlerConfig.fromHandler(fileHandler);
+				if (!oldConfig.getPattern().equals(newConfig.getPattern()) || oldConfig.getLimit() != newConfig.getLimit() || oldConfig.getCount() != newConfig.getCount()) {
+					logger.log(Level.FINE, "Logging configuration has changed; closing and removing old {0}...", fileHandler.getClass().getSimpleName());
 					LoggingSupport.getRootLogger().removeHandler(fileHandler);
 					fileHandler.close();
 					fileHandler = null;
+					logger.log(Level.FINE, "Old FileHandler closed and removed.");
 				}
+			}
+
+			if (fileHandler == null) {
+				logger.log(Level.FINE, "FileHandler not found; creating one...");
 				try {
 					new File(loggingPath).mkdirs();
-					fileHandlerBuilder = builder;
-					fileHandler = builder.build();
+					fileHandler = new EnhancedFileHandler(newConfig);
 					LoggingSupport.getRootLogger().addHandler(fileHandler);
+					logger.log(Level.FINE, "{0} created successfully.", fileHandler.getClass().getSimpleName());
 				}
 				catch (final IOException ioe) {
 					logger.log(Level.SEVERE, ioe.toString(), ioe);
@@ -126,7 +138,6 @@ public class EarthquakeBulletinConfig extends Configuration {
 			LoggingSupport.getRootLogger().removeHandler(fileHandler);
 			fileHandler.close();
 			fileHandler = null;
-			fileHandlerBuilder = null;
 		}
 	}
 
