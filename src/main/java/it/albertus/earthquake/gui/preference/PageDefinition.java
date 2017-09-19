@@ -46,7 +46,7 @@ public enum PageDefinition implements IPageDefinition {
 
 	@Override
 	public String getLabel() {
-		return pageDefinitionDetails.getLabel().getString();
+		return pageDefinitionDetails.getLabel().get();
 	}
 
 	@Override

@@ -190,7 +190,7 @@ public enum Preference implements IPreference {
 
 	@Override
 	public String getLabel() {
-		return preferenceDetails.getLabel().getString();
+		return preferenceDetails.getLabel().get();
 	}
 
 	@Override
