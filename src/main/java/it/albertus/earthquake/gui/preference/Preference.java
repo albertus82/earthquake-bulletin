@@ -257,7 +257,7 @@ public enum Preference implements IPreference {
 					return locale.getDisplayLanguage(locale);
 				}
 			};
-			options.put(name, value);
+			options.add(name, value);
 		}
 		return options;
 	}
@@ -273,7 +273,7 @@ public enum Preference implements IPreference {
 					return format.getLabel();
 				}
 			};
-			options.put(name, value);
+			options.add(name, value);
 		}
 		return options;
 	}
