@@ -13,6 +13,18 @@ A cross-platform desktop client for the [**GEOFON Program GFZ Potsdam Earthquake
 
 Download the [latest release](https://github.com/Albertus82/EarthquakeBulletin/releases/latest) from the [releases page](https://github.com/Albertus82/EarthquakeBulletin/releases).
 
+## Installation
+
+* **Windows:** run the installer to install the application.
+  
+  >If Windows complains with a ***Windows protected your PC*** popup, you may need to click ***Run anyway*** to proceed with the installation.
+  >
+  >![windows protected your pc](https://user-images.githubusercontent.com/8672431/31048995-7145b034-a62a-11e7-860b-c477237145ce.png)
+  >
+  >You may need to open the *Properties* of the installer first, tab *General* section *Security* (if available) and select ***Unblock***, to enable the *Run anyway* button.
+* **Linux:** unpack the archive and run the [`earthquake-bulletin.sh`](src/main/scripts/earthquake-bulletin.sh) shell script.
+* **macOS:** unpack the archive and run the program using its icon.
+
 ## Flinn-Engdahl Regions
 
 This package includes a port to Java of Bob Simpson's [**`feregion.pl`**](https://goo.gl/1BVgMx) Perl script that returns [Flinn-Engdahl Region](https://earthquake.usgs.gov/learn/topics/flinn_engdahl.php) names from decimal longitude & latitude values given on command line. You can recall this bonus program using the **`feregion`** executable located in the *Earthquake Bulletin* application folder.
