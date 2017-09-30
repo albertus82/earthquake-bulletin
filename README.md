@@ -17,11 +17,11 @@ Download the [latest release](https://github.com/Albertus82/EarthquakeBulletin/r
 
 * **Windows:** run the installer to install the application.
   
-  >If Windows complains with a ***Windows protected your PC*** popup, you may need to click ***Run anyway*** to proceed with the installation.
-  >
-  >![windows protected your pc](https://user-images.githubusercontent.com/8672431/31048995-7145b034-a62a-11e7-860b-c477237145ce.png)
-  >
-  >You may need to open the *Properties* of the installer first, tab *General* section *Security* (if available) and select ***Unblock***, to enable the *Run anyway* button.
+  If Windows complains with a ***Windows protected your PC*** popup, you may need to click ***Run anyway*** to proceed with the installation.
+
+  ![windows protected your pc](https://user-images.githubusercontent.com/8672431/31048995-7145b034-a62a-11e7-860b-c477237145ce.png)
+
+  You may need to open the *Properties* of the installer first, tab *General* section *Security* (if available) and select ***Unblock***, to enable the *Run anyway* button.
 * **Linux:** unpack the archive and run the [`earthquake-bulletin.sh`](src/main/scripts/earthquake-bulletin.sh) shell script.
 * **macOS:** unpack the archive and run the program using its icon.
 
