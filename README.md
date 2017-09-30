@@ -19,7 +19,7 @@ Download the [latest release](https://github.com/Albertus82/EarthquakeBulletin/r
 
   If Windows complains with a ***Windows protected your PC*** popup, you may need to click ***Run anyway*** to proceed with the installation.
 
-  ![windows protected your pc](https://user-images.githubusercontent.com/8672431/31048995-7145b034-a62a-11e7-860b-c477237145ce.png)
+  ![Windows protected your PC](https://user-images.githubusercontent.com/8672431/31048995-7145b034-a62a-11e7-860b-c477237145ce.png)
 
   In order to enable the *Run anyway* button, you may need to open the *Properties* of the installer, tab *General*, section *Security* (if available), and check the ***Unblock*** option.
 * **Linux:** unpack the archive and run the [`earthquake-bulletin.sh`](src/main/scripts/earthquake-bulletin.sh) shell script.
