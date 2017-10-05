@@ -36,4 +36,7 @@ public class RandomBulletinProvider implements BulletinProvider {
 		return earthquakes;
 	}
 
+	@Override
+	public void cancel() {/* Ignore */}
+
 }

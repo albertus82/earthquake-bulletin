@@ -1,9 +1,10 @@
 package it.albertus.earthquake.gui.listener;
 
-import it.albertus.earthquake.gui.SearchForm;
-
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+
+import it.albertus.earthquake.gui.SearchForm;
+import it.albertus.earthquake.gui.job.SearchJob;
 
 public class StopButtonSelectionListener extends SelectionAdapter {
 
@@ -16,9 +17,11 @@ public class StopButtonSelectionListener extends SelectionAdapter {
 	@Override
 	public void widgetSelected(final SelectionEvent se) {
 		form.getStopButton().setEnabled(false);
-		if (form.getSearchJob() != null) {
-			form.getSearchJob().setShouldRun(false);
-			form.getSearchJob().setShouldSchedule(false);
+		final SearchJob job = form.getSearchJob();
+		if (job != null) {
+			job.setShouldRun(false);
+			job.setShouldSchedule(false);
+			job.cancel();
 			form.setSearchJob(null);
 			form.updateButtons();
 		}

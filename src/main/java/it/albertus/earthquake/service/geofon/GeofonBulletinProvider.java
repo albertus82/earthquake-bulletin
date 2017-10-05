@@ -7,6 +7,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 
 import javax.xml.bind.JAXBContext;
@@ -18,6 +20,7 @@ import it.albertus.earthquake.model.Earthquake;
 import it.albertus.earthquake.model.Format;
 import it.albertus.earthquake.resources.Messages;
 import it.albertus.earthquake.service.BulletinProvider;
+import it.albertus.earthquake.service.CancelException;
 import it.albertus.earthquake.service.DecodeException;
 import it.albertus.earthquake.service.FetchException;
 import it.albertus.earthquake.service.SearchJobVars;
@@ -28,12 +31,19 @@ import it.albertus.earthquake.service.geofon.rss.xml.Rss;
 import it.albertus.earthquake.service.net.HttpConnector;
 import it.albertus.util.Configuration;
 import it.albertus.util.NewLine;
+import it.albertus.util.logging.LoggerFactory;
 
 public class GeofonBulletinProvider implements BulletinProvider {
 
 	public static final String BASE_URL = "http://geofon.gfz-potsdam.de";
 
+	private static final Logger logger = LoggerFactory.getLogger(GeofonBulletinProvider.class);
+
 	private static final Configuration configuration = EarthquakeBulletinConfig.getInstance();
+
+	private HttpURLConnection urlConnection = null;
+
+	private volatile boolean cancelled = false;
 
 	@Override
 	public List<Earthquake> getEarthquakes(final SearchJobVars jobVariables) throws FetchException, DecodeException {
@@ -46,9 +56,16 @@ public class GeofonBulletinProvider implements BulletinProvider {
 
 		Rss rss = null;
 		TableData html = null;
-		HttpURLConnection urlConnection = null;
+
 		try {
-			urlConnection = getConnection(url.toString());
+			synchronized (this) {
+				if (cancelled) {
+					throw new CancelException();
+				}
+				else {
+					urlConnection = getConnection(url.toString());
+				}
+			}
 			final String responseContentEncoding = urlConnection.getContentEncoding(); // Connection starts here
 			final boolean gzip = responseContentEncoding != null && responseContentEncoding.toLowerCase().contains("gzip");
 			try (final InputStream internalInputStream = urlConnection.getInputStream(); final InputStream inputStream = gzip ? new GZIPInputStream(internalInputStream) : internalInputStream) {
@@ -112,11 +129,24 @@ public class GeofonBulletinProvider implements BulletinProvider {
 		return td;
 	}
 
-	private HttpURLConnection getConnection(final String url) throws IOException {
-		final HttpURLConnection urlConnection = HttpConnector.getConnection(url);
-		urlConnection.setRequestProperty("Accept", "*/html,*/xml,*/*;q=0.9");
-		urlConnection.setRequestProperty("Accept-Encoding", "gzip");
-		return urlConnection;
+	@Override
+	public synchronized void cancel() {
+		cancelled = true;
+		if (urlConnection != null) {
+			try {
+				urlConnection.getInputStream().close();
+			}
+			catch (final Exception e) {
+				logger.log(Level.FINE, e.toString(), e);
+			}
+		}
+	}
+
+	private static HttpURLConnection getConnection(final String url) throws IOException {
+		final HttpURLConnection conn = HttpConnector.getConnection(url);
+		conn.setRequestProperty("Accept", "*/html,*/xml,*/*;q=0.9");
+		conn.setRequestProperty("Accept-Encoding", "gzip");
+		return conn;
 	}
 
 }
