@@ -267,7 +267,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 	private class UpdateShellStatusListener implements Listener {
 		@Override
 		public void handleEvent(final Event event) {
-			logger.log(Level.FINE, "{0} {1}", new Object[] { Events.getName(event), event });
+			logEvent(event);
 			final Shell shell = getShell();
 			if (shell != null && !shell.isDisposed()) {
 				shellMaximized = shell.getMaximized();
@@ -285,7 +285,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 
 		@Override
 		public void handleEvent(final Event event) {
-			logger.log(Level.FINE, "{0} {1}", new Object[] { Events.getName(event), event });
+			logEvent(event);
 			if (firstTime && !getShell().isDisposed() && !configuration.getBoolean("minimize.tray", TrayIcon.Defaults.MINIMIZE_TRAY) && configuration.getBoolean(START_MINIMIZED, Defaults.START_MINIMIZED) && configuration.getBoolean(SHELL_MAXIMIZED, Defaults.SHELL_MAXIMIZED)) {
 				firstTime = false;
 				getShell().setMaximized(true);
@@ -298,7 +298,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 
 		@Override
 		public void handleEvent(final Event event) {
-			logger.log(Level.FINE, "{0} {1}", new Object[] { Events.getName(event), event });
+			logEvent(event);
 			if (firstTime && configuration.getBoolean(START_MINIMIZED, Defaults.START_MINIMIZED)) {
 				firstTime = false;
 			}
@@ -306,6 +306,10 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 				saveShellStatus();
 			}
 		}
+	}
+
+	private static void logEvent(final Event event) {
+		logger.log(Level.FINE, "{0} {1}", new Object[] { Events.getName(event), event });
 	}
 
 	public void saveShellStatus() {
