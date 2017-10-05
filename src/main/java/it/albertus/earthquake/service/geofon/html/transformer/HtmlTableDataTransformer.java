@@ -105,7 +105,7 @@ public class HtmlTableDataTransformer {
 			final Status status = Status.valueOf(lines[5].substring(lines[5].lastIndexOf(statusPrefix) + statusPrefix.length(), lines[5].indexOf(statusSuffix)).trim());
 			final String region = lines[6].substring(lines[6].lastIndexOf(regionPrefix) + regionPrefix.length(), lines[6].lastIndexOf(regionSuffix)).trim();
 
-			final String baseUrl = configuration.getString("url.base", GeofonBulletinProvider.BASE_URL);
+			final String baseUrl = configuration.getString("url.base", GeofonBulletinProvider.DEFAULT_BASE_URL);
 			final URL link = new URL(baseUrl + "/eqinfo/event.php?id=" + guid);
 			final String eventBaseUrl = baseUrl + "/data/alerts/" + time.get(Calendar.YEAR) + "/" + guid + "/";
 			final URL enclosure = new URL(eventBaseUrl + guid + ".jpg");

@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -35,24 +36,19 @@ import it.albertus.util.logging.LoggerFactory;
 
 public class GeofonBulletinProvider implements BulletinProvider {
 
-	public static final String BASE_URL = "http://geofon.gfz-potsdam.de";
+	public static final String DEFAULT_BASE_URL = "http://geofon.gfz-potsdam.de";
 
 	private static final Logger logger = LoggerFactory.getLogger(GeofonBulletinProvider.class);
 
 	private static final Configuration configuration = EarthquakeBulletinConfig.getInstance();
 
-	private HttpURLConnection urlConnection = null;
+	private HttpURLConnection urlConnection;
 
-	private volatile boolean cancelled = false;
+	private boolean cancelled;
 
 	@Override
 	public List<Earthquake> getEarthquakes(final SearchJobVars jobVariables) throws FetchException, DecodeException {
-		final StringBuilder url = new StringBuilder(configuration.getString("url.base", BASE_URL)).append("/eqinfo/list.php?fmt=").append(jobVariables.getParams().get("fmt"));
-		for (final Entry<String, String> param : jobVariables.getParams().entrySet()) {
-			if (param.getValue() != null && !param.getValue().isEmpty() && !"fmt".equals(param.getKey())) {
-				url.append('&').append(param.getKey()).append('=').append(param.getValue());
-			}
-		}
+		final String url = getUrl(jobVariables.getParams());
 
 		Rss rss = null;
 		TableData html = null;
@@ -63,7 +59,7 @@ public class GeofonBulletinProvider implements BulletinProvider {
 					throw new CancelException();
 				}
 				else {
-					urlConnection = getConnection(url.toString());
+					urlConnection = getConnection(url);
 				}
 			}
 			final String responseContentEncoding = urlConnection.getContentEncoding(); // Connection starts here
@@ -106,13 +102,43 @@ public class GeofonBulletinProvider implements BulletinProvider {
 		}
 	}
 
-	private Rss fetchRss(final InputStream is) throws JAXBException {
+	@Override
+	public synchronized void cancel() {
+		cancelled = true;
+		if (urlConnection != null) {
+			try {
+				urlConnection.getInputStream().close(); // Interrupt blocking I/O
+			}
+			catch (final Exception e) {
+				logger.log(Level.FINE, e.toString(), e);
+			}
+		}
+	}
+
+	private static String getUrl(final Map<String, String> params) {
+		final StringBuilder url = new StringBuilder(configuration.getString("url.base", DEFAULT_BASE_URL)).append("/eqinfo/list.php?fmt=").append(params.get("fmt"));
+		for (final Entry<String, String> param : params.entrySet()) {
+			if (param.getValue() != null && !param.getValue().isEmpty() && !"fmt".equals(param.getKey())) {
+				url.append('&').append(param.getKey()).append('=').append(param.getValue());
+			}
+		}
+		return url.toString();
+	}
+
+	private static HttpURLConnection getConnection(final String url) throws IOException {
+		final HttpURLConnection conn = HttpConnector.getConnection(url);
+		conn.setRequestProperty("Accept", "*/html,*/xml,*/*;q=0.9");
+		conn.setRequestProperty("Accept-Encoding", "gzip");
+		return conn;
+	}
+
+	private static Rss fetchRss(final InputStream is) throws JAXBException {
 		final JAXBContext jaxbContext = JAXBContext.newInstance(Rss.class);
 		final Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 		return (Rss) jaxbUnmarshaller.unmarshal(is);
 	}
 
-	private TableData fetchHtml(final InputStream is) throws IOException {
+	private static TableData fetchHtml(final InputStream is) throws IOException {
 		final TableData td = new TableData();
 		try (final BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
 			String line = null;
@@ -127,26 +153,6 @@ public class GeofonBulletinProvider implements BulletinProvider {
 			}
 		}
 		return td;
-	}
-
-	@Override
-	public synchronized void cancel() {
-		cancelled = true;
-		if (urlConnection != null) {
-			try {
-				urlConnection.getInputStream().close();
-			}
-			catch (final Exception e) {
-				logger.log(Level.FINE, e.toString(), e);
-			}
-		}
-	}
-
-	private static HttpURLConnection getConnection(final String url) throws IOException {
-		final HttpURLConnection conn = HttpConnector.getConnection(url);
-		conn.setRequestProperty("Accept", "*/html,*/xml,*/*;q=0.9");
-		conn.setRequestProperty("Accept-Encoding", "gzip");
-		return conn;
 	}
 
 }
