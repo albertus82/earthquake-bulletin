@@ -127,53 +127,60 @@ public class MapCanvas {
 
 	private void paintImage() {
 		if (image != null) {
-			final Rectangle imageSize = image.getBounds();
-			final double imageRatio = 1.0 * imageSize.width / imageSize.height;
-			final Rectangle canvasSize = canvas.getBounds();
-			final double canvasRatio = 1.0 * canvasSize.width / canvasSize.height;
-
-			int newHeight;
-			int newWidth;
-
-			if (canvasRatio > imageRatio) {
-				newWidth = (int) (imageSize.width * (1.0 * canvasSize.height / imageSize.height));
-				newHeight = canvasSize.height;
-			}
-			else {
-				newWidth = canvasSize.width;
-				newHeight = (int) (imageSize.height * (1.0 * canvasSize.width / imageSize.width));
-			}
-
-			// Allow reduction only
-			if (newWidth > imageSize.width || newHeight > imageSize.height) {
-				newWidth = imageSize.width;
-				newHeight = imageSize.height;
-			}
-
-			final int top = (int) ((canvasSize.height - newHeight) / 2.0);
-			final int left = (int) ((canvasSize.width - newWidth) / 2.0);
+			final Rectangle originalRect = image.getBounds();
+			final Rectangle resizedRect = getResizedRectangle();
 
 			final GC gc = new GC(canvas);
 
-			if (newHeight == imageSize.height) { // Do not resize!
-				gc.drawImage(image, left, top);
+			if (resizedRect.height == originalRect.height) { // Do not resize!
+				gc.drawImage(image, resizedRect.x, resizedRect.y);
 			}
 			else {
 				if (EarthquakeBulletinConfig.getInstance().getBoolean("map.resize.hq", Defaults.MAP_RESIZE_HQ)) {
 					final Image oldImage = resized;
-					final float scale = newHeight / (float) imageSize.height;
+					final float scale = resizedRect.height / (float) originalRect.height;
 					resized = HqImageResizer.resize(image, scale);
-					gc.drawImage(resized, left, top);
+					gc.drawImage(resized, resizedRect.x, resizedRect.y);
 					if (oldImage != null && oldImage != resized) {
 						oldImage.dispose();
 					}
 				}
 				else { // Fast low-quality resizing
-					gc.drawImage(image, 0, 0, imageSize.width, imageSize.height, left, top, newWidth, newHeight);
+					gc.drawImage(image, 0, 0, originalRect.width, originalRect.height, resizedRect.x, resizedRect.y, resizedRect.width, resizedRect.height);
 				}
 			}
 			gc.dispose();
 		}
+	}
+
+	private Rectangle getResizedRectangle() {
+		final Rectangle imageSize = image.getBounds();
+		final double imageRatio = 1.0 * imageSize.width / imageSize.height;
+		final Rectangle canvasSize = canvas.getBounds();
+		final double canvasRatio = 1.0 * canvasSize.width / canvasSize.height;
+
+		int height;
+		int width;
+
+		if (canvasRatio > imageRatio) {
+			width = (int) (imageSize.width * (1.0 * canvasSize.height / imageSize.height));
+			height = canvasSize.height;
+		}
+		else {
+			width = canvasSize.width;
+			height = (int) (imageSize.height * (1.0 * canvasSize.width / imageSize.width));
+		}
+
+		// Allow reduction only
+		if (width > imageSize.width || height > imageSize.height) {
+			width = imageSize.width;
+			height = imageSize.height;
+		}
+
+		final int y = (int) ((canvasSize.height - height) / 2.0);
+		final int x = (int) ((canvasSize.width - width) / 2.0);
+
+		return new Rectangle(x, y, width, height);
 	}
 
 	private boolean canSaveImage() {
