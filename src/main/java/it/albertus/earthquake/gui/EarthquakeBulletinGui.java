@@ -15,6 +15,7 @@ import org.eclipse.jface.window.ApplicationWindow;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -186,7 +187,12 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 		final Integer locationX = configuration.getInt(SHELL_LOCATION_X);
 		final Integer locationY = configuration.getInt(SHELL_LOCATION_Y);
 		if (locationX != null && locationY != null) {
-			shell.setLocation(locationX, locationY);
+			if (new Rectangle(locationX, locationY, shell.getSize().x, shell.getSize().y).intersects(shell.getDisplay().getBounds())) {
+				shell.setLocation(locationX, locationY);
+			}
+			else {
+				logger.log(Level.WARNING, "Illegal shell location ({0}, {1}) for size ({2}).", new Serializable[] { locationX.toString(), locationY.toString(), shell.getSize() });
+			}
 		}
 
 		if (SwtUtils.isGtk3() != null && !SwtUtils.isGtk3()) { // fixes invisible (transparent) shell bug with some Linux distibutions
