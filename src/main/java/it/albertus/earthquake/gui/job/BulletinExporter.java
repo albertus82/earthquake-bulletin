@@ -40,9 +40,23 @@ public class BulletinExporter implements IRunnableWithProgress {
 	private final String fileName;
 	private final String data;
 
-	public BulletinExporter(final String fileName, final String data) {
+	private BulletinExporter(final String fileName, final String data) {
 		this.fileName = fileName;
 		this.data = data;
+	}
+
+	@Override
+	public void run(final IProgressMonitor monitor) throws InvocationTargetException {
+		monitor.beginTask(TASK_NAME, IProgressMonitor.UNKNOWN);
+
+		try (final FileWriter fw = new FileWriter(fileName); final BufferedWriter bw = new BufferedWriter(fw)) {
+			bw.write(data);
+		}
+		catch (final IOException e) {
+			throw new InvocationTargetException(e);
+		}
+
+		monitor.done();
 	}
 
 	public static void export(final Table table) {
@@ -73,20 +87,6 @@ public class BulletinExporter implements IRunnableWithProgress {
 				SwtUtils.unblockShell(shell);
 			}
 		}
-	}
-
-	@Override
-	public void run(final IProgressMonitor monitor) throws InvocationTargetException {
-		monitor.beginTask(TASK_NAME, IProgressMonitor.UNKNOWN);
-
-		try (final FileWriter fw = new FileWriter(fileName); final BufferedWriter bw = new BufferedWriter(fw)) {
-			bw.write(data);
-		}
-		catch (final IOException e) {
-			throw new InvocationTargetException(e);
-		}
-
-		monitor.done();
 	}
 
 	private static void writeCsv(final Table table, final BufferedWriter writer) throws IOException {
