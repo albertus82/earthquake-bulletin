@@ -24,6 +24,7 @@ import org.eclipse.swt.widgets.Table;
 import it.albertus.earthquake.gui.Images;
 import it.albertus.earthquake.resources.Messages;
 import it.albertus.jface.EnhancedErrorDialog;
+import it.albertus.jface.SwtUtils;
 import it.albertus.util.logging.LoggerFactory;
 
 public class BulletinExporter implements IRunnableWithProgress {
@@ -49,26 +50,27 @@ public class BulletinExporter implements IRunnableWithProgress {
 		final String fileName = openSaveDialog(shell);
 		if (fileName != null && !fileName.trim().isEmpty()) {
 			try (final StringWriter sw = new StringWriter()) {
-				shell.setCursor(shell.getDisplay().getSystemCursor(SWT.CURSOR_WAIT));
+				SwtUtils.blockShell(shell);
 				try (final BufferedWriter bw = new BufferedWriter(sw)) {
 					writeCsv(table, bw);
 				}
 				final BulletinExporter exporter = new BulletinExporter(fileName, sw.toString());
 				ModalContext.run(exporter, true, new NullProgressMonitor(), shell.getDisplay());
-				//				BusyIndicator.showWhile(shell.getDisplay(), exporter);
 			}
 			catch (final InvocationTargetException e) {
 				final String message = Messages.get("err.job.csv.save");
 				logger.log(Level.WARNING, message, e);
-				EnhancedErrorDialog.openError(table.getShell(), Messages.get("lbl.window.title"), message, IStatus.WARNING, e.getCause() != null ? e.getCause() : e, Images.getMainIcons());
+				SwtUtils.unblockShell(shell);
+				EnhancedErrorDialog.openError(shell, Messages.get("lbl.window.title"), message, IStatus.WARNING, e.getCause() != null ? e.getCause() : e, Images.getMainIcons());
 			}
 			catch (final Exception e) {
 				final String message = Messages.get("err.job.csv.create");
 				logger.log(Level.SEVERE, message, e);
+				SwtUtils.unblockShell(shell);
 				EnhancedErrorDialog.openError(shell, Messages.get("lbl.window.title"), message, IStatus.ERROR, e, Images.getMainIcons());
 			}
 			finally {
-				shell.setCursor(null);
+				SwtUtils.unblockShell(shell);
 			}
 		}
 	}
