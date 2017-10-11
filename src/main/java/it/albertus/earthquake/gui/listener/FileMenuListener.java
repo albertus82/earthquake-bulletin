@@ -1,6 +1,5 @@
 package it.albertus.earthquake.gui.listener;
 
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.events.ArmEvent;
 import org.eclipse.swt.events.ArmListener;
 import org.eclipse.swt.events.MenuEvent;
@@ -34,7 +33,7 @@ public class FileMenuListener implements ArmListener, MenuListener {
 
 	private void manageExportCsvItem() {
 		final ResultsTable resultsTable = gui.getResultsTable();
-		gui.getMenuBar().getExportCsvMenuItem().setEnabled(resultsTable != null && resultsTable.getTableViewer() != null && resultsTable.getTableViewer().getTable() != null && resultsTable.getTableViewer().getTable().getItemCount() > 0 && (resultsTable.getExportCsvJob() == null || resultsTable.getExportCsvJob().getState() == Job.NONE));
+		gui.getMenuBar().getExportCsvMenuItem().setEnabled(resultsTable != null && resultsTable.getTableViewer() != null && resultsTable.getTableViewer().getTable() != null && resultsTable.getTableViewer().getTable().getItemCount() > 0);
 	}
 
 }

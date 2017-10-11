@@ -27,7 +27,7 @@ import org.eclipse.swt.widgets.TableColumn;
 
 import it.albertus.earthquake.EarthquakeBulletin;
 import it.albertus.earthquake.config.EarthquakeBulletinConfig;
-import it.albertus.earthquake.gui.job.ExportCsvJob;
+import it.albertus.earthquake.gui.job.BulletinExporter;
 import it.albertus.earthquake.gui.listener.CopyLinkSelectionListener;
 import it.albertus.earthquake.gui.listener.ExportCsvSelectionListener;
 import it.albertus.earthquake.gui.listener.GoogleMapsBrowserSelectionListener;
@@ -136,8 +136,6 @@ public class ResultsTable {
 	private final ContextMenu contextMenu;
 
 	private boolean initialized = false;
-
-	private ExportCsvJob exportCsvJob;
 
 	public ResultsTable(final Composite parent, final Object layoutData, final EarthquakeBulletinGui gui) {
 		tableViewer = new TableViewer(parent, SWT.BORDER | SWT.FULL_SELECTION) {
@@ -329,12 +327,10 @@ public class ResultsTable {
 		return contextMenu;
 	}
 
-	public ExportCsvJob getExportCsvJob() {
-		return exportCsvJob;
-	}
-
-	public void setExportCsvJob(final ExportCsvJob exportCsvJob) {
-		this.exportCsvJob = exportCsvJob;
+	public void exportCsv() {
+		if (tableViewer != null && tableViewer.getTable() != null && tableViewer.getTable().getItemCount() > 0) {
+			BulletinExporter.export(tableViewer.getTable());
+		}
 	}
 
 	public class ContextMenu extends AbstractMenu {
