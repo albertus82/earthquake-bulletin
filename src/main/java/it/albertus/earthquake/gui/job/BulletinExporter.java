@@ -5,7 +5,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Level;
@@ -35,7 +34,6 @@ public class BulletinExporter implements IRunnableWithProgress {
 	private static final String[] CSV_FILE_EXTENSIONS = { "*.CSV;*.csv" };
 
 	private static final Logger logger = LoggerFactory.getLogger(BulletinExporter.class);
-	private static final DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
 
 	private final String fileName;
 	private final String data;
@@ -111,7 +109,7 @@ public class BulletinExporter implements IRunnableWithProgress {
 	private static String openSaveDialog(final Shell shell) {
 		final FileDialog saveDialog = new FileDialog(shell, SWT.SAVE);
 		saveDialog.setFilterExtensions(CSV_FILE_EXTENSIONS);
-		saveDialog.setFileName("earthquakebulletin_" + dateFormat.format(new Date()) + ".csv");
+		saveDialog.setFileName("earthquakebulletin_" + new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date()) + ".csv");
 		saveDialog.setOverwrite(true);
 		return saveDialog.open();
 	}
