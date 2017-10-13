@@ -24,7 +24,7 @@ Download the [latest release](https://github.com/Albertus82/EarthquakeBulletin/r
   In order to enable the *Run anyway* button, you may need to open the *Properties* of the installer, tab *General*, section *Security* (if available), and check the ***Unblock*** option.
 * **Linux** & **macOS**: unpack the archive.
 
-This application requires [Java SE Runtime Environment (JRE)](https://www.java.com) v1.7 (or newer) to run.
+**This application requires [Java SE Runtime Environment (JRE)](https://www.java.com) v1.7 (or newer) to run.**
 
 ## Flinn-Engdahl Regions
 
