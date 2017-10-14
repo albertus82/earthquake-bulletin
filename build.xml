@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE project>
 <project name="EarthquakeBulletin" default="all" xmlns:jacoco="antlib:org.jacoco.ant">
-	
-	 <echo message="OS Name is:         ${os.name}" />
-	        <echo message="OS Architecture is: ${os.arch}" />
-	        <echo message="OS Version is:      ${os.version}" />
 
 	<property environment="env" />
 	<property name="env.JRE7_HOME" value="${env.JAVA_HOME}/../jdk1.7.0_79/jre" />
@@ -349,6 +345,10 @@
 	</target>
 
 	<target name="dist-windows" depends="jar">
+		<echo message="os.name:    ${os.name}" />
+		<echo message="os.arch:    ${os.arch}" />
+		<echo message="os.version: ${os.version}" />
+
 		<taskdef name="launch4j" classname="net.sf.launch4j.ant.Launch4jTask" classpath="${launch4j.dir}/launch4j.jar:${launch4j.dir}/lib/xstream.jar" />
 		<condition property="launch4j.bindir" value="${launch4j.dir}/bin/linux">
 			<and>
