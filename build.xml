@@ -345,8 +345,8 @@
 	</target>
 
 	<target name="dist-windows" depends="jar">
-		<echo message="os.name:    ${os.name}" />
-		<echo message="os.arch:    ${os.arch}" />
+		<echo message="os.name: ${os.name}" />
+		<echo message="os.arch: ${os.arch}" />
 		<echo message="os.version: ${os.version}" />
 
 		<taskdef name="launch4j" classname="net.sf.launch4j.ant.Launch4jTask" classpath="${launch4j.dir}/launch4j.jar:${launch4j.dir}/lib/xstream.jar" />
@@ -375,6 +375,8 @@
 				<available file="${launch4j.dir}/bin/macosx-x86" type="dir" />
 			</and>
 		</condition>
+
+		<echo message="launch4j.bindir: ${launch4j.bindir}" />
 
 		<chmod perm="+x" file="${launch4j.bindir}/ld" failonerror="false" failifexecutionfails="false" ignoremissing="true" />
 		<chmod perm="+x" file="${launch4j.bindir}/windres" failonerror="false" failifexecutionfails="false" ignoremissing="true" />
