@@ -356,9 +356,19 @@
 				<available file="${launch4j.dir}/bin/win32" type="dir" />
 			</and>
 		</condition>
+		<condition property="launch4j.bindir" value="${launch4j.dir}/bin/macosx-x86">
+			<and>
+				<os family="mac" />
+				<available file="${launch4j.dir}/bin/macosx-x86" type="dir" />
+			</and>
+		</condition>
 		<condition property="launch4j.bindir" value="${launch4j.dir}/bin/linux">
 			<and>
 				<os family="unix" />
+				<os arch="x86" />
+				<not>
+					<os name="mac os x" />
+				</not>
 				<available file="${launch4j.dir}/bin/linux" type="dir" />
 			</and>
 		</condition>
@@ -366,13 +376,10 @@
 			<and>
 				<os family="unix" />
 				<os arch="amd64" />
+				<not>
+					<os name="mac os x" />
+				</not>
 				<available file="${launch4j.dir}/bin/linux-x64" type="dir" />
-			</and>
-		</condition>
-		<condition property="launch4j.bindir" value="${launch4j.dir}/bin/macosx-x86">
-			<and>
-				<os family="mac" />
-				<available file="${launch4j.dir}/bin/macosx-x86" type="dir" />
 			</and>
 		</condition>
 
