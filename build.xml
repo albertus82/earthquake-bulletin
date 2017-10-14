@@ -350,13 +350,15 @@
 		<echo message="os.version: ${os.version}" />
 
 		<taskdef name="launch4j" classname="net.sf.launch4j.ant.Launch4jTask" classpath="${launch4j.dir}/launch4j.jar:${launch4j.dir}/lib/xstream.jar" />
+		<condition property="launch4j.bindir" value="${launch4j.dir}/bin/win32">
+			<and>
+				<os family="windows" />
+				<available file="${launch4j.dir}/bin/win32" type="dir" />
+			</and>
+		</condition>
 		<condition property="launch4j.bindir" value="${launch4j.dir}/bin/linux">
 			<and>
 				<os family="unix" />
-				<os arch="x86" />
-				<not>
-					<os name="mac os x" />
-				</not>
 				<available file="${launch4j.dir}/bin/linux" type="dir" />
 			</and>
 		</condition>
@@ -364,9 +366,6 @@
 			<and>
 				<os family="unix" />
 				<os arch="amd64" />
-				<not>
-					<os name="mac os x" />
-				</not>
 				<available file="${launch4j.dir}/bin/linux-x64" type="dir" />
 			</and>
 		</condition>
@@ -376,12 +375,7 @@
 				<available file="${launch4j.dir}/bin/macosx-x86" type="dir" />
 			</and>
 		</condition>
-		<condition property="launch4j.bindir" value="${launch4j.dir}/bin/win32">
-			<and>
-				<os family="windows" />
-				<available file="${launch4j.dir}/bin/win32" type="dir" />
-			</and>
-		</condition>
+
 		<chmod perm="+x" file="${launch4j.bindir}/ld" failonerror="false" failifexecutionfails="false" ignoremissing="true" />
 		<chmod perm="+x" file="${launch4j.bindir}/windres" failonerror="false" failifexecutionfails="false" ignoremissing="true" />
 
