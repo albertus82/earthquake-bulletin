@@ -35,4 +35,4 @@ before_install:
 
 script:
   - ant all
-  - if [ "$TRAVIS_JDK_VERSION" == "oraclejdk8" ]; then sonar-scanner -Dsonar.login=$SONAR_TOKEN; fi;
+  - if [ "$TRAVIS_JDK_VERSION" == "oraclejdk9" ]; then sonar-scanner -Dsonar.login=$SONAR_TOKEN; fi;
