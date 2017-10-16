@@ -148,6 +148,10 @@ public class SearchJob extends Job {
 					});
 				}
 			}
+			catch (final Throwable t) {
+				logger.log(Level.SEVERE, t.toString(), t);
+				throw t;
+			}
 
 			new DisplayThreadExecutor(gui.getShell()).execute(new Runnable() {
 				@Override
