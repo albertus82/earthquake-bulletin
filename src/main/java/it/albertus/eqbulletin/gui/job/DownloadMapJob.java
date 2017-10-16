@@ -92,6 +92,10 @@ public class DownloadMapJob extends Job {
 					});
 				}
 			}
+			catch (final Throwable t) {
+				logger.log(Level.SEVERE, t.toString(), t);
+				throw t;
+			}
 
 			new DisplayThreadExecutor(mapCanvas.getCanvas()).execute(new Runnable() {
 				@Override
