@@ -69,7 +69,7 @@ public class RssItemTransformer {
 		final Date time = parseRssDate(descriptionTokens[0].trim() + ' ' + descriptionTokens[1].trim());
 		final float latitude = Float.parseFloat(descriptionTokens[2].trim());
 		final float longitude = Float.parseFloat(descriptionTokens[3].trim());
-		final int depth = Integer.parseInt(descriptionTokens[4].trim());
+		final short depth = Short.parseShort(descriptionTokens[4].trim());
 		final Status status = Status.valueOf(descriptionTokens[6].trim());
 
 		// Links
