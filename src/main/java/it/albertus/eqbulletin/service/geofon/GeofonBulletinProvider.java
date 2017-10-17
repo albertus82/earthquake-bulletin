@@ -1,7 +1,9 @@
 package it.albertus.eqbulletin.service.geofon;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.util.List;
 import java.util.Map;
@@ -14,9 +16,6 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-
 import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
 import it.albertus.eqbulletin.model.Earthquake;
 import it.albertus.eqbulletin.model.Format;
@@ -26,11 +25,13 @@ import it.albertus.eqbulletin.service.CancelException;
 import it.albertus.eqbulletin.service.DecodeException;
 import it.albertus.eqbulletin.service.FetchException;
 import it.albertus.eqbulletin.service.SearchJobVars;
-import it.albertus.eqbulletin.service.geofon.html.transformer.HtmlElementTransformer;
+import it.albertus.eqbulletin.service.geofon.html.TableData;
+import it.albertus.eqbulletin.service.geofon.html.transformer.HtmlTableDataTransformer;
 import it.albertus.eqbulletin.service.geofon.rss.transformer.RssItemTransformer;
 import it.albertus.eqbulletin.service.geofon.rss.xml.Rss;
 import it.albertus.eqbulletin.service.net.HttpConnector;
 import it.albertus.util.Configuration;
+import it.albertus.util.NewLine;
 import it.albertus.util.logging.LoggerFactory;
 
 public class GeofonBulletinProvider implements BulletinProvider {
@@ -50,7 +51,7 @@ public class GeofonBulletinProvider implements BulletinProvider {
 		final String url = getUrl(jobVariables.getParams());
 
 		Rss rss = null;
-		Document html = null;
+		TableData html = null;
 
 		try {
 			synchronized (this) {
@@ -68,7 +69,7 @@ public class GeofonBulletinProvider implements BulletinProvider {
 					rss = fetchRss(inputStream);
 				}
 				else if (Format.HTML.equals(jobVariables.getFormat())) {
-					html = fetchHtml(inputStream, url);
+					html = fetchHtml(inputStream);
 				}
 				else {
 					throw new UnsupportedOperationException(String.valueOf(jobVariables.getFormat()));
@@ -90,7 +91,7 @@ public class GeofonBulletinProvider implements BulletinProvider {
 				return RssItemTransformer.fromRss(rss);
 			}
 			else if (html != null) {
-				return HtmlElementTransformer.fromHtml(html);
+				return HtmlTableDataTransformer.fromHtml(html);
 			}
 			else {
 				throw new IllegalStateException();
@@ -137,8 +138,21 @@ public class GeofonBulletinProvider implements BulletinProvider {
 		return (Rss) jaxbUnmarshaller.unmarshal(is);
 	}
 
-	private static Document fetchHtml(final InputStream is, final String url) throws IOException {
-		return Jsoup.parse(is, null, url);
+	private static TableData fetchHtml(final InputStream is) throws IOException {
+		final TableData td = new TableData();
+		try (final BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
+			String line = null;
+			while ((line = br.readLine()) != null) {
+				if (line.trim().toLowerCase().contains("<tr")) {
+					final StringBuilder block = new StringBuilder();
+					while (!(line = br.readLine()).toLowerCase().contains("</tr")) {
+						block.append(line.trim()).append(NewLine.SYSTEM_LINE_SEPARATOR);
+					}
+					td.addItem(block.toString());
+				}
+			}
+		}
+		return td;
 	}
 
 }

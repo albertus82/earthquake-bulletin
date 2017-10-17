@@ -4,17 +4,17 @@ import java.io.Serializable;
 
 public class Depth implements Serializable, Comparable<Depth> {
 
-	private static final long serialVersionUID = -8317438372695311838L;
+	private static final long serialVersionUID = 895253066207604466L;
 
-	private final short value; // Earth radius is the distance from Earth's center to its surface, about 6,371 km (3,959 mi).
+	private final int value;
 
-	public Depth(final short value) {
+	public Depth(final int value) {
 		this.value = value;
 	}
 
 	@Override
 	public String toString() {
-		return Short.toString(value) + " km";
+		return Integer.toString(value) + " km";
 	}
 
 	@Override
@@ -36,13 +36,16 @@ public class Depth implements Serializable, Comparable<Depth> {
 		if (!(obj instanceof Depth)) {
 			return false;
 		}
-		final Depth other = (Depth) obj;
-		return value == other.value;
+		Depth other = (Depth) obj;
+		if (value != other.value) {
+			return false;
+		}
+		return true;
 	}
 
 	@Override
 	public int compareTo(final Depth o) {
-		return Short.compare(this.value, o.value);
+		return Integer.compare(this.value, o.value);
 	}
 
 }

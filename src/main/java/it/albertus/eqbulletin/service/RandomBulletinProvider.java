@@ -28,7 +28,7 @@ public class RandomBulletinProvider implements BulletinProvider {
 			final float latitude = (new Random().nextInt(18000) - 9000) / 100f;
 			final float longitude = (new Random().nextInt(36000) - 18000) / 100f;
 			final float magnitude = (new Random().nextInt(70) + 20) / 10f;
-			final short depth = (short) new Random().nextInt(700);
+			final int depth = new Random().nextInt(700);
 			final Status status = Status.values()[new Random().nextInt(Status.values().length)];
 			earthquakes.add(new Earthquake(uuid, date.getTime(), magnitude, new Latitude(latitude), new Longitude(longitude), new Depth(depth), status, uuid, null, null));
 		}

@@ -10,7 +10,6 @@
 	<classpathentry kind="lib" path="lib/jaxb-api-2.3.0.jar" sourcepath="lib/src/jaxb-api-2.3.0-sources.jar"/>
 	<classpathentry kind="lib" path="lib/jaxb-core-2.3.0.jar" sourcepath="lib/src/jaxb-core-2.3.0-sources.jar"/>
 	<classpathentry kind="lib" path="lib/jaxb-impl-2.3.0.jar" sourcepath="lib/src/jaxb-impl-2.3.0-sources.jar"/>
-	<classpathentry kind="lib" path="lib/jsoup-1.10.3.jar" sourcepath="lib/src/jsoup-1.10.3-sources.jar"/>
 	<classpathentry kind="lib" path="lib/org.eclipse.core.commands_3.7.0.v20150422-0725.jar" sourcepath="lib/src/org.eclipse.core.commands.source_3.7.0.v20150422-0725.jar"/>
 	<classpathentry kind="lib" path="lib/org.eclipse.equinox.common_3.7.0.v20150402-1709.jar" sourcepath="lib/src/org.eclipse.equinox.common.source_3.7.0.v20150402-1709.jar"/>
 	<classpathentry kind="lib" path="lib/org.eclipse.jface_3.11.1.v20160128-1644.jar" sourcepath="lib/src/org.eclipse.jface.source_3.11.1.v20160128-1644.jar"/>
