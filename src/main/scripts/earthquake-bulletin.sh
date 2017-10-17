@@ -11,6 +11,6 @@ while [ -h "$PRG" ]; do
 done
 PRGDIR=`dirname "$PRG"`
 if [ "$JAVA_HOME" != "" ]
-  then "$JAVA_HOME/bin/java" -Xms8m -Xmx32m -XX:+IgnoreUnrecognizedVMOptions --add-modules=java.xml.bind -classpath "$PRGDIR/earthquake-bulletin.jar:$PRGDIR/lib/*" it.albertus.eqbulletin.EarthquakeBulletin
-  else java -Xms8m -Xmx32m -XX:+IgnoreUnrecognizedVMOptions --add-modules=java.xml.bind -classpath "$PRGDIR/earthquake-bulletin.jar:$PRGDIR/lib/*" it.albertus.eqbulletin.EarthquakeBulletin
+  then "$JAVA_HOME/bin/java" -Xms8m -Xmx32m -classpath "$PRGDIR/earthquake-bulletin.jar:$PRGDIR/lib/*" it.albertus.eqbulletin.EarthquakeBulletin
+  else java -Xms8m -Xmx32m -classpath "$PRGDIR/earthquake-bulletin.jar:$PRGDIR/lib/*" it.albertus.eqbulletin.EarthquakeBulletin
 fi
