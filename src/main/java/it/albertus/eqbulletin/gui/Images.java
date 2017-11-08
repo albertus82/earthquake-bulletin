@@ -26,10 +26,9 @@ public class Images {
 	}
 
 	static {
-		try (final InputStream is = Images.class.getResourceAsStream("main.ico")) {
-			final ImageData[] images = new ImageLoader().load(is);
-			for (final ImageData id : images) {
-				mainIcons.add(new Image(Display.getCurrent(), id));
+		try (final InputStream stream = Images.class.getResourceAsStream("main.ico")) {
+			for (final ImageData data : new ImageLoader().load(stream)) {
+				mainIcons.add(new Image(Display.getCurrent(), data));
 			}
 		}
 		catch (final IOException e) {
