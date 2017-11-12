@@ -234,17 +234,6 @@ public enum Preference implements IPreference {
 		return fieldEditorFactory.createFieldEditor(getName(), getLabel(), parent, fieldEditorDetails);
 	}
 
-	public static IPreference forName(final String name) {
-		if (name != null) {
-			for (final IPreference preference : Preference.values()) {
-				if (name.equals(preference.getName())) {
-					return preference;
-				}
-			}
-		}
-		return null;
-	}
-
 	public static LocalizedLabelsAndValues getLanguageComboOptions() {
 		final Language[] values = Messages.Language.values();
 		final LocalizedLabelsAndValues options = new LocalizedLabelsAndValues(values.length);
