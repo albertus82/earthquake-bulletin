@@ -29,7 +29,7 @@ import it.albertus.eqbulletin.service.geofon.html.TableData;
 import it.albertus.eqbulletin.service.geofon.html.transformer.HtmlTableDataTransformer;
 import it.albertus.eqbulletin.service.geofon.rss.transformer.RssItemTransformer;
 import it.albertus.eqbulletin.service.geofon.rss.xml.Rss;
-import it.albertus.eqbulletin.service.net.HttpConnector;
+import it.albertus.eqbulletin.service.net.ConnectionFactory;
 import it.albertus.util.Configuration;
 import it.albertus.util.NewLine;
 import it.albertus.util.logging.LoggerFactory;
@@ -59,7 +59,7 @@ public class GeofonBulletinProvider implements BulletinProvider {
 					throw new CancelException();
 				}
 				else {
-					urlConnection = getConnection(url);
+					urlConnection = prepareConnection(url);
 				}
 			}
 			final String responseContentEncoding = urlConnection.getContentEncoding(); // Connection starts here
@@ -125,8 +125,8 @@ public class GeofonBulletinProvider implements BulletinProvider {
 		return url.toString();
 	}
 
-	private static HttpURLConnection getConnection(final String url) throws IOException {
-		final HttpURLConnection conn = HttpConnector.getConnection(url);
+	private static HttpURLConnection prepareConnection(final String url) throws IOException {
+		final HttpURLConnection conn = ConnectionFactory.createHttpConnection(url);
 		conn.setRequestProperty("Accept", "*/html,*/xml,*/*;q=0.9");
 		conn.setRequestProperty("Accept-Encoding", "gzip");
 		return conn;

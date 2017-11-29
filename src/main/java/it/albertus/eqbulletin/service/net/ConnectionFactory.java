@@ -14,7 +14,7 @@ import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
 import it.albertus.util.Configuration;
 import it.albertus.util.Version;
 
-public class HttpConnector {
+public class ConnectionFactory {
 
 	public static class Defaults {
 		public static final int CONNECTION_TIMEOUT_IN_MILLIS = 20000;
@@ -34,11 +34,11 @@ public class HttpConnector {
 
 	private static final Configuration configuration = EarthquakeBulletinConfig.getInstance();
 
-	private HttpConnector() {
+	private ConnectionFactory() {
 		throw new IllegalAccessError();
 	}
 
-	public static HttpURLConnection getConnection(final URL url) throws IOException {
+	public static HttpURLConnection createHttpConnection(final URL url) throws IOException {
 		final URLConnection connection;
 		if (configuration.getBoolean("proxy.enabled", Defaults.PROXY_ENABLED)) {
 			if (configuration.getBoolean("proxy.auth.required", Defaults.PROXY_AUTH_REQUIRED)) {
@@ -70,8 +70,8 @@ public class HttpConnector {
 		}
 	}
 
-	public static HttpURLConnection getConnection(final String url) throws IOException {
-		return getConnection(new URL(url));
+	public static HttpURLConnection createHttpConnection(final String url) throws IOException {
+		return createHttpConnection(new URL(url));
 	}
 
 }

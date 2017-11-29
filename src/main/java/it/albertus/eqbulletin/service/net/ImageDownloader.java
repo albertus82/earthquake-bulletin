@@ -25,9 +25,9 @@ public class ImageDownloader {
 	public static MapImage downloadImage(final URL url, final String etag) throws IOException {
 		HttpURLConnection urlConnection = null;
 		try {
-			urlConnection = getConnection(url);
+			urlConnection = prepareConnection(url);
 			if (etag != null && !etag.isEmpty()) {
-				urlConnection.setReadTimeout(Math.min(3000, configuration.getInt("http.read.timeout.ms", HttpConnector.Defaults.READ_TIMEOUT_IN_MILLIS)));
+				urlConnection.setReadTimeout(Math.min(3000, configuration.getInt("http.read.timeout.ms", ConnectionFactory.Defaults.READ_TIMEOUT_IN_MILLIS)));
 				urlConnection.setRequestProperty("If-None-Match", etag);
 			}
 			if (urlConnection.getResponseCode() == HttpURLConnection.HTTP_NOT_MODIFIED) { // Connection starts here
@@ -49,8 +49,8 @@ public class ImageDownloader {
 		}
 	}
 
-	private static HttpURLConnection getConnection(final URL url) throws IOException {
-		final HttpURLConnection urlConnection = HttpConnector.getConnection(url);
+	private static HttpURLConnection prepareConnection(final URL url) throws IOException {
+		final HttpURLConnection urlConnection = ConnectionFactory.createHttpConnection(url);
 		urlConnection.setRequestProperty("Accept", "image/*,*/*;0.9");
 		urlConnection.setRequestProperty("Accept-Encoding", "gzip");
 		return urlConnection;
