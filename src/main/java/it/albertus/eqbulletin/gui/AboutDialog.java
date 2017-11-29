@@ -1,6 +1,12 @@
 package it.albertus.eqbulletin.gui;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -13,15 +19,19 @@ import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
 
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.jface.SwtUtils;
 import it.albertus.jface.listener.LinkSelectionListener;
 import it.albertus.util.Version;
+import it.albertus.util.logging.LoggerFactory;
 
 public class AboutDialog extends Dialog {
 
 	private static final double MONITOR_SIZE_DIVISOR = 1.2;
+
+	private static final Logger logger = LoggerFactory.getLogger(AboutDialog.class);
 
 	public AboutDialog(final Shell parent) {
 		this(parent, SWT.SHEET);
@@ -63,8 +73,18 @@ public class AboutDialog extends Dialog {
 
 		final Link linkLicense = new Link(shell, SWT.WRAP);
 		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.CENTER).grab(true, false).applyTo(linkLicense);
-		linkLicense.setText(Messages.get("lbl.about.license.thirdparty", buildAnchor(Messages.get("url.epl"), Messages.get("lbl.epl"))));
+		linkLicense.setText(Messages.get("lbl.about.license", buildAnchor(Messages.get("url.gpl"), Messages.get("lbl.gpl"))));
 		linkLicense.addSelectionListener(linkSelectionListener);
+
+		final Text appLicense = new Text(shell, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL);
+		appLicense.setText(loadTextResource("/META-INF/LICENSE.txt"));
+		appLicense.setEditable(false);
+		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).hint(SWT.DEFAULT, SwtUtils.convertVerticalDLUsToPixels(appLicense, 80)).applyTo(appLicense);
+
+		final Link linkEclipseLicense = new Link(shell, SWT.WRAP);
+		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.CENTER).grab(true, false).applyTo(linkEclipseLicense);
+		linkEclipseLicense.setText(Messages.get("lbl.about.license.thirdparty", buildAnchor(Messages.get("url.epl"), Messages.get("lbl.epl"))));
+		linkEclipseLicense.addSelectionListener(linkSelectionListener);
 
 		final Button okButton = new Button(shell, SWT.PUSH);
 		okButton.setText(Messages.get("lbl.button.ok"));
@@ -95,6 +115,20 @@ public class AboutDialog extends Dialog {
 
 	private static String buildAnchor(final String href, final String label) {
 		return new StringBuilder("<a href=\"").append(href).append("\">").append(label).append("</a>").toString();
+	}
+
+	private static String loadTextResource(final String name) {
+		final StringBuilder text = new StringBuilder();
+		try (final InputStream is = AboutDialog.class.getResourceAsStream(name); final InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8); final BufferedReader br = new BufferedReader(isr)) {
+			String line;
+			while ((line = br.readLine()) != null) {
+				text.append(System.lineSeparator()).append(line);
+			}
+		}
+		catch (final Exception e) {
+			logger.log(Level.WARNING, e.toString(), e);
+		}
+		return text.length() <= System.lineSeparator().length() ? "" : text.substring(System.lineSeparator().length());
 	}
 
 	/*
