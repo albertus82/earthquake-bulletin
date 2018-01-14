@@ -76,9 +76,10 @@ public class AboutDialog extends Dialog {
 		linkLicense.setText(Messages.get("lbl.about.license", buildAnchor(Messages.get("url.gpl"), Messages.get("lbl.gpl"))));
 		linkLicense.addSelectionListener(linkSelectionListener);
 
-		final Text appLicense = new Text(shell, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL);
+		final Text appLicense = new Text(shell, SWT.BORDER | SWT.V_SCROLL);
 		appLicense.setText(loadTextResource("/META-INF/LICENSE.txt"));
 		appLicense.setEditable(false);
+		appLicense.setBackground(shell.getDisplay().getSystemColor(SWT.COLOR_LIST_BACKGROUND));
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).hint(SWT.DEFAULT, SwtUtils.convertVerticalDLUsToPixels(appLicense, 80)).applyTo(appLicense);
 
 		final Link linkEclipseLicense = new Link(shell, SWT.WRAP);
