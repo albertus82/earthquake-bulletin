@@ -55,7 +55,7 @@ public class ResultsTable {
 
 	private static final int TOOLTIP_TIME_DISPLAYED = 5000;
 
-	private static final String TABLE_FONT = "TABLE_FONT";
+	private static final String SYM_NAME_FONT_DEFAULT = ResultsTable.class.getName().toLowerCase() + ".default";
 
 	private static final Configuration configuration = EarthquakeBulletinConfig.getInstance();
 
@@ -214,10 +214,10 @@ public class ResultsTable {
 			protected Font getFont(final Earthquake element) {
 				if (element.getMagnitude() >= configuration.getFloat("magnitude.big", Defaults.MAGNITUDE_BIG) && getTableViewer().getTable().getItemCount() != 0) {
 					final FontRegistry fontRegistry = JFaceResources.getFontRegistry();
-					if (!fontRegistry.hasValueFor(TABLE_FONT)) {
-						fontRegistry.put(TABLE_FONT, getTableViewer().getTable().getItem(0).getFont(0).getFontData());
+					if (!fontRegistry.hasValueFor(SYM_NAME_FONT_DEFAULT)) {
+						fontRegistry.put(SYM_NAME_FONT_DEFAULT, getTableViewer().getTable().getItem(0).getFont(0).getFontData());
 					}
-					return fontRegistry.getBold(TABLE_FONT);
+					return fontRegistry.getBold(SYM_NAME_FONT_DEFAULT);
 				}
 				return super.getFont(element);
 			}

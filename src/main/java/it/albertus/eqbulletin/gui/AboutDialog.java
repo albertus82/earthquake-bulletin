@@ -33,7 +33,7 @@ public class AboutDialog extends Dialog {
 
 	private static final double MONITOR_SIZE_DIVISOR = 1.2;
 
-	private static final String SYM_FONT_DEFAULT = AboutDialog.class.getName().toLowerCase() + ".default";
+	private static final String SYM_NAME_FONT_DEFAULT = AboutDialog.class.getName().toLowerCase() + ".default";
 
 	private static final Logger logger = LoggerFactory.getLogger(AboutDialog.class);
 
@@ -62,10 +62,10 @@ public class AboutDialog extends Dialog {
 
 		final Link info = new Link(shell, SWT.WRAP);
 		final FontRegistry fontRegistry = JFaceResources.getFontRegistry();
-		if (!fontRegistry.hasValueFor(SYM_FONT_DEFAULT)) {
-			fontRegistry.put(SYM_FONT_DEFAULT, info.getFont().getFontData());
+		if (!fontRegistry.hasValueFor(SYM_NAME_FONT_DEFAULT)) {
+			fontRegistry.put(SYM_NAME_FONT_DEFAULT, info.getFont().getFontData());
 		}
-		info.setFont(fontRegistry.getBold(SYM_FONT_DEFAULT));
+		info.setFont(fontRegistry.getBold(SYM_NAME_FONT_DEFAULT));
 		final Version version = Version.getInstance();
 		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.CENTER).grab(true, false).applyTo(info);
 		info.setText(buildAnchor(Messages.get("url"), Messages.get("msg.application.name")) + ' ' + Messages.get("msg.version", version.getNumber(), DateFormat.getDateInstance(DateFormat.MEDIUM, Messages.getLanguage().getLocale()).format(version.getDate())));
