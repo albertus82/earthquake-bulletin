@@ -12,9 +12,6 @@ environment:
     - platform: x86
       JAVA_HOME: ${ProgramFiles(x86)}\Java\jdk1.8.0
       ANT_VERSION: 1.10.1
-    - platform: x86
-      JAVA_HOME: ${ProgramFiles(x86)}\Java\jdk9
-      ANT_VERSION: 1.10.1
     - platform: x64
       JAVA_HOME: $(ProgramFiles)\Java\jdk1.7.0
       ANT_VERSION: 1.9.9
