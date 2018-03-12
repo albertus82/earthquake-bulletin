@@ -194,7 +194,7 @@ public class MapCanvas {
 			saveDialog.setFileName(guid.toLowerCase() + ".jpg");
 			saveDialog.setOverwrite(true);
 			final String fileName = saveDialog.open();
-			if (fileName != null && fileName.trim().isEmpty()) {
+			if (fileName != null && !fileName.trim().isEmpty()) {
 				try {
 					Files.write(Paths.get(fileName), cache.get(guid).getBytes());
 				}
