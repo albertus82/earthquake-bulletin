@@ -69,7 +69,8 @@ public class MapCanvas {
 
 		final Menu contextMenu = new Menu(canvas);
 		downloadMenuItem = new MenuItem(contextMenu, SWT.PUSH);
-		downloadMenuItem.setText(Messages.get("lbl.menu.item.save.map"));
+		downloadMenuItem.setData("lbl.menu.item.save.map");
+		downloadMenuItem.setText(Messages.get(downloadMenuItem.getData().toString()));
 		downloadMenuItem.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
@@ -155,20 +156,20 @@ public class MapCanvas {
 
 	private Rectangle getResizedRectangle() {
 		final Rectangle imageSize = image.getBounds();
-		final double imageRatio = 1.0 * imageSize.width / imageSize.height;
+		final float imageRatio = (float) imageSize.width / imageSize.height;
 		final Rectangle canvasSize = canvas.getBounds();
-		final double canvasRatio = 1.0 * canvasSize.width / canvasSize.height;
+		final float canvasRatio = (float) canvasSize.width / canvasSize.height;
 
-		int height;
 		int width;
+		int height;
 
 		if (canvasRatio > imageRatio) {
-			width = (int) (imageSize.width * (1.0 * canvasSize.height / imageSize.height));
+			width = Math.round(imageSize.width * ((float) canvasSize.height / imageSize.height));
 			height = canvasSize.height;
 		}
 		else {
 			width = canvasSize.width;
-			height = (int) (imageSize.height * (1.0 * canvasSize.width / imageSize.width));
+			height = Math.round(imageSize.height * ((float) canvasSize.width / imageSize.width));
 		}
 
 		// Allow reduction only
@@ -177,8 +178,8 @@ public class MapCanvas {
 			height = imageSize.height;
 		}
 
-		final int y = (int) ((canvasSize.height - height) / 2.0);
-		final int x = (int) ((canvasSize.width - width) / 2.0);
+		final int x = Math.round((canvasSize.width - width) / 2f);
+		final int y = Math.round((canvasSize.height - height) / 2f);
 
 		return new Rectangle(x, y, width, height);
 	}
@@ -208,7 +209,7 @@ public class MapCanvas {
 	}
 
 	public void updateTexts() {
-		downloadMenuItem.setText(Messages.get("lbl.menu.item.save.map"));
+		downloadMenuItem.setText(Messages.get(downloadMenuItem.getData().toString()));
 	}
 
 	private Color getBackgroundColor() {
