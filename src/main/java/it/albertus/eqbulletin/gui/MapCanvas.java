@@ -63,7 +63,7 @@ public class MapCanvas {
 		canvas.addPaintListener(new PaintListener() {
 			@Override
 			public void paintControl(final PaintEvent e) {
-				paintImage();
+				paintImage(null);
 			}
 		});
 
@@ -102,7 +102,7 @@ public class MapCanvas {
 				final Image oldImage = this.image;
 				this.image = new Image(canvas.getDisplay(), bais);
 				this.guid = guid;
-				paintImage();
+				paintImage(null);
 				if (oldImage != null) {
 					oldImage.dispose();
 				}
@@ -126,10 +126,10 @@ public class MapCanvas {
 		guid = null;
 	}
 
-	private void paintImage() {
+	private void paintImage(final Float scale) {
 		if (image != null) {
 			final Rectangle originalRect = image.getBounds();
-			final Rectangle resizedRect = getResizedRectangle();
+			final Rectangle resizedRect = getResizedRectangle(scale);
 
 			final GC gc = new GC(canvas);
 
@@ -139,8 +139,7 @@ public class MapCanvas {
 			else {
 				if (EarthquakeBulletinConfig.getInstance().getBoolean("map.resize.hq", Defaults.MAP_RESIZE_HQ)) {
 					final Image oldImage = resized;
-					final float scale = resizedRect.height / (float) originalRect.height;
-					resized = HqImageResizer.resize(image, scale);
+					resized = HqImageResizer.resize(image, resizedRect.height / (float) originalRect.height);
 					gc.drawImage(resized, resizedRect.x, resizedRect.y);
 					if (oldImage != null && oldImage != resized) {
 						oldImage.dispose();
@@ -154,7 +153,7 @@ public class MapCanvas {
 		}
 	}
 
-	private Rectangle getResizedRectangle() {
+	private Rectangle getResizedRectangle(final Float scale) {
 		final Rectangle imageSize = image.getBounds();
 		final float imageRatio = (float) imageSize.width / imageSize.height;
 		final Rectangle canvasSize = canvas.getBounds();
@@ -163,19 +162,26 @@ public class MapCanvas {
 		int width;
 		int height;
 
-		if (canvasRatio > imageRatio) {
-			width = Math.round(imageSize.width * ((float) canvasSize.height / imageSize.height));
-			height = canvasSize.height;
+		if (scale == null) {
+			// Autoscale
+			if (canvasRatio > imageRatio) {
+				width = Math.round(imageSize.width * ((float) canvasSize.height / imageSize.height));
+				height = canvasSize.height;
+			}
+			else {
+				width = canvasSize.width;
+				height = Math.round(imageSize.height * ((float) canvasSize.width / imageSize.width));
+			}
+
+			// Allow reduction only if required
+			if (false && (width > imageSize.width || height > imageSize.height)) { // TODO configuration
+				width = imageSize.width;
+				height = imageSize.height;
+			}
 		}
 		else {
-			width = canvasSize.width;
-			height = Math.round(imageSize.height * ((float) canvasSize.width / imageSize.width));
-		}
-
-		// Allow reduction only
-		if (width > imageSize.width || height > imageSize.height) {
-			width = imageSize.width;
-			height = imageSize.height;
+			width = Math.round(imageSize.width * scale);
+			height = Math.round(imageSize.height * scale);
 		}
 
 		final int x = Math.round((canvasSize.width - width) / 2f);
