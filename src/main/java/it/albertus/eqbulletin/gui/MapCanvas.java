@@ -1,6 +1,7 @@
 package it.albertus.eqbulletin.gui;
 
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.logging.Level;
@@ -98,9 +99,9 @@ public class MapCanvas {
 		final byte[] imageBytes = mapImage.getBytes();
 		if (imageBytes != null && imageBytes.length > 0) {
 			cache.put(guid, mapImage);
-			try (final ByteArrayInputStream bais = new ByteArrayInputStream(imageBytes)) {
+			try (final InputStream is = new ByteArrayInputStream(imageBytes)) {
 				final Image oldImage = this.image;
-				this.image = new Image(canvas.getDisplay(), bais);
+				this.image = new Image(canvas.getDisplay(), is);
 				this.guid = guid;
 				paintImage(null);
 				if (oldImage != null) {
@@ -126,12 +127,15 @@ public class MapCanvas {
 		guid = null;
 	}
 
-	private void paintImage(final Float scale) {
+	private void paintImage(final Number scalePercent) {
 		if (image != null) {
 			final Rectangle originalRect = image.getBounds();
-			final Rectangle resizedRect = getResizedRectangle(scale);
+			final Rectangle resizedRect = getResizedRectangle(scalePercent);
 
 			final GC gc = new GC(canvas);
+			gc.setBackground(getBackgroundColor());
+			final Rectangle canvasBounds = canvas.getBounds();
+			gc.fillRectangle(0, 0, canvasBounds.width, canvasBounds.height);
 
 			if (resizedRect.height == originalRect.height) { // Do not resize!
 				gc.drawImage(image, resizedRect.x, resizedRect.y);
@@ -153,24 +157,24 @@ public class MapCanvas {
 		}
 	}
 
-	private Rectangle getResizedRectangle(final Float scale) {
+	private Rectangle getResizedRectangle(final Number scalePercent) {
 		final Rectangle imageSize = image.getBounds();
-		final float imageRatio = (float) imageSize.width / imageSize.height;
 		final Rectangle canvasSize = canvas.getBounds();
-		final float canvasRatio = (float) canvasSize.width / canvasSize.height;
 
-		int width;
-		int height;
+		final int width;
+		final int height;
 
-		if (scale == null) {
+		if (scalePercent == null) {
 			// Autoscale
+			final float imageRatio = (float) imageSize.width / imageSize.height;
+			final float canvasRatio = (float) canvasSize.width / canvasSize.height;
 			if (canvasRatio > imageRatio) {
-				width = Math.round(imageSize.width * ((float) canvasSize.height / imageSize.height));
+				width = Math.round((float) imageSize.width * canvasSize.height / imageSize.height);
 				height = canvasSize.height;
 			}
 			else {
 				width = canvasSize.width;
-				height = Math.round(imageSize.height * ((float) canvasSize.width / imageSize.width));
+				height = Math.round((float) imageSize.height * canvasSize.width / imageSize.width);
 			}
 
 			// Allow reduction only if required
@@ -180,10 +184,10 @@ public class MapCanvas {
 			}
 		}
 		else {
-			width = Math.round(imageSize.width * scale);
-			height = Math.round(imageSize.height * scale);
+			width = Math.round(imageSize.width * scalePercent.floatValue() / 100);
+			height = Math.round(imageSize.height * scalePercent.floatValue() / 100);
 		}
-
+		// this.scalePercent = Math.round(width * 100f / imageSize.width);
 		final int x = Math.round((canvasSize.width - width) / 2f);
 		final int y = Math.round((canvasSize.height - height) / 2f);
 
