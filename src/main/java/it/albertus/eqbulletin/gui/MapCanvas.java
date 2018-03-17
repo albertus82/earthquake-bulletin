@@ -133,10 +133,6 @@ public class MapCanvas {
 			final Rectangle resizedRect = getResizedRectangle(scalePercent);
 
 			final GC gc = new GC(canvas);
-			gc.setBackground(getBackgroundColor());
-			final Rectangle canvasBounds = canvas.getBounds();
-			gc.fillRectangle(0, 0, canvasBounds.width, canvasBounds.height);
-
 			if (resizedRect.height == originalRect.height) { // Do not resize!
 				gc.drawImage(image, resizedRect.x, resizedRect.y);
 			}
