@@ -36,7 +36,7 @@ import it.albertus.util.logging.LoggerFactory;
 
 public class GeofonBulletinProvider implements BulletinProvider {
 
-	public static final String DEFAULT_BASE_URL = "http://geofon.gfz-potsdam.de";
+	public static final String DEFAULT_BASE_URL = "https://geofon.gfz-potsdam.de";
 
 	private static final Logger logger = LoggerFactory.getLogger(GeofonBulletinProvider.class);
 
