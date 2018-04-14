@@ -4,13 +4,19 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MenuAdapter;
 import org.eclipse.swt.events.MenuDetectEvent;
 import org.eclipse.swt.events.MenuDetectListener;
+import org.eclipse.swt.events.MenuEvent;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -32,12 +38,14 @@ import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.eqbulletin.service.MapCache;
 import it.albertus.jface.EnhancedErrorDialog;
 import it.albertus.jface.HqImageResizer;
+import it.albertus.util.Configuration;
 import it.albertus.util.logging.LoggerFactory;
 
 public class MapCanvas {
 
 	public static class Defaults {
 		public static final boolean MAP_RESIZE_HQ = true;
+		public static final short MAP_ZOOM_LEVEL = 0;
 
 		private Defaults() {
 			throw new IllegalAccessError("Constants class");
@@ -46,17 +54,25 @@ public class MapCanvas {
 
 	private static final Logger logger = LoggerFactory.getLogger(MapCanvas.class);
 
+	private static final Configuration configuration = EarthquakeBulletinConfig.getInstance();
+
+	private static final short[] ZOOM_LEVELS = { 0, 25, 50, 75, 100, 125, 150, 175, 200, 225, 250 };
+
 	private final MapCache cache = new MapCache();
 	private final Canvas canvas;
 
 	private String guid;
 	private Image image;
 
+	private short zoomLevel = configuration.getShort("map.zoom.level", Defaults.MAP_ZOOM_LEVEL);
+
 	private Image resized;
 
 	private DownloadMapJob downloadMapJob;
 
 	private final MenuItem downloadMenuItem;
+	private final MenuItem zoomMenuItem;
+	private final Map<Short, MenuItem> zoomSubMenuItems = new HashMap<>();
 
 	public MapCanvas(final Composite parent) {
 		canvas = new Canvas(parent, SWT.BORDER);
@@ -64,11 +80,43 @@ public class MapCanvas {
 		canvas.addPaintListener(new PaintListener() {
 			@Override
 			public void paintControl(final PaintEvent e) {
-				paintImage(null);
+				paintImage(zoomLevel);
 			}
 		});
 
 		final Menu contextMenu = new Menu(canvas);
+
+		zoomMenuItem = new MenuItem(contextMenu, SWT.CASCADE);
+		zoomMenuItem.setData("lbl.menu.item.zoom");
+		zoomMenuItem.setText(Messages.get(zoomMenuItem.getData().toString()));
+
+		final Menu zoomSubMenu = new Menu(zoomMenuItem);
+		zoomMenuItem.setMenu(zoomSubMenu);
+
+		for (final short level : ZOOM_LEVELS) {
+			final MenuItem item = new MenuItem(zoomSubMenu, SWT.RADIO);
+			zoomSubMenuItems.put(level, item);
+			item.setData("lbl.menu.item.zoom." + (level == 0 ? "auto" : "custom"));
+			item.setText(Messages.get(item.getData().toString(), level));
+			item.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(final SelectionEvent e) {
+					setZoomLevel(level);
+				}
+			});
+		}
+
+		zoomSubMenu.addMenuListener(new MenuAdapter() {
+			@Override
+			public void menuShown(final MenuEvent e) {
+				for (final Entry<Short, MenuItem> entry : zoomSubMenuItems.entrySet()) {
+					entry.getValue().setSelection(entry.getKey().equals(zoomLevel));
+				}
+			}
+		});
+
+		new MenuItem(contextMenu, SWT.SEPARATOR);
+
 		downloadMenuItem = new MenuItem(contextMenu, SWT.PUSH);
 		downloadMenuItem.setData("lbl.menu.item.save.map");
 		downloadMenuItem.setText(Messages.get(downloadMenuItem.getData().toString()));
@@ -87,6 +135,20 @@ public class MapCanvas {
 		});
 	}
 
+	public void setZoomLevel(final short zoomLevel) {
+		this.zoomLevel = zoomLevel;
+		final GC gc = new GC(canvas);
+		gc.setBackground(getBackgroundColor());
+		final Rectangle canvasBounds = canvas.getBounds();
+		gc.fillRectangle(0, 0, canvasBounds.width, canvasBounds.height);
+		gc.dispose();
+		refresh();
+	}
+
+	public void refresh() {
+		canvas.notifyListeners(SWT.Paint, null);
+	}
+
 	public Image getImage() {
 		return image;
 	}
@@ -103,7 +165,7 @@ public class MapCanvas {
 				final Image oldImage = this.image;
 				this.image = new Image(canvas.getDisplay(), is);
 				this.guid = guid;
-				paintImage(null);
+				paintImage(this.zoomLevel);
 				if (oldImage != null) {
 					oldImage.dispose();
 				}
@@ -137,7 +199,7 @@ public class MapCanvas {
 				gc.drawImage(image, resizedRect.x, resizedRect.y);
 			}
 			else {
-				if (EarthquakeBulletinConfig.getInstance().getBoolean("map.resize.hq", Defaults.MAP_RESIZE_HQ)) {
+				if (configuration.getBoolean("map.resize.hq", Defaults.MAP_RESIZE_HQ)) {
 					final Image oldImage = resized;
 					resized = HqImageResizer.resize(image, resizedRect.height / (float) originalRect.height);
 					gc.drawImage(resized, resizedRect.x, resizedRect.y);
@@ -160,7 +222,7 @@ public class MapCanvas {
 		final int width;
 		final int height;
 
-		if (scalePercent == null) {
+		if (scalePercent == null || scalePercent.floatValue() == 0) {
 			// Autoscale
 			final float imageRatio = (float) imageSize.width / imageSize.height;
 			final float canvasRatio = (float) canvasSize.width / canvasSize.height;
@@ -172,18 +234,11 @@ public class MapCanvas {
 				width = canvasSize.width;
 				height = Math.round((float) imageSize.height * canvasSize.width / imageSize.width);
 			}
-
-			// Allow reduction only if required
-			if (false && (width > imageSize.width || height > imageSize.height)) { // TODO configuration
-				width = imageSize.width;
-				height = imageSize.height;
-			}
 		}
 		else {
 			width = Math.round(imageSize.width * scalePercent.floatValue() / 100);
 			height = Math.round(imageSize.height * scalePercent.floatValue() / 100);
 		}
-		// this.scalePercent = Math.round(width * 100f / imageSize.width);
 		final int x = Math.round((canvasSize.width - width) / 2f);
 		final int y = Math.round((canvasSize.height - height) / 2f);
 
@@ -216,6 +271,10 @@ public class MapCanvas {
 
 	public void updateTexts() {
 		downloadMenuItem.setText(Messages.get(downloadMenuItem.getData().toString()));
+		zoomMenuItem.setText(Messages.get(zoomMenuItem.getData().toString()));
+		for (final Entry<Short, MenuItem> entry : zoomSubMenuItems.entrySet()) {
+			entry.getValue().setText(Messages.get(entry.getValue().getData().toString(), entry.getKey()));
+		}
 	}
 
 	private Color getBackgroundColor() {
@@ -236,6 +295,10 @@ public class MapCanvas {
 
 	public void setDownloadMapJob(DownloadMapJob downloadMapJob) {
 		this.downloadMapJob = downloadMapJob;
+	}
+
+	public static short[] getZoomLevels() {
+		return Arrays.copyOf(ZOOM_LEVELS, ZOOM_LEVELS.length);
 	}
 
 }

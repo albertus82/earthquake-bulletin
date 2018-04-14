@@ -64,7 +64,8 @@ public enum Preference implements IPreference {
 	CONFIRM_CLOSE(new PreferenceDetailsBuilder(GENERAL).defaultValue(CloseDialog.Defaults.CONFIRM_CLOSE).build(), new FieldEditorDetailsBuilder(DefaultBooleanFieldEditor.class).build()),
 	SEARCH_ON_START(new PreferenceDetailsBuilder(GENERAL).defaultValue(EarthquakeBulletinGui.Defaults.SEARCH_ON_START).build(), new FieldEditorDetailsBuilder(DefaultBooleanFieldEditor.class).build()),
 
-	MAP_RESIZE_HQ(new PreferenceDetailsBuilder(GENERAL).defaultValue(MapCanvas.Defaults.MAP_RESIZE_HQ).separate().build(), new FieldEditorDetailsBuilder(DefaultBooleanFieldEditor.class).build()),
+	MAP_ZOOM_LEVEL(new PreferenceDetailsBuilder(GENERAL).defaultValue(MapCanvas.Defaults.MAP_ZOOM_LEVEL).separate().build(), new FieldEditorDetailsBuilder(DefaultComboFieldEditor.class).labelsAndValues(getZoomComboOptions()).build()),
+	MAP_RESIZE_HQ(new PreferenceDetailsBuilder(GENERAL).defaultValue(MapCanvas.Defaults.MAP_RESIZE_HQ).build(), new FieldEditorDetailsBuilder(DefaultBooleanFieldEditor.class).build()),
 	MAP_CACHE_SIZE(new PreferenceDetailsBuilder(GENERAL).defaultValue(MapCache.Defaults.CACHE_SIZE).build(), new FieldEditorDetailsBuilder(ScaleIntegerFieldEditor.class).scaleMinimum(1).scaleMaximum(Byte.MAX_VALUE).scalePageIncrement(8).build()),
 
 	MAGNITUDE_BIG(new PreferenceDetailsBuilder(GENERAL).defaultValue(ResultsTable.Defaults.MAGNITUDE_BIG).separate().build(), new FieldEditorDetailsBuilder(FloatFieldEditor.class).numberValidRange(SearchForm.MAGNITUDE_MIN_VALUE, SearchForm.MAGNITUDE_MAX_VALUE).build()),
@@ -260,6 +261,22 @@ public enum Preference implements IPreference {
 				@Override
 				public String getString() {
 					return format.getLabel();
+				}
+			};
+			options.add(name, value);
+		}
+		return options;
+	}
+
+	public static LocalizedLabelsAndValues getZoomComboOptions() {
+		final short[] values = MapCanvas.getZoomLevels();
+		final LocalizedLabelsAndValues options = new LocalizedLabelsAndValues(values.length);
+		for (final int level : values) {
+			final String value = Integer.toString(level);
+			final Localized name = new Localized() {
+				@Override
+				public String getString() {
+					return Messages.get("lbl.preferences.map.zoom.level." + (level == 0 ? "auto" : "custom"), value);
 				}
 			};
 			options.add(name, value);
