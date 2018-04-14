@@ -101,7 +101,7 @@ public class FERegion {
 		// Find location of the latitude tier in the appropriate quadrant file.
 		final int beg = database.getLatbegins().get(quad).get(lt); // Location of first item for latitude lt.
 		final int num = database.getLonsperlat().get(quad).get(lt); // Number of items for latitude lt.
-		logger.log(Level.FINE, " * beg = {0} num = {1}", new int[] { beg, num });
+		logger.log(Level.FINE, " * beg = {0} num = {1}", new Integer[] { beg, num });
 
 		// Extract this tier of longitude and f-e numbers for latitude lt.
 		final List<Integer> mylons = database.getLons().get(quad).subList(beg, beg + num);
@@ -119,7 +119,7 @@ public class FERegion {
 
 		final int feindex = n - 1;
 		final int fenum = myfenums.get(feindex);
-		logger.log(Level.FINE, "{0} {1} {2}", new int[] { n, feindex, fenum });
+		logger.log(Level.FINE, "{0} {1} {2}", new Integer[] { n, feindex, fenum });
 
 		return fenum;
 	}
