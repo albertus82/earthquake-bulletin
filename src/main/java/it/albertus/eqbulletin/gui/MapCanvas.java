@@ -136,12 +136,17 @@ public class MapCanvas {
 	}
 
 	public void setZoomLevel(final short zoomLevel) {
+		if (this.zoomLevel == zoomLevel) {
+			return;
+		}
+		if (this.zoomLevel == 0 || this.zoomLevel > zoomLevel) {
+			final GC gc = new GC(canvas);
+			gc.setBackground(getBackgroundColor());
+			final Rectangle canvasBounds = canvas.getBounds();
+			gc.fillRectangle(0, 0, canvasBounds.width, canvasBounds.height);
+			gc.dispose();
+		}
 		this.zoomLevel = zoomLevel;
-		final GC gc = new GC(canvas);
-		gc.setBackground(getBackgroundColor());
-		final Rectangle canvasBounds = canvas.getBounds();
-		gc.fillRectangle(0, 0, canvasBounds.width, canvasBounds.height);
-		gc.dispose();
 		refresh();
 	}
 
