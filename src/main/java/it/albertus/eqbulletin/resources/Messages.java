@@ -6,22 +6,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import it.albertus.util.logging.LoggerFactory;
+import it.albertus.jface.JFaceMessages;
 
 public final class Messages {
 
-	private static final Logger logger = LoggerFactory.getLogger(Messages.class);
-
-	public static class Defaults {
-		public static final String LANGUAGE = Locale.getDefault().getLanguage();
-
-		private Defaults() {
-			throw new IllegalAccessError("Constants class");
-		}
-	}
+	public static final String DEFAULT_LANGUAGE = Locale.getDefault().getLanguage();
 
 	public enum Language {
 		ENGLISH(Locale.ENGLISH),
@@ -48,16 +38,10 @@ public final class Messages {
 	}
 
 	/** Aggiorna la lingua in cui vengono mostrati i messaggi. */
-	public static void setLanguage(final Language language) {
-		if (language != null) {
-			resources = ResourceBundle.getBundle(BASE_NAME, language.locale, ResourceBundle.Control.getNoFallbackControl(ResourceBundle.Control.FORMAT_PROPERTIES));
-		}
-	}
-
-	/** Aggiorna la lingua in cui vengono mostrati i messaggi. */
 	public static void setLanguage(final String language) {
 		if (language != null) {
 			resources = ResourceBundle.getBundle(BASE_NAME, new Locale(language), ResourceBundle.Control.getNoFallbackControl(ResourceBundle.Control.FORMAT_PROPERTIES));
+			JFaceMessages.setLanguage(language);
 		}
 	}
 
@@ -81,8 +65,7 @@ public final class Messages {
 			message = message != null ? message.trim() : "";
 		}
 		catch (final MissingResourceException e) {
-			logger.log(Level.WARNING, e.getMessage(), e);
-			message = key;
+			message = JFaceMessages.get(key, params);
 		}
 		return message;
 	}
