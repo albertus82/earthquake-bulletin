@@ -30,8 +30,8 @@ import it.albertus.eqbulletin.service.geofon.html.transformer.HtmlTableDataTrans
 import it.albertus.eqbulletin.service.geofon.rss.transformer.RssItemTransformer;
 import it.albertus.eqbulletin.service.geofon.rss.xml.Rss;
 import it.albertus.eqbulletin.service.net.ConnectionFactory;
-import it.albertus.jface.preference.PreferencesConfiguration;
 import it.albertus.util.NewLine;
+import it.albertus.util.config.IConfiguration;
 import it.albertus.util.logging.LoggerFactory;
 
 public class GeofonBulletinProvider implements BulletinProvider {
@@ -40,7 +40,7 @@ public class GeofonBulletinProvider implements BulletinProvider {
 
 	private static final Logger logger = LoggerFactory.getLogger(GeofonBulletinProvider.class);
 
-	private static final PreferencesConfiguration configuration = EarthquakeBulletinConfig.getInstance();
+	private static final IConfiguration configuration = EarthquakeBulletinConfig.getInstance();
 
 	private HttpURLConnection urlConnection;
 

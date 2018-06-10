@@ -6,37 +6,24 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import it.albertus.eqbulletin.EarthquakeBulletin;
+import it.albertus.eqbulletin.gui.preference.Preference;
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.eqbulletin.util.InitializationException;
-import it.albertus.jface.JFaceMessages;
 import it.albertus.jface.preference.PreferencesConfiguration;
-import it.albertus.util.Configuration;
-import it.albertus.util.logging.CustomFormatter;
-import it.albertus.util.logging.EnhancedFileHandler;
-import it.albertus.util.logging.FileHandlerConfig;
+import it.albertus.util.SystemUtils;
+import it.albertus.util.config.LanguageConfig;
+import it.albertus.util.config.LoggingConfig;
 import it.albertus.util.logging.LoggerFactory;
-import it.albertus.util.logging.LoggingSupport;
 
-public class EarthquakeBulletinConfig extends Configuration {
+public class EarthquakeBulletinConfig extends LoggingConfig implements LanguageConfig {
 
 	private static final Logger logger = LoggerFactory.getLogger(EarthquakeBulletinConfig.class);
 
-	public static class Defaults {
-		public static final boolean LOGGING_FILES_ENABLED = true;
-		public static final Level LOGGING_LEVEL = Level.WARNING;
-		public static final String LOGGING_FILES_PATH = getOsSpecificLocalAppDataDir() + File.separator + Messages.get("msg.application.name");
-		public static final int LOGGING_FILES_LIMIT = 1024;
-		public static final int LOGGING_FILES_COUNT = 5;
-
-		private Defaults() {
-			throw new IllegalAccessError("Constants class");
-		}
-	}
+	public static final String DEFAULT_LOGGING_FILES_PATH = SystemUtils.getOsSpecificLocalAppDataDir() + File.separator + Messages.get("msg.application.name");
+	public static final Level DEFAULT_LOGGING_LEVEL = Level.WARNING;
 
 	public static final String CFG_FILE_NAME = "earthquake-bulletin.cfg";
-	public static final String LOG_FILE_NAME = "earthquake-bulletin.%g.log";
-
-	private EnhancedFileHandler fileHandler;
+	public static final String LOG_FILE_NAME_PATTERN = "earthquake-bulletin.%g.log";
 
 	private static PreferencesConfiguration instance;
 
@@ -60,87 +47,50 @@ public class EarthquakeBulletinConfig extends Configuration {
 	}
 
 	@Override
-	public void reload() throws IOException {
-		super.reload();
-		init();
-	}
-
-	private void init() {
+	protected void init() {
+		super.init();
 		updateLanguage();
-		updateLogging();
 	}
 
-	private void updateLanguage() {
-		final String language = getString("language", Messages.Defaults.LANGUAGE);
-		Messages.setLanguage(language);
-		JFaceMessages.setLanguage(language);
+	@Override
+	public void updateLanguage() {
+		Messages.setLanguage(getString(Preference.LANGUAGE.getName(), Messages.DEFAULT_LANGUAGE));
 	}
 
-	private void updateLogging() {
-		if (LoggingSupport.getInitialConfigurationProperty() == null) {
-			updateLoggingLevel();
+	@Override
+	protected boolean isFileHandlerEnabled() {
+		return getBoolean("logging.files.enabled", super.isFileHandlerEnabled());
+	}
 
-			if (this.getBoolean("logging.files.enabled", Defaults.LOGGING_FILES_ENABLED)) {
-				enableLoggingFileHandler();
-			}
-			else {
-				disableLoggingFileHandler();
-			}
+	@Override
+	protected String getLoggingLevel() {
+		return getString("logging.level", DEFAULT_LOGGING_LEVEL.getName());
+	}
+
+	@Override
+	protected String getFileHandlerPattern() {
+		return getString("logging.files.path", DEFAULT_LOGGING_FILES_PATH) + File.separator + LOG_FILE_NAME_PATTERN;
+	}
+
+	@Override
+	protected int getFileHandlerLimit() {
+		final Integer limit = getInt("logging.files.limit");
+		if (limit != null) {
+			return limit * 1024;
+		}
+		else {
+			return super.getFileHandlerLimit();
 		}
 	}
 
-	private void updateLoggingLevel() {
-		try {
-			LoggingSupport.setLevel(LoggingSupport.getRootLogger().getName(), Level.parse(this.getString("logging.level", Defaults.LOGGING_LEVEL.getName())));
-		}
-		catch (final IllegalArgumentException iae) {
-			logger.log(Level.WARNING, iae.toString(), iae);
-		}
+	@Override
+	protected int getFileHandlerCount() {
+		return getInt("logging.files.count", super.getFileHandlerCount());
 	}
 
-	private void enableLoggingFileHandler() {
-		final String loggingPath = getString("logging.files.path", Defaults.LOGGING_FILES_PATH);
-		if (loggingPath != null && !loggingPath.isEmpty()) {
-			final FileHandlerConfig newConfig = new FileHandlerConfig();
-			newConfig.setPattern(loggingPath + File.separator + LOG_FILE_NAME);
-			newConfig.setLimit(getInt("logging.files.limit", Defaults.LOGGING_FILES_LIMIT) * 1024);
-			newConfig.setCount(getInt("logging.files.count", Defaults.LOGGING_FILES_COUNT));
-			newConfig.setAppend(true);
-			newConfig.setFormatter(new CustomFormatter(EarthquakeBulletin.LOG_FORMAT));
-
-			if (fileHandler != null) {
-				final FileHandlerConfig oldConfig = FileHandlerConfig.fromHandler(fileHandler);
-				if (!oldConfig.getPattern().equals(newConfig.getPattern()) || oldConfig.getLimit() != newConfig.getLimit() || oldConfig.getCount() != newConfig.getCount()) {
-					logger.log(Level.FINE, "Logging configuration has changed; closing and removing old {0}...", fileHandler.getClass().getSimpleName());
-					LoggingSupport.getRootLogger().removeHandler(fileHandler);
-					fileHandler.close();
-					fileHandler = null;
-					logger.log(Level.FINE, "Old FileHandler closed and removed.");
-				}
-			}
-
-			if (fileHandler == null) {
-				logger.log(Level.FINE, "FileHandler not found; creating one...");
-				try {
-					new File(loggingPath).mkdirs();
-					fileHandler = new EnhancedFileHandler(newConfig);
-					LoggingSupport.getRootLogger().addHandler(fileHandler);
-					logger.log(Level.FINE, "{0} created successfully.", fileHandler.getClass().getSimpleName());
-				}
-				catch (final IOException ioe) {
-					logger.log(Level.SEVERE, ioe.toString(), ioe);
-				}
-			}
-		}
-	}
-
-	private void disableLoggingFileHandler() {
-		if (fileHandler != null) {
-			LoggingSupport.getRootLogger().removeHandler(fileHandler);
-			fileHandler.close();
-			fileHandler = null;
-			logger.log(Level.FINE, "FileHandler closed and removed.");
-		}
+	@Override
+	protected String getFileHandlerFormat() {
+		return EarthquakeBulletin.LOG_FORMAT;
 	}
 
 }

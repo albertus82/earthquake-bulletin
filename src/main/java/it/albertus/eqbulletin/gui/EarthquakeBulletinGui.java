@@ -34,7 +34,7 @@ import it.albertus.eqbulletin.util.InitializationException;
 import it.albertus.jface.EnhancedErrorDialog;
 import it.albertus.jface.Events;
 import it.albertus.jface.SwtUtils;
-import it.albertus.jface.preference.PreferencesConfiguration;
+import it.albertus.jface.preference.IPreferencesConfiguration;
 import it.albertus.util.Version;
 import it.albertus.util.logging.LoggerFactory;
 
@@ -64,7 +64,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 
 	private static final Logger logger = LoggerFactory.getLogger(EarthquakeBulletinGui.class);
 
-	private final PreferencesConfiguration configuration = EarthquakeBulletinConfig.getInstance();
+	private final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getInstance();
 
 	private SearchForm searchForm;
 	private ResultsTable resultsTable;

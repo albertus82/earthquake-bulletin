@@ -18,8 +18,8 @@ import it.albertus.eqbulletin.model.Longitude;
 import it.albertus.eqbulletin.model.Status;
 import it.albertus.eqbulletin.service.geofon.GeofonBulletinProvider;
 import it.albertus.eqbulletin.service.geofon.html.TableData;
-import it.albertus.jface.preference.PreferencesConfiguration;
 import it.albertus.util.NewLine;
+import it.albertus.util.config.IConfiguration;
 
 public class HtmlTableDataTransformer {
 
@@ -54,7 +54,7 @@ public class HtmlTableDataTransformer {
 		}
 	};
 
-	private static final PreferencesConfiguration configuration = EarthquakeBulletinConfig.getInstance();
+	private static final IConfiguration configuration = EarthquakeBulletinConfig.getInstance();
 
 	private HtmlTableDataTransformer() {
 		throw new IllegalAccessError();

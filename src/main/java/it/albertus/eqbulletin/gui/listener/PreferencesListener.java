@@ -25,15 +25,15 @@ import it.albertus.eqbulletin.gui.preference.Preference;
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.eqbulletin.resources.Messages.Language;
 import it.albertus.jface.EnhancedErrorDialog;
+import it.albertus.jface.preference.IPreferencesConfiguration;
 import it.albertus.jface.preference.Preferences;
-import it.albertus.jface.preference.PreferencesConfiguration;
 import it.albertus.util.logging.LoggerFactory;
 
 public class PreferencesListener extends SelectionAdapter implements Listener {
 
 	private static final Logger logger = LoggerFactory.getLogger(PreferencesListener.class);
 
-	private static final PreferencesConfiguration configuration = EarthquakeBulletinConfig.getInstance();
+	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getInstance();
 
 	private final EarthquakeBulletinGui gui;
 

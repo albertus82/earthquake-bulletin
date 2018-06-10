@@ -14,14 +14,14 @@ import it.albertus.eqbulletin.gui.EarthquakeBulletinGui;
 import it.albertus.eqbulletin.gui.TrayIcon;
 import it.albertus.eqbulletin.gui.preference.Preference;
 import it.albertus.jface.listener.TrayRestoreListener;
-import it.albertus.jface.preference.PreferencesConfiguration;
+import it.albertus.jface.preference.IPreferencesConfiguration;
 import it.albertus.util.logging.LoggerFactory;
 
 public class EnhancedTrayRestoreListener extends TrayRestoreListener {
 
 	private static final Logger logger = LoggerFactory.getLogger(EnhancedTrayRestoreListener.class);
 
-	private static final PreferencesConfiguration configuration = EarthquakeBulletinConfig.getInstance();
+	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getInstance();
 
 	private boolean firstTime = true;
 
