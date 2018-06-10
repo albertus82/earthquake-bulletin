@@ -4,8 +4,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
+import it.albertus.eqbulletin.gui.preference.Preference;
 import it.albertus.eqbulletin.model.MapImage;
-import it.albertus.util.Configuration;
+import it.albertus.jface.preference.IPreferencesConfiguration;
 
 public class MapCache {
 
@@ -17,15 +18,13 @@ public class MapCache {
 		}
 	}
 
-	private static final String MAP_CACHE_SIZE = "map.cache.size";
-
-	private static final Configuration configuration = EarthquakeBulletinConfig.getInstance();
+	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getInstance();
 
 	private final Map<String, MapImage> cache = new LinkedHashMap<>();
 
 	public void put(final String guid, final MapImage map) {
 		cache.put(guid, map);
-		while (cache.size() > 0 && cache.size() > configuration.getByte(MAP_CACHE_SIZE, Defaults.CACHE_SIZE)) {
+		while (cache.size() > 0 && cache.size() > configuration.getByte(Preference.MAP_CACHE_SIZE, Defaults.CACHE_SIZE)) {
 			final String eldestGuid = cache.keySet().iterator().next();
 			cache.remove(eldestGuid);
 		}
@@ -52,7 +51,7 @@ public class MapCache {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((cache == null) ? 0 : cache.hashCode());
+		result = prime * result + cache.hashCode();
 		return result;
 	}
 
@@ -68,15 +67,7 @@ public class MapCache {
 			return false;
 		}
 		MapCache other = (MapCache) obj;
-		if (cache == null) {
-			if (other.cache != null) {
-				return false;
-			}
-		}
-		else if (!cache.equals(other.cache)) {
-			return false;
-		}
-		return true;
+		return cache.equals(other.cache);
 	}
 
 }

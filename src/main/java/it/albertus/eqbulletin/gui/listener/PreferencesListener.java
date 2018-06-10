@@ -26,14 +26,14 @@ import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.eqbulletin.resources.Messages.Language;
 import it.albertus.jface.EnhancedErrorDialog;
 import it.albertus.jface.preference.Preferences;
-import it.albertus.util.Configuration;
+import it.albertus.jface.preference.PreferencesConfiguration;
 import it.albertus.util.logging.LoggerFactory;
 
 public class PreferencesListener extends SelectionAdapter implements Listener {
 
 	private static final Logger logger = LoggerFactory.getLogger(PreferencesListener.class);
 
-	private static final Configuration configuration = EarthquakeBulletinConfig.getInstance();
+	private static final PreferencesConfiguration configuration = EarthquakeBulletinConfig.getInstance();
 
 	private final EarthquakeBulletinGui gui;
 
@@ -44,11 +44,11 @@ public class PreferencesListener extends SelectionAdapter implements Listener {
 	@Override
 	public void widgetSelected(final SelectionEvent se) {
 		final Language language = Messages.getLanguage();
-		final String timezone = configuration.getString("timezone", EarthquakeBulletin.Defaults.TIME_ZONE_ID);
-		final float magnitudeBig = configuration.getFloat("magnitude.big", ResultsTable.Defaults.MAGNITUDE_BIG);
-		final float magnitudeXxl = configuration.getFloat("magnitude.xxl", ResultsTable.Defaults.MAGNITUDE_XXL);
-		final short mapZoomLevel = configuration.getShort("map.zoom.level", MapCanvas.Defaults.MAP_ZOOM_LEVEL);
-		final boolean mapResizeHq = configuration.getBoolean("map.resize.hq", Defaults.MAP_RESIZE_HQ);
+		final String timezone = configuration.getString(Preference.TIMEZONE, EarthquakeBulletin.Defaults.TIME_ZONE_ID);
+		final float magnitudeBig = configuration.getFloat(Preference.MAGNITUDE_BIG, ResultsTable.Defaults.MAGNITUDE_BIG);
+		final float magnitudeXxl = configuration.getFloat(Preference.MAGNITUDE_XXL, ResultsTable.Defaults.MAGNITUDE_XXL);
+		final short mapZoomLevel = configuration.getShort(Preference.MAP_ZOOM_LEVEL, MapCanvas.Defaults.MAP_ZOOM_LEVEL);
+		final boolean mapResizeHq = configuration.getBoolean(Preference.MAP_RESIZE_HQ, Defaults.MAP_RESIZE_HQ);
 
 		final Preferences preferences = new Preferences(PageDefinition.values(), Preference.values(), configuration, Images.getMainIcons());
 		final Shell shell = gui.getShell();
@@ -67,16 +67,16 @@ public class PreferencesListener extends SelectionAdapter implements Listener {
 		}
 
 		// Check if time zone has changed...
-		if (magnitudeBig != configuration.getFloat("magnitude.big", ResultsTable.Defaults.MAGNITUDE_BIG) || magnitudeXxl != configuration.getFloat("magnitude.xxl", ResultsTable.Defaults.MAGNITUDE_XXL) || !timezone.equals(configuration.getString("timezone", EarthquakeBulletin.Defaults.TIME_ZONE_ID))) {
+		if (magnitudeBig != configuration.getFloat(Preference.MAGNITUDE_BIG, ResultsTable.Defaults.MAGNITUDE_BIG) || magnitudeXxl != configuration.getFloat(Preference.MAGNITUDE_XXL, ResultsTable.Defaults.MAGNITUDE_XXL) || !timezone.equals(configuration.getString(Preference.TIMEZONE, EarthquakeBulletin.Defaults.TIME_ZONE_ID))) {
 			gui.getResultsTable().getTableViewer().refresh();
 		}
 
 		// Refresh map if needed...
-		final short newZoomLevel = configuration.getShort("map.zoom.level", MapCanvas.Defaults.MAP_ZOOM_LEVEL);
+		final short newZoomLevel = configuration.getShort(Preference.MAP_ZOOM_LEVEL, MapCanvas.Defaults.MAP_ZOOM_LEVEL);
 		if (mapZoomLevel != newZoomLevel) {
 			gui.getMapCanvas().setZoomLevel(newZoomLevel);
 		}
-		if (mapResizeHq != configuration.getBoolean("map.resize.hq", Defaults.MAP_RESIZE_HQ)) {
+		if (mapResizeHq != configuration.getBoolean(Preference.MAP_RESIZE_HQ, Defaults.MAP_RESIZE_HQ)) {
 			gui.getMapCanvas().refresh();
 		}
 

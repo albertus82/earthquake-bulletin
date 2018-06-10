@@ -75,10 +75,11 @@ public enum Preference implements IPreference {
 	HTTP_READ_TIMEOUT_MS(new PreferenceDetailsBuilder(CONNECTION).defaultValue(ConnectionFactory.Defaults.READ_TIMEOUT_IN_MILLIS).build(), new FieldEditorDetailsBuilder(EnhancedIntegerFieldEditor.class).build()),
 
 	PROXY_ENABLED(new PreferenceDetailsBuilder(CONNECTION).defaultValue(ConnectionFactory.Defaults.PROXY_ENABLED).separate().build(), new FieldEditorDetailsBuilder(DefaultBooleanFieldEditor.class).build()),
-	PROXY_TYPE(new PreferenceDetailsBuilder(CONNECTION).parent(PROXY_ENABLED).defaultValue(ConnectionFactory.Defaults.PROXY_TYPE.name()).build(), new FieldEditorDetailsBuilder(DefaultComboFieldEditor.class).labelsAndValues(getProxyTypeComboOptions()).boldCustomValues(false).build()),
-	PROXY_ADDRESS(new PreferenceDetailsBuilder(CONNECTION).parent(PROXY_ENABLED).defaultValue(ConnectionFactory.Defaults.PROXY_ADDRESS).build(), new FieldEditorDetailsBuilder(EnhancedStringFieldEditor.class).textLimit(253).emptyStringAllowed(false).boldCustomValues(false).build()),
-	PROXY_PORT(new PreferenceDetailsBuilder(CONNECTION).parent(PROXY_ENABLED).defaultValue(ConnectionFactory.Defaults.PROXY_PORT).build(), new FieldEditorDetailsBuilder(EnhancedIntegerFieldEditor.class).numberValidRange(1, 65535).boldCustomValues(false).build()),
-	PROXY_AUTH_REQUIRED(new PreferenceDetailsBuilder(CONNECTION).parent(PROXY_ENABLED).defaultValue(ConnectionFactory.Defaults.PROXY_ENABLED).build(), new FieldEditorDetailsBuilder(DefaultBooleanFieldEditor.class).build()),
+	PROXY_MANUAL(new PreferenceDetailsBuilder(CONNECTION).parent(PROXY_ENABLED).defaultValue(ConnectionFactory.Defaults.PROXY_MANUAL).build(), new FieldEditorDetailsBuilder(DefaultBooleanFieldEditor.class).build()),
+	PROXY_TYPE(new PreferenceDetailsBuilder(CONNECTION).parent(PROXY_MANUAL).defaultValue(ConnectionFactory.Defaults.PROXY_TYPE.name()).build(), new FieldEditorDetailsBuilder(DefaultComboFieldEditor.class).labelsAndValues(getProxyTypeComboOptions()).boldCustomValues(false).build()),
+	PROXY_ADDRESS(new PreferenceDetailsBuilder(CONNECTION).parent(PROXY_MANUAL).defaultValue(ConnectionFactory.Defaults.PROXY_ADDRESS).build(), new FieldEditorDetailsBuilder(EnhancedStringFieldEditor.class).textLimit(253).emptyStringAllowed(false).boldCustomValues(false).build()),
+	PROXY_PORT(new PreferenceDetailsBuilder(CONNECTION).parent(PROXY_MANUAL).defaultValue(ConnectionFactory.Defaults.PROXY_PORT).build(), new FieldEditorDetailsBuilder(EnhancedIntegerFieldEditor.class).numberValidRange(1, 65535).boldCustomValues(false).build()),
+	PROXY_AUTH_REQUIRED(new PreferenceDetailsBuilder(CONNECTION).parent(PROXY_MANUAL).defaultValue(ConnectionFactory.Defaults.PROXY_ENABLED).build(), new FieldEditorDetailsBuilder(DefaultBooleanFieldEditor.class).build()),
 	PROXY_USERNAME(new PreferenceDetailsBuilder(CONNECTION).parent(PROXY_AUTH_REQUIRED).build(), new FieldEditorDetailsBuilder(EnhancedStringFieldEditor.class).build()),
 	PROXY_PASSWORD(new PreferenceDetailsBuilder(CONNECTION).parent(PROXY_AUTH_REQUIRED).build(), new FieldEditorDetailsBuilder(PasswordFieldEditor.class).build()),
 

@@ -7,15 +7,16 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.RGB;
 
 import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
+import it.albertus.eqbulletin.gui.preference.Preference;
 import it.albertus.eqbulletin.model.Earthquake;
-import it.albertus.util.Configuration;
+import it.albertus.jface.preference.IPreferencesConfiguration;
 
 public class EarthquakeColumnLabelProvider extends ColumnLabelProvider {
 
 	private static final String EARTHQUAKE_BACKGROUND_BIG = "EARTHQUAKE_BACKGROUND_BIG";
 	private static final String EARTHQUAKE_BACKGROUND_XXL = "EARTHQUAKE_BACKGROUND_XXL";
 
-	private static final Configuration configuration = EarthquakeBulletinConfig.getInstance();
+	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getInstance();
 
 	static {
 		JFaceResources.getColorRegistry().put(EARTHQUAKE_BACKGROUND_XXL, new RGB(0xF8, 0xC8, 0xC8));
@@ -28,10 +29,10 @@ public class EarthquakeColumnLabelProvider extends ColumnLabelProvider {
 	}
 
 	private final Color getBackground(final Earthquake element) {
-		if (element.getMagnitude() >= configuration.getFloat("magnitude.xxl", ResultsTable.Defaults.MAGNITUDE_XXL)) {
+		if (element.getMagnitude() >= configuration.getFloat(Preference.MAGNITUDE_XXL, ResultsTable.Defaults.MAGNITUDE_XXL)) {
 			return JFaceResources.getColorRegistry().get(EARTHQUAKE_BACKGROUND_XXL);
 		}
-		else if (element.getMagnitude() >= configuration.getFloat("magnitude.big", ResultsTable.Defaults.MAGNITUDE_BIG)) {
+		else if (element.getMagnitude() >= configuration.getFloat(Preference.MAGNITUDE_BIG, ResultsTable.Defaults.MAGNITUDE_BIG)) {
 			return JFaceResources.getColorRegistry().get(EARTHQUAKE_BACKGROUND_BIG);
 		}
 		else {

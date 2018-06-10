@@ -28,11 +28,13 @@ import org.eclipse.swt.widgets.TableColumn;
 
 import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
 import it.albertus.eqbulletin.gui.listener.CloseListener;
+import it.albertus.eqbulletin.gui.preference.Preference;
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.eqbulletin.util.InitializationException;
 import it.albertus.jface.EnhancedErrorDialog;
 import it.albertus.jface.Events;
 import it.albertus.jface.SwtUtils;
+import it.albertus.jface.preference.PreferencesConfiguration;
 import it.albertus.util.Version;
 import it.albertus.util.logging.LoggerFactory;
 
@@ -44,8 +46,6 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 	public static final String SHELL_LOCATION_X = "shell.location.x";
 	public static final String SHELL_LOCATION_Y = "shell.location.y";
 	public static final String SHELL_MAXIMIZED = "shell.maximized";
-
-	public static final String START_MINIMIZED = "start.minimized";
 
 	private static final Point POINT_ZERO = new Point(0, 0);
 
@@ -64,7 +64,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 
 	private static final Logger logger = LoggerFactory.getLogger(EarthquakeBulletinGui.class);
 
-	private final EarthquakeBulletinConfig configuration = EarthquakeBulletinConfig.getInstance();
+	private final PreferencesConfiguration configuration = EarthquakeBulletinConfig.getInstance();
 
 	private SearchForm searchForm;
 	private ResultsTable resultsTable;
@@ -157,7 +157,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 				break;
 			}
 		}
-		if (configuration.getBoolean("search.on.start", Defaults.SEARCH_ON_START)) {
+		if (configuration.getBoolean(Preference.SEARCH_ON_START, Defaults.SEARCH_ON_START)) {
 			searchForm.getSearchButton().notifyListeners(SWT.Selection, null);
 		}
 		return code;
@@ -201,7 +201,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 	}
 
 	private void setMinimizedMaximizedShellStatus() {
-		if (configuration.getBoolean(START_MINIMIZED, Defaults.START_MINIMIZED)) {
+		if (configuration.getBoolean(Preference.START_MINIMIZED, Defaults.START_MINIMIZED)) {
 			getShell().setMinimized(true);
 		}
 		else if (configuration.getBoolean(SHELL_MAXIMIZED, Defaults.SHELL_MAXIMIZED)) {
@@ -292,7 +292,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 		@Override
 		public void handleEvent(final Event event) {
 			logEvent(event);
-			if (firstTime && !getShell().isDisposed() && !configuration.getBoolean("minimize.tray", TrayIcon.Defaults.MINIMIZE_TRAY) && configuration.getBoolean(START_MINIMIZED, Defaults.START_MINIMIZED) && configuration.getBoolean(SHELL_MAXIMIZED, Defaults.SHELL_MAXIMIZED)) {
+			if (firstTime && !getShell().isDisposed() && !configuration.getBoolean(Preference.MINIMIZE_TRAY, TrayIcon.Defaults.MINIMIZE_TRAY) && configuration.getBoolean(Preference.START_MINIMIZED, Defaults.START_MINIMIZED) && configuration.getBoolean(SHELL_MAXIMIZED, Defaults.SHELL_MAXIMIZED)) {
 				firstTime = false;
 				getShell().setMaximized(true);
 			}
@@ -305,7 +305,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 		@Override
 		public void handleEvent(final Event event) {
 			logEvent(event);
-			if (firstTime && configuration.getBoolean(START_MINIMIZED, Defaults.START_MINIMIZED)) {
+			if (firstTime && configuration.getBoolean(Preference.START_MINIMIZED, Defaults.START_MINIMIZED)) {
 				firstTime = false;
 			}
 			else {

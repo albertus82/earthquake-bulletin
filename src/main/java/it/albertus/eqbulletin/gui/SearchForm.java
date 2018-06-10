@@ -39,6 +39,7 @@ import it.albertus.eqbulletin.gui.listener.FormatRadioSelectionListener;
 import it.albertus.eqbulletin.gui.listener.MapButtonSelectionListener;
 import it.albertus.eqbulletin.gui.listener.SearchButtonSelectionListener;
 import it.albertus.eqbulletin.gui.listener.StopButtonSelectionListener;
+import it.albertus.eqbulletin.gui.preference.Preference;
 import it.albertus.eqbulletin.model.Format;
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.jface.JFaceMessages;
@@ -50,11 +51,12 @@ import it.albertus.jface.google.maps.MapOptions;
 import it.albertus.jface.google.maps.MapType;
 import it.albertus.jface.listener.FloatVerifyListener;
 import it.albertus.jface.listener.IntegerVerifyListener;
+import it.albertus.jface.preference.IPreference;
+import it.albertus.jface.preference.IPreferencesConfiguration;
 import it.albertus.jface.validation.ControlValidator;
 import it.albertus.jface.validation.FloatTextValidator;
 import it.albertus.jface.validation.IntegerTextValidator;
 import it.albertus.jface.validation.Validator;
-import it.albertus.util.Configuration;
 import it.albertus.util.Localized;
 import it.albertus.util.logging.LoggerFactory;
 
@@ -105,7 +107,7 @@ public class SearchForm {
 		}
 	}
 
-	private static final Configuration configuration = EarthquakeBulletinConfig.getInstance();
+	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getInstance();
 
 	private final Composite formComposite;
 
@@ -247,7 +249,7 @@ public class SearchForm {
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(minimumMagnitudeText);
 		restrictButton = new Button(criteriaGroup, SWT.CHECK);
 		restrictButton.setText(Messages.get("lbl.form.criteria.restrict"));
-		restrictButton.setSelection(configuration.getBoolean("criteria.restrict", Defaults.CRITERIA_RESTRICT));
+		restrictButton.setSelection(configuration.getBoolean(Preference.CRITERIA_RESTRICT, Defaults.CRITERIA_RESTRICT));
 		GridDataFactory.swtDefaults().span(4, 1).applyTo(restrictButton);
 
 		outputFormatLabel = new Label(criteriaGroup, SWT.NONE);
@@ -257,7 +259,7 @@ public class SearchForm {
 		GridDataFactory.swtDefaults().grab(false, false).span(2, 1).applyTo(radioComposite);
 		Format selectedFormat;
 		try {
-			selectedFormat = Format.valueOf(configuration.getString("criteria.format", Defaults.FORMAT.name()).trim().toUpperCase());
+			selectedFormat = Format.valueOf(configuration.getString(Preference.CRITERIA_FORMAT, Defaults.FORMAT.name()).trim().toUpperCase());
 		}
 		catch (final IllegalArgumentException e) {
 			logger.log(Level.WARNING, e.toString(), e);
@@ -288,7 +290,7 @@ public class SearchForm {
 
 		autoRefreshButton = new Button(buttonsComposite, SWT.CHECK);
 		autoRefreshButton.setText(Messages.get("lbl.form.button.autorefresh"));
-		autoRefreshButton.setSelection(configuration.getBoolean("autorefresh.enabled", Defaults.AUTOREFRESH_ENABLED));
+		autoRefreshButton.setSelection(configuration.getBoolean(Preference.AUTOREFRESH_ENABLED, Defaults.AUTOREFRESH_ENABLED));
 		GridDataFactory.swtDefaults().span(2, 1).applyTo(autoRefreshButton);
 
 		autoRefreshText = new Text(buttonsComposite, SWT.BORDER);
@@ -396,15 +398,15 @@ public class SearchForm {
 		autoRefreshText.addModifyListener(formTextModifyListener);
 
 		// Load parameters from configuration
-		periodFromDateTime.setSelection(getConfiguredDate("criteria.period.from"));
-		periodToDateTime.setSelection(getConfiguredDate("criteria.period.to"));
-		latitudeFromText.setText(getConfiguredFloatString("criteria.latitude.from"));
-		latitudeToText.setText(getConfiguredFloatString("criteria.latitude.to"));
-		longitudeFromText.setText(getConfiguredFloatString("criteria.longitude.from"));
-		longitudeToText.setText(getConfiguredFloatString("criteria.longitude.to"));
-		minimumMagnitudeText.setText(getConfiguredFloatString("criteria.magnitude"));
-		resultsText.setText(getConfiguredIntegerString("criteria.limit"));
-		autoRefreshText.setText(getConfiguredIntegerString("autorefresh.mins"));
+		periodFromDateTime.setSelection(getConfiguredDate(Preference.CRITERIA_PERIOD_FROM));
+		periodToDateTime.setSelection(getConfiguredDate(Preference.CRITERIA_PERIOD_TO));
+		latitudeFromText.setText(getConfiguredFloatString(Preference.CRITERIA_LATITUDE_FROM));
+		latitudeToText.setText(getConfiguredFloatString(Preference.CRITERIA_LATITUDE_TO));
+		longitudeFromText.setText(getConfiguredFloatString(Preference.CRITERIA_LONGITUDE_FROM));
+		longitudeToText.setText(getConfiguredFloatString(Preference.CRITERIA_LONGITUDE_TO));
+		minimumMagnitudeText.setText(getConfiguredFloatString(Preference.CRITERIA_MAGNITUDE));
+		resultsText.setText(getConfiguredIntegerString(Preference.CRITERIA_LIMIT));
+		autoRefreshText.setText(getConfiguredIntegerString(Preference.AUTOREFRESH_MINS));
 
 		// Map
 		mapBoundsDialog = new MapBoundsDialog(gui.getShell());
@@ -467,10 +469,10 @@ public class SearchForm {
 		mapBoundsDialog.setText(Messages.get("lbl.map.bounds.title"));
 	}
 
-	private String getConfiguredFloatString(final String key) {
+	private String getConfiguredFloatString(final IPreference preference) {
 		String value = "";
 		try {
-			final Float number = configuration.getFloat(key);
+			final Float number = configuration.getFloat(preference);
 			if (number != null) {
 				value = number.toString();
 			}
@@ -481,10 +483,10 @@ public class SearchForm {
 		return value;
 	}
 
-	private String getConfiguredIntegerString(final String key) {
+	private String getConfiguredIntegerString(final IPreference preference) {
 		String value = "";
 		try {
-			final Integer number = configuration.getInt(key);
+			final Integer number = configuration.getInt(preference);
 			if (number != null) {
 				value = number.toString();
 			}
@@ -495,9 +497,9 @@ public class SearchForm {
 		return value;
 	}
 
-	private Date getConfiguredDate(final String key) {
+	private Date getConfiguredDate(final IPreference preference) {
 		Date value = null;
-		final String dateStr = configuration.getString(key);
+		final String dateStr = configuration.getString(preference);
 		if (dateStr != null && !dateStr.trim().isEmpty()) {
 			try {
 				final DateFormat df = dateFormat.get();

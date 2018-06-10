@@ -33,12 +33,13 @@ import org.eclipse.swt.widgets.MenuItem;
 
 import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
 import it.albertus.eqbulletin.gui.job.DownloadMapJob;
+import it.albertus.eqbulletin.gui.preference.Preference;
 import it.albertus.eqbulletin.model.MapImage;
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.eqbulletin.service.MapCache;
 import it.albertus.jface.EnhancedErrorDialog;
 import it.albertus.jface.HqImageResizer;
-import it.albertus.util.Configuration;
+import it.albertus.jface.preference.IPreferencesConfiguration;
 import it.albertus.util.logging.LoggerFactory;
 
 public class MapCanvas {
@@ -54,7 +55,7 @@ public class MapCanvas {
 
 	private static final Logger logger = LoggerFactory.getLogger(MapCanvas.class);
 
-	private static final Configuration configuration = EarthquakeBulletinConfig.getInstance();
+	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getInstance();
 
 	private static final short[] ZOOM_LEVELS = { 0, 25, 50, 75, 100, 125, 150, 175, 200, 225, 250 };
 
@@ -64,7 +65,7 @@ public class MapCanvas {
 	private String guid;
 	private Image image;
 
-	private short zoomLevel = configuration.getShort("map.zoom.level", Defaults.MAP_ZOOM_LEVEL);
+	private short zoomLevel = configuration.getShort(Preference.MAP_ZOOM_LEVEL, Defaults.MAP_ZOOM_LEVEL);
 
 	private Image resized;
 
@@ -204,7 +205,7 @@ public class MapCanvas {
 				gc.drawImage(image, resizedRect.x, resizedRect.y);
 			}
 			else {
-				if (configuration.getBoolean("map.resize.hq", Defaults.MAP_RESIZE_HQ)) {
+				if (configuration.getBoolean(Preference.MAP_RESIZE_HQ, Defaults.MAP_RESIZE_HQ)) {
 					final Image oldImage = resized;
 					resized = HqImageResizer.resize(image, resizedRect.height / (float) originalRect.height);
 					gc.drawImage(resized, resizedRect.x, resizedRect.y);

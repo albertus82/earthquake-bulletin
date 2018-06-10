@@ -24,10 +24,11 @@ import it.albertus.eqbulletin.EarthquakeBulletin;
 import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
 import it.albertus.eqbulletin.gui.listener.CloseListener;
 import it.albertus.eqbulletin.gui.listener.EnhancedTrayRestoreListener;
+import it.albertus.eqbulletin.gui.preference.Preference;
 import it.albertus.eqbulletin.model.Earthquake;
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.jface.listener.TrayRestoreListener;
-import it.albertus.util.Configuration;
+import it.albertus.jface.preference.IPreferencesConfiguration;
 import it.albertus.util.NewLine;
 import it.albertus.util.logging.LoggerFactory;
 
@@ -45,9 +46,7 @@ public class TrayIcon {
 		}
 	}
 
-	public static final String MINIMIZE_TRAY = "minimize.tray";
-
-	private static final Configuration configuration = EarthquakeBulletinConfig.getInstance();
+	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getInstance();
 
 	private final EarthquakeBulletinGui gui;
 
@@ -67,7 +66,7 @@ public class TrayIcon {
 		gui.getShell().addShellListener(new ShellAdapter() {
 			@Override
 			public void shellIconified(final ShellEvent se) {
-				if (configuration.getBoolean(MINIMIZE_TRAY, Defaults.MINIMIZE_TRAY)) {
+				if (configuration.getBoolean(Preference.MINIMIZE_TRAY, Defaults.MINIMIZE_TRAY)) {
 					iconify();
 				}
 			}
@@ -143,7 +142,7 @@ public class TrayIcon {
 
 			final StringBuilder message = new StringBuilder();
 			final DateFormat df = ResultsTable.dateFormat.get();
-			df.setTimeZone(TimeZone.getTimeZone(configuration.getString("timezone", EarthquakeBulletin.Defaults.TIME_ZONE_ID)));
+			df.setTimeZone(TimeZone.getTimeZone(configuration.getString(Preference.TIMEZONE, EarthquakeBulletin.Defaults.TIME_ZONE_ID)));
 			message.append(df.format(earthquake.getTime())).append(' ');
 			message.append(earthquake.getLatitude()).append(' ');
 			message.append(earthquake.getLongitude()).append(' ');
@@ -151,10 +150,10 @@ public class TrayIcon {
 			message.append(earthquake.getStatus());
 
 			final ToolTip toolTip;
-			if (earthquake.getMagnitude() >= configuration.getFloat("magnitude.xxl", ResultsTable.Defaults.MAGNITUDE_XXL)) {
+			if (earthquake.getMagnitude() >= configuration.getFloat(Preference.MAGNITUDE_XXL, ResultsTable.Defaults.MAGNITUDE_XXL)) {
 				toolTip = toolTips.get(SWT.ICON_ERROR);
 			}
-			else if (earthquake.getMagnitude() >= configuration.getFloat("magnitude.big", ResultsTable.Defaults.MAGNITUDE_BIG)) {
+			else if (earthquake.getMagnitude() >= configuration.getFloat(Preference.MAGNITUDE_BIG, ResultsTable.Defaults.MAGNITUDE_BIG)) {
 				toolTip = toolTips.get(SWT.ICON_WARNING);
 			}
 			else {
@@ -187,7 +186,7 @@ public class TrayIcon {
 				buf.append("M ").append(earthquake.getMagnitude()).append(", ").append(earthquake.getRegion());
 				buf.append(NewLine.SYSTEM_LINE_SEPARATOR);
 				final DateFormat df = ResultsTable.dateFormat.get();
-				df.setTimeZone(TimeZone.getTimeZone(configuration.getString("timezone", EarthquakeBulletin.Defaults.TIME_ZONE_ID)));
+				df.setTimeZone(TimeZone.getTimeZone(configuration.getString(Preference.TIMEZONE, EarthquakeBulletin.Defaults.TIME_ZONE_ID)));
 				buf.append(df.format(earthquake.getTime())).append(' ');
 				buf.append(earthquake.getLatitude()).append(' ');
 				buf.append(earthquake.getLongitude()).append(' ');

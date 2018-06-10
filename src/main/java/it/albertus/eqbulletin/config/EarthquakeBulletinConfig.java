@@ -9,6 +9,7 @@ import it.albertus.eqbulletin.EarthquakeBulletin;
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.eqbulletin.util.InitializationException;
 import it.albertus.jface.JFaceMessages;
+import it.albertus.jface.preference.PreferencesConfiguration;
 import it.albertus.util.Configuration;
 import it.albertus.util.logging.CustomFormatter;
 import it.albertus.util.logging.EnhancedFileHandler;
@@ -37,17 +38,17 @@ public class EarthquakeBulletinConfig extends Configuration {
 
 	private EnhancedFileHandler fileHandler;
 
-	private static EarthquakeBulletinConfig instance;
+	private static PreferencesConfiguration instance;
 
 	private EarthquakeBulletinConfig() throws IOException {
 		super(Messages.get("msg.application.name") + File.separator + CFG_FILE_NAME, true);
 		init();
 	}
 
-	public static synchronized EarthquakeBulletinConfig getInstance() {
+	public static synchronized PreferencesConfiguration getInstance() {
 		if (instance == null) {
 			try {
-				instance = new EarthquakeBulletinConfig();
+				instance = new PreferencesConfiguration(new EarthquakeBulletinConfig());
 			}
 			catch (final IOException e) {
 				final String message = Messages.get("err.open.cfg", CFG_FILE_NAME);

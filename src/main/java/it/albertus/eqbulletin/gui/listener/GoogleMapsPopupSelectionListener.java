@@ -12,6 +12,7 @@ import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
 import it.albertus.eqbulletin.gui.EarthquakeBulletinGui;
 import it.albertus.eqbulletin.gui.Images;
 import it.albertus.eqbulletin.gui.ResultsTable;
+import it.albertus.eqbulletin.gui.preference.Preference;
 import it.albertus.eqbulletin.model.Earthquake;
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.jface.google.maps.MapControl;
@@ -19,12 +20,12 @@ import it.albertus.jface.google.maps.MapDialog;
 import it.albertus.jface.google.maps.MapMarker;
 import it.albertus.jface.google.maps.MapOptions;
 import it.albertus.jface.google.maps.MapType;
-import it.albertus.util.Configuration;
+import it.albertus.jface.preference.IPreferencesConfiguration;
 import it.albertus.util.NewLine;
 
 public class GoogleMapsPopupSelectionListener extends SelectionAdapter {
 
-	private static final Configuration configuration = EarthquakeBulletinConfig.getInstance();
+	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getInstance();
 
 	private final EarthquakeBulletinGui gui;
 
@@ -53,7 +54,7 @@ public class GoogleMapsPopupSelectionListener extends SelectionAdapter {
 			title.append(selection.getMagnitude()).append(", ").append(selection.getRegion());
 			title.append(NewLine.SYSTEM_LINE_SEPARATOR);
 			final DateFormat df = ResultsTable.dateFormat.get();
-			df.setTimeZone(TimeZone.getTimeZone(configuration.getString("timezone", EarthquakeBulletin.Defaults.TIME_ZONE_ID)));
+			df.setTimeZone(TimeZone.getTimeZone(configuration.getString(Preference.TIMEZONE, EarthquakeBulletin.Defaults.TIME_ZONE_ID)));
 			title.append(df.format(selection.getTime())).append(' ');
 			title.append(selection.getLatitude()).append(' ');
 			title.append(selection.getLongitude()).append(' ');

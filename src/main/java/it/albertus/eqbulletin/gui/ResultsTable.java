@@ -35,11 +35,12 @@ import it.albertus.eqbulletin.gui.listener.GoogleMapsPopupSelectionListener;
 import it.albertus.eqbulletin.gui.listener.OpenInBrowserSelectionListener;
 import it.albertus.eqbulletin.gui.listener.ResultsTableContextMenuDetectListener;
 import it.albertus.eqbulletin.gui.listener.ShowMapListener;
+import it.albertus.eqbulletin.gui.preference.Preference;
 import it.albertus.eqbulletin.model.Earthquake;
 import it.albertus.eqbulletin.model.Status;
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.jface.SwtUtils;
-import it.albertus.util.Configuration;
+import it.albertus.jface.preference.IPreferencesConfiguration;
 import it.albertus.util.Localized;
 
 public class ResultsTable {
@@ -57,7 +58,7 @@ public class ResultsTable {
 
 	private static final String SYM_NAME_FONT_DEFAULT = ResultsTable.class.getName().toLowerCase() + ".default";
 
-	private static final Configuration configuration = EarthquakeBulletinConfig.getInstance();
+	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getInstance();
 
 	public static final ThreadLocal<DateFormat> dateFormat = new ThreadLocal<DateFormat>() {
 		@Override
@@ -187,7 +188,7 @@ public class ResultsTable {
 			@Override
 			protected String getText(final Earthquake element) {
 				final DateFormat df = dateFormat.get();
-				df.setTimeZone(TimeZone.getTimeZone(configuration.getString("timezone", EarthquakeBulletin.Defaults.TIME_ZONE_ID)));
+				df.setTimeZone(TimeZone.getTimeZone(configuration.getString(Preference.TIMEZONE, EarthquakeBulletin.Defaults.TIME_ZONE_ID)));
 				return df.format(element.getTime());
 			}
 		});
@@ -202,7 +203,7 @@ public class ResultsTable {
 
 			@Override
 			protected Color getForeground(final Earthquake element) {
-				if (element.getMagnitude() >= configuration.getFloat("magnitude.xxl", Defaults.MAGNITUDE_XXL)) {
+				if (element.getMagnitude() >= configuration.getFloat(Preference.MAGNITUDE_XXL, Defaults.MAGNITUDE_XXL)) {
 					return table.getDisplay().getSystemColor(SWT.COLOR_RED);
 				}
 				else {
@@ -212,7 +213,7 @@ public class ResultsTable {
 
 			@Override
 			protected Font getFont(final Earthquake element) {
-				if (element.getMagnitude() >= configuration.getFloat("magnitude.big", Defaults.MAGNITUDE_BIG) && getTableViewer().getTable().getItemCount() != 0) {
+				if (element.getMagnitude() >= configuration.getFloat(Preference.MAGNITUDE_BIG, Defaults.MAGNITUDE_BIG) && getTableViewer().getTable().getItemCount() != 0) {
 					final FontRegistry fontRegistry = JFaceResources.getFontRegistry();
 					if (!fontRegistry.hasValueFor(SYM_NAME_FONT_DEFAULT)) {
 						fontRegistry.put(SYM_NAME_FONT_DEFAULT, getTableViewer().getTable().getItem(0).getFont(0).getFontData());
