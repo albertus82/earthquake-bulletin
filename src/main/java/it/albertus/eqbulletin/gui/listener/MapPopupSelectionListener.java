@@ -15,9 +15,8 @@ import it.albertus.eqbulletin.gui.ResultsTable;
 import it.albertus.eqbulletin.gui.preference.Preference;
 import it.albertus.eqbulletin.model.Earthquake;
 import it.albertus.eqbulletin.resources.Messages;
-import it.albertus.jface.maps.MapDialog;
 import it.albertus.jface.maps.MapMarker;
-import it.albertus.jface.maps.MapOptions;
+import it.albertus.jface.maps.leaflet.LeafletMapControl;
 import it.albertus.jface.maps.leaflet.LeafletMapDialog;
 import it.albertus.jface.preference.IPreferencesConfiguration;
 import it.albertus.util.NewLine;
@@ -39,15 +38,17 @@ public class MapPopupSelectionListener extends SelectionAdapter {
 		final TableViewer tableViewer = gui.getResultsTable().getTableViewer();
 		final Earthquake selection = (Earthquake) tableViewer.getStructuredSelection().getFirstElement();
 		if (selection != null && !tableViewer.getTable().isDisposed()) {
-			final MapDialog epicenterMapDialog = new LeafletMapDialog(tableViewer.getTable().getShell());
+			final LeafletMapDialog epicenterMapDialog = new LeafletMapDialog(tableViewer.getTable().getShell());
 			epicenterMapDialog.setText(Messages.get("lbl.map.epicenter.title"));
 			epicenterMapDialog.setImages(Images.getMainIcons());
-			final MapOptions options = epicenterMapDialog.getOptions();
-			options.setZoom(DEFAULT_ZOOM_LEVEL);
+			epicenterMapDialog.getOptions().setZoom(DEFAULT_ZOOM_LEVEL);
+			epicenterMapDialog.getOptions().getControls().put(LeafletMapControl.ZOOM, true);
+			epicenterMapDialog.getOptions().getControls().put(LeafletMapControl.ATTRIBUTION, true);
+			epicenterMapDialog.getOptions().getControls().put(LeafletMapControl.SCALE, true);
 			final double latitude = selection.getLatitude().doubleValue();
 			final double longitude = selection.getLongitude().doubleValue();
-			options.setCenterLat(latitude);
-			options.setCenterLng(longitude);
+			epicenterMapDialog.getOptions().setCenterLat(latitude);
+			epicenterMapDialog.getOptions().setCenterLng(longitude);
 
 			final StringBuilder title = new StringBuilder("M ");
 			title.append(selection.getMagnitude()).append(", ").append(selection.getRegion());

@@ -48,6 +48,7 @@ import it.albertus.jface.decoration.ControlValidatorDecoration;
 import it.albertus.jface.listener.FloatVerifyListener;
 import it.albertus.jface.listener.IntegerVerifyListener;
 import it.albertus.jface.maps.leaflet.LeafletMapBoundsDialog;
+import it.albertus.jface.maps.leaflet.LeafletMapControl;
 import it.albertus.jface.preference.IPreference;
 import it.albertus.jface.preference.IPreferencesConfiguration;
 import it.albertus.jface.validation.ControlValidator;
@@ -409,6 +410,9 @@ public class SearchForm {
 		mapBoundsDialog = new LeafletMapBoundsDialog(gui.getShell());
 		mapBoundsDialog.setText(Messages.get("lbl.map.bounds.title"));
 		mapBoundsDialog.setImages(Images.getMainIcons());
+		mapBoundsDialog.getOptions().getControls().put(LeafletMapControl.ZOOM, true);
+		mapBoundsDialog.getOptions().getControls().put(LeafletMapControl.ATTRIBUTION, true);
+		mapBoundsDialog.getOptions().getControls().put(LeafletMapControl.SCALE, true);
 	}
 
 	public boolean isValid() {
