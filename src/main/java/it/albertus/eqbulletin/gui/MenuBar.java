@@ -17,8 +17,8 @@ import it.albertus.eqbulletin.gui.listener.EventMenuListener;
 import it.albertus.eqbulletin.gui.listener.ExportCsvSelectionListener;
 import it.albertus.eqbulletin.gui.listener.FileMenuListener;
 import it.albertus.eqbulletin.gui.listener.GoogleMapsBrowserSelectionListener;
-import it.albertus.eqbulletin.gui.listener.GoogleMapsPopupSelectionListener;
 import it.albertus.eqbulletin.gui.listener.HelpMenuListener;
+import it.albertus.eqbulletin.gui.listener.MapPopupSelectionListener;
 import it.albertus.eqbulletin.gui.listener.OpenInBrowserSelectionListener;
 import it.albertus.eqbulletin.gui.listener.PreferencesListener;
 import it.albertus.eqbulletin.gui.listener.ShowMapListener;
@@ -135,7 +135,7 @@ public class MenuBar extends AbstractMenu {
 		// Google Maps Popup...
 		googleMapsPopupMenuItem = new MenuItem(eventMenu, SWT.PUSH);
 		googleMapsPopupMenuItem.setText(Messages.get(LBL_MENU_ITEM_GOOGLE_MAPS_POPUP));
-		googleMapsPopupMenuItem.addSelectionListener(new GoogleMapsPopupSelectionListener(gui));
+		googleMapsPopupMenuItem.addSelectionListener(new MapPopupSelectionListener(gui));
 
 		// Google Maps in browser...
 		googleMapsBrowserMenuItem = new MenuItem(eventMenu, SWT.PUSH);

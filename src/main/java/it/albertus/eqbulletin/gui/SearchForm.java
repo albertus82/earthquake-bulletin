@@ -45,12 +45,9 @@ import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.jface.JFaceMessages;
 import it.albertus.jface.SwtUtils;
 import it.albertus.jface.decoration.ControlValidatorDecoration;
-import it.albertus.jface.google.maps.MapBoundsDialog;
-import it.albertus.jface.google.maps.MapControl;
-import it.albertus.jface.google.maps.MapOptions;
-import it.albertus.jface.google.maps.MapType;
 import it.albertus.jface.listener.FloatVerifyListener;
 import it.albertus.jface.listener.IntegerVerifyListener;
+import it.albertus.jface.maps.leaflet.LeafletMapBoundsDialog;
 import it.albertus.jface.preference.IPreference;
 import it.albertus.jface.preference.IPreferencesConfiguration;
 import it.albertus.jface.validation.ControlValidator;
@@ -156,7 +153,7 @@ public class SearchForm {
 	private final Button clearButton;
 	private final Button openMap;
 
-	private final MapBoundsDialog mapBoundsDialog;
+	private final LeafletMapBoundsDialog mapBoundsDialog;
 
 	private final TraverseListener formFieldTraverseListener = new FormFieldTraverseListener(this);
 	private final ModifyListener formTextModifyListener = new FormTextModifyListener(this);
@@ -409,12 +406,9 @@ public class SearchForm {
 		autoRefreshText.setText(getConfiguredIntegerString(Preference.AUTOREFRESH_MINS));
 
 		// Map
-		mapBoundsDialog = new MapBoundsDialog(gui.getShell());
+		mapBoundsDialog = new LeafletMapBoundsDialog(gui.getShell());
 		mapBoundsDialog.setText(Messages.get("lbl.map.bounds.title"));
 		mapBoundsDialog.setImages(Images.getMainIcons());
-		final MapOptions mapOptions = mapBoundsDialog.getOptions();
-		mapOptions.setType(MapType.TERRAIN);
-		mapOptions.getControls().put(MapControl.SCALE, true);
 	}
 
 	public boolean isValid() {
@@ -676,7 +670,7 @@ public class SearchForm {
 		return openMap;
 	}
 
-	public MapBoundsDialog getMapBoundsDialog() {
+	public LeafletMapBoundsDialog getMapBoundsDialog() {
 		return mapBoundsDialog;
 	}
 
