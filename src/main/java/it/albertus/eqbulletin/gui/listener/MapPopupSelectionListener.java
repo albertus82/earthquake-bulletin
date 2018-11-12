@@ -42,9 +42,9 @@ public class MapPopupSelectionListener extends SelectionAdapter {
 			epicenterMapDialog.setText(Messages.get("lbl.map.epicenter.title"));
 			epicenterMapDialog.setImages(Images.getMainIcons());
 			epicenterMapDialog.getOptions().setZoom(DEFAULT_ZOOM_LEVEL);
-			epicenterMapDialog.getOptions().getControls().put(LeafletMapControl.ZOOM, true);
-			epicenterMapDialog.getOptions().getControls().put(LeafletMapControl.ATTRIBUTION, true);
-			epicenterMapDialog.getOptions().getControls().put(LeafletMapControl.SCALE, true);
+			epicenterMapDialog.getOptions().getControls().put(LeafletMapControl.ZOOM, "");
+			epicenterMapDialog.getOptions().getControls().put(LeafletMapControl.ATTRIBUTION, "");
+			epicenterMapDialog.getOptions().getControls().put(LeafletMapControl.SCALE, "");
 			final double latitude = selection.getLatitude().doubleValue();
 			final double longitude = selection.getLongitude().doubleValue();
 			epicenterMapDialog.getOptions().setCenterLat(latitude);

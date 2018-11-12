@@ -410,9 +410,9 @@ public class SearchForm {
 		mapBoundsDialog = new LeafletMapBoundsDialog(gui.getShell());
 		mapBoundsDialog.setText(Messages.get("lbl.map.bounds.title"));
 		mapBoundsDialog.setImages(Images.getMainIcons());
-		mapBoundsDialog.getOptions().getControls().put(LeafletMapControl.ZOOM, true);
-		mapBoundsDialog.getOptions().getControls().put(LeafletMapControl.ATTRIBUTION, true);
-		mapBoundsDialog.getOptions().getControls().put(LeafletMapControl.SCALE, true);
+		mapBoundsDialog.getOptions().getControls().put(LeafletMapControl.ZOOM, "");
+		mapBoundsDialog.getOptions().getControls().put(LeafletMapControl.ATTRIBUTION, "");
+		mapBoundsDialog.getOptions().getControls().put(LeafletMapControl.SCALE, "");
 	}
 
 	public boolean isValid() {
