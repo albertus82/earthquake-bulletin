@@ -15,21 +15,21 @@ import it.albertus.eqbulletin.gui.ResultsTable;
 import it.albertus.eqbulletin.gui.preference.Preference;
 import it.albertus.eqbulletin.model.Earthquake;
 import it.albertus.eqbulletin.resources.Messages;
-import it.albertus.jface.google.maps.MapControl;
-import it.albertus.jface.google.maps.MapDialog;
-import it.albertus.jface.google.maps.MapMarker;
-import it.albertus.jface.google.maps.MapOptions;
-import it.albertus.jface.google.maps.MapType;
+import it.albertus.jface.maps.MapMarker;
+import it.albertus.jface.maps.leaflet.LeafletMapControl;
+import it.albertus.jface.maps.leaflet.LeafletMapDialog;
 import it.albertus.jface.preference.IPreferencesConfiguration;
 import it.albertus.util.NewLine;
 
-public class GoogleMapsPopupSelectionListener extends SelectionAdapter {
+public class MapPopupSelectionListener extends SelectionAdapter {
+
+	private static final int DEFAULT_ZOOM_LEVEL = 6;
 
 	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getInstance();
 
 	private final EarthquakeBulletinGui gui;
 
-	public GoogleMapsPopupSelectionListener(final EarthquakeBulletinGui gui) {
+	public MapPopupSelectionListener(final EarthquakeBulletinGui gui) {
 		this.gui = gui;
 	}
 
@@ -38,17 +38,17 @@ public class GoogleMapsPopupSelectionListener extends SelectionAdapter {
 		final TableViewer tableViewer = gui.getResultsTable().getTableViewer();
 		final Earthquake selection = (Earthquake) tableViewer.getStructuredSelection().getFirstElement();
 		if (selection != null && !tableViewer.getTable().isDisposed()) {
-			final MapDialog epicenterMapDialog = new MapDialog(tableViewer.getTable().getShell());
+			final LeafletMapDialog epicenterMapDialog = new LeafletMapDialog(tableViewer.getTable().getShell());
 			epicenterMapDialog.setText(Messages.get("lbl.map.epicenter.title"));
 			epicenterMapDialog.setImages(Images.getMainIcons());
-			final MapOptions options = epicenterMapDialog.getOptions();
-			options.setZoom(6);
-			options.setType(MapType.TERRAIN);
-			options.getControls().put(MapControl.SCALE, true);
+			epicenterMapDialog.getOptions().setZoom(DEFAULT_ZOOM_LEVEL);
+			epicenterMapDialog.getOptions().getControls().put(LeafletMapControl.ZOOM, "");
+			epicenterMapDialog.getOptions().getControls().put(LeafletMapControl.ATTRIBUTION, "");
+			epicenterMapDialog.getOptions().getControls().put(LeafletMapControl.SCALE, "");
 			final double latitude = selection.getLatitude().doubleValue();
 			final double longitude = selection.getLongitude().doubleValue();
-			options.setCenterLat(latitude);
-			options.setCenterLng(longitude);
+			epicenterMapDialog.getOptions().setCenterLat(latitude);
+			epicenterMapDialog.getOptions().setCenterLng(longitude);
 
 			final StringBuilder title = new StringBuilder("M ");
 			title.append(selection.getMagnitude()).append(", ").append(selection.getRegion());

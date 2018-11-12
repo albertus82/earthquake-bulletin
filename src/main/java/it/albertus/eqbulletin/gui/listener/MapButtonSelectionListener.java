@@ -8,8 +8,8 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 
 import it.albertus.eqbulletin.gui.SearchForm;
-import it.albertus.jface.google.maps.MapBounds;
-import it.albertus.jface.google.maps.MapBoundsDialog;
+import it.albertus.jface.maps.MapBounds;
+import it.albertus.jface.maps.leaflet.LeafletMapBoundsDialog;
 
 public class MapButtonSelectionListener extends SelectionAdapter {
 
@@ -32,20 +32,20 @@ public class MapButtonSelectionListener extends SelectionAdapter {
 
 	@Override
 	public void widgetSelected(final SelectionEvent se) {
-		final MapBoundsDialog mapBoundsDialog = form.getMapBoundsDialog();
+		final LeafletMapBoundsDialog mapBoundsDialog = form.getMapBoundsDialog();
 		if (mapBoundsDialog.open() == SWT.OK) {
 			final MapBounds bounds = mapBoundsDialog.getBounds();
 			if (bounds.getSouthWestLat() != null) {
-				form.getLatitudeFromText().setText(coordinateFormat.format(bounds.getSouthWestLat()));
+				form.getLatitudeFromText().setText(coordinateFormat.format(Math.max(-90, bounds.getSouthWestLat())));
 			}
 			if (bounds.getNorthEastLat() != null) {
-				form.getLatitudeToText().setText(coordinateFormat.format(bounds.getNorthEastLat()));
+				form.getLatitudeToText().setText(coordinateFormat.format(Math.min(90, bounds.getNorthEastLat())));
 			}
 			if (bounds.getSouthWestLng() != null) {
-				form.getLongitudeFromText().setText(coordinateFormat.format(bounds.getSouthWestLng()));
+				form.getLongitudeFromText().setText(coordinateFormat.format(Math.max(-180, bounds.getSouthWestLng())));
 			}
 			if (bounds.getNorthEastLng() != null) {
-				form.getLongitudeToText().setText(coordinateFormat.format(bounds.getNorthEastLng()));
+				form.getLongitudeToText().setText(coordinateFormat.format(Math.min(180, bounds.getNorthEastLng())));
 			}
 		}
 	}
