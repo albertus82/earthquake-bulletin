@@ -14,6 +14,7 @@ import it.albertus.eqbulletin.gui.Images;
 import it.albertus.eqbulletin.gui.ResultsTable;
 import it.albertus.eqbulletin.gui.preference.Preference;
 import it.albertus.eqbulletin.model.Earthquake;
+import it.albertus.eqbulletin.resources.Leaflet;
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.jface.maps.MapMarker;
 import it.albertus.jface.maps.leaflet.LeafletMapControl;
@@ -45,6 +46,9 @@ public class MapPopupSelectionListener extends SelectionAdapter {
 			epicenterMapDialog.getOptions().getControls().put(LeafletMapControl.ZOOM, "");
 			epicenterMapDialog.getOptions().getControls().put(LeafletMapControl.ATTRIBUTION, "");
 			epicenterMapDialog.getOptions().getControls().put(LeafletMapControl.SCALE, "");
+			if (Leaflet.LAYERS != null && !Leaflet.LAYERS.isEmpty()) {
+				epicenterMapDialog.getOptions().getControls().put(LeafletMapControl.LAYERS, Leaflet.LAYERS);
+			}
 			final double latitude = selection.getLatitude().doubleValue();
 			final double longitude = selection.getLongitude().doubleValue();
 			epicenterMapDialog.getOptions().setCenterLat(latitude);

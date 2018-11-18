@@ -41,6 +41,7 @@ import it.albertus.eqbulletin.gui.listener.SearchButtonSelectionListener;
 import it.albertus.eqbulletin.gui.listener.StopButtonSelectionListener;
 import it.albertus.eqbulletin.gui.preference.Preference;
 import it.albertus.eqbulletin.model.Format;
+import it.albertus.eqbulletin.resources.Leaflet;
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.jface.JFaceMessages;
 import it.albertus.jface.SwtUtils;
@@ -413,6 +414,9 @@ public class SearchForm {
 		mapBoundsDialog.getOptions().getControls().put(LeafletMapControl.ZOOM, "");
 		mapBoundsDialog.getOptions().getControls().put(LeafletMapControl.ATTRIBUTION, "");
 		mapBoundsDialog.getOptions().getControls().put(LeafletMapControl.SCALE, "");
+		if (Leaflet.LAYERS != null && !Leaflet.LAYERS.isEmpty()) {
+			mapBoundsDialog.getOptions().getControls().put(LeafletMapControl.LAYERS, Leaflet.LAYERS);
+		}
 	}
 
 	public boolean isValid() {
