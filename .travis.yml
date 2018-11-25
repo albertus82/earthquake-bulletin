@@ -4,7 +4,7 @@ dist: trusty
 
 env:
   global:
-    - JRE7_HOME=/usr/lib/jvm/java-7-openjdk-amd64/jre
+    - JRE8_HOME=/usr/lib/jvm/java-8-oracle/jre
 
 matrix:
   include:
@@ -16,8 +16,6 @@ matrix:
         - sonar-scanner -Dsonar.login=$SONAR_TOKEN
     - os: linux
       jdk: oraclejdk8
-    - os: linux
-      jdk: openjdk7
     - os: osx
       before_install:
         - brew update

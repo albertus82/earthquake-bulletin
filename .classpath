@@ -10,15 +10,15 @@
 	<classpathentry kind="lib" path="lib/jaxb-api-2.3.0.jar" sourcepath="lib/src/jaxb-api-2.3.0-sources.jar"/>
 	<classpathentry kind="lib" path="lib/jaxb-core-2.3.0.jar" sourcepath="lib/src/jaxb-core-2.3.0-sources.jar"/>
 	<classpathentry kind="lib" path="lib/jaxb-impl-2.3.0.jar" sourcepath="lib/src/jaxb-impl-2.3.0-sources.jar"/>
-	<classpathentry kind="lib" path="lib/org.eclipse.core.commands_3.7.0.v20150422-0725.jar" sourcepath="lib/src/org.eclipse.core.commands.source_3.7.0.v20150422-0725.jar"/>
-	<classpathentry kind="lib" path="lib/org.eclipse.equinox.common_3.7.0.v20150402-1709.jar" sourcepath="lib/src/org.eclipse.equinox.common.source_3.7.0.v20150402-1709.jar"/>
-	<classpathentry kind="lib" path="lib/org.eclipse.jface_3.11.1.v20160128-1644.jar" sourcepath="lib/src/org.eclipse.jface.source_3.11.1.v20160128-1644.jar"/>
-	<classpathentry kind="lib" path="lib/org.eclipse.core.jobs_3.7.0.v20150330-2103.jar" sourcepath="lib/src/org.eclipse.core.jobs.source_3.7.0.v20150330-2103.jar"/>
-	<classpathentry kind="lib" path="lib/org.eclipse.osgi_3.10.102.v20160118-1700.jar" sourcepath="lib/src/org.eclipse.osgi.source_3.10.102.v20160118-1700.jar"/>
-	<classpathentry kind="lib" path="lib/org.eclipse.nebula.widgets.cdatetime_1.0.0.201609231530.jar" sourcepath="lib/src/org.eclipse.nebula.widgets.cdatetime.source_1.0.0.201609231530.jar"/>
-	<classpathentry kind="lib" path="lib/org.eclipse.nebula.cwt_1.0.0.201609231530.jar" sourcepath="lib/src/org.eclipse.nebula.cwt.source_1.0.0.201609231530.jar"/>
-	<classpathentry kind="lib" path="lib/platform/win32-win32-x86_64/org.eclipse.swt-4.6.3-win32-win32-x86_64.jar" sourcepath="lib/platform/win32-win32-x86_64/src/org.eclipse.swt-4.6.3-win32-win32-x86_64-src.zip"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.core.commands_3.9.0.v20170530-1048.jar" sourcepath="lib/src/org.eclipse.core.commands.source_3.9.0.v20170530-1048.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.equinox.common_3.9.0.v20170207-1454.jar" sourcepath="lib/src/org.eclipse.equinox.common.source_3.9.0.v20170207-1454.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.jface_3.13.2.v20171022-1656.jar" sourcepath="lib/src/org.eclipse.jface.source_3.13.2.v20171022-1656.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.core.jobs_3.9.3.v20180115-1757.jar" sourcepath="lib/src/org.eclipse.core.jobs.source_3.9.3.v20180115-1757.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.osgi_3.12.100.v20180210-1608.jar" sourcepath="lib/src/org.eclipse.osgi.source_3.12.100.v20180210-1608.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.nebula.widgets.cdatetime_1.3.0.201804011600.jar" sourcepath="lib/src/org.eclipse.nebula.widgets.cdatetime_1.3.0.201804011600.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.nebula.cwt_1.1.0.201804011600.jar" sourcepath="lib/src/org.eclipse.nebula.cwt.source_1.1.0.201804011600.jar"/>
+	<classpathentry kind="lib" path="lib/platform/win32-win32-x86_64/org.eclipse.swt-4.7.3a-win32-win32-x86_64.jar" sourcepath="lib/platform/win32-win32-x86_64/src/org.eclipse.swt-4.7.3a-win32-win32-x86_64-src.zip"/>
 	<classpathentry kind="lib" path="lib/jface-utils-13.0.0.jar" sourcepath="lib/src/jface-utils-13.0.0-sources.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

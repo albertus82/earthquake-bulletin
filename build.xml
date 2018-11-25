@@ -3,7 +3,7 @@
 <project name="EarthquakeBulletin" default="all" xmlns:jacoco="antlib:org.jacoco.ant">
 
 	<property environment="env" />
-	<property name="env.JRE7_HOME" value="${env.JAVA_HOME}/../jdk1.7.0_79/jre" />
+	<property name="env.JRE8_HOME" value="${env.JAVA_HOME}/../jdk1.8.0_191/jre" />
 
 	<property file="build.properties" />
 	<property file="${build.resourcesDirectory}/version.properties" />

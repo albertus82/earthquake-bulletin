@@ -3,28 +3,20 @@ version: '{build}'
 clone_depth: 50
 
 environment:
-  JRE7_HOME: $(ProgramFiles)\Java\jdk1.7.0\jre
+  JRE7_HOME: $(ProgramFiles)\Java\jdk1.8.0\jre
+  ANT_VERSION: 1.10.5
 
   matrix:
     - platform: x86
-      JAVA_HOME: ${ProgramFiles(x86)}\Java\jdk1.7.0
-      ANT_VERSION: 1.9.9
-    - platform: x86
       JAVA_HOME: ${ProgramFiles(x86)}\Java\jdk1.8.0
-      ANT_VERSION: 1.10.5
-    - platform: x64
-      JAVA_HOME: $(ProgramFiles)\Java\jdk1.7.0
-      ANT_VERSION: 1.9.9
     - platform: x64
       JAVA_HOME: $(ProgramFiles)\Java\jdk1.8.0
-      ANT_VERSION: 1.10.5
       VT_API_URL: https://www.virustotal.com/vtapi/v2/file/scan
       VT_API_DELAY: 15
       VT_API_KEY:
         secure: 3sqJDjLAS708tR/LiAqKLZTnLLrhGJuWVzzI4nCjLbUUsZB+PPRG3y0BWWnMo14CDhBT4v6yjHTA23RdopoHDWJlBcGhKELKZOLhHsnJLU8=
     - platform: x64
       JAVA_HOME: $(ProgramFiles)\Java\jdk11
-      ANT_VERSION: 1.10.5
 
 cache:
   - $(ChocolateyInstall)\lib\ant -> .appveyor.yml
