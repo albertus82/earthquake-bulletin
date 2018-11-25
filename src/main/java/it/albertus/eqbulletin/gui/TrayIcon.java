@@ -9,8 +9,6 @@ import java.util.logging.Logger;
 
 import org.eclipse.jface.util.Util;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.MenuDetectEvent;
-import org.eclipse.swt.events.MenuDetectListener;
 import org.eclipse.swt.events.ShellAdapter;
 import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.graphics.Image;
@@ -109,12 +107,7 @@ public class TrayIcon {
 					exitMenuItem = new MenuItem(trayMenu, SWT.PUSH);
 					exitMenuItem.setText(Messages.get("lbl.tray.close"));
 					exitMenuItem.addSelectionListener(new CloseListener(gui));
-					trayItem.addMenuDetectListener(new MenuDetectListener() {
-						@Override
-						public void menuDetected(MenuDetectEvent e) {
-							trayMenu.setVisible(true);
-						}
-					});
+					trayItem.addMenuDetectListener(e -> trayMenu.setVisible(true));
 
 					trayItem.addSelectionListener(trayRestoreListener);
 					if (!Util.isLinux()) {
@@ -161,15 +154,12 @@ public class TrayIcon {
 			}
 
 			try {
-				trayItem.getDisplay().syncExec(new Runnable() {
-					@Override
-					public void run() {
-						logger.log(Level.FINE, "{0}", text);
-						trayItem.setToolTip(toolTip);
-						toolTip.setText(text.toString().trim());
-						toolTip.setMessage(message.toString().trim());
-						toolTip.setVisible(true);
-					}
+				trayItem.getDisplay().syncExec(() -> {
+					logger.log(Level.FINE, "{0}", text);
+					trayItem.setToolTip(toolTip);
+					toolTip.setText(text.toString().trim());
+					toolTip.setMessage(message.toString().trim());
+					toolTip.setVisible(true);
 				});
 			}
 			catch (final RuntimeException e) {
@@ -196,12 +186,9 @@ public class TrayIcon {
 			final String text = buf.toString();
 
 			try {
-				trayItem.getDisplay().syncExec(new Runnable() {
-					@Override
-					public void run() {
-						if (!text.equals(trayItem.getToolTipText())) {
-							trayItem.setToolTipText(text);
-						}
+				trayItem.getDisplay().syncExec(() -> {
+					if (!text.equals(trayItem.getToolTipText())) {
+						trayItem.setToolTipText(text);
 					}
 				});
 			}

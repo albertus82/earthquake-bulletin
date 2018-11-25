@@ -13,14 +13,11 @@ public abstract class Coordinate extends FloatValue {
 		super(value);
 	}
 
-	protected static final ThreadLocal<NumberFormat> numberFormats = new ThreadLocal<NumberFormat>() {
-		@Override
-		protected NumberFormat initialValue() {
-			final NumberFormat nf = NumberFormat.getNumberInstance(Locale.US);
-			nf.setMinimumFractionDigits(2);
-			nf.setMaximumFractionDigits(2);
-			return nf;
-		}
-	};
+	protected static final ThreadLocal<NumberFormat> numberFormats = ThreadLocal.withInitial(() -> {
+		final NumberFormat nf = NumberFormat.getNumberInstance(Locale.US);
+		nf.setMinimumFractionDigits(2);
+		nf.setMaximumFractionDigits(2);
+		return nf;
+	});
 
 }

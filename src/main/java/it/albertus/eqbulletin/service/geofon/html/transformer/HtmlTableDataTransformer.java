@@ -45,14 +45,11 @@ public class HtmlTableDataTransformer {
 	private static final String regionPrefix = statusPrefix;
 	private static final String regionSuffix = magnitudeSuffix;
 
-	private static final ThreadLocal<DateFormat> htmlDateFormat = new ThreadLocal<DateFormat>() {
-		@Override
-		protected DateFormat initialValue() {
-			final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
-			return dateFormat;
-		}
-	};
+	private static final ThreadLocal<DateFormat> htmlDateFormat = ThreadLocal.withInitial(() -> {
+		final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+		return dateFormat;
+	});
 
 	private static final IConfiguration configuration = EarthquakeBulletinConfig.getInstance();
 

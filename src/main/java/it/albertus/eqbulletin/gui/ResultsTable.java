@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.TimeZone;
+import java.util.function.Supplier;
 
 import org.eclipse.jface.resource.FontRegistry;
 import org.eclipse.jface.resource.JFaceResources;
@@ -41,7 +42,6 @@ import it.albertus.eqbulletin.model.Status;
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.jface.SwtUtils;
 import it.albertus.jface.preference.IPreferencesConfiguration;
-import it.albertus.util.Localized;
 
 public class ResultsTable {
 
@@ -60,12 +60,7 @@ public class ResultsTable {
 
 	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getInstance();
 
-	public static final ThreadLocal<DateFormat> dateFormat = new ThreadLocal<DateFormat>() {
-		@Override
-		protected DateFormat initialValue() {
-			return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
-		}
-	};
+	public static final ThreadLocal<DateFormat> dateFormat = ThreadLocal.withInitial(() -> new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z"));
 
 	private class EarthquakeViewerComparator extends ViewerComparator {
 
@@ -132,7 +127,7 @@ public class ResultsTable {
 
 	private final TableViewer tableViewer;
 	private final EarthquakeViewerComparator comparator;
-	private final HashMap<Integer, Localized> labelsMap = new HashMap<>();
+	private final HashMap<Integer, Supplier<String>> labelsMap = new HashMap<>();
 
 	private final ContextMenu contextMenu;
 
@@ -175,15 +170,10 @@ public class ResultsTable {
 	private void createColumns(final Table table) {
 		int i = 0;
 		for (final String suffix : new String[] { "time", "magnitude", "latitude", "longitude", "depth", "status", "region" }) {
-			labelsMap.put(i++, new Localized() {
-				@Override
-				public String getString() {
-					return Messages.get("lbl.table." + suffix);
-				}
-			});
+			labelsMap.put(i++, () -> Messages.get("lbl.table." + suffix));
 		}
 
-		TableViewerColumn col = createTableViewerColumn(labelsMap.get(0).getString(), 0);
+		TableViewerColumn col = createTableViewerColumn(labelsMap.get(0).get(), 0);
 		col.setLabelProvider(new EarthquakeColumnLabelProvider() {
 			@Override
 			protected String getText(final Earthquake element) {
@@ -193,7 +183,7 @@ public class ResultsTable {
 			}
 		});
 
-		col = createTableViewerColumn(labelsMap.get(1).getString(), 1);
+		col = createTableViewerColumn(labelsMap.get(1).get(), 1);
 		col.getColumn().setAlignment(SWT.CENTER);
 		col.setLabelProvider(new EarthquakeColumnLabelProvider() {
 			@Override
@@ -224,7 +214,7 @@ public class ResultsTable {
 			}
 		});
 
-		col = createTableViewerColumn(labelsMap.get(2).getString(), 2);
+		col = createTableViewerColumn(labelsMap.get(2).get(), 2);
 		col.getColumn().setAlignment(SWT.RIGHT);
 		col.setLabelProvider(new EarthquakeColumnLabelProvider() {
 			@Override
@@ -233,7 +223,7 @@ public class ResultsTable {
 			}
 		});
 
-		col = createTableViewerColumn(labelsMap.get(3).getString(), 3);
+		col = createTableViewerColumn(labelsMap.get(3).get(), 3);
 		col.getColumn().setAlignment(SWT.RIGHT);
 		col.setLabelProvider(new EarthquakeColumnLabelProvider() {
 			@Override
@@ -242,7 +232,7 @@ public class ResultsTable {
 			}
 		});
 
-		col = createTableViewerColumn(labelsMap.get(4).getString(), 4);
+		col = createTableViewerColumn(labelsMap.get(4).get(), 4);
 		col.getColumn().setAlignment(SWT.RIGHT);
 		col.setLabelProvider(new EarthquakeColumnLabelProvider() {
 			@Override
@@ -251,7 +241,7 @@ public class ResultsTable {
 			}
 		});
 
-		col = createTableViewerColumn(labelsMap.get(5).getString(), 5);
+		col = createTableViewerColumn(labelsMap.get(5).get(), 5);
 		col.getColumn().setAlignment(SWT.CENTER);
 		col.setLabelProvider(new EarthquakeColumnLabelProvider() {
 			@Override
@@ -275,7 +265,7 @@ public class ResultsTable {
 			}
 		});
 
-		col = createTableViewerColumn(labelsMap.get(6).getString(), 6);
+		col = createTableViewerColumn(labelsMap.get(6).get(), 6);
 		col.setLabelProvider(new EarthquakeColumnLabelProvider() {
 			@Override
 			protected String getText(final Earthquake element) {
@@ -314,8 +304,8 @@ public class ResultsTable {
 
 	public void updateTexts() {
 		final Table table = tableViewer.getTable();
-		for (final Entry<Integer, Localized> e : labelsMap.entrySet()) {
-			table.getColumn(e.getKey()).setText(e.getValue().getString());
+		for (final Entry<Integer, Supplier<String>> e : labelsMap.entrySet()) {
+			table.getColumn(e.getKey()).setText(e.getValue().get());
 		}
 		contextMenu.updateTexts();
 	}

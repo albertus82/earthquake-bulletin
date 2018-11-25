@@ -14,11 +14,7 @@ import java.util.logging.Logger;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MenuAdapter;
-import org.eclipse.swt.events.MenuDetectEvent;
-import org.eclipse.swt.events.MenuDetectListener;
 import org.eclipse.swt.events.MenuEvent;
-import org.eclipse.swt.events.PaintEvent;
-import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
@@ -78,12 +74,7 @@ public class MapCanvas {
 	public MapCanvas(final Composite parent) {
 		canvas = new Canvas(parent, SWT.BORDER);
 		canvas.setBackground(getBackgroundColor());
-		canvas.addPaintListener(new PaintListener() {
-			@Override
-			public void paintControl(final PaintEvent e) {
-				paintImage(zoomLevel);
-			}
-		});
+		canvas.addPaintListener(e -> paintImage(zoomLevel));
 
 		final Menu contextMenu = new Menu(canvas);
 
@@ -128,12 +119,7 @@ public class MapCanvas {
 			}
 		});
 		canvas.setMenu(contextMenu);
-		canvas.addMenuDetectListener(new MenuDetectListener() {
-			@Override
-			public void menuDetected(final MenuDetectEvent e) {
-				downloadMenuItem.setEnabled(canSaveImage());
-			}
-		});
+		canvas.addMenuDetectListener(e -> downloadMenuItem.setEnabled(canSaveImage()));
 	}
 
 	public void setZoomLevel(final short zoomLevel) {

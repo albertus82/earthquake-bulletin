@@ -56,7 +56,6 @@ import it.albertus.jface.validation.ControlValidator;
 import it.albertus.jface.validation.FloatTextValidator;
 import it.albertus.jface.validation.IntegerTextValidator;
 import it.albertus.jface.validation.Validator;
-import it.albertus.util.Localized;
 import it.albertus.util.logging.LoggerFactory;
 
 public class SearchForm {
@@ -87,14 +86,11 @@ public class SearchForm {
 	private static final String MSG_KEY_ERR_INTEGER_RANGE = "err.preferences.integer.range";
 	private static final String MSG_KEY_ERR_DECIMAL_RANGE = "err.preferences.decimal.range";
 
-	private static final ThreadLocal<DateFormat> dateFormat = new ThreadLocal<DateFormat>() {
-		@Override
-		protected DateFormat initialValue() {
-			final DateFormat df = new SimpleDateFormat(DATE_PATTERN);
-			df.setLenient(false);
-			return df;
-		}
-	};
+	private static final ThreadLocal<DateFormat> dateFormat = ThreadLocal.withInitial(() -> {
+		final DateFormat df = new SimpleDateFormat(DATE_PATTERN);
+		df.setLenient(false);
+		return df;
+	});
 
 	public static class Defaults {
 		public static final boolean AUTOREFRESH_ENABLED = false;
@@ -325,66 +321,31 @@ public class SearchForm {
 
 		// Decorators
 		ControlValidator<Text> validator = new FloatTextValidator(latitudeFromText, true, LATITUDE_MIN_VALUE, LATITUDE_MAX_VALUE);
-		new SearchFormControlValidatorDecoration(validator, new Localized() {
-			@Override
-			public String getString() {
-				return JFaceMessages.get(MSG_KEY_ERR_DECIMAL_RANGE, LATITUDE_MIN_VALUE, LATITUDE_MAX_VALUE);
-			}
-		});
+		new SearchFormControlValidatorDecoration(validator, () -> JFaceMessages.get(MSG_KEY_ERR_DECIMAL_RANGE, LATITUDE_MIN_VALUE, LATITUDE_MAX_VALUE));
 		validators.add(validator);
 
 		validator = new FloatTextValidator(latitudeToText, true, LATITUDE_MIN_VALUE, LATITUDE_MAX_VALUE);
-		new SearchFormControlValidatorDecoration(validator, new Localized() {
-			@Override
-			public String getString() {
-				return JFaceMessages.get(MSG_KEY_ERR_DECIMAL_RANGE, LATITUDE_MIN_VALUE, LATITUDE_MAX_VALUE);
-			}
-		});
+		new SearchFormControlValidatorDecoration(validator, () -> JFaceMessages.get(MSG_KEY_ERR_DECIMAL_RANGE, LATITUDE_MIN_VALUE, LATITUDE_MAX_VALUE));
 		validators.add(validator);
 
 		validator = new FloatTextValidator(longitudeFromText, true, LONGITUDE_MIN_VALUE, LONGITUDE_MAX_VALUE);
-		new SearchFormControlValidatorDecoration(validator, new Localized() {
-			@Override
-			public String getString() {
-				return JFaceMessages.get(MSG_KEY_ERR_DECIMAL_RANGE, LONGITUDE_MIN_VALUE, LONGITUDE_MAX_VALUE);
-			}
-		});
+		new SearchFormControlValidatorDecoration(validator, () -> JFaceMessages.get(MSG_KEY_ERR_DECIMAL_RANGE, LONGITUDE_MIN_VALUE, LONGITUDE_MAX_VALUE));
 		validators.add(validator);
 
 		validator = new FloatTextValidator(longitudeToText, true, LONGITUDE_MIN_VALUE, LONGITUDE_MAX_VALUE);
-		new SearchFormControlValidatorDecoration(validator, new Localized() {
-			@Override
-			public String getString() {
-				return JFaceMessages.get(MSG_KEY_ERR_DECIMAL_RANGE, LONGITUDE_MIN_VALUE, LONGITUDE_MAX_VALUE);
-			}
-		});
+		new SearchFormControlValidatorDecoration(validator, () -> JFaceMessages.get(MSG_KEY_ERR_DECIMAL_RANGE, LONGITUDE_MIN_VALUE, LONGITUDE_MAX_VALUE));
 		validators.add(validator);
 
 		validator = new FloatTextValidator(minimumMagnitudeText, true, MAGNITUDE_MIN_VALUE, MAGNITUDE_MAX_VALUE);
-		new SearchFormControlValidatorDecoration(validator, new Localized() {
-			@Override
-			public String getString() {
-				return JFaceMessages.get(MSG_KEY_ERR_DECIMAL_RANGE, MAGNITUDE_MIN_VALUE, MAGNITUDE_MAX_VALUE);
-			}
-		});
+		new SearchFormControlValidatorDecoration(validator, () -> JFaceMessages.get(MSG_KEY_ERR_DECIMAL_RANGE, MAGNITUDE_MIN_VALUE, MAGNITUDE_MAX_VALUE));
 		validators.add(validator);
 
 		validator = new IntegerTextValidator(resultsText, true, RESULTS_MIN_VALUE, RESULTS_MAX_VALUE);
-		new SearchFormControlValidatorDecoration(validator, new Localized() {
-			@Override
-			public String getString() {
-				return JFaceMessages.get(MSG_KEY_ERR_INTEGER_RANGE, RESULTS_MIN_VALUE, RESULTS_MAX_VALUE);
-			}
-		});
+		new SearchFormControlValidatorDecoration(validator, () -> JFaceMessages.get(MSG_KEY_ERR_INTEGER_RANGE, RESULTS_MIN_VALUE, RESULTS_MAX_VALUE));
 		validators.add(validator);
 
 		validator = new IntegerTextValidator(autoRefreshText, true, AUTOREFRESH_MIN_VALUE, null);
-		new ControlValidatorDecoration(validator, new Localized() {
-			@Override
-			public String getString() {
-				return JFaceMessages.get(MSG_KEY_ERR_INTEGER_MIN, AUTOREFRESH_MIN_VALUE);
-			}
-		});
+		new ControlValidatorDecoration(validator, () -> JFaceMessages.get(MSG_KEY_ERR_INTEGER_MIN, AUTOREFRESH_MIN_VALUE));
 		validators.add(validator);
 
 		// Text modify listeners

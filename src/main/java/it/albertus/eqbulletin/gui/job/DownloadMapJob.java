@@ -48,13 +48,10 @@ public class DownloadMapJob extends Job {
 		if (earthquake.getEnclosure() != null) {
 			final MapCanvas mapCanvas = gui.getMapCanvas();
 
-			new DisplayThreadExecutor(gui.getShell()).execute(new Runnable() {
-				@Override
-				public void run() {
-					gui.getShell().setCursor(gui.getShell().getDisplay().getSystemCursor(SWT.CURSOR_WAIT));
-					if (mapCanvas.getCache().contains(earthquake.getGuid())) { // show cached map immediately if available
-						mapCanvas.setImage(earthquake.getGuid(), mapCanvas.getCache().get(earthquake.getGuid()));
-					}
+			new DisplayThreadExecutor(gui.getShell()).execute(() -> {
+				gui.getShell().setCursor(gui.getShell().getDisplay().getSystemCursor(SWT.CURSOR_WAIT));
+				if (mapCanvas.getCache().contains(earthquake.getGuid())) { // show cached map immediately if available
+					mapCanvas.setImage(earthquake.getGuid(), mapCanvas.getCache().get(earthquake.getGuid()));
 				}
 			});
 
@@ -62,34 +59,19 @@ public class DownloadMapJob extends Job {
 				final MapImage image = ImageDownloader.downloadImage(earthquake.getEnclosure(), etag);
 
 				if (image != null) {
-					new DisplayThreadExecutor(mapCanvas.getCanvas()).execute(new Runnable() {
-						@Override
-						public void run() {
-							mapCanvas.setImage(earthquake.getGuid(), image);
-						}
-					});
+					new DisplayThreadExecutor(mapCanvas.getCanvas()).execute(() -> mapCanvas.setImage(earthquake.getGuid(), image));
 				}
 			}
 			catch (final FileNotFoundException e) {
 				final String message = Messages.get("err.job.map.not.found");
 				logger.log(Level.INFO, message, e);
-				new DisplayThreadExecutor(gui.getShell()).execute(new Runnable() { // always show error dialog in this case
-					@Override
-					public void run() {
-						EnhancedErrorDialog.openError(gui.getShell(), Messages.get("lbl.window.title"), message, IStatus.INFO, e, Images.getMainIcons());
-					}
-				});
+				new DisplayThreadExecutor(gui.getShell()).execute(() -> EnhancedErrorDialog.openError(gui.getShell(), Messages.get("lbl.window.title"), message, IStatus.INFO, e, Images.getMainIcons())); // always show error dialog in this case
 			}
 			catch (final Exception e) {
 				final String message = Messages.get("err.job.map");
 				logger.log(Level.WARNING, message, e);
 				if (!mapCanvas.getCache().contains(earthquake.getGuid())) { // show error dialog only if not present in cache
-					new DisplayThreadExecutor(gui.getShell()).execute(new Runnable() {
-						@Override
-						public void run() {
-							EnhancedErrorDialog.openError(gui.getShell(), Messages.get("lbl.window.title"), message, IStatus.WARNING, e, Images.getMainIcons());
-						}
-					});
+					new DisplayThreadExecutor(gui.getShell()).execute(() -> EnhancedErrorDialog.openError(gui.getShell(), Messages.get("lbl.window.title"), message, IStatus.WARNING, e, Images.getMainIcons()));
 				}
 			}
 			catch (final Throwable t) {
@@ -97,12 +79,7 @@ public class DownloadMapJob extends Job {
 				throw t;
 			}
 
-			new DisplayThreadExecutor(mapCanvas.getCanvas()).execute(new Runnable() {
-				@Override
-				public void run() {
-					gui.getShell().setCursor(null);
-				}
-			});
+			new DisplayThreadExecutor(mapCanvas.getCanvas()).execute(() -> gui.getShell().setCursor(null));
 		}
 
 		monitor.done();

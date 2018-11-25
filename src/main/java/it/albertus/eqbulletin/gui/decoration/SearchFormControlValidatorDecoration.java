@@ -7,11 +7,11 @@ import org.eclipse.swt.widgets.Control;
 
 import it.albertus.jface.decoration.ControlValidatorDecoration;
 import it.albertus.jface.validation.ControlValidator;
-import it.albertus.util.Localized;
+import it.albertus.util.ISupplier;
 
 public class SearchFormControlValidatorDecoration extends ControlValidatorDecoration {
 
-	public SearchFormControlValidatorDecoration(final ControlValidator<?> validator, final Localized message) {
+	public SearchFormControlValidatorDecoration(final ControlValidator<?> validator, final ISupplier<String> message) {
 		super(validator, message);
 	}
 
