@@ -17,9 +17,15 @@ public class SearchButtonSelectionListener extends SelectionAdapter {
 
 	@Override
 	public void widgetSelected(final SelectionEvent se) {
-		if (gui.getSearchForm().isValid() && (gui.getSearchForm().getSearchJob() == null || gui.getSearchForm().getSearchJob().getState() == Job.NONE)) {
-			gui.getSearchForm().setSearchJob(new SearchJob(gui));
-			gui.getSearchForm().getSearchJob().schedule();
+		if (gui.getSearchForm().getSearchJob() == null || gui.getSearchForm().getSearchJob().getState() != Job.RUNNING) { // Submit
+			if (gui.getSearchForm().isValid()) {
+				gui.getSearchForm().cancelJob();
+				gui.getSearchForm().setSearchJob(new SearchJob(gui));
+				gui.getSearchForm().getSearchJob().schedule();
+			}
+		}
+		else {
+			gui.getSearchForm().cancelJob(); // Cancel
 		}
 	}
 

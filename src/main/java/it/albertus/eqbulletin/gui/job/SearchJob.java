@@ -55,9 +55,6 @@ public class SearchJob extends Job {
 			public void run() {
 				final boolean formValid = gui.getSearchForm().isValid();
 				jobVariables.setFormValid(formValid);
-				if (!formValid) {
-					gui.getSearchForm().getStopButton().notifyListeners(SWT.Selection, null);
-				}
 			}
 		});
 
@@ -67,7 +64,7 @@ public class SearchJob extends Job {
 			new DisplayThreadExecutor(gui.getShell()).execute(new Runnable() {
 				@Override
 				public void run() {
-					gui.getSearchForm().updateButtons();
+					gui.getSearchForm().getSearchButton().setText(Messages.get("lbl.form.button.stop"));
 					gui.getShell().setCursor(gui.getShell().getDisplay().getSystemCursor(SWT.CURSOR_WAIT));
 
 					// Search parameters
@@ -102,7 +99,6 @@ public class SearchJob extends Job {
 								short waitTimeInMinutes = Short.parseShort(time);
 								if (waitTimeInMinutes > 0) {
 									jobVariables.setWaitTimeInMillis(waitTimeInMinutes * 1000L * 60);
-									gui.getSearchForm().getStopButton().setEnabled(true);
 								}
 							}
 							catch (final RuntimeException e) {
@@ -159,9 +155,10 @@ public class SearchJob extends Job {
 					final long waitTimeInMillis = jobVariables.getWaitTimeInMillis();
 					if (waitTimeInMillis > 0) {
 						schedule(waitTimeInMillis);
+						gui.getSearchForm().getSearchButton().setText(Messages.get("lbl.form.button.submit"));
 					}
 					else {
-						gui.getSearchForm().getStopButton().notifyListeners(SWT.Selection, null);
+						gui.getSearchForm().cancelJob();
 					}
 					gui.getShell().setCursor(null);
 				}

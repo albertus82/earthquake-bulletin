@@ -36,16 +36,16 @@ public class MapButtonSelectionListener extends SelectionAdapter {
 		if (mapBoundsDialog.open() == SWT.OK) {
 			final MapBounds bounds = mapBoundsDialog.getBounds();
 			if (bounds.getSouthWestLat() != null) {
-				form.getLatitudeFromText().setText(coordinateFormat.format(Math.max(-90, bounds.getSouthWestLat())));
+				form.getLatitudeFromText().setText(coordinateFormat.format(Math.max(SearchForm.LATITUDE_MIN_VALUE, bounds.getSouthWestLat())));
 			}
 			if (bounds.getNorthEastLat() != null) {
-				form.getLatitudeToText().setText(coordinateFormat.format(Math.min(90, bounds.getNorthEastLat())));
+				form.getLatitudeToText().setText(coordinateFormat.format(Math.min(SearchForm.LATITUDE_MAX_VALUE, bounds.getNorthEastLat())));
 			}
 			if (bounds.getSouthWestLng() != null) {
-				form.getLongitudeFromText().setText(coordinateFormat.format(Math.max(-180, bounds.getSouthWestLng())));
+				form.getLongitudeFromText().setText(coordinateFormat.format(Math.max(SearchForm.LONGITUDE_MIN_VALUE, bounds.getSouthWestLng())));
 			}
 			if (bounds.getNorthEastLng() != null) {
-				form.getLongitudeToText().setText(coordinateFormat.format(Math.min(180, bounds.getNorthEastLng())));
+				form.getLongitudeToText().setText(coordinateFormat.format(Math.min(SearchForm.LONGITUDE_MAX_VALUE, bounds.getNorthEastLng())));
 			}
 		}
 	}

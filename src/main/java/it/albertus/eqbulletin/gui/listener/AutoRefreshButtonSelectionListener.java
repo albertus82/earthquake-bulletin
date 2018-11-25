@@ -1,6 +1,5 @@
 package it.albertus.eqbulletin.gui.listener;
 
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 
@@ -19,7 +18,7 @@ public class AutoRefreshButtonSelectionListener extends SelectionAdapter {
 		final boolean checked = form.getAutoRefreshButton().getSelection();
 		form.getAutoRefreshText().setEnabled(checked);
 		if (!checked) {
-			form.getStopButton().notifyListeners(SWT.Selection, null);
+			form.cancelJob();
 		}
 	}
 

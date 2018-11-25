@@ -14,8 +14,8 @@ public class FormTextModifyListener implements ModifyListener {
 	}
 
 	@Override
-	public void modifyText(final ModifyEvent me) {
-		form.updateButtons();
+	public void modifyText(final ModifyEvent e) {
+		form.getSearchButton().setEnabled(form.isValid());
 	}
 
 }
