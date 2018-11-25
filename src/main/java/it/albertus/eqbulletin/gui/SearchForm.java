@@ -11,7 +11,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
@@ -38,7 +37,6 @@ import it.albertus.eqbulletin.gui.listener.FormTextModifyListener;
 import it.albertus.eqbulletin.gui.listener.FormatRadioSelectionListener;
 import it.albertus.eqbulletin.gui.listener.MapButtonSelectionListener;
 import it.albertus.eqbulletin.gui.listener.SearchButtonSelectionListener;
-import it.albertus.eqbulletin.gui.listener.StopButtonSelectionListener;
 import it.albertus.eqbulletin.gui.preference.Preference;
 import it.albertus.eqbulletin.model.Format;
 import it.albertus.eqbulletin.resources.Leaflet;
@@ -114,6 +112,8 @@ public class SearchForm {
 	private final Label periodFromNote;
 	private final Label periodToNote;
 
+	private final Group coordinatesGroup;
+
 	private final Label latitudeLabel;
 	private final Label latitudeFromLabel;
 	private final Text latitudeFromText;
@@ -147,7 +147,6 @@ public class SearchForm {
 	private final Label resultsNote;
 	private final Button autoRefreshButton;
 	private final Text autoRefreshText;
-	private final Button stopButton;
 	private final Button clearButton;
 	private final Button openMap;
 
@@ -192,46 +191,56 @@ public class SearchForm {
 		periodToNote = new Label(criteriaGroup, SWT.NONE);
 		periodToNote.setText(Messages.get("lbl.form.criteria.period.to.note"));
 
-		latitudeLabel = new Label(criteriaGroup, SWT.NONE);
+		coordinatesGroup = new Group(criteriaGroup, SWT.NONE);
+		coordinatesGroup.setText(Messages.get("lbl.form.criteria.coordinates"));
+		GridLayoutFactory.swtDefaults().numColumns(8).applyTo(coordinatesGroup);
+		GridDataFactory.fillDefaults().span(7, 1).applyTo(coordinatesGroup);
+
+		latitudeLabel = new Label(coordinatesGroup, SWT.NONE);
 		latitudeLabel.setText(Messages.get("lbl.form.criteria.latitude"));
-		latitudeFromLabel = new Label(criteriaGroup, SWT.NONE);
+		latitudeFromLabel = new Label(coordinatesGroup, SWT.NONE);
 		latitudeFromLabel.setText(Messages.get("lbl.form.criteria.latitude.from"));
-		latitudeFromText = new Text(criteriaGroup, SWT.BORDER);
+		latitudeFromText = new Text(coordinatesGroup, SWT.BORDER);
 		latitudeFromText.setTextLimit(COORDINATES_TEXT_LIMIT);
 		latitudeFromText.addTraverseListener(formFieldTraverseListener);
 		latitudeFromText.addVerifyListener(coordinatesVerifyListener);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(latitudeFromText);
-		latitudeFromNote = new Label(criteriaGroup, SWT.NONE);
+		latitudeFromNote = new Label(coordinatesGroup, SWT.NONE);
 		latitudeFromNote.setText(Messages.get("lbl.form.criteria.latitude.from.note"));
-		latitudeToLabel = new Label(criteriaGroup, SWT.NONE);
+		latitudeToLabel = new Label(coordinatesGroup, SWT.NONE);
 		latitudeToLabel.setText(Messages.get("lbl.form.criteria.latitude.to"));
-		latitudeToText = new Text(criteriaGroup, SWT.BORDER);
+		latitudeToText = new Text(coordinatesGroup, SWT.BORDER);
 		latitudeToText.setTextLimit(COORDINATES_TEXT_LIMIT);
 		latitudeToText.addTraverseListener(formFieldTraverseListener);
 		latitudeToText.addVerifyListener(coordinatesVerifyListener);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(latitudeToText);
-		latitudeToNote = new Label(criteriaGroup, SWT.NONE);
+		latitudeToNote = new Label(coordinatesGroup, SWT.NONE);
 		latitudeToNote.setText(Messages.get("lbl.form.criteria.latitude.to.note"));
 
-		longitudeLabel = new Label(criteriaGroup, SWT.NONE);
+		openMap = new Button(coordinatesGroup, SWT.NONE);
+		openMap.setText(Messages.get("lbl.form.button.map"));
+		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.FILL).span(1, 2).applyTo(openMap);
+		openMap.addSelectionListener(new MapButtonSelectionListener(this));
+
+		longitudeLabel = new Label(coordinatesGroup, SWT.NONE);
 		longitudeLabel.setText(Messages.get("lbl.form.criteria.longitude"));
-		longitudeFromLabel = new Label(criteriaGroup, SWT.NONE);
+		longitudeFromLabel = new Label(coordinatesGroup, SWT.NONE);
 		longitudeFromLabel.setText(Messages.get("lbl.form.criteria.longitude.from"));
-		longitudeFromText = new Text(criteriaGroup, SWT.BORDER);
+		longitudeFromText = new Text(coordinatesGroup, SWT.BORDER);
 		longitudeFromText.setTextLimit(COORDINATES_TEXT_LIMIT);
 		longitudeFromText.addTraverseListener(formFieldTraverseListener);
 		longitudeFromText.addVerifyListener(coordinatesVerifyListener);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(longitudeFromText);
-		longitudeFromNote = new Label(criteriaGroup, SWT.NONE);
+		longitudeFromNote = new Label(coordinatesGroup, SWT.NONE);
 		longitudeFromNote.setText(Messages.get("lbl.form.criteria.longitude.from.note"));
-		longitudeToLabel = new Label(criteriaGroup, SWT.NONE);
+		longitudeToLabel = new Label(coordinatesGroup, SWT.NONE);
 		longitudeToLabel.setText(Messages.get("lbl.form.criteria.longitude.to"));
-		longitudeToText = new Text(criteriaGroup, SWT.BORDER);
+		longitudeToText = new Text(coordinatesGroup, SWT.BORDER);
 		longitudeToText.setTextLimit(COORDINATES_TEXT_LIMIT);
 		longitudeToText.addTraverseListener(formFieldTraverseListener);
 		longitudeToText.addVerifyListener(coordinatesVerifyListener);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(longitudeToText);
-		longitudeToNote = new Label(criteriaGroup, SWT.NONE);
+		longitudeToNote = new Label(coordinatesGroup, SWT.NONE);
 		longitudeToNote.setText(Messages.get("lbl.form.criteria.longitude.to.note"));
 
 		minimumMagnitudeLabel = new Label(criteriaGroup, SWT.NONE);
@@ -280,41 +289,30 @@ public class SearchForm {
 
 		// Buttons
 		buttonsComposite = new Composite(formComposite, SWT.NONE);
-		GridLayoutFactory.swtDefaults().numColumns(2).equalWidth(true).applyTo(buttonsComposite);
+		GridLayoutFactory.swtDefaults().applyTo(buttonsComposite);
 		GridDataFactory.fillDefaults().grab(false, true).applyTo(buttonsComposite);
 
 		autoRefreshButton = new Button(buttonsComposite, SWT.CHECK);
 		autoRefreshButton.setText(Messages.get("lbl.form.button.autorefresh"));
 		autoRefreshButton.setSelection(configuration.getBoolean(Preference.AUTOREFRESH_ENABLED, Defaults.AUTOREFRESH_ENABLED));
-		GridDataFactory.swtDefaults().span(2, 1).applyTo(autoRefreshButton);
+		GridDataFactory.swtDefaults().applyTo(autoRefreshButton);
 
 		autoRefreshText = new Text(buttonsComposite, SWT.BORDER);
 		autoRefreshText.setTextLimit(AUTOREFRESH_TEXT_LIMIT);
 		autoRefreshText.addTraverseListener(formFieldTraverseListener);
 		autoRefreshText.addVerifyListener(new IntegerVerifyListener(false));
-		GridDataFactory.swtDefaults().span(2, 1).align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(autoRefreshText);
+		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(autoRefreshText);
 
 		searchButton = new Button(buttonsComposite, SWT.NONE);
 		searchButton.setText(Messages.get("lbl.form.button.submit"));
-		GridDataFactory.fillDefaults().grab(true, false).minSize(SwtUtils.convertHorizontalDLUsToPixels(searchButton, IDialogConstants.BUTTON_WIDTH), SWT.DEFAULT).applyTo(searchButton);
-
-		stopButton = new Button(buttonsComposite, SWT.NONE);
-		stopButton.setText(Messages.get("lbl.form.button.stop"));
-		GridDataFactory.fillDefaults().grab(true, false).minSize(SwtUtils.convertHorizontalDLUsToPixels(stopButton, IDialogConstants.BUTTON_WIDTH), SWT.DEFAULT).applyTo(stopButton);
-		stopButton.setEnabled(false);
-
-		openMap = new Button(buttonsComposite, SWT.NONE);
-		openMap.setText(Messages.get("lbl.form.button.map"));
-		GridDataFactory.fillDefaults().span(2, 1).grab(true, false).applyTo(openMap);
-		openMap.addSelectionListener(new MapButtonSelectionListener(this));
+		GridDataFactory.fillDefaults().grab(true, true).minSize(SwtUtils.convertHorizontalDLUsToPixels(searchButton, IDialogConstants.BUTTON_WIDTH), SWT.DEFAULT).applyTo(searchButton);
 
 		clearButton = new Button(buttonsComposite, SWT.NONE);
 		clearButton.setText(Messages.get("lbl.form.button.clear"));
-		GridDataFactory.fillDefaults().span(2, 1).grab(true, false).applyTo(clearButton);
+		GridDataFactory.fillDefaults().grab(true, true).applyTo(clearButton);
 
 		// Listeners
 		searchButton.addSelectionListener(new SearchButtonSelectionListener(gui));
-		stopButton.addSelectionListener(new StopButtonSelectionListener(this));
 		clearButton.addSelectionListener(new ClearButtonSelectionListener(this));
 		autoRefreshButton.addSelectionListener(new AutoRefreshButtonSelectionListener(this));
 		autoRefreshButton.notifyListeners(SWT.Selection, null);
@@ -389,14 +387,14 @@ public class SearchForm {
 		return true;
 	}
 
-	public void updateButtons() {
-		if (searchJob == null || searchJob.getState() == Job.NONE) {
-			stopButton.setEnabled(false);
-			searchButton.setEnabled(isValid());
-		}
-		else {
-			searchButton.setEnabled(false);
-			stopButton.setEnabled(true);
+	public void cancelJob() {
+		final SearchJob job = getSearchJob();
+		if (job != null) {
+			job.setShouldRun(false);
+			job.setShouldSchedule(false);
+			job.cancel();
+			setSearchJob(null);
+			searchButton.setText(Messages.get("lbl.form.button.submit"));
 		}
 	}
 
@@ -426,7 +424,6 @@ public class SearchForm {
 		resultsNote.setText(Messages.get("lbl.form.limit.note"));
 		autoRefreshButton.setText(Messages.get("lbl.form.button.autorefresh"));
 		searchButton.setText(Messages.get("lbl.form.button.submit"));
-		stopButton.setText(Messages.get("lbl.form.button.stop"));
 		clearButton.setText(Messages.get("lbl.form.button.clear"));
 		openMap.setText(Messages.get("lbl.form.button.map"));
 		mapBoundsDialog.setText(Messages.get("lbl.map.bounds.title"));
@@ -625,10 +622,6 @@ public class SearchForm {
 
 	public Text getAutoRefreshText() {
 		return autoRefreshText;
-	}
-
-	public Button getStopButton() {
-		return stopButton;
 	}
 
 	public Button getClearButton() {
