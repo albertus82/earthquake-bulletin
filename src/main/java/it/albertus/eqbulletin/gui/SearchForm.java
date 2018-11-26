@@ -116,7 +116,7 @@ public class SearchForm {
 	private final Label periodFromNote;
 	private final Label periodToNote;
 
-	private final Group coordinatesGroup;
+	private final Group areaGroup;
 
 	private final Label latitudeLabel;
 	private final Label latitudeFromLabel;
@@ -195,56 +195,56 @@ public class SearchForm {
 		periodToNote = new Label(criteriaGroup, SWT.NONE);
 		periodToNote.setText(Messages.get("lbl.form.criteria.period.to.note"));
 
-		coordinatesGroup = new Group(criteriaGroup, SWT.NONE);
-		coordinatesGroup.setText(Messages.get("lbl.form.criteria.coordinates"));
-		GridLayoutFactory.swtDefaults().numColumns(8).applyTo(coordinatesGroup);
-		GridDataFactory.fillDefaults().span(7, 1).applyTo(coordinatesGroup);
+		areaGroup = new Group(criteriaGroup, SWT.NONE);
+		areaGroup.setText(Messages.get("lbl.form.criteria.area"));
+		GridLayoutFactory.swtDefaults().numColumns(8).applyTo(areaGroup);
+		GridDataFactory.fillDefaults().span(7, 1).applyTo(areaGroup);
 
-		latitudeLabel = new Label(coordinatesGroup, SWT.NONE);
+		latitudeLabel = new Label(areaGroup, SWT.NONE);
 		latitudeLabel.setText(Messages.get("lbl.form.criteria.latitude"));
-		latitudeFromLabel = new Label(coordinatesGroup, SWT.NONE);
+		latitudeFromLabel = new Label(areaGroup, SWT.NONE);
 		latitudeFromLabel.setText(Messages.get("lbl.form.criteria.latitude.from"));
-		latitudeFromText = new Text(coordinatesGroup, SWT.BORDER);
+		latitudeFromText = new Text(areaGroup, SWT.BORDER);
 		latitudeFromText.setTextLimit(COORDINATES_TEXT_LIMIT);
 		latitudeFromText.addTraverseListener(formFieldTraverseListener);
 		latitudeFromText.addVerifyListener(coordinatesVerifyListener);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(latitudeFromText);
-		latitudeFromNote = new Label(coordinatesGroup, SWT.NONE);
+		latitudeFromNote = new Label(areaGroup, SWT.NONE);
 		latitudeFromNote.setText(Messages.get("lbl.form.criteria.latitude.from.note"));
-		latitudeToLabel = new Label(coordinatesGroup, SWT.NONE);
+		latitudeToLabel = new Label(areaGroup, SWT.NONE);
 		latitudeToLabel.setText(Messages.get("lbl.form.criteria.latitude.to"));
-		latitudeToText = new Text(coordinatesGroup, SWT.BORDER);
+		latitudeToText = new Text(areaGroup, SWT.BORDER);
 		latitudeToText.setTextLimit(COORDINATES_TEXT_LIMIT);
 		latitudeToText.addTraverseListener(formFieldTraverseListener);
 		latitudeToText.addVerifyListener(coordinatesVerifyListener);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(latitudeToText);
-		latitudeToNote = new Label(coordinatesGroup, SWT.NONE);
+		latitudeToNote = new Label(areaGroup, SWT.NONE);
 		latitudeToNote.setText(Messages.get("lbl.form.criteria.latitude.to.note"));
 
-		openMap = new Button(coordinatesGroup, SWT.NONE);
+		openMap = new Button(areaGroup, SWT.NONE);
 		openMap.setText(Messages.get("lbl.form.button.map"));
 		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.FILL).span(1, 2).applyTo(openMap);
 		openMap.addSelectionListener(new MapButtonSelectionListener(this));
 
-		longitudeLabel = new Label(coordinatesGroup, SWT.NONE);
+		longitudeLabel = new Label(areaGroup, SWT.NONE);
 		longitudeLabel.setText(Messages.get("lbl.form.criteria.longitude"));
-		longitudeFromLabel = new Label(coordinatesGroup, SWT.NONE);
+		longitudeFromLabel = new Label(areaGroup, SWT.NONE);
 		longitudeFromLabel.setText(Messages.get("lbl.form.criteria.longitude.from"));
-		longitudeFromText = new Text(coordinatesGroup, SWT.BORDER);
+		longitudeFromText = new Text(areaGroup, SWT.BORDER);
 		longitudeFromText.setTextLimit(COORDINATES_TEXT_LIMIT);
 		longitudeFromText.addTraverseListener(formFieldTraverseListener);
 		longitudeFromText.addVerifyListener(coordinatesVerifyListener);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(longitudeFromText);
-		longitudeFromNote = new Label(coordinatesGroup, SWT.NONE);
+		longitudeFromNote = new Label(areaGroup, SWT.NONE);
 		longitudeFromNote.setText(Messages.get("lbl.form.criteria.longitude.from.note"));
-		longitudeToLabel = new Label(coordinatesGroup, SWT.NONE);
+		longitudeToLabel = new Label(areaGroup, SWT.NONE);
 		longitudeToLabel.setText(Messages.get("lbl.form.criteria.longitude.to"));
-		longitudeToText = new Text(coordinatesGroup, SWT.BORDER);
+		longitudeToText = new Text(areaGroup, SWT.BORDER);
 		longitudeToText.setTextLimit(COORDINATES_TEXT_LIMIT);
 		longitudeToText.addTraverseListener(formFieldTraverseListener);
 		longitudeToText.addVerifyListener(coordinatesVerifyListener);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(longitudeToText);
-		longitudeToNote = new Label(coordinatesGroup, SWT.NONE);
+		longitudeToNote = new Label(areaGroup, SWT.NONE);
 		longitudeToNote.setText(Messages.get("lbl.form.criteria.longitude.to.note"));
 
 		minimumMagnitudeLabel = new Label(criteriaGroup, SWT.NONE);
