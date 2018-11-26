@@ -2,11 +2,12 @@
 <!DOCTYPE project>
 <project name="EarthquakeBulletin" default="all" xmlns:jacoco="antlib:org.jacoco.ant">
 
+	<property name="version.number" value="1.8.0" />
+
 	<property environment="env" />
 	<property name="env.JRE8_HOME" value="${env.JAVA_HOME}/../jdk1.8.0_191/jre" />
 
 	<property file="build.properties" />
-	<property file="${build.resourcesDirectory}/version.properties" />
 
 	<target name="clean">
 		<delete dir="${build.directory}" />
@@ -30,8 +31,16 @@
 	</target>
 
 	<target name="resources">
+		<tstamp>
+			<format property="version.date" pattern="yyyy-MM-dd" />
+		</tstamp>
+		<filter token="version.number" value="${version.number}" />
+		<filter token="version.date" value="${version.date}" />
+		<copy file="${build.resourcesDirectory}/version.properties" todir="${build.outputDirectory}" filtering="true" />
 		<copy todir="${build.outputDirectory}">
-			<fileset dir="${build.resourcesDirectory}" />
+			<fileset dir="${build.resourcesDirectory}">
+				<excludesfile name="${build.resourcesDirectory}/version.properties" />
+			</fileset>
 		</copy>
 	</target>
 

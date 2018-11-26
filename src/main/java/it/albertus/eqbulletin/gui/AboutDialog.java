@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -68,7 +69,15 @@ public class AboutDialog extends Dialog {
 		info.setFont(fontRegistry.getBold(SYM_NAME_FONT_DEFAULT));
 		final Version version = Version.getInstance();
 		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.CENTER).grab(true, false).applyTo(info);
-		info.setText(buildAnchor(Messages.get("url"), Messages.get("msg.application.name")) + ' ' + Messages.get("msg.version", version.getNumber(), DateFormat.getDateInstance(DateFormat.MEDIUM, Messages.getLanguage().getLocale()).format(version.getDate())));
+		Date versionDate;
+		try {
+			versionDate = version.getDate();
+		}
+		catch (final IllegalArgumentException e) {
+			logger.log(Level.WARNING, e.toString(), e);
+			versionDate = new Date();
+		}
+		info.setText(buildAnchor(Messages.get("url"), Messages.get("msg.application.name")) + ' ' + Messages.get("msg.version", version.getNumber(), DateFormat.getDateInstance(DateFormat.MEDIUM, Messages.getLanguage().getLocale()).format(versionDate)));
 		info.addSelectionListener(linkSelectionListener);
 
 		final Link acknowledgementsLocations = new Link(shell, SWT.WRAP);
