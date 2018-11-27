@@ -3,7 +3,7 @@ package it.albertus.eqbulletin.gui.listener;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 
-import org.eclipse.swt.SWT;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 
@@ -33,7 +33,7 @@ public class MapButtonSelectionListener extends SelectionAdapter {
 	@Override
 	public void widgetSelected(final SelectionEvent se) {
 		final LeafletMapBoundsDialog mapBoundsDialog = form.getMapBoundsDialog();
-		if (mapBoundsDialog.open() == SWT.OK) {
+		if (mapBoundsDialog.open() == Window.OK) {
 			final MapBounds bounds = mapBoundsDialog.getBounds();
 			if (bounds.getSouthWestLat() != null) {
 				form.getLatitudeFromText().setText(coordinateFormat.format(Math.max(SearchForm.LATITUDE_MIN_VALUE, bounds.getSouthWestLat())));
