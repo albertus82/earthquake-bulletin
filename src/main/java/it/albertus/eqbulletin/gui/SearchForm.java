@@ -407,6 +407,7 @@ public class SearchForm {
 		periodFromNote.setText(Messages.get("lbl.form.criteria.period.from.note"));
 		periodToLabel.setText(Messages.get("lbl.form.criteria.period.to"));
 		periodToNote.setText(Messages.get("lbl.form.criteria.period.to.note"));
+		areaGroup.setText(Messages.get("lbl.form.criteria.area"));
 		latitudeLabel.setText(Messages.get("lbl.form.criteria.latitude"));
 		latitudeFromLabel.setText(Messages.get("lbl.form.criteria.latitude.from"));
 		latitudeFromNote.setText(Messages.get("lbl.form.criteria.latitude.from.note"));
