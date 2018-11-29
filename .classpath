@@ -7,9 +7,12 @@
 	<classpathentry kind="lib" path="lib/test/hamcrest-core-1.3.jar" sourcepath="lib/test/src/hamcrest-core-1.3-sources.jar"/>
 	<classpathentry kind="lib" path="lib/test/junit-4.12.jar" sourcepath="lib/test/src/junit-4.12-sources.jar"/>
 	<classpathentry kind="lib" path="lib/javax.activation-api-1.2.0.jar" sourcepath="lib/src/javax.activation-api-1.2.0-sources.jar"/>
-	<classpathentry kind="lib" path="lib/jaxb-api-2.3.0.jar" sourcepath="lib/src/jaxb-api-2.3.0-sources.jar"/>
-	<classpathentry kind="lib" path="lib/jaxb-core-2.3.0.jar" sourcepath="lib/src/jaxb-core-2.3.0-sources.jar"/>
-	<classpathentry kind="lib" path="lib/jaxb-impl-2.3.0.jar" sourcepath="lib/src/jaxb-impl-2.3.0-sources.jar"/>
+	<classpathentry kind="lib" path="lib/jaxb-api-2.3.1.jar" sourcepath="lib/src/jaxb-api-2.3.1-sources.jar"/>
+	<classpathentry kind="lib" path="lib/jaxb-runtime-2.3.1.jar" sourcepath="lib/src/jaxb-runtime-2.3.1-sources.jar"/>
+	<classpathentry kind="lib" path="lib/txw2-2.3.1.jar" sourcepath="lib/src/txw2-2.3.1-sources.jar"/>
+	<classpathentry kind="lib" path="lib/FastInfoset-1.2.15.jar" sourcepath="lib/src/FastInfoset-1.2.15-sources.jar"/>
+	<classpathentry kind="lib" path="lib/istack-commons-runtime-3.0.7.jar" sourcepath="lib/src/istack-commons-runtime-3.0.7-sources.jar"/>
+	<classpathentry kind="lib" path="lib/stax-ex-1.8.jar" sourcepath="lib/src/stax-ex-1.8-sources.jar"/>
 	<classpathentry kind="lib" path="lib/org.eclipse.core.commands_3.9.0.v20170530-1048.jar" sourcepath="lib/src/org.eclipse.core.commands.source_3.9.0.v20170530-1048.jar"/>
 	<classpathentry kind="lib" path="lib/org.eclipse.equinox.common_3.9.0.v20170207-1454.jar" sourcepath="lib/src/org.eclipse.equinox.common.source_3.9.0.v20170207-1454.jar"/>
 	<classpathentry kind="lib" path="lib/org.eclipse.jface_3.12.2.v20170113-2113.jar" sourcepath="lib/src/org.eclipse.jface.source_3.12.2.v20170113-2113.jar"/>
