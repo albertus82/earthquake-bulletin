@@ -65,7 +65,7 @@ public class MapCanvas {
 
 	private static final Logger logger = LoggerFactory.getLogger(MapCanvas.class);
 
-	private static final LinkedList<Integer> zoomLevels = new LinkedList<>(new TreeSet<>(Arrays.asList(AUTO_SCALE, 10, 15, 20, 25, 30, 40, 50, 60, 80, 100, 120, 150, 200, 250, 300, 400, 500)));
+	private static final LinkedList<Integer> zoomLevels = new LinkedList<>(new TreeSet<>(Arrays.asList(AUTO_SCALE, 10, 12, 15, 20, 25, 30, 40, 50, 60, 80, 100, 120, 150, 200, 250, 300, 400, 500)));
 
 	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getInstance();
 
