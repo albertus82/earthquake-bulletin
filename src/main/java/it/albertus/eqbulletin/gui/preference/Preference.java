@@ -7,6 +7,7 @@ import static it.albertus.eqbulletin.gui.preference.PageDefinition.LOGGING;
 
 import java.net.Proxy.Type;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.EnumSet;
 import java.util.Locale;
 import java.util.Map;
@@ -271,8 +272,8 @@ public enum Preference implements IPreference {
 	}
 
 	public static LocalizedLabelsAndValues getZoomComboOptions() {
-		final short[] values = MapCanvas.getZoomLevels();
-		final LocalizedLabelsAndValues options = new LocalizedLabelsAndValues(values.length);
+		final Collection<Integer> values = MapCanvas.getZoomLevels();
+		final LocalizedLabelsAndValues options = new LocalizedLabelsAndValues(values.size());
 		for (final int level : values) {
 			final String value = Integer.toString(level);
 			final Localized name = new Localized() {

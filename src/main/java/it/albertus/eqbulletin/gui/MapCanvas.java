@@ -5,18 +5,26 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.MenuAdapter;
 import org.eclipse.swt.events.MenuDetectEvent;
 import org.eclipse.swt.events.MenuDetectListener;
 import org.eclipse.swt.events.MenuEvent;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseWheelListener;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -53,11 +61,13 @@ public class MapCanvas {
 		}
 	}
 
+	private static final int AUTO_SCALE = 0;
+
 	private static final Logger logger = LoggerFactory.getLogger(MapCanvas.class);
 
-	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getInstance();
+	private static final LinkedList<Integer> zoomLevels = new LinkedList<>(new TreeSet<>(Arrays.asList(AUTO_SCALE, 10, 15, 20, 25, 30, 40, 50, 60, 80, 100, 120, 150, 200, 250, 300, 400, 500)));
 
-	private static final short[] ZOOM_LEVELS = { 0, 25, 50, 75, 100, 125, 150, 175, 200, 225, 250 };
+	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getInstance();
 
 	private final MapCache cache = new MapCache();
 	private final Canvas canvas;
@@ -65,7 +75,7 @@ public class MapCanvas {
 	private String guid;
 	private Image image;
 
-	private short zoomLevel = configuration.getShort(Preference.MAP_ZOOM_LEVEL, Defaults.MAP_ZOOM_LEVEL);
+	private int zoomLevel = configuration.getShort(Preference.MAP_ZOOM_LEVEL, Defaults.MAP_ZOOM_LEVEL);
 
 	private Image resized;
 
@@ -73,7 +83,7 @@ public class MapCanvas {
 
 	private final MenuItem downloadMenuItem;
 	private final MenuItem zoomMenuItem;
-	private final Map<Short, MenuItem> zoomSubMenuItems = new HashMap<>();
+	private final Map<Integer, MenuItem> zoomSubMenuItems = new HashMap<>();
 
 	public MapCanvas(final Composite parent) {
 		canvas = new Canvas(parent, SWT.BORDER);
@@ -94,7 +104,7 @@ public class MapCanvas {
 		final Menu zoomSubMenu = new Menu(zoomMenuItem);
 		zoomMenuItem.setMenu(zoomSubMenu);
 
-		for (final short level : ZOOM_LEVELS) {
+		for (final int level : zoomLevels) {
 			final MenuItem item = new MenuItem(zoomSubMenu, SWT.RADIO);
 			zoomSubMenuItems.put(level, item);
 			item.setData("lbl.menu.item.zoom." + (level == 0 ? "auto" : "custom"));
@@ -110,7 +120,7 @@ public class MapCanvas {
 		zoomSubMenu.addMenuListener(new MenuAdapter() {
 			@Override
 			public void menuShown(final MenuEvent e) {
-				for (final Entry<Short, MenuItem> entry : zoomSubMenuItems.entrySet()) {
+				for (final Entry<Integer, MenuItem> entry : zoomSubMenuItems.entrySet()) {
 					entry.getValue().setSelection(entry.getKey().equals(zoomLevel));
 				}
 			}
@@ -134,25 +144,47 @@ public class MapCanvas {
 				downloadMenuItem.setEnabled(canSaveImage());
 			}
 		});
+
+		canvas.addMouseWheelListener(new MouseWheelListener() {
+			@Override
+			public void mouseScrolled(final MouseEvent e) {
+				if (image != null && e.count != 0) {
+					final int[] nearestValues = getZoomNearestValues(zoomLevel == 0 ? getAutoscaleRatio() : zoomLevel);
+					if (e.count > 0) { // Zoom in
+						setZoomLevel(nearestValues[1]);
+					}
+					else if (e.count < 0) { // Zoom out
+						setZoomLevel(nearestValues[0]);
+					}
+				}
+			}
+		});
+
+		canvas.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(final KeyEvent e) {
+				if (image != null) {
+					final int[] nearestValues = getZoomNearestValues(zoomLevel == 0 ? getAutoscaleRatio() : zoomLevel);
+					if (e.keyCode == '+' || e.keyCode == SWT.KEYPAD_ADD) { // Zoom in
+						setZoomLevel(nearestValues[1]);
+					}
+					else if (e.keyCode == '-' || e.keyCode == SWT.KEYPAD_SUBTRACT) { // Zoom out
+						setZoomLevel(nearestValues[0]);
+					}
+				}
+			}
+		});
 	}
 
-	public void setZoomLevel(final short zoomLevel) {
-		if (this.zoomLevel == zoomLevel) {
-			return;
+	public void setZoomLevel(final int zoomLevel) {
+		if (this.zoomLevel != zoomLevel) {
+			paintImage(zoomLevel);
+			this.zoomLevel = zoomLevel;
 		}
-		if (this.zoomLevel == 0 || this.zoomLevel > zoomLevel) {
-			final GC gc = new GC(canvas);
-			gc.setBackground(getBackgroundColor());
-			final Rectangle canvasBounds = canvas.getBounds();
-			gc.fillRectangle(0, 0, canvasBounds.width, canvasBounds.height);
-			gc.dispose();
-		}
-		this.zoomLevel = zoomLevel;
-		refresh();
 	}
 
 	public void refresh() {
-		canvas.notifyListeners(SWT.Paint, null);
+		paintImage(zoomLevel);
 	}
 
 	public Image getImage() {
@@ -195,29 +227,72 @@ public class MapCanvas {
 		guid = null;
 	}
 
-	private void paintImage(final Number scalePercent) {
-		if (image != null) {
-			final Rectangle originalRect = image.getBounds();
-			final Rectangle resizedRect = getResizedRectangle(scalePercent);
+	private void paintImage(final int scalePercent) {
+		if (image == null) {
+			return;
+		}
+		final Rectangle originalRect = image.getBounds();
+		final Rectangle resizedRect = getResizedRectangle(scalePercent);
 
-			final GC gc = new GC(canvas);
-			if (resizedRect.height == originalRect.height) { // Do not resize!
-				gc.drawImage(image, resizedRect.x, resizedRect.y);
-			}
-			else {
-				if (configuration.getBoolean(Preference.MAP_RESIZE_HQ, Defaults.MAP_RESIZE_HQ)) {
-					final Image oldImage = resized;
-					resized = HqImageResizer.resize(image, resizedRect.height / (float) originalRect.height);
-					gc.drawImage(resized, resizedRect.x, resizedRect.y);
-					if (oldImage != null && oldImage != resized) {
-						oldImage.dispose();
-					}
+		final GC gc = new GC(canvas);
+		if (resizedRect.height == originalRect.height) { // Do not resize!
+			prepareCanvas(gc, scalePercent);
+			gc.drawImage(image, resizedRect.x, resizedRect.y);
+		}
+		else {
+			if (configuration.getBoolean(Preference.MAP_RESIZE_HQ, Defaults.MAP_RESIZE_HQ) && (scalePercent == 0 || scalePercent % 100 != 0 && scalePercent < 300)) {
+				logger.log(Level.FINE, "Resizing HQ scale={0}", scalePercent);
+				final Image oldImage = resized;
+				resized = HqImageResizer.resize(image, resizedRect.height / (float) originalRect.height);
+				prepareCanvas(gc, scalePercent);
+				gc.drawImage(resized, resizedRect.x, resizedRect.y);
+				if (oldImage != null && oldImage != resized) {
+					oldImage.dispose();
 				}
-				else { // Fast low-quality resizing
-					gc.drawImage(image, 0, 0, originalRect.width, originalRect.height, resizedRect.x, resizedRect.y, resizedRect.width, resizedRect.height);
+			}
+			else { // Fast low-quality resizing
+				logger.log(Level.FINE, "Resizing LQ scale={0}", scalePercent);
+				prepareCanvas(gc, scalePercent);
+				gc.drawImage(image, 0, 0, originalRect.width, originalRect.height, resizedRect.x, resizedRect.y, resizedRect.width, resizedRect.height);
+			}
+		}
+		gc.dispose();
+	}
+
+	private void prepareCanvas(final GC gc, final int scalePercent) {
+		if (zoomLevel > scalePercent || zoomLevel == 0) { // Zoom out/Auto scale
+			gc.setBackground(getBackgroundColor());
+			final Rectangle canvasBounds = canvas.getBounds();
+			gc.fillRectangle(0, 0, canvasBounds.width, canvasBounds.height);
+		}
+	}
+
+	static int[] getZoomNearestValues(float value) {
+		value = Math.max(zoomLevels.get(1), Math.min(value, zoomLevels.getLast())); // limit input range
+		final int[] values = new int[] { zoomLevels.get(1), zoomLevels.getLast() };
+		for (final int zoomLevel : zoomLevels) {
+			if (zoomLevel != AUTO_SCALE) {
+				if (zoomLevel < value) {
+					values[0] = zoomLevel;
+				}
+				else if (zoomLevel > value) {
+					values[1] = zoomLevel;
+					break;
 				}
 			}
-			gc.dispose();
+		}
+		return values;
+	}
+
+	private float getAutoscaleRatio() {
+		final Rectangle originalRect = image.getBounds();
+		final Rectangle resizedRect = getResizedRectangle(AUTO_SCALE);
+
+		if (originalRect.width > originalRect.height) {
+			return 100f * resizedRect.width / originalRect.width;
+		}
+		else {
+			return 100f * resizedRect.height / originalRect.height;
 		}
 	}
 
@@ -278,7 +353,7 @@ public class MapCanvas {
 	public void updateTexts() {
 		downloadMenuItem.setText(Messages.get(downloadMenuItem.getData().toString()));
 		zoomMenuItem.setText(Messages.get(zoomMenuItem.getData().toString()));
-		for (final Entry<Short, MenuItem> entry : zoomSubMenuItems.entrySet()) {
+		for (final Entry<Integer, MenuItem> entry : zoomSubMenuItems.entrySet()) {
 			entry.getValue().setText(Messages.get(entry.getValue().getData().toString(), entry.getKey()));
 		}
 	}
@@ -303,8 +378,8 @@ public class MapCanvas {
 		this.downloadMapJob = downloadMapJob;
 	}
 
-	public static short[] getZoomLevels() {
-		return Arrays.copyOf(ZOOM_LEVELS, ZOOM_LEVELS.length);
+	public static Collection<Integer> getZoomLevels() {
+		return Collections.unmodifiableCollection(zoomLevels);
 	}
 
 }
