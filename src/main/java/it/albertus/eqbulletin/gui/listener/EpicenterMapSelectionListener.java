@@ -22,7 +22,7 @@ import it.albertus.jface.maps.leaflet.LeafletMapDialog;
 import it.albertus.jface.preference.IPreferencesConfiguration;
 import it.albertus.util.NewLine;
 
-public class MapPopupSelectionListener extends SelectionAdapter {
+public class EpicenterMapSelectionListener extends SelectionAdapter {
 
 	private static final int DEFAULT_ZOOM_LEVEL = 6;
 
@@ -30,7 +30,7 @@ public class MapPopupSelectionListener extends SelectionAdapter {
 
 	private final EarthquakeBulletinGui gui;
 
-	public MapPopupSelectionListener(final EarthquakeBulletinGui gui) {
+	public EpicenterMapSelectionListener(final EarthquakeBulletinGui gui) {
 		this.gui = gui;
 	}
 
