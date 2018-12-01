@@ -7,16 +7,16 @@ public class MapCanvasTest {
 
 	@Test
 	public void testGetZoomNearestValues() {
-		Assert.assertArrayEquals(new int[] { 10, 15 }, MapCanvas.getZoomNearestValues(Integer.MIN_VALUE));
-		Assert.assertArrayEquals(new int[] { 10, 15 }, MapCanvas.getZoomNearestValues(0));
-		Assert.assertArrayEquals(new int[] { 10, 15 }, MapCanvas.getZoomNearestValues(1));
-		Assert.assertArrayEquals(new int[] { 10, 15 }, MapCanvas.getZoomNearestValues(9));
-		Assert.assertArrayEquals(new int[] { 10, 15 }, MapCanvas.getZoomNearestValues(10));
-		Assert.assertArrayEquals(new int[] { 10, 15 }, MapCanvas.getZoomNearestValues(11));
-		Assert.assertArrayEquals(new int[] { 10, 15 }, MapCanvas.getZoomNearestValues(14.9f));
-		Assert.assertArrayEquals(new int[] { 10, 20 }, MapCanvas.getZoomNearestValues(15));
-		Assert.assertArrayEquals(new int[] { 10, 20 }, MapCanvas.getZoomNearestValues(15f));
-		Assert.assertArrayEquals(new int[] { 15, 20 }, MapCanvas.getZoomNearestValues(15.1f));
+		Assert.assertArrayEquals(new int[] { 10, 12 }, MapCanvas.getZoomNearestValues(Integer.MIN_VALUE));
+		Assert.assertArrayEquals(new int[] { 10, 12 }, MapCanvas.getZoomNearestValues(0));
+		Assert.assertArrayEquals(new int[] { 10, 12 }, MapCanvas.getZoomNearestValues(1));
+		Assert.assertArrayEquals(new int[] { 10, 12 }, MapCanvas.getZoomNearestValues(9));
+		Assert.assertArrayEquals(new int[] { 10, 12 }, MapCanvas.getZoomNearestValues(10));
+		Assert.assertArrayEquals(new int[] { 10, 12 }, MapCanvas.getZoomNearestValues(11));
+		Assert.assertArrayEquals(new int[] { 10, 12 }, MapCanvas.getZoomNearestValues(11.9f));
+		Assert.assertArrayEquals(new int[] { 10, 15 }, MapCanvas.getZoomNearestValues(12));
+		Assert.assertArrayEquals(new int[] { 10, 15 }, MapCanvas.getZoomNearestValues(12f));
+		Assert.assertArrayEquals(new int[] { 12, 15 }, MapCanvas.getZoomNearestValues(12.1f));
 
 		Assert.assertArrayEquals(new int[] { 80, 100 }, MapCanvas.getZoomNearestValues(99));
 		Assert.assertArrayEquals(new int[] { 80, 100 }, MapCanvas.getZoomNearestValues(99.9f));
