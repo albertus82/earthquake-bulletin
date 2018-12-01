@@ -21,8 +21,6 @@ import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.MenuAdapter;
 import org.eclipse.swt.events.MenuEvent;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseWheelListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
@@ -131,17 +129,14 @@ public class MapCanvas {
 		canvas.setMenu(contextMenu);
 		canvas.addMenuDetectListener(e -> downloadMenuItem.setEnabled(canSaveImage()));
 
-		canvas.addMouseWheelListener(new MouseWheelListener() {
-			@Override
-			public void mouseScrolled(final MouseEvent e) {
-				if (image != null && e.count != 0) {
-					final int[] nearestValues = getZoomNearestValues(zoomLevel == 0 ? getAutoscaleRatio() : zoomLevel);
-					if (e.count > 0) { // Zoom in
-						setZoomLevel(nearestValues[1]);
-					}
-					else if (e.count < 0) { // Zoom out
-						setZoomLevel(nearestValues[0]);
-					}
+		canvas.addMouseWheelListener(e -> {
+			if (image != null && e.count != 0) {
+				final int[] nearestValues = getZoomNearestValues(zoomLevel == 0 ? getAutoscaleRatio() : zoomLevel);
+				if (e.count > 0) { // Zoom in
+					setZoomLevel(nearestValues[1]);
+				}
+				else if (e.count < 0) { // Zoom out
+					setZoomLevel(nearestValues[0]);
 				}
 			}
 		});
