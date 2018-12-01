@@ -11,7 +11,7 @@ import it.albertus.eqbulletin.gui.SearchForm;
 import it.albertus.jface.maps.MapBounds;
 import it.albertus.jface.maps.leaflet.LeafletMapBoundsDialog;
 
-public class MapButtonSelectionListener extends SelectionAdapter {
+public class AreaMapSelectionListener extends SelectionAdapter {
 
 	private static final DecimalFormat coordinateFormat = new DecimalFormat();
 
@@ -26,7 +26,7 @@ public class MapButtonSelectionListener extends SelectionAdapter {
 
 	private final SearchForm form;
 
-	public MapButtonSelectionListener(final SearchForm form) {
+	public AreaMapSelectionListener(final SearchForm form) {
 		this.form = form;
 	}
 

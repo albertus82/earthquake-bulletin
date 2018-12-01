@@ -31,7 +31,7 @@ import it.albertus.eqbulletin.gui.job.BulletinExporter;
 import it.albertus.eqbulletin.gui.listener.CopyLinkSelectionListener;
 import it.albertus.eqbulletin.gui.listener.ExportCsvSelectionListener;
 import it.albertus.eqbulletin.gui.listener.GoogleMapsBrowserSelectionListener;
-import it.albertus.eqbulletin.gui.listener.MapPopupSelectionListener;
+import it.albertus.eqbulletin.gui.listener.EpicenterMapSelectionListener;
 import it.albertus.eqbulletin.gui.listener.OpenInBrowserSelectionListener;
 import it.albertus.eqbulletin.gui.listener.ResultsTableContextMenuDetectListener;
 import it.albertus.eqbulletin.gui.listener.ShowMapListener;
@@ -365,7 +365,7 @@ public class ResultsTable {
 			// Google Maps Popup...
 			googleMapsPopupMenuItem = new MenuItem(menu, SWT.PUSH);
 			googleMapsPopupMenuItem.setText(Messages.get(LBL_MENU_ITEM_GOOGLE_MAPS_POPUP));
-			googleMapsPopupMenuItem.addSelectionListener(new MapPopupSelectionListener(gui));
+			googleMapsPopupMenuItem.addSelectionListener(new EpicenterMapSelectionListener(gui));
 
 			// Google Maps in browser...
 			googleMapsBrowserMenuItem = new MenuItem(menu, SWT.PUSH);

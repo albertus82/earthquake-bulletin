@@ -35,7 +35,7 @@ import it.albertus.eqbulletin.gui.listener.ClearButtonSelectionListener;
 import it.albertus.eqbulletin.gui.listener.FormFieldTraverseListener;
 import it.albertus.eqbulletin.gui.listener.FormTextModifyListener;
 import it.albertus.eqbulletin.gui.listener.FormatRadioSelectionListener;
-import it.albertus.eqbulletin.gui.listener.MapButtonSelectionListener;
+import it.albertus.eqbulletin.gui.listener.AreaMapSelectionListener;
 import it.albertus.eqbulletin.gui.listener.SearchButtonSelectionListener;
 import it.albertus.eqbulletin.gui.preference.Preference;
 import it.albertus.eqbulletin.model.Format;
@@ -224,7 +224,7 @@ public class SearchForm {
 		openMap = new Button(areaGroup, SWT.NONE);
 		openMap.setText(Messages.get("lbl.form.button.map"));
 		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.FILL).span(1, 2).applyTo(openMap);
-		openMap.addSelectionListener(new MapButtonSelectionListener(this));
+		openMap.addSelectionListener(new AreaMapSelectionListener(this));
 
 		longitudeLabel = new Label(areaGroup, SWT.NONE);
 		longitudeLabel.setText(Messages.get("lbl.form.criteria.longitude"));
