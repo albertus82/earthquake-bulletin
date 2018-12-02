@@ -108,7 +108,7 @@ public class MapCanvas {
 		for (final int level : zoomLevels) {
 			final MenuItem item = new MenuItem(zoomSubMenu, SWT.RADIO);
 			zoomSubMenuItems.put(level, item);
-			item.setData("lbl.menu.item.zoom." + (level == 0 ? "auto" : "custom"));
+			item.setData("lbl.menu.item.zoom." + (level == AUTO_SCALE ? "auto" : "custom"));
 			item.setText(Messages.get(item.getData().toString(), level));
 			item.addSelectionListener(new SelectionAdapter() {
 				@Override
@@ -150,7 +150,7 @@ public class MapCanvas {
 			@Override
 			public void mouseScrolled(final MouseEvent e) {
 				if (image != null && e.count != 0) {
-					final int[] nearestValues = getZoomNearestValues(zoomLevel == 0 ? getAutoscaleRatio() : zoomLevel);
+					final int[] nearestValues = getZoomNearestValues(zoomLevel == AUTO_SCALE ? getAutoscaleRatio() : zoomLevel);
 					if (e.count > 0) { // Zoom in
 						setZoomLevel(nearestValues[1]);
 					}
@@ -165,7 +165,7 @@ public class MapCanvas {
 			@Override
 			public void keyPressed(final KeyEvent e) {
 				if (image != null) {
-					final int[] nearestValues = getZoomNearestValues(zoomLevel == 0 ? getAutoscaleRatio() : zoomLevel);
+					final int[] nearestValues = getZoomNearestValues(zoomLevel == AUTO_SCALE ? getAutoscaleRatio() : zoomLevel);
 					if (e.keyCode == '+' || e.keyCode == SWT.KEYPAD_ADD) { // Zoom in
 						setZoomLevel(nearestValues[1]);
 					}
@@ -261,7 +261,7 @@ public class MapCanvas {
 	}
 
 	private void prepareCanvas(final GC gc, final int scalePercent) {
-		if (zoomLevel > scalePercent || zoomLevel == 0) { // Zoom out/Auto scale
+		if (zoomLevel > scalePercent || zoomLevel == AUTO_SCALE) { // Zoom out/Auto scale
 			gc.setBackground(getBackgroundColor());
 			final Rectangle canvasBounds = canvas.getBounds();
 			gc.fillRectangle(0, 0, canvasBounds.width, canvasBounds.height);
@@ -297,14 +297,14 @@ public class MapCanvas {
 		}
 	}
 
-	private Rectangle getResizedRectangle(final Number scalePercent) {
+	private Rectangle getResizedRectangle(final int scalePercent) {
 		final Rectangle imageSize = image.getBounds();
 		final Rectangle canvasSize = canvas.getBounds();
 
 		final int width;
 		final int height;
 
-		if (scalePercent == null || scalePercent.floatValue() == 0) {
+		if (scalePercent == AUTO_SCALE) {
 			// Autoscale
 			final float imageRatio = (float) imageSize.width / imageSize.height;
 			final float canvasRatio = (float) canvasSize.width / canvasSize.height;
@@ -318,8 +318,8 @@ public class MapCanvas {
 			}
 		}
 		else {
-			width = Math.round(imageSize.width * scalePercent.floatValue() / 100);
-			height = Math.round(imageSize.height * scalePercent.floatValue() / 100);
+			width = Math.round(imageSize.width * scalePercent / 100f);
+			height = Math.round(imageSize.height * scalePercent / 100f);
 		}
 		final int x = Math.round((canvasSize.width - width) / 2f);
 		final int y = Math.round((canvasSize.height - height) / 2f);
