@@ -54,7 +54,7 @@ public class MapCanvas {
 
 	public static class Defaults {
 		public static final boolean MAP_RESIZE_HQ = true;
-		public static final short MAP_ZOOM_LEVEL = 0;
+		public static final short MAP_ZOOM_LEVEL = AUTO_SCALE;
 
 		private Defaults() {
 			throw new IllegalAccessError("Constants class");
@@ -62,12 +62,13 @@ public class MapCanvas {
 	}
 
 	private static final int AUTO_SCALE = 0;
+	private static final int MAX_HQ_RESIZE_RATIO = 250;
 
 	private static final Logger logger = LoggerFactory.getLogger(MapCanvas.class);
 
 	private static final LinkedList<Integer> zoomLevels = new LinkedList<>(new TreeSet<>(Arrays.asList(AUTO_SCALE, 10, 12, 15, 20, 25, 30, 40, 50, 60, 80, 100, 120, 150, 200, 250, 300, 400, 500)));
 
-	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getInstance();
+	private final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getInstance();
 
 	private final MapCache cache = new MapCache();
 	private final Canvas canvas;
@@ -240,8 +241,8 @@ public class MapCanvas {
 			gc.drawImage(image, resizedRect.x, resizedRect.y);
 		}
 		else {
-			if (configuration.getBoolean(Preference.MAP_RESIZE_HQ, Defaults.MAP_RESIZE_HQ) && (scalePercent == 0 || scalePercent % 100 != 0 && scalePercent < 300)) {
-				logger.log(Level.FINE, "Resizing HQ scale={0}", scalePercent);
+			if (configuration.getBoolean(Preference.MAP_RESIZE_HQ, Defaults.MAP_RESIZE_HQ) && (scalePercent == AUTO_SCALE || scalePercent % 100 != 0 && scalePercent <= MAX_HQ_RESIZE_RATIO)) {
+				logger.log(Level.FINE, "HQ resizing scale {0}", scalePercent);
 				final Image oldImage = resized;
 				resized = HqImageResizer.resize(image, resizedRect.height / (float) originalRect.height);
 				prepareCanvas(gc, scalePercent);
@@ -251,7 +252,7 @@ public class MapCanvas {
 				}
 			}
 			else { // Fast low-quality resizing
-				logger.log(Level.FINE, "Resizing LQ scale={0}", scalePercent);
+				logger.log(Level.FINE, "LQ Resizing scale {0}", scalePercent);
 				prepareCanvas(gc, scalePercent);
 				gc.drawImage(image, 0, 0, originalRect.width, originalRect.height, resizedRect.x, resizedRect.y, resizedRect.width, resizedRect.height);
 			}
