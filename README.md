@@ -7,7 +7,7 @@ Earthquake Bulletin
 
 A cross-platform desktop client for the [**GEOFON Program GFZ Potsdam Earthquake Bulletin**](http://geofon.gfz-potsdam.de/eqinfo/list.php) written in Java.
 
-![Screenshot](https://user-images.githubusercontent.com/8672431/28755268-208fa9be-7557-11e7-9f69-ef70c9f38027.png)
+![Screenshot](https://user-images.githubusercontent.com/8672431/49344476-eea2fc00-f677-11e8-9624-d024d9df55ad.gif)
 
 ## Download
 
@@ -24,7 +24,7 @@ Download the [latest release](https://github.com/Albertus82/EarthquakeBulletin/r
   In order to enable the *Run anyway* button, you may need to open the *Properties* of the installer, tab *General*, section *Security* (if available), and check the ***Unblock*** option.
 * **Linux** & **macOS**: unpack the archive.
 
-**This application requires [Java SE Runtime Environment (JRE)](https://www.java.com) v1.7 (or newer) to run.**
+**This application requires [Java SE Runtime Environment (JRE)](https://www.java.com) v1.8 (or newer) to run.**
 
 ## Flinn-Engdahl Regions
 
