@@ -2,6 +2,7 @@ package it.albertus.eqbulletin.config;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -10,6 +11,7 @@ import it.albertus.eqbulletin.gui.preference.Preference;
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.eqbulletin.util.InitializationException;
 import it.albertus.jface.preference.PreferencesConfiguration;
+import it.albertus.util.NewLine;
 import it.albertus.util.SystemUtils;
 import it.albertus.util.config.LanguageConfig;
 import it.albertus.util.config.LoggingConfig;
@@ -26,6 +28,7 @@ public class EarthquakeBulletinConfig extends LoggingConfig implements LanguageC
 	public static final String LOG_FILE_NAME_PATTERN = "earthquake-bulletin.%g.log";
 
 	private static PreferencesConfiguration instance;
+	private static volatile int instanceCount = 0;
 
 	private EarthquakeBulletinConfig() throws IOException {
 		super(Messages.get("msg.application.name") + File.separator + CFG_FILE_NAME, true);
@@ -36,6 +39,12 @@ public class EarthquakeBulletinConfig extends LoggingConfig implements LanguageC
 		if (instance == null) {
 			try {
 				instance = new PreferencesConfiguration(new EarthquakeBulletinConfig());
+				if (logger.isLoggable(Level.CONFIG)) {
+					logger.log(Level.CONFIG, "Created {0} instance {1}", new String[] { PreferencesConfiguration.class.getSimpleName(), Arrays.toString(Thread.currentThread().getStackTrace()).replace(", ", NewLine.SYSTEM_LINE_SEPARATOR + '\t') });
+				}
+				if (++instanceCount > 1) {
+					throw new IllegalStateException("Detected multiple instances of singleton " + PreferencesConfiguration.class);
+				}
 			}
 			catch (final IOException e) {
 				final String message = Messages.get("err.open.cfg", CFG_FILE_NAME);
