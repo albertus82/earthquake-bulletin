@@ -197,11 +197,18 @@ public class MapCanvas {
 	}
 
 	public void clear() {
-		final GC gc = new GC(canvas);
-		gc.setBackground(getBackgroundColor());
-		final Rectangle canvasBounds = canvas.getBounds();
-		gc.fillRectangle(0, 0, canvasBounds.width, canvasBounds.height);
-		gc.dispose();
+		GC gc = null;
+		try {
+			gc = new GC(canvas);
+			gc.setBackground(getBackgroundColor());
+			final Rectangle canvasBounds = canvas.getBounds();
+			gc.fillRectangle(0, 0, canvasBounds.width, canvasBounds.height);
+		}
+		finally {
+			if (gc != null) {
+				gc.dispose();
+			}
+		}
 		if (image != null) {
 			image.dispose();
 			image = null;
@@ -216,33 +223,40 @@ public class MapCanvas {
 		final Rectangle originalRect = image.getBounds();
 		final Rectangle resizedRect = getResizedRectangle(scalePercent);
 
-		final GC gc = new GC(canvas);
-		if (resizedRect.height == originalRect.height) { // Do not resize!
-			prepareCanvas(gc, scalePercent);
-			gc.drawImage(image, resizedRect.x, resizedRect.y);
-		}
-		else {
-			if (configuration.getBoolean(Preference.MAP_RESIZE_HQ, Defaults.MAP_RESIZE_HQ) && (scalePercent == AUTO_SCALE || scalePercent % 100 != 0 && scalePercent <= MAX_HQ_RESIZE_RATIO)) {
-				logger.log(Level.FINE, "HQ resizing scale {0}", scalePercent);
-				final Image oldImage = resized;
-				resized = HqImageResizer.resize(image, resizedRect.height / (float) originalRect.height);
+		GC gc = null;
+		try {
+			gc = new GC(canvas);
+			if (resizedRect.height == originalRect.height) { // Do not resize!
 				prepareCanvas(gc, scalePercent);
-				gc.drawImage(resized, resizedRect.x, resizedRect.y);
-				if (oldImage != null && oldImage != resized) {
-					oldImage.dispose();
+				gc.drawImage(image, resizedRect.x, resizedRect.y);
+			}
+			else {
+				if (configuration.getBoolean(Preference.MAP_RESIZE_HQ, Defaults.MAP_RESIZE_HQ) && (scalePercent == AUTO_SCALE || scalePercent % 100 != 0 && scalePercent <= MAX_HQ_RESIZE_RATIO)) {
+					logger.log(Level.FINE, "HQ resizing scale {0}", scalePercent);
+					final Image oldImage = resized;
+					resized = HqImageResizer.resize(image, resizedRect.height / (float) originalRect.height);
+					prepareCanvas(gc, scalePercent);
+					gc.drawImage(resized, resizedRect.x, resizedRect.y);
+					if (oldImage != null && oldImage != resized) {
+						oldImage.dispose();
+					}
+				}
+				else { // Fast low-quality resizing
+					logger.log(Level.FINE, "LQ Resizing scale {0}", scalePercent);
+					prepareCanvas(gc, scalePercent);
+					gc.drawImage(image, 0, 0, originalRect.width, originalRect.height, resizedRect.x, resizedRect.y, resizedRect.width, resizedRect.height);
 				}
 			}
-			else { // Fast low-quality resizing
-				logger.log(Level.FINE, "LQ Resizing scale {0}", scalePercent);
-				prepareCanvas(gc, scalePercent);
-				gc.drawImage(image, 0, 0, originalRect.width, originalRect.height, resizedRect.x, resizedRect.y, resizedRect.width, resizedRect.height);
+		}
+		finally {
+			if (gc != null) {
+				gc.dispose();
 			}
 		}
-		gc.dispose();
 	}
 
-	private void prepareCanvas(final GC gc, final int scalePercent) {
-		if (zoomLevel > scalePercent || zoomLevel == AUTO_SCALE) { // Zoom out/Auto scale
+	private void prepareCanvas(final GC gc, final int newZoomLevel) {
+		if (zoomLevel > newZoomLevel || zoomLevel == AUTO_SCALE) { // Zoom out/Auto scale
 			gc.setBackground(getBackgroundColor());
 			final Rectangle canvasBounds = canvas.getBounds();
 			gc.fillRectangle(0, 0, canvasBounds.width, canvasBounds.height);
