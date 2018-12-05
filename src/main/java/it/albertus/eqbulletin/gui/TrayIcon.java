@@ -1,7 +1,6 @@
 package it.albertus.eqbulletin.gui;
 
 import java.text.DateFormat;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;
 import java.util.logging.Level;
@@ -27,6 +26,7 @@ import it.albertus.eqbulletin.model.Earthquake;
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.jface.listener.TrayRestoreListener;
 import it.albertus.jface.preference.IPreferencesConfiguration;
+import it.albertus.util.MapUtils;
 import it.albertus.util.NewLine;
 import it.albertus.util.logging.LoggerFactory;
 
@@ -51,13 +51,14 @@ public class TrayIcon {
 	private Tray tray;
 	private TrayItem trayItem;
 
-	private final Map<Integer, ToolTip> toolTips = new HashMap<>(icons.length * 2);
+	private final Map<Integer, ToolTip> toolTips = MapUtils.newHashMapWithExpectedSize(icons.length);
 	private Menu trayMenu;
 	private MenuItem showMenuItem;
 	private MenuItem exitMenuItem;
 
 	/* To be accessed only from this class */
 	private Image trayIcon;
+	private String toolTipText = Messages.get("lbl.tray.tooltip");
 
 	public TrayIcon(final EarthquakeBulletinGui gui) {
 		this.gui = gui;
@@ -85,7 +86,7 @@ public class TrayIcon {
 					trayItem = new TrayItem(tray, SWT.NONE);
 					trayIcon = getTrayIcon();
 					trayItem.setImage(trayIcon);
-					trayItem.setToolTipText(Messages.get("lbl.tray.tooltip"));
+					trayItem.setToolTipText(toolTipText);
 					final TrayRestoreListener trayRestoreListener = new EnhancedTrayRestoreListener(gui.getShell(), trayItem);
 
 					for (final int icon : icons) {
@@ -169,26 +170,25 @@ public class TrayIcon {
 	}
 
 	public void updateToolTipText(final Earthquake earthquake) {
+		final StringBuilder buf = new StringBuilder(Messages.get("lbl.tray.tooltip"));
+		if (earthquake != null) {
+			buf.append(NewLine.SYSTEM_LINE_SEPARATOR);
+			buf.append("M ").append(earthquake.getMagnitude()).append(", ").append(earthquake.getRegion());
+			buf.append(NewLine.SYSTEM_LINE_SEPARATOR);
+			final DateFormat df = ResultsTable.dateFormat.get();
+			df.setTimeZone(TimeZone.getTimeZone(configuration.getString(Preference.TIMEZONE, EarthquakeBulletin.Defaults.TIME_ZONE_ID)));
+			buf.append(df.format(earthquake.getTime())).append(' ');
+			buf.append(earthquake.getLatitude()).append(' ');
+			buf.append(earthquake.getLongitude()).append(' ');
+			buf.append(earthquake.getDepth()).append(' ');
+			buf.append(earthquake.getStatus());
+		}
+		toolTipText = buf.toString();
 		if (trayItem != null && !trayItem.isDisposed()) {
-			final StringBuilder buf = new StringBuilder(Messages.get("lbl.tray.tooltip"));
-			if (earthquake != null) {
-				buf.append(NewLine.SYSTEM_LINE_SEPARATOR);
-				buf.append("M ").append(earthquake.getMagnitude()).append(", ").append(earthquake.getRegion());
-				buf.append(NewLine.SYSTEM_LINE_SEPARATOR);
-				final DateFormat df = ResultsTable.dateFormat.get();
-				df.setTimeZone(TimeZone.getTimeZone(configuration.getString(Preference.TIMEZONE, EarthquakeBulletin.Defaults.TIME_ZONE_ID)));
-				buf.append(df.format(earthquake.getTime())).append(' ');
-				buf.append(earthquake.getLatitude()).append(' ');
-				buf.append(earthquake.getLongitude()).append(' ');
-				buf.append(earthquake.getDepth()).append(' ');
-				buf.append(earthquake.getStatus());
-			}
-			final String text = buf.toString();
-
 			try {
 				trayItem.getDisplay().syncExec(() -> {
-					if (!text.equals(trayItem.getToolTipText())) {
-						trayItem.setToolTipText(text);
+					if (!toolTipText.equals(trayItem.getToolTipText())) {
+						trayItem.setToolTipText(toolTipText);
 					}
 				});
 			}
