@@ -64,6 +64,7 @@ public class ConnectionFactory {
 			else {
 				if (configuration.getBoolean(Preference.PROXY_AUTH_REQUIRED, Defaults.PROXY_AUTH_REQUIRED)) {
 					System.setProperty("jdk.http.auth.tunneling.disabledSchemes", "");
+					System.setProperty("http.maxRedirects", "2"); // limit proxy authentication retries
 					Authenticator.setDefault(new Authenticator() {
 						@Override
 						public PasswordAuthentication getPasswordAuthentication() {
