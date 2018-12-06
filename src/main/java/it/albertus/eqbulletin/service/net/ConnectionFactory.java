@@ -63,6 +63,7 @@ public class ConnectionFactory {
 			}
 			else {
 				if (configuration.getBoolean(Preference.PROXY_AUTH_REQUIRED, Defaults.PROXY_AUTH_REQUIRED)) {
+					System.setProperty("jdk.http.auth.tunneling.disabledSchemes", "");
 					Authenticator.setDefault(new Authenticator() {
 						@Override
 						public PasswordAuthentication getPasswordAuthentication() {
