@@ -73,23 +73,20 @@ public class DownloadMapJob extends Job {
 			catch (final FileNotFoundException e) {
 				final String message = Messages.get("err.job.map.not.found");
 				logger.log(Level.INFO, message, e);
-				new DisplayThreadExecutor(gui.getShell()).execute(new Runnable() { // always show error dialog in this case
-					@Override
-					public void run() {
-						EnhancedErrorDialog.openError(gui.getShell(), Messages.get("lbl.window.title"), message, IStatus.INFO, e, Images.getMainIcons());
-					}
-				});
+				showErrorDialog(e, message, IStatus.INFO); // always show error dialog in this case
 			}
-			catch (final Exception | LinkageError e) {
+			catch (final Exception e) {
 				final String message = Messages.get("err.job.map");
 				logger.log(Level.WARNING, message, e);
 				if (!mapCanvas.getCache().contains(earthquake.getGuid())) { // show error dialog only if not present in cache
-					new DisplayThreadExecutor(gui.getShell()).execute(new Runnable() {
-						@Override
-						public void run() {
-							EnhancedErrorDialog.openError(gui.getShell(), Messages.get("lbl.window.title"), message, IStatus.WARNING, e, Images.getMainIcons());
-						}
-					});
+					showErrorDialog(e, message, IStatus.WARNING);
+				}
+			}
+			catch (final LinkageError e) {
+				final String message = Messages.get("err.job.map");
+				logger.log(Level.SEVERE, message, e);
+				if (!mapCanvas.getCache().contains(earthquake.getGuid())) { // show error dialog only if not present in cache
+					showErrorDialog(e, message, IStatus.ERROR);
 				}
 			}
 
@@ -103,6 +100,15 @@ public class DownloadMapJob extends Job {
 
 		monitor.done();
 		return Status.OK_STATUS;
+	}
+
+	private void showErrorDialog(final Throwable throwable, final String message, final int severity) {
+		new DisplayThreadExecutor(gui.getShell()).execute(new Runnable() {
+			@Override
+			public void run() {
+				EnhancedErrorDialog.openError(gui.getShell(), Messages.get("lbl.window.title"), message, severity, throwable, Images.getMainIcons());
+			}
+		});
 	}
 
 }

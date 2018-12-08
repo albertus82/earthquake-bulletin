@@ -127,22 +127,20 @@ public class SearchJob extends Job {
 					}
 				});
 			}
-			catch (final Exception | LinkageError e) {
+			catch (final Exception e) {
 				if (monitor.isCanceled()) {
 					logger.log(Level.FINE, "Job was canceled.", e);
 				}
 				else {
 					final String message = e.getMessage();
 					logger.log(Level.WARNING, message, e);
-					new DisplayThreadExecutor(gui.getShell()).execute(new Runnable() {
-						@Override
-						public void run() {
-							if (gui.getTrayIcon() == null || gui.getTrayIcon().getTrayItem() == null || !gui.getTrayIcon().getTrayItem().getVisible()) {
-								EnhancedErrorDialog.openError(gui.getShell(), Messages.get("lbl.window.title"), message, IStatus.WARNING, e.getCause() != null ? e.getCause() : e, Images.getMainIcons());
-							}
-						}
-					});
+					handleError(e, message, IStatus.WARNING);
 				}
+			}
+			catch (final LinkageError e) {
+				final String message = e.getMessage();
+				logger.log(Level.SEVERE, message, e);
+				handleError(e, message, IStatus.ERROR);
 			}
 
 			new DisplayThreadExecutor(gui.getShell()).execute(new Runnable() {
@@ -162,6 +160,17 @@ public class SearchJob extends Job {
 		}
 		monitor.done();
 		return Status.OK_STATUS;
+	}
+
+	private void handleError(final Throwable throwable, final String message, int severity) {
+		new DisplayThreadExecutor(gui.getShell()).execute(new Runnable() {
+			@Override
+			public void run() {
+				if (gui.getTrayIcon() == null || gui.getTrayIcon().getTrayItem() == null || !gui.getTrayIcon().getTrayItem().getVisible()) {
+					EnhancedErrorDialog.openError(gui.getShell(), Messages.get("lbl.window.title"), message, severity, throwable.getCause() != null ? throwable.getCause() : throwable, Images.getMainIcons());
+				}
+			}
+		});
 	}
 
 	@Override
