@@ -4,7 +4,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.EnumMap;
 import java.util.Locale;
@@ -157,7 +156,7 @@ public class SearchForm {
 	private final ModifyListener formTextModifyListener = new FormTextModifyListener(this);
 	private final VerifyListener coordinatesVerifyListener = new FloatVerifyListener(true);
 
-	private final Collection<ControlValidator<?>> validators = new ArrayList<>();
+	private final Collection<ControlValidator<Text>> validators = new ArrayList<>();
 
 	private SearchJob searchJob;
 
@@ -638,8 +637,8 @@ public class SearchForm {
 		return mapBoundsDialog;
 	}
 
-	public Collection<ControlValidator<?>> getValidators() { // NOSONAR this method returns an unmodifiable collection
-		return Collections.unmodifiableCollection(validators);
+	public Collection<ControlValidator<Text>> getValidators() {
+		return validators;
 	}
 
 }
