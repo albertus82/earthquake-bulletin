@@ -80,7 +80,7 @@ public class DownloadMapJob extends Job {
 					}
 				});
 			}
-			catch (final Exception e) {
+			catch (final Exception | LinkageError e) {
 				final String message = Messages.get("err.job.map");
 				logger.log(Level.WARNING, message, e);
 				if (!mapCanvas.getCache().contains(earthquake.getGuid())) { // show error dialog only if not present in cache
@@ -91,10 +91,6 @@ public class DownloadMapJob extends Job {
 						}
 					});
 				}
-			}
-			catch (final Throwable t) {
-				logger.log(Level.SEVERE, t.toString(), t);
-				throw t;
 			}
 
 			new DisplayThreadExecutor(mapCanvas.getCanvas()).execute(new Runnable() {
