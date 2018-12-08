@@ -76,7 +76,7 @@ public class GeofonBulletinProvider implements BulletinProvider {
 				}
 			}
 		}
-		catch (final Exception e) {
+		catch (final Exception | LinkageError e) {
 			throw new FetchException(Messages.get("err.job.fetch"), e);
 		}
 		finally {
