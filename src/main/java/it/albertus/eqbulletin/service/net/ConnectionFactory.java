@@ -68,7 +68,7 @@ public class ConnectionFactory {
 					Authenticator.setDefault(new Authenticator() {
 						@Override
 						public PasswordAuthentication getPasswordAuthentication() {
-							return (new PasswordAuthentication(configuration.getString(Preference.PROXY_USERNAME), configuration.getCharArray(Preference.PROXY_PASSWORD)));
+							return new PasswordAuthentication(configuration.getString(Preference.PROXY_USERNAME), configuration.getCharArray(Preference.PROXY_PASSWORD));
 						}
 					});
 				}
@@ -101,17 +101,17 @@ public class ConnectionFactory {
 
 	public static void main(final String... args) throws URISyntaxException {
 		System.setProperty("java.net.useSystemProxies", "true");
-		System.out.println("detecting proxies");
-		for (final Proxy proxy : ProxySelector.getDefault().select(new URI("https://foo/bar"))) {
-			System.out.println("proxy type: " + proxy.type());
+		logger.info("detecting proxies");
+		for (final Proxy proxy : ProxySelector.getDefault().select(new URI("https://foo/bar"))) { // NOSONAR test
+			logger.log(Level.INFO, "proxy type: {0}", proxy.type());
 			final InetSocketAddress addr = (InetSocketAddress) proxy.address();
 			if (addr == null) {
-				System.out.println("No Proxy");
+				logger.info("No Proxy");
 			}
 			else {
-				System.out.println("proxy hostname: " + addr.getHostName());
+				logger.log(Level.INFO, "proxy hostname: {0}", addr.getHostName());
 				System.setProperty("http.proxyHost", addr.getHostName());
-				System.out.println("proxy port: " + addr.getPort());
+				logger.log(Level.INFO, "proxy port: {0}", addr.getPort());
 				System.setProperty("http.proxyPort", Integer.toString(addr.getPort()));
 			}
 		}
