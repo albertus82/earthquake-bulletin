@@ -44,7 +44,7 @@ public class EarthquakeBulletinConfig extends LoggingConfig implements LanguageC
 					logger.log(Level.CONFIG, "Created {0} instance: {1}", new String[] { PreferencesConfiguration.class.getSimpleName(), Arrays.toString(Thread.currentThread().getStackTrace()).replace(", ", NewLine.SYSTEM_LINE_SEPARATOR + '\t') });
 				}
 				if (instanceCount > 1) {
-					throw new IllegalStateException("Detected multiple instances of singleton " + PreferencesConfiguration.class);
+					throw new InitializationException("Detected multiple instances of singleton " + PreferencesConfiguration.class);
 				}
 			}
 			catch (final IOException e) {
