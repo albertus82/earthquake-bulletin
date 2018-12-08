@@ -67,16 +67,12 @@ public class DownloadMapJob extends Job {
 				logger.log(Level.INFO, message, e);
 				new DisplayThreadExecutor(gui.getShell()).execute(() -> EnhancedErrorDialog.openError(gui.getShell(), Messages.get("lbl.window.title"), message, IStatus.INFO, e, Images.getMainIcons())); // always show error dialog in this case
 			}
-			catch (final Exception e) {
+			catch (final Exception | LinkageError e) {
 				final String message = Messages.get("err.job.map");
 				logger.log(Level.WARNING, message, e);
 				if (!mapCanvas.getCache().contains(earthquake.getGuid())) { // show error dialog only if not present in cache
 					new DisplayThreadExecutor(gui.getShell()).execute(() -> EnhancedErrorDialog.openError(gui.getShell(), Messages.get("lbl.window.title"), message, IStatus.WARNING, e, Images.getMainIcons()));
 				}
-			}
-			catch (final Throwable t) {
-				logger.log(Level.SEVERE, t.toString(), t);
-				throw t;
 			}
 
 			new DisplayThreadExecutor(mapCanvas.getCanvas()).execute(() -> gui.getShell().setCursor(null));
