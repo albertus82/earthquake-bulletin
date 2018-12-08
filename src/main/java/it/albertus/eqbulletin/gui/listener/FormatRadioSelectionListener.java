@@ -7,6 +7,7 @@ import org.eclipse.swt.widgets.Button;
 
 import it.albertus.eqbulletin.gui.SearchForm;
 import it.albertus.eqbulletin.model.Format;
+import it.albertus.jface.validation.ControlValidator;
 
 public class FormatRadioSelectionListener extends SelectionAdapter {
 
@@ -24,28 +25,32 @@ public class FormatRadioSelectionListener extends SelectionAdapter {
 	public void widgetSelected(final SelectionEvent se) {
 		if (radio.getSelection()) {
 			if (Format.RSS.equals(format)) {
-				form.getPeriodFromDateTime().setEnabled(false);
-				form.getPeriodToDateTime().setEnabled(false);
-				form.getResultsText().setEnabled(false);
+				form.getPeriodLabel().setEnabled(false);
 				form.getPeriodFromLabel().setEnabled(false);
+				form.getPeriodFromDateTime().setEnabled(false);
 				form.getPeriodFromNote().setEnabled(false);
 				form.getPeriodToLabel().setEnabled(false);
+				form.getPeriodToDateTime().setEnabled(false);
 				form.getPeriodToNote().setEnabled(false);
 				form.getResultsLabel().setEnabled(false);
-				form.getPeriodLabel().setEnabled(false);
-				form.getResultsText().setText("20");
-				form.getResultsText().notifyListeners(SWT.KeyUp, null); // Clear error
+				form.getResultsText().setEnabled(false);
+				for (final ControlValidator<?> cv : form.getValidators()) {
+					if (form.getResultsText().equals(cv.getControl()) && !cv.isValid()) {
+						form.getResultsText().setText("");
+						form.getResultsText().notifyListeners(SWT.KeyUp, null); // Clear error
+					}
+				}
 			}
 			else {
-				form.getPeriodFromDateTime().setEnabled(true);
-				form.getPeriodToDateTime().setEnabled(true);
-				form.getResultsText().setEnabled(true);
+				form.getPeriodLabel().setEnabled(true);
 				form.getPeriodFromLabel().setEnabled(true);
+				form.getPeriodFromDateTime().setEnabled(true);
 				form.getPeriodFromNote().setEnabled(true);
 				form.getPeriodToLabel().setEnabled(true);
+				form.getPeriodToDateTime().setEnabled(true);
 				form.getPeriodToNote().setEnabled(true);
 				form.getResultsLabel().setEnabled(true);
-				form.getPeriodLabel().setEnabled(true);
+				form.getResultsText().setEnabled(true);
 			}
 		}
 	}

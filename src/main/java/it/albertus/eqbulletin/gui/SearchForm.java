@@ -2,12 +2,13 @@ package it.albertus.eqbulletin.gui;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.EnumMap;
-import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -30,12 +31,12 @@ import org.eclipse.swt.widgets.Text;
 import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
 import it.albertus.eqbulletin.gui.decoration.SearchFormControlValidatorDecoration;
 import it.albertus.eqbulletin.gui.job.SearchJob;
+import it.albertus.eqbulletin.gui.listener.AreaMapSelectionListener;
 import it.albertus.eqbulletin.gui.listener.AutoRefreshButtonSelectionListener;
 import it.albertus.eqbulletin.gui.listener.ClearButtonSelectionListener;
 import it.albertus.eqbulletin.gui.listener.FormFieldTraverseListener;
 import it.albertus.eqbulletin.gui.listener.FormTextModifyListener;
 import it.albertus.eqbulletin.gui.listener.FormatRadioSelectionListener;
-import it.albertus.eqbulletin.gui.listener.AreaMapSelectionListener;
 import it.albertus.eqbulletin.gui.listener.SearchButtonSelectionListener;
 import it.albertus.eqbulletin.gui.preference.Preference;
 import it.albertus.eqbulletin.model.Format;
@@ -156,7 +157,7 @@ public class SearchForm {
 	private final ModifyListener formTextModifyListener = new FormTextModifyListener(this);
 	private final VerifyListener coordinatesVerifyListener = new FloatVerifyListener(true);
 
-	private final Set<Validator> validators = new HashSet<>();
+	private final Collection<ControlValidator<?>> validators = new ArrayList<>();
 
 	private SearchJob searchJob;
 
@@ -635,6 +636,10 @@ public class SearchForm {
 
 	public LeafletMapBoundsDialog getMapBoundsDialog() {
 		return mapBoundsDialog;
+	}
+
+	public Collection<ControlValidator<?>> getValidators() { // NOSONAR this method returns an unmodifiable collection
+		return Collections.unmodifiableCollection(validators);
 	}
 
 }
