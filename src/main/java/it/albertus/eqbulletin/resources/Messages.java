@@ -54,6 +54,18 @@ public final class Messages {
 		return Language.ENGLISH; // Default.
 	}
 
+	public static String get(final String key) {
+		String message;
+		try {
+			message = resources.getString(key);
+			message = message != null ? message.trim() : "";
+		}
+		catch (final MissingResourceException e) {
+			message = JFaceMessages.get(key);
+		}
+		return message;
+	}
+
 	public static String get(final String key, final Object... params) {
 		final List<String> stringParams = new ArrayList<>(params.length);
 		for (final Object param : params) {
