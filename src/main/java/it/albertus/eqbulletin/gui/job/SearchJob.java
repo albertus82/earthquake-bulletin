@@ -118,7 +118,7 @@ public class SearchJob extends Job {
 					}
 				});
 			}
-			catch (final Exception e) {
+			catch (final Exception | LinkageError e) {
 				if (monitor.isCanceled()) {
 					logger.log(Level.FINE, "Job was canceled.", e);
 				}
@@ -131,10 +131,6 @@ public class SearchJob extends Job {
 						}
 					});
 				}
-			}
-			catch (final Throwable t) {
-				logger.log(Level.SEVERE, t.toString(), t);
-				throw t;
 			}
 
 			new DisplayThreadExecutor(gui.getShell()).execute(() -> {
