@@ -146,7 +146,7 @@ public class SearchJob extends Job {
 		return Status.OK_STATUS;
 	}
 
-	private void handleError(final Throwable throwable, final String message, int severity) {
+	private void handleError(final Throwable throwable, final String message, final int severity) {
 		new DisplayThreadExecutor(gui.getShell()).execute(() -> {
 			if (gui.getTrayIcon() == null || gui.getTrayIcon().getTrayItem() == null || !gui.getTrayIcon().getTrayItem().getVisible()) {
 				EnhancedErrorDialog.openError(gui.getShell(), Messages.get("lbl.window.title"), message, severity, throwable, Images.getMainIcons());
