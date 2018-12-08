@@ -4,6 +4,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Text;
 
 import it.albertus.eqbulletin.gui.SearchForm;
 import it.albertus.eqbulletin.model.Format;
@@ -34,7 +35,7 @@ public class FormatRadioSelectionListener extends SelectionAdapter {
 				form.getPeriodToNote().setEnabled(false);
 				form.getResultsLabel().setEnabled(false);
 				form.getResultsText().setEnabled(false);
-				for (final ControlValidator<?> cv : form.getValidators()) {
+				for (final ControlValidator<Text> cv : form.getValidators()) {
 					if (form.getResultsText().equals(cv.getControl()) && !cv.isValid()) {
 						form.getResultsText().setText("");
 						form.getResultsText().notifyListeners(SWT.KeyUp, null); // Clear error
