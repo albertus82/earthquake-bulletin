@@ -8,7 +8,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
@@ -26,7 +25,7 @@ public class ImageDownloader {
 
 	private static final Logger logger = LoggerFactory.getLogger(ImageDownloader.class);
 
-	private static final Collection<Integer> httpRedirectionResponseCodes = Collections.unmodifiableList(Arrays.asList(HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_MOVED_TEMP));
+	private static final Collection<Integer> httpRedirectionResponseCodes = Arrays.asList(HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_MOVED_TEMP);
 
 	private static final byte REDIRECTION_LIMIT = 20;
 
