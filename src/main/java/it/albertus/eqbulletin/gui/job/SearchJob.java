@@ -122,13 +122,12 @@ public class SearchJob extends Job {
 				else {
 					final String message = e.getMessage();
 					logger.log(Level.WARNING, message, e);
-					handleError(e, message, IStatus.WARNING);
+					handleError(e.getCause() != null ? e.getCause() : e, message, IStatus.WARNING);
 				}
 			}
 			catch (final LinkageError e) {
-				final String message = e.getMessage();
-				logger.log(Level.SEVERE, message, e);
-				handleError(e, message, IStatus.ERROR);
+				logger.log(Level.SEVERE, e.toString(), e);
+				handleError(e, e.toString(), IStatus.ERROR);
 			}
 
 			new DisplayThreadExecutor(gui.getShell()).execute(() -> {
@@ -150,7 +149,7 @@ public class SearchJob extends Job {
 	private void handleError(final Throwable throwable, final String message, int severity) {
 		new DisplayThreadExecutor(gui.getShell()).execute(() -> {
 			if (gui.getTrayIcon() == null || gui.getTrayIcon().getTrayItem() == null || !gui.getTrayIcon().getTrayItem().getVisible()) {
-				EnhancedErrorDialog.openError(gui.getShell(), Messages.get("lbl.window.title"), message, severity, throwable.getCause() != null ? throwable.getCause() : throwable, Images.getMainIcons());
+				EnhancedErrorDialog.openError(gui.getShell(), Messages.get("lbl.window.title"), message, severity, throwable, Images.getMainIcons());
 			}
 		});
 	}
