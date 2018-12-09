@@ -191,7 +191,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 				shell.setLocation(locationX, locationY);
 			}
 			else {
-				logger.log(Level.WARNING, "Illegal shell location ({0}, {1}) for size ({2}).", new Serializable[] { locationX.toString(), locationY.toString(), shell.getSize() }); // NOSONAR unwanted format applied without toString()
+				logger.log(Level.WARNING, "Illegal shell location ({0,number,#}, {1,number,#}) for size ({2}).", new Serializable[] { locationX, locationY, shell.getSize() });
 			}
 		}
 
