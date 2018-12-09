@@ -58,7 +58,7 @@ public final class Messages {
 		String message;
 		try {
 			message = resources.getString(key);
-			message = message != null ? message.trim() : "";
+			message = message != null ? message.replace("''", "'").trim() : "";
 		}
 		catch (final MissingResourceException e) {
 			message = JFaceMessages.get(key);
