@@ -5,7 +5,7 @@ import static it.albertus.eqbulletin.gui.preference.PageDefinition.CRITERIA;
 import static it.albertus.eqbulletin.gui.preference.PageDefinition.GENERAL;
 import static it.albertus.eqbulletin.gui.preference.PageDefinition.LOGGING;
 
-import java.net.Proxy.Type;
+import java.net.Proxy;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumSet;
@@ -223,10 +223,10 @@ public enum Preference implements IPreference {
 	}
 
 	public static StaticLabelsAndValues getProxyTypeComboOptions() {
-		final Type[] types = Type.values();
+		final Proxy.Type[] types = Proxy.Type.values();
 		final StaticLabelsAndValues options = new StaticLabelsAndValues(types.length - 1);
-		for (final Type type : types) {
-			if (!Type.DIRECT.equals(type)) {
+		for (final Proxy.Type type : types) {
+			if (!Proxy.Type.DIRECT.equals(type)) {
 				options.put(type.toString(), type.name());
 			}
 		}
