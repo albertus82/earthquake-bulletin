@@ -26,14 +26,11 @@ public class RssItemTransformer {
 
 	private static final Logger logger = LoggerFactory.getLogger(RssItemTransformer.class);
 
-	private static final ThreadLocal<DateFormat> rssDateFormat = new ThreadLocal<DateFormat>() {
-		@Override
-		protected DateFormat initialValue() {
-			final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
-			return dateFormat;
-		}
-	};
+	private static final ThreadLocal<DateFormat> rssDateFormat = ThreadLocal.withInitial(() -> {
+		final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+		return dateFormat;
+	});
 
 	private RssItemTransformer() {
 		throw new IllegalAccessError();
