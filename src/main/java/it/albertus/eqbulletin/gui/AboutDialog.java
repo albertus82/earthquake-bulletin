@@ -73,7 +73,7 @@ public class AboutDialog extends Dialog {
 		try {
 			versionDate = version.getDate();
 		}
-		catch (final IllegalArgumentException e) {
+		catch (final Exception e) {
 			logger.log(Level.WARNING, e.toString(), e);
 			versionDate = new Date();
 		}

@@ -36,12 +36,12 @@
 		</tstamp>
 		<filter token="version.number" value="${version.number}" />
 		<filter token="version.date" value="${version.date}" />
-		<copy file="${build.resourcesDirectory}/version.properties" todir="${build.outputDirectory}" filtering="true" />
 		<copy todir="${build.outputDirectory}">
 			<fileset dir="${build.resourcesDirectory}">
-				<excludesfile name="${build.resourcesDirectory}/version.properties" />
+				<excludesfile name="${build.resourcesDirectory}/META-INF/version.properties" />
 			</fileset>
 		</copy>
+		<copy file="${build.resourcesDirectory}/META-INF/version.properties" todir="${build.outputDirectory}/META-INF" filtering="true" overwrite="true" />
 	</target>
 
 	<target name="lib">
