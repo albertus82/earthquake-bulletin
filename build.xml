@@ -20,9 +20,9 @@
 
 	<fileset id="classpath" dir="${dependencies.directory}">
 		<!-- Platform-independent libraries -->
-		<include name="*.jar" />
+		<include name="compile/common/*.jar" />
 		<!-- Oldest SWT version in the package -->
-		<include name="platform/gtk-linux-armhf/*.jar" />
+		<include name="compile/platform-dependent/gtk-linux-armhf/*.jar" />
 	</fileset>
 
 	<target name="compile">
@@ -35,11 +35,11 @@
 		</javac>
 	</target>
 
-	<typedef uri="antlib:org.codehaus.mojo.animal_sniffer">
-		<classpath path="${dependencies.directory}/ant/animal-sniffer/animal-sniffer-ant-tasks-1.16.jar" />
-	</typedef>
 	<target name="check-signature" depends="compile">
-		<as:check-signature signature="${dependencies.directory}/ant/animal-sniffer/java18-1.0.signature">
+		<typedef uri="antlib:org.codehaus.mojo.animal_sniffer">
+			<classpath path="${animalSniffer.directory}/animal-sniffer-ant-tasks-1.16.jar" />
+		</typedef>
+		<as:check-signature signature="${animalSniffer.directory}/java18-1.0.signature">
 			<path path="${build.outputDirectory}" />
 			<classpath>
 				<fileset refid="classpath" />
@@ -62,45 +62,49 @@
 	</target>
 
 	<target name="lib">
-		<fileset id="lib" dir="${dependencies.directory}">
-			<include name="*.jar" />
-			<include name="license/*.txt" />
-		</fileset>
+		<union id="lib">
+			<fileset dir="${dependencies.directory}/compile/common">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${dependencies.directory}">
+				<include name="license/*.txt" />
+			</fileset>
+		</union>
 
 		<!-- Copy dependencies -->
 		<copy todir="${build.assemblyDirectory}/dist/win32-win32-x86/${artifactId}/${dependencies.directory}">
-			<fileset refid="lib" />
-			<fileset dir="${dependencies.directory}/platform/win32-win32-x86">
+			<resources refid="lib" />
+			<fileset dir="${dependencies.directory}/compile/platform-dependent/win32-win32-x86">
 				<include name="*.jar" />
 			</fileset>
 		</copy>
 		<copy todir="${build.assemblyDirectory}/dist/win32-win32-x86_64/${artifactId}/${dependencies.directory}">
-			<fileset refid="lib" />
-			<fileset dir="${dependencies.directory}/platform/win32-win32-x86_64">
+			<resources refid="lib" />
+			<fileset dir="${dependencies.directory}/compile/platform-dependent/win32-win32-x86_64">
 				<include name="*.jar" />
 			</fileset>
 		</copy>
 		<copy todir="${build.assemblyDirectory}/dist/gtk-linux-x86/${artifactId}/${dependencies.directory}">
-			<fileset refid="lib" />
-			<fileset dir="${dependencies.directory}/platform/gtk-linux-x86">
+			<resources refid="lib" />
+			<fileset dir="${dependencies.directory}/compile/platform-dependent/gtk-linux-x86">
 				<include name="*.jar" />
 			</fileset>
 		</copy>
 		<copy todir="${build.assemblyDirectory}/dist/gtk-linux-x86_64/${artifactId}/${dependencies.directory}">
-			<fileset refid="lib" />
-			<fileset dir="${dependencies.directory}/platform/gtk-linux-x86_64">
+			<resources refid="lib" />
+			<fileset dir="${dependencies.directory}/compile/platform-dependent/gtk-linux-x86_64">
 				<include name="*.jar" />
 			</fileset>
 		</copy>
 		<copy todir="${build.assemblyDirectory}/dist/gtk-linux-armhf/${artifactId}/${dependencies.directory}">
-			<fileset refid="lib" />
-			<fileset dir="${dependencies.directory}/platform/gtk-linux-armhf">
+			<resources refid="lib" />
+			<fileset dir="${dependencies.directory}/compile/platform-dependent/gtk-linux-armhf">
 				<include name="*.jar" />
 			</fileset>
 		</copy>
 		<copy todir="${build.assemblyDirectory}/dist/cocoa-macosx-x86_64/${artifactId}/${dependencies.directory}">
-			<fileset refid="lib" />
-			<fileset dir="${dependencies.directory}/platform/cocoa-macosx-x86_64">
+			<resources refid="lib" />
+			<fileset dir="${dependencies.directory}/compile/platform-dependent/cocoa-macosx-x86_64">
 				<include name="*.jar" />
 			</fileset>
 		</copy>
@@ -308,10 +312,10 @@
 	</target>
 
 	<target name="dist-macos" depends="jar">
-		<taskdef name="jarbundler" classname="com.ultramixer.jarbundler.JarBundler" classpath="${jarbundler.dir}/jarbundler-core-3.3.0.jar" />
+		<taskdef name="jarbundler" classname="com.ultramixer.jarbundler.JarBundler" classpath="${jarBundler.directory}/jarbundler-core-3.3.0.jar" />
 
 		<mkdir dir="${build.assemblyDirectory}/bundle/cocoa-macosx-x86_64" />
-		<jarbundler vmoptions="${macos.vmoptions}" dir="${build.assemblyDirectory}/bundle/cocoa-macosx-x86_64" name="${name}" mainclass="${build.jar.archive.manifest.mainClass}" startonmainthread="true" version="${version.number}" icon="${build.assemblyDirectory}/dist/cocoa-macosx-x86_64/${artifactId}/${artifactId}.icns" usejavaxkey="true" jvmversion="${build.compiler.target}+" stubfile="${jarbundler.dir}/JavaApplicationStub" highresolutioncapable="true">
+		<jarbundler vmoptions="${macos.vmoptions}" dir="${build.assemblyDirectory}/bundle/cocoa-macosx-x86_64" name="${name}" mainclass="${build.jar.archive.manifest.mainClass}" startonmainthread="true" version="${version.number}" icon="${build.assemblyDirectory}/dist/cocoa-macosx-x86_64/${artifactId}/${artifactId}.icns" usejavaxkey="true" jvmversion="${build.compiler.target}+" stubfile="${jarBundler.directory}/JavaApplicationStub" highresolutioncapable="true">
 			<jarfileset dir="${build.assemblyDirectory}/dist/cocoa-macosx-x86_64/${artifactId}" includes="**/*.jar" />
 		</jarbundler>
 		<copy todir="${build.assemblyDirectory}/bundle/cocoa-macosx-x86_64/${name}.app/Contents/Resources/Java" failonerror="false">
@@ -375,37 +379,37 @@
 		<echo message="os.arch: ${os.arch}" />
 		<echo message="os.version: ${os.version}" />
 
-		<taskdef name="launch4j" classname="net.sf.launch4j.ant.Launch4jTask" classpath="${launch4j.dir}/launch4j.jar:${launch4j.dir}/lib/xstream.jar" />
-		<condition property="launch4j.bindir" value="${launch4j.dir}/bin/win32">
+		<taskdef name="launch4j" classname="net.sf.launch4j.ant.Launch4jTask" classpath="${launch4j.directory}/launch4j.jar:${launch4j.directory}/lib/xstream.jar" />
+		<condition property="launch4j.bindir" value="${launch4j.directory}/bin/win32">
 			<and>
 				<os family="windows" />
-				<available file="${launch4j.dir}/bin/win32" type="dir" />
+				<available file="${launch4j.directory}/bin/win32" type="dir" />
 			</and>
 		</condition>
-		<condition property="launch4j.bindir" value="${launch4j.dir}/bin/macosx-x86">
+		<condition property="launch4j.bindir" value="${launch4j.directory}/bin/macosx-x86">
 			<and>
 				<os family="mac" />
-				<available file="${launch4j.dir}/bin/macosx-x86" type="dir" />
+				<available file="${launch4j.directory}/bin/macosx-x86" type="dir" />
 			</and>
 		</condition>
-		<condition property="launch4j.bindir" value="${launch4j.dir}/bin/linux">
+		<condition property="launch4j.bindir" value="${launch4j.directory}/bin/linux">
 			<and>
 				<os family="unix" />
 				<os arch="x86" />
 				<not>
 					<os name="mac os x" />
 				</not>
-				<available file="${launch4j.dir}/bin/linux" type="dir" />
+				<available file="${launch4j.directory}/bin/linux" type="dir" />
 			</and>
 		</condition>
-		<condition property="launch4j.bindir" value="${launch4j.dir}/bin/linux-x64">
+		<condition property="launch4j.bindir" value="${launch4j.directory}/bin/linux-x64">
 			<and>
 				<os family="unix" />
 				<os arch="amd64" />
 				<not>
 					<os name="mac os x" />
 				</not>
-				<available file="${launch4j.dir}/bin/linux-x64" type="dir" />
+				<available file="${launch4j.directory}/bin/linux-x64" type="dir" />
 			</and>
 		</condition>
 
@@ -501,13 +505,13 @@
 
 		<echo file="${build.assemblyDirectory}/dist/win32-win32-x86/${artifactId}/${dependencies.directory}/${appId.x86}.log">${dependencies.log.x86}</echo>
 
-		<exec osfamily="windows" executable="${innosetup.dir}/ISCC.exe">
+		<exec osfamily="windows" executable="${innoSetup.directory}/ISCC.exe">
 			<arg value="${build.assemblyDirectory}/dist/win32-win32-x86/setup.iss" />
 			<arg value="/O${build.distDirectory}" />
 			<arg value="/F${artifactId}-${version.number}-win32-win32-x86-setup" />
 		</exec>
 		<exec osfamily="unix" executable="wine">
-			<arg value="${innosetup.dir}/ISCC.exe" />
+			<arg value="${innoSetup.directory}/ISCC.exe" />
 			<arg value="${build.assemblyDirectory}/dist/win32-win32-x86/setup.iss" />
 			<arg value="/O${build.distDirectory}" />
 			<arg value="/F${artifactId}-${version.number}-win32-win32-x86-setup" />
@@ -601,13 +605,13 @@
 
 		<echo file="${build.assemblyDirectory}/dist/win32-win32-x86_64/${artifactId}/${dependencies.directory}/${appId.x64}.log">${dependencies.log.x86_64}</echo>
 
-		<exec osfamily="windows" executable="${innosetup.dir}/ISCC.exe">
+		<exec osfamily="windows" executable="${innoSetup.directory}/ISCC.exe">
 			<arg value="${build.assemblyDirectory}/dist/win32-win32-x86_64/setup.iss" />
 			<arg value="/O${build.distDirectory}" />
 			<arg value="/F${artifactId}-${version.number}-win32-win32-x86_64-setup" />
 		</exec>
 		<exec osfamily="unix" executable="wine">
-			<arg value="${innosetup.dir}/ISCC.exe" />
+			<arg value="${innoSetup.directory}/ISCC.exe" />
 			<arg value="${build.assemblyDirectory}/dist/win32-win32-x86_64/setup.iss" />
 			<arg value="/O${build.distDirectory}" />
 			<arg value="/F${artifactId}-${version.number}-win32-win32-x86_64-setup" />
@@ -622,8 +626,9 @@
 		<mkdir dir="${build.outputTestDirectory}" />
 		<javac srcdir="${build.testSourceDirectory}" destdir="${build.outputTestDirectory}" source="${build.compiler.source}" target="${build.compiler.target}" debug="true" includeantruntime="false">
 			<classpath path="${build.outputDirectory}">
-				<fileset dir="${dependencies.directory}">
-					<include name="**/*.jar" />
+				<fileset refid="classpath" />
+				<fileset dir="${dependencies.directory}/test">
+					<include name="*.jar" />
 				</fileset>
 			</classpath>
 			<bootclasspath path="${build.compiler.compilerArguments.bootclasspath}" />
@@ -634,22 +639,22 @@
 		</copy>
 
 		<taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml">
-			<classpath path="${dependencies.directory}/ant/jacoco/jacocoant.jar" />
+			<classpath path="${jacoco.directory}/jacocoant.jar" />
 		</taskdef>
 		<jacoco:coverage destfile="${build.distDirectory}/jacoco.exec">
 			<junit printsummary="yes" haltonfailure="yes" fork="true" forkmode="once" maxmemory="64m">
 				<classpath path="${build.outputTestDirectory}">
-					<fileset dir="${dependencies.directory}">
-						<include name="test/*.jar" />
+					<fileset dir="${dependencies.directory}/test">
+						<include name="*.jar" />
 					</fileset>
-					<fileset dir="${build.assemblyDirectory}/dist">
-						<include name="**/*.jar" />
+					<fileset dir="${build.assemblyDirectory}">
+						<include name="**/${artifactId}.jar" />
 					</fileset>
 				</classpath>
 				<batchtest>
 					<fileset dir="${build.outputTestDirectory}">
-						<include name="**/*Test*" />
-						<exclude name="**/*$*" />
+						<include name="**/*Test*.class" />
+						<exclude name="**/*$*.class" />
 					</fileset>
 				</batchtest>
 				<formatter type="plain" usefile="false" />
@@ -659,14 +664,14 @@
 
 	<target name="sonar-main">
 		<propertyfile file="sonar-project.properties">
-			<entry key="sonar.projectKey" value="it.albertus:${artifactId}" />
+			<entry key="sonar.projectKey" value="${groupId}:${artifactId}" />
 			<entry key="sonar.projectName" value="${name}" />
 			<entry key="sonar.projectVersion" value="${version.number}" />
 			<entry key="sonar.sources" value="${build.sourceDirectory}" />
 			<entry key="sonar.language" value="java" />
 			<entry key="sonar.java.source" value="${build.compiler.source}" />
 			<entry key="sonar.java.target" value="${build.compiler.target}" />
-			<entry key="sonar.java.libraries" value="${dependencies.directory}/*.jar,${dependencies.directory}/platform/**/*.jar" />
+			<entry key="sonar.java.libraries" value="${dependencies.directory}/compile/common/*.jar,${dependencies.directory}/compile/platform-dependent/**/*.jar" />
 			<entry key="sonar.java.binaries" value="${build.outputDirectory}" />
 			<entry key="sonar.sourceEncoding" value="UTF-8" />
 		</propertyfile>
@@ -675,7 +680,7 @@
 	<target name="sonar-test" depends="sonar-main" if="build.test">
 		<propertyfile file="sonar-project.properties">
 			<entry key="sonar.tests" value="${build.testSourceDirectory}" />
-			<entry key="sonar.java.test.libraries" value="${dependencies.directory}/*.jar,${dependencies.directory}/platform/**/*.jar,${dependencies.directory}/test/*.jar" />
+			<entry key="sonar.java.test.libraries" value="${dependencies.directory}/compile/common/*.jar,${dependencies.directory}/compile/platform-dependent/**/*.jar,${dependencies.directory}/test/*.jar" />
 			<entry key="sonar.java.test.binaries" value="${build.outputTestDirectory}" />
 		</propertyfile>
 	</target>
