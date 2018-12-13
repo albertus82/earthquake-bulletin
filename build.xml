@@ -437,10 +437,10 @@
 			AppName=${name}
 			AppVersion=${version.number}
 			VersionInfoVersion=${version.number}
-			AppId=${innosetup.AppId.x86}
-			AppPublisherURL=${innosetup.AppPublisherURL}
-			AppSupportURL=${innosetup.AppSupportURL}
-			AppUpdatesURL=${innosetup.AppUpdatesURL}
+			AppId=${innoSetup.AppId.x86}
+			AppPublisherURL=${innoSetup.AppPublisherURL}
+			AppSupportURL=${innoSetup.AppSupportURL}
+			AppUpdatesURL=${innoSetup.AppUpdatesURL}
 			AppMutex=${build.jar.archive.manifest.mainClass}
 			PrivilegesRequired=lowest
 			DefaultDirName={userappdata}\${name}
@@ -481,7 +481,7 @@
 			begin
 				if CurStep = ssInstall then
 				begin
-					if LoadStringsFromFile(ExpandConstant('{app}\${dependencies.directory}\${innosetup.AppId.x86}.log'), jarFileNames) then
+					if LoadStringsFromFile(ExpandConstant('{app}\${dependencies.directory}\${innoSetup.AppId.x86}.log'), jarFileNames) then
 					begin
 						for i := 0 to GetArrayLength(jarFileNames) - 1 do
 							DeleteFile(ExpandConstant('{app}\${dependencies.directory}\' + jarFileNames[i]));
@@ -536,10 +536,10 @@
 			AppName=${name}
 			AppVersion=${version.number}
 			VersionInfoVersion=${version.number}
-			AppId=${innosetup.AppId.x64}
-			AppPublisherURL=${innosetup.AppPublisherURL}
-			AppSupportURL=${innosetup.AppSupportURL}
-			AppUpdatesURL=${innosetup.AppUpdatesURL}
+			AppId=${innoSetup.AppId.x64}
+			AppPublisherURL=${innoSetup.AppPublisherURL}
+			AppSupportURL=${innoSetup.AppSupportURL}
+			AppUpdatesURL=${innoSetup.AppUpdatesURL}
 			AppMutex=${build.jar.archive.manifest.mainClass}
 			PrivilegesRequired=lowest
 			DefaultDirName={userappdata}\${name}
@@ -581,7 +581,7 @@
 			begin
 				if CurStep = ssInstall then
 				begin
-					if LoadStringsFromFile(ExpandConstant('{app}\${dependencies.directory}\${innosetup.AppId.x64}.log'), jarFileNames) then
+					if LoadStringsFromFile(ExpandConstant('{app}\${dependencies.directory}\${innoSetup.AppId.x64}.log'), jarFileNames) then
 					begin
 						for i := 0 to GetArrayLength(jarFileNames) - 1 do
 							DeleteFile(ExpandConstant('{app}\${dependencies.directory}\' + jarFileNames[i]));
