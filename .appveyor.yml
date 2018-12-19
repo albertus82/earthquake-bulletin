@@ -26,8 +26,6 @@ install:
   - cmd: PATH %ChocolateyInstall%\lib\ant\apache-ant-%ANT_VERSION%\bin;%JAVA_HOME%\bin;%PATH%
 
 before_build:
-  - java -Xmx32m -version
-  - javac -J-Xmx32m -version
   - ant -diagnostics
 
 build_script:
