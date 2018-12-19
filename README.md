@@ -1,9 +1,9 @@
 Earthquake Bulletin
 ===================
 
-[![Latest release](https://img.shields.io/github/release/Albertus82/EarthquakeBulletin.svg)](https://github.com/Albertus82/EarthquakeBulletin/releases/latest)
-[![Build status](https://travis-ci.org/Albertus82/EarthquakeBulletin.svg?branch=master)](https://travis-ci.org/Albertus82/EarthquakeBulletin)
-[![Build status](https://ci.appveyor.com/api/projects/status/github/Albertus82/EarthquakeBulletin?branch=master&svg=true)](https://ci.appveyor.com/project/Albertus82/EarthquakeBulletin)
+[![Latest release](https://img.shields.io/github/release/albertus82/earthquake-bulletin.svg)](https://github.com/albertus82/earthquake-bulletin/releases/latest)
+[![Build status](https://travis-ci.org/albertus82/earthquake-bulletin.svg?branch=master)](https://travis-ci.org/albertus82/earthquake-bulletin)
+[![Build status](https://ci.appveyor.com/api/projects/status/github/albertus82/earthquake-bulletin?branch=master&svg=true)](https://ci.appveyor.com/project/albertus82/earthquake-bulletin)
 
 A cross-platform desktop client for the [**GEOFON Program GFZ Potsdam Earthquake Bulletin**](http://geofon.gfz-potsdam.de/eqinfo/list.php) written in Java.
 
