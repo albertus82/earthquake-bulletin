@@ -111,14 +111,14 @@
 		</copy>
 
 		<!-- Prepare MANIFEST.MF files -->
-		<manifestclasspath property="classpath.win32-win32-x86" jarfile="${build.assemblyDirectory}/dist/win32-win32-x86/${artifactId}/${launch4j.jarName}.jar" maxParentLevels="0">
+		<manifestclasspath property="classpath.win32-win32-x86" jarfile="${build.assemblyDirectory}/dist/win32-win32-x86/${artifactId}/${launch4j.jarName}" maxParentLevels="0">
 			<classpath>
 				<fileset dir="${build.assemblyDirectory}/dist/win32-win32-x86/${artifactId}/${dependencies.directory}">
 					<include name="*.jar" />
 				</fileset>
 			</classpath>
 		</manifestclasspath>
-		<manifestclasspath property="classpath.win32-win32-x86_64" jarfile="${build.assemblyDirectory}/dist/win32-win32-x86_64/${artifactId}/${launch4j.jarName}.jar" maxParentLevels="0">
+		<manifestclasspath property="classpath.win32-win32-x86_64" jarfile="${build.assemblyDirectory}/dist/win32-win32-x86_64/${artifactId}/${launch4j.jarName}" maxParentLevels="0">
 			<classpath>
 				<fileset dir="${build.assemblyDirectory}/dist/win32-win32-x86_64/${artifactId}/${dependencies.directory}">
 					<include name="*.jar" />
@@ -244,7 +244,7 @@
 	</target>
 
 	<target name="jar" depends="check-signature, resources, config, scripts, docs, icons, lib">
-		<jar destfile="${build.assemblyDirectory}/dist/win32-win32-x86/${artifactId}/${launch4j.jarName}.jar" basedir="${build.outputDirectory}" level="9">
+		<jar destfile="${build.assemblyDirectory}/dist/win32-win32-x86/${artifactId}/${launch4j.jarName}" basedir="${build.outputDirectory}" level="9">
 			<manifest>
 				<attribute name="Main-Class" value="${build.jar.archive.manifest.mainClass}" />
 				<attribute name="Class-Path" value="${classpath.win32-win32-x86}" />
@@ -255,7 +255,7 @@
 			</manifest>
 			<metainf refid="docs" />
 		</jar>
-		<jar destfile="${build.assemblyDirectory}/dist/win32-win32-x86_64/${artifactId}/${launch4j.jarName}.jar" basedir="${build.outputDirectory}" level="9">
+		<jar destfile="${build.assemblyDirectory}/dist/win32-win32-x86_64/${artifactId}/${launch4j.jarName}" basedir="${build.outputDirectory}" level="9">
 			<manifest>
 				<attribute name="Main-Class" value="${build.jar.archive.manifest.mainClass}" />
 				<attribute name="Class-Path" value="${classpath.win32-win32-x86_64}" />
@@ -420,17 +420,17 @@
 		<chmod perm="+x" file="${launch4j.bindir}/windres" failonerror="false" failifexecutionfails="false" ignoremissing="true" />
 
 		<launch4j bindir="${launch4j.bindir}">
-			<config outfile="${build.assemblyDirectory}/dist/win32-win32-x86/${artifactId}/${launch4j.outFileName}.exe" jarpath="${launch4j.jarName}.jar" headertype="${launch4j.headerType}" dontwrapjar="${launch4j.dontWrapJar}" stayalive="${launch4j.stayAlive}" restartoncrash="${launch4j.restartOnCrash}" priority="${launch4j.priority}" errtitle="${launch4j.errTitle}" chdir="." icon="${icons.directory}/main.ico">
+			<config outfile="${build.assemblyDirectory}/dist/win32-win32-x86/${artifactId}/${launch4j.outFileName}" jarpath="${launch4j.jarName}" headertype="${launch4j.headerType}" dontwrapjar="${launch4j.dontWrapJar}" stayalive="${launch4j.stayAlive}" restartoncrash="${launch4j.restartOnCrash}" priority="${launch4j.priority}" errtitle="${launch4j.errTitle}" chdir="." icon="${icons.directory}/main.ico">
 				<singleInstance mutexname="${build.jar.archive.manifest.mainClass}" windowtitle="${name}" />
 				<jre runtimebits="32" minversion="${build.compiler.target}.0" jdkpreference="${launch4j.jdkPreference}" initialheapsize="${vm.initialHeapSize}" maxheapsize="${vm.maxHeapSize}" />
-				<versionInfo fileversion="${version.number}.0" txtfileversion="${version.number}" filedescription="${name}" copyright="${name}" productversion="${version.number}.0" txtproductversion="${version.number}" productname="${name}" internalname="${launch4j.outFileName}" originalfilename="${launch4j.outFileName}.exe" />
+				<versionInfo fileversion="${version.number}.0" txtfileversion="${version.number}" filedescription="${name}" copyright="${launch4j.copyright}" productversion="${version.number}.0" txtproductversion="${version.number}" productname="${name}" internalname="${artifactId}" originalfilename="${launch4j.outFileName}" companyname="${launch4j.copyright}" />
 			</config>
 		</launch4j>
 		<launch4j bindir="${launch4j.bindir}">
-			<config outfile="${build.assemblyDirectory}/dist/win32-win32-x86_64/${artifactId}/${launch4j.feregion.name}.exe" jarpath="${launch4j.jarName}.jar" headertype="${launch4j.feregion.headerType}" dontwrapjar="${launch4j.dontWrapJar}" stayalive="${launch4j.stayAlive}" restartoncrash="${launch4j.restartOnCrash}" priority="${launch4j.priority}" errtitle="${launch4j.errTitle}" chdir=".">
+			<config outfile="${build.assemblyDirectory}/dist/win32-win32-x86_64/${artifactId}/${launch4j.feregion.name}.exe" jarpath="${launch4j.jarName}" headertype="${launch4j.feregion.headerType}" dontwrapjar="${launch4j.dontWrapJar}" stayalive="${launch4j.stayAlive}" restartoncrash="${launch4j.restartOnCrash}" priority="${launch4j.priority}" errtitle="${launch4j.errTitle}" chdir=".">
 				<jre minversion="${build.compiler.target}.0" jdkpreference="${launch4j.jdkPreference}" initialheapsize="${launch4j.feregion.initialHeapSize}" maxheapsize="${launch4j.feregion.maxHeapSize}" />
 				<classPath mainclass="${launch4j.feregion.mainClass}" cp="${dependencies.directory}/*.jar" />
-				<versionInfo fileversion="${version.number}.0" txtfileversion="${version.number}" filedescription="${launch4j.feregion.name}" copyright="${launch4j.feregion.name}" productversion="${version.number}.0" txtproductversion="${version.number}" productname="${launch4j.feregion.name}" internalname="${launch4j.feregion.name}" originalfilename="${launch4j.feregion.name}.exe" />
+				<versionInfo fileversion="${version.number}.0" txtfileversion="${version.number}" filedescription="${launch4j.feregion.name}" copyright="${launch4j.copyright}" productversion="${version.number}.0" txtproductversion="${version.number}" productname="${launch4j.feregion.name}" internalname="${launch4j.feregion.name}" originalfilename="${launch4j.feregion.name}.exe" companyname="${launch4j.copyright}" />
 			</config>
 		</launch4j>
 		<echo file="${build.assemblyDirectory}/dist/win32-win32-x86/setup.iss">
@@ -446,7 +446,7 @@
 			PrivilegesRequired=lowest
 			DefaultDirName={userappdata}\${name}
 			DefaultGroupName=${name}
-			UninstallDisplayIcon={app}\${launch4j.outFileName}.exe
+			UninstallDisplayIcon={app}\${launch4j.outFileName}
 			Compression=lzma2
 			SolidCompression=yes
 			CloseApplications=no
@@ -457,17 +457,17 @@
 			Name: "Italiano"; MessagesFile: "compiler:Languages\Italian.isl"; LicenseFile: "${artifactId}\LICENSE.txt"
 
 			[Run]
-			Filename: "{app}\${launch4j.outFileName}.exe"; Description: "{cm:LaunchProgram,${name}}"; Flags: nowait postinstall skipifsilent
+			Filename: "{app}\${launch4j.outFileName}"; Description: "{cm:LaunchProgram,${name}}"; Flags: nowait postinstall skipifsilent
 
 			[Tasks]
 			Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 			Name: "startupicon"; Description: "{cm:AutoStartProgram,${name}}"; GroupDescription: "{cm:AutoStartProgramGroupDescription}"; Flags: unchecked
 
 			[Icons]
-			Name: "{group}\${name}"; Filename: "{app}\${launch4j.outFileName}.exe"
+			Name: "{group}\${name}"; Filename: "{app}\${launch4j.outFileName}"
 			Name: "{group}\{cm:UninstallProgram,${name}}"; Filename: "{uninstallexe}"
-			Name: "{userdesktop}\${name}"; Filename: "{app}\${launch4j.outFileName}.exe"; Tasks: desktopicon
-			Name: "{userstartup}\${name}"; Filename: "{app}\${launch4j.outFileName}.exe"; Tasks: startupicon
+			Name: "{userdesktop}\${name}"; Filename: "{app}\${launch4j.outFileName}"; Tasks: desktopicon
+			Name: "{userstartup}\${name}"; Filename: "{app}\${launch4j.outFileName}"; Tasks: startupicon
 
 			[Files]
 			Source: "${artifactId}\*"; Excludes: "*.cfg,${dependencies.directory}\*.log"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
@@ -519,17 +519,17 @@
 		</exec>
 
 		<launch4j bindir="${launch4j.bindir}">
-			<config outfile="${build.assemblyDirectory}/dist/win32-win32-x86_64/${artifactId}/${launch4j.outFileName}.exe" jarpath="${launch4j.jarName}.jar" headertype="${launch4j.headerType}" dontwrapjar="${launch4j.dontWrapJar}" stayalive="${launch4j.stayAlive}" restartoncrash="${launch4j.restartOnCrash}" priority="${launch4j.priority}" errtitle="${launch4j.errTitle}" chdir="." icon="${icons.directory}/main.ico">
+			<config outfile="${build.assemblyDirectory}/dist/win32-win32-x86_64/${artifactId}/${launch4j.outFileName}" jarpath="${launch4j.jarName}" headertype="${launch4j.headerType}" dontwrapjar="${launch4j.dontWrapJar}" stayalive="${launch4j.stayAlive}" restartoncrash="${launch4j.restartOnCrash}" priority="${launch4j.priority}" errtitle="${launch4j.errTitle}" chdir="." icon="${icons.directory}/main.ico">
 				<singleInstance mutexname="${build.jar.archive.manifest.mainClass}" windowtitle="${name}" />
 				<jre runtimebits="64" minversion="${build.compiler.target}.0" jdkpreference="${launch4j.jdkPreference}" initialheapsize="${vm.initialHeapSize}" maxheapsize="${vm.maxHeapSize}" />
-				<versionInfo fileversion="${version.number}.0" txtfileversion="${version.number}" filedescription="${name}" copyright="${name}" productversion="${version.number}.0" txtproductversion="${version.number}" productname="${name}" internalname="${launch4j.outFileName}" originalfilename="${launch4j.outFileName}.exe" />
+				<versionInfo fileversion="${version.number}.0" txtfileversion="${version.number}" filedescription="${name}" copyright="${launch4j.copyright}" productversion="${version.number}.0" txtproductversion="${version.number}" productname="${name}" internalname="${artifactId}" originalfilename="${launch4j.outFileName}" companyname="${launch4j.copyright}" />
 			</config>
 		</launch4j>
 		<launch4j bindir="${launch4j.bindir}">
-			<config outfile="${build.assemblyDirectory}/dist/win32-win32-x86_64/${artifactId}/${launch4j.feregion.name}.exe" jarpath="${launch4j.jarName}.jar" headertype="${launch4j.feregion.headerType}" dontwrapjar="${launch4j.dontWrapJar}" stayalive="${launch4j.stayAlive}" restartoncrash="${launch4j.restartOnCrash}" priority="${launch4j.priority}" errtitle="${launch4j.errTitle}" chdir=".">
+			<config outfile="${build.assemblyDirectory}/dist/win32-win32-x86_64/${artifactId}/${launch4j.feregion.name}.exe" jarpath="${launch4j.jarName}" headertype="${launch4j.feregion.headerType}" dontwrapjar="${launch4j.dontWrapJar}" stayalive="${launch4j.stayAlive}" restartoncrash="${launch4j.restartOnCrash}" priority="${launch4j.priority}" errtitle="${launch4j.errTitle}" chdir=".">
 				<jre minversion="${build.compiler.target}.0" jdkpreference="${launch4j.jdkPreference}" initialheapsize="${launch4j.feregion.initialHeapSize}" maxheapsize="${launch4j.feregion.maxHeapSize}" />
 				<classPath mainclass="${launch4j.feregion.mainClass}" cp="${dependencies.directory}/*.jar" />
-				<versionInfo fileversion="${version.number}.0" txtfileversion="${version.number}" filedescription="${launch4j.feregion.name}" copyright="${launch4j.feregion.name}" productversion="${version.number}.0" txtproductversion="${version.number}" productname="${launch4j.feregion.name}" internalname="${launch4j.feregion.name}" originalfilename="${launch4j.feregion.name}.exe" />
+				<versionInfo fileversion="${version.number}.0" txtfileversion="${version.number}" filedescription="${launch4j.feregion.name}" copyright="${launch4j.copyright}" productversion="${version.number}.0" txtproductversion="${version.number}" productname="${launch4j.feregion.name}" internalname="${launch4j.feregion.name}" originalfilename="${launch4j.feregion.name}.exe" companyname="${launch4j.copyright}" />
 			</config>
 		</launch4j>
 		<echo file="${build.assemblyDirectory}/dist/win32-win32-x86_64/setup.iss">
@@ -545,7 +545,7 @@
 			PrivilegesRequired=lowest
 			DefaultDirName={userappdata}\${name}
 			DefaultGroupName=${name}
-			UninstallDisplayIcon={app}\${launch4j.outFileName}.exe
+			UninstallDisplayIcon={app}\${launch4j.outFileName}
 			Compression=lzma2
 			SolidCompression=yes
 			CloseApplications=no
@@ -557,17 +557,17 @@
 			Name: "Italiano"; MessagesFile: "compiler:Languages\Italian.isl"; LicenseFile: "${artifactId}\LICENSE.txt"
 
 			[Run]
-			Filename: "{app}\${launch4j.outFileName}.exe"; Description: "{cm:LaunchProgram,${name}}"; Flags: nowait postinstall skipifsilent
+			Filename: "{app}\${launch4j.outFileName}"; Description: "{cm:LaunchProgram,${name}}"; Flags: nowait postinstall skipifsilent
 
 			[Tasks]
 			Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 			Name: "startupicon"; Description: "{cm:AutoStartProgram,${name}}"; GroupDescription: "{cm:AutoStartProgramGroupDescription}"; Flags: unchecked
 
 			[Icons]
-			Name: "{group}\${name}"; Filename: "{app}\${launch4j.outFileName}.exe"
+			Name: "{group}\${name}"; Filename: "{app}\${launch4j.outFileName}"
 			Name: "{group}\{cm:UninstallProgram,${name}}"; Filename: "{uninstallexe}"
-			Name: "{userdesktop}\${name}"; Filename: "{app}\${launch4j.outFileName}.exe"; Tasks: desktopicon
-			Name: "{userstartup}\${name}"; Filename: "{app}\${launch4j.outFileName}.exe"; Tasks: startupicon
+			Name: "{userdesktop}\${name}"; Filename: "{app}\${launch4j.outFileName}"; Tasks: desktopicon
+			Name: "{userstartup}\${name}"; Filename: "{app}\${launch4j.outFileName}"; Tasks: startupicon
 
 			[Files]
 			Source: "${artifactId}\*"; Excludes: "*.cfg,${dependencies.directory}\*.log"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
