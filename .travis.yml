@@ -1,7 +1,5 @@
 language: java
 
-dist: trusty
-
 env:
   global:
     - JRE8_HOME=/usr/lib/jvm/java-8-oracle/jre
