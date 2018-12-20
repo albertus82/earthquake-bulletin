@@ -1,5 +1,7 @@
 language: java
 
+dist: trusty
+
 env:
   global:
     - JRE8_HOME=/usr/lib/jvm/java-8-oracle/jre
@@ -27,13 +29,12 @@ addons:
   apt:
     sources:
       - sourceline: 'deb https://dl.winehq.org/wine-builds/ubuntu/ trusty main'
-        key_url: https://dl.winehq.org/wine-builds/Release.key
+        key_url: https://dl.winehq.org/wine-builds/winehq.key
     packages:
       - ant-optional
       - lib32ncurses5
       - lib32z1
       - winehq-stable
-    update: true
 
 before_script:
   - ant -diagnostics
