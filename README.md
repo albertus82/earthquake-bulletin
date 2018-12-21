@@ -11,7 +11,7 @@ A cross-platform desktop client for the [**GEOFON Program GFZ Potsdam Earthquake
 
 ## Download
 
-Download the [latest release](https://github.com/Albertus82/EarthquakeBulletin/releases/latest) from the [releases page](https://github.com/Albertus82/EarthquakeBulletin/releases).
+Download the [latest release](https://github.com/albertus82/earthquake-bulletin/releases/latest) from the [releases page](https://github.com/albertus82/earthquake-bulletin/releases).
 
 ## Installation
 
