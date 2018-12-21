@@ -11,6 +11,6 @@ while [ -h "$PRG" ]; do
 done
 PRGDIR=`dirname "$PRG"`
 if [ "$JAVA_HOME" != "" ]
-  then "$JAVA_HOME/bin/java" -Xms4m -Xmx16m -classpath "$PRGDIR/earthquake-bulletin.jar:$PRGDIR/lib/*" gov.usgs.cr.hazards.feregion.fe_1995.FERegion $1 $2
-  else java -Xms4m -Xmx16m -classpath "$PRGDIR/earthquake-bulletin.jar:$PRGDIR/lib/*" gov.usgs.cr.hazards.feregion.fe_1995.FERegion $1 $2
+  then "$JAVA_HOME/bin/java" -Xms@feregion.vm.initialHeapSize@m -Xmx@feregion.vm.maxHeapSize@m -classpath "$PRGDIR/@artifactId@.jar:$PRGDIR/lib/*" @feregion.mainClass@ $1 $2
+  else java -Xms@feregion.vm.initialHeapSize@m -Xmx@feregion.vm.maxHeapSize@m -classpath "$PRGDIR/@artifactId@.jar:$PRGDIR/lib/*" @feregion.mainClass@ $1 $2
 fi
