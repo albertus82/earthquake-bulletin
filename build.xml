@@ -9,7 +9,10 @@
 
 	<property file="build.properties" />
 
-	<filter token="artifactId" value="${artifactId}" />
+	<filter token="project.artifactId" value="${project.artifactId}" />
+	<filter token="project.url" value="${project.url}" />
+	<filter token="project.name" value="${project.name}" />
+
 	<filter token="mainClass" value="${mainClass}" />
 	<filter token="vm.initialHeapSize" value="${vm.initialHeapSize}" />
 	<filter token="vm.maxHeapSize" value="${vm.maxHeapSize}" />
@@ -58,17 +61,18 @@
 	</target>
 
 	<target name="resources">
+		<copy todir="${build.outputDirectory}" includeemptydirs="false">
+			<fileset dir="${build.resourcesDirectory}" excludes="**/*.properties" />
+		</copy>
+		<!-- Filtering "properties" files -->
+		<filter token="version.number" value="${version.number}" />
 		<tstamp>
 			<format property="version.date" pattern="yyyy-MM-dd" />
 		</tstamp>
-		<copy todir="${build.outputDirectory}">
-			<fileset dir="${build.resourcesDirectory}">
-				<excludesfile name="${build.resourcesDirectory}/META-INF/version.properties" />
-			</fileset>
-		</copy>
-		<filter token="version.number" value="${version.number}" />
 		<filter token="version.date" value="${version.date}" />
-		<copy file="${build.resourcesDirectory}/META-INF/version.properties" todir="${build.outputDirectory}/META-INF" filtering="true" overwrite="true" />
+		<copy todir="${build.outputDirectory}" filtering="true" overwrite="true" includeemptydirs="false">
+			<fileset dir="${build.resourcesDirectory}" includes="**/*.properties" />
+		</copy>
 	</target>
 
 	<target name="lib">
@@ -82,37 +86,37 @@
 		</union>
 
 		<!-- Copy dependencies -->
-		<copy todir="${build.assemblyDirectory}/dist/win32-win32-x86/${artifactId}/${dependencies.directory}">
+		<copy todir="${build.assemblyDirectory}/dist/win32-win32-x86/${project.artifactId}/${dependencies.directory}">
 			<resources refid="lib" />
 			<fileset dir="${dependencies.directory}/compile/platform-dependent/win32-win32-x86">
 				<include name="*.jar" />
 			</fileset>
 		</copy>
-		<copy todir="${build.assemblyDirectory}/dist/win32-win32-x86_64/${artifactId}/${dependencies.directory}">
+		<copy todir="${build.assemblyDirectory}/dist/win32-win32-x86_64/${project.artifactId}/${dependencies.directory}">
 			<resources refid="lib" />
 			<fileset dir="${dependencies.directory}/compile/platform-dependent/win32-win32-x86_64">
 				<include name="*.jar" />
 			</fileset>
 		</copy>
-		<copy todir="${build.assemblyDirectory}/dist/gtk-linux-x86/${artifactId}/${dependencies.directory}">
+		<copy todir="${build.assemblyDirectory}/dist/gtk-linux-x86/${project.artifactId}/${dependencies.directory}">
 			<resources refid="lib" />
 			<fileset dir="${dependencies.directory}/compile/platform-dependent/gtk-linux-x86">
 				<include name="*.jar" />
 			</fileset>
 		</copy>
-		<copy todir="${build.assemblyDirectory}/dist/gtk-linux-x86_64/${artifactId}/${dependencies.directory}">
+		<copy todir="${build.assemblyDirectory}/dist/gtk-linux-x86_64/${project.artifactId}/${dependencies.directory}">
 			<resources refid="lib" />
 			<fileset dir="${dependencies.directory}/compile/platform-dependent/gtk-linux-x86_64">
 				<include name="*.jar" />
 			</fileset>
 		</copy>
-		<copy todir="${build.assemblyDirectory}/dist/gtk-linux-armhf/${artifactId}/${dependencies.directory}">
+		<copy todir="${build.assemblyDirectory}/dist/gtk-linux-armhf/${project.artifactId}/${dependencies.directory}">
 			<resources refid="lib" />
 			<fileset dir="${dependencies.directory}/compile/platform-dependent/gtk-linux-armhf">
 				<include name="*.jar" />
 			</fileset>
 		</copy>
-		<copy todir="${build.assemblyDirectory}/dist/cocoa-macosx-x86_64/${artifactId}/${dependencies.directory}">
+		<copy todir="${build.assemblyDirectory}/dist/cocoa-macosx-x86_64/${project.artifactId}/${dependencies.directory}">
 			<resources refid="lib" />
 			<fileset dir="${dependencies.directory}/compile/platform-dependent/cocoa-macosx-x86_64">
 				<include name="*.jar" />
@@ -120,44 +124,44 @@
 		</copy>
 
 		<!-- Prepare MANIFEST.MF files -->
-		<manifestclasspath property="classpath.win32-win32-x86" jarfile="${build.assemblyDirectory}/dist/win32-win32-x86/${artifactId}/${launch4j.jarName}" maxParentLevels="0">
+		<manifestclasspath property="classpath.win32-win32-x86" jarfile="${build.assemblyDirectory}/dist/win32-win32-x86/${project.artifactId}/${launch4j.jarName}" maxParentLevels="0">
 			<classpath>
-				<fileset dir="${build.assemblyDirectory}/dist/win32-win32-x86/${artifactId}/${dependencies.directory}">
+				<fileset dir="${build.assemblyDirectory}/dist/win32-win32-x86/${project.artifactId}/${dependencies.directory}">
 					<include name="*.jar" />
 				</fileset>
 			</classpath>
 		</manifestclasspath>
-		<manifestclasspath property="classpath.win32-win32-x86_64" jarfile="${build.assemblyDirectory}/dist/win32-win32-x86_64/${artifactId}/${launch4j.jarName}" maxParentLevels="0">
+		<manifestclasspath property="classpath.win32-win32-x86_64" jarfile="${build.assemblyDirectory}/dist/win32-win32-x86_64/${project.artifactId}/${launch4j.jarName}" maxParentLevels="0">
 			<classpath>
-				<fileset dir="${build.assemblyDirectory}/dist/win32-win32-x86_64/${artifactId}/${dependencies.directory}">
+				<fileset dir="${build.assemblyDirectory}/dist/win32-win32-x86_64/${project.artifactId}/${dependencies.directory}">
 					<include name="*.jar" />
 				</fileset>
 			</classpath>
 		</manifestclasspath>
-		<manifestclasspath property="classpath.gtk-linux-x86" jarfile="${build.assemblyDirectory}/dist/gtk-linux-x86/${artifactId}/${artifactId}.jar" maxParentLevels="0">
+		<manifestclasspath property="classpath.gtk-linux-x86" jarfile="${build.assemblyDirectory}/dist/gtk-linux-x86/${project.artifactId}/${project.artifactId}.jar" maxParentLevels="0">
 			<classpath>
-				<fileset dir="${build.assemblyDirectory}/dist/gtk-linux-x86/${artifactId}/${dependencies.directory}">
+				<fileset dir="${build.assemblyDirectory}/dist/gtk-linux-x86/${project.artifactId}/${dependencies.directory}">
 					<include name="*.jar" />
 				</fileset>
 			</classpath>
 		</manifestclasspath>
-		<manifestclasspath property="classpath.gtk-linux-x86_64" jarfile="${build.assemblyDirectory}/dist/gtk-linux-x86_64/${artifactId}/${artifactId}.jar" maxParentLevels="0">
+		<manifestclasspath property="classpath.gtk-linux-x86_64" jarfile="${build.assemblyDirectory}/dist/gtk-linux-x86_64/${project.artifactId}/${project.artifactId}.jar" maxParentLevels="0">
 			<classpath>
-				<fileset dir="${build.assemblyDirectory}/dist/gtk-linux-x86_64/${artifactId}/${dependencies.directory}">
+				<fileset dir="${build.assemblyDirectory}/dist/gtk-linux-x86_64/${project.artifactId}/${dependencies.directory}">
 					<include name="*.jar" />
 				</fileset>
 			</classpath>
 		</manifestclasspath>
-		<manifestclasspath property="classpath.gtk-linux-armhf" jarfile="${build.assemblyDirectory}/dist/gtk-linux-armhf/${artifactId}/${artifactId}.jar" maxParentLevels="0">
+		<manifestclasspath property="classpath.gtk-linux-armhf" jarfile="${build.assemblyDirectory}/dist/gtk-linux-armhf/${project.artifactId}/${project.artifactId}.jar" maxParentLevels="0">
 			<classpath>
-				<fileset dir="${build.assemblyDirectory}/dist/gtk-linux-armhf/${artifactId}/${dependencies.directory}">
+				<fileset dir="${build.assemblyDirectory}/dist/gtk-linux-armhf/${project.artifactId}/${dependencies.directory}">
 					<include name="*.jar" />
 				</fileset>
 			</classpath>
 		</manifestclasspath>
-		<manifestclasspath property="classpath.cocoa-macosx-x86_64" jarfile="${build.assemblyDirectory}/dist/cocoa-macosx-x86_64/${artifactId}/${artifactId}.jar" maxParentLevels="0">
+		<manifestclasspath property="classpath.cocoa-macosx-x86_64" jarfile="${build.assemblyDirectory}/dist/cocoa-macosx-x86_64/${project.artifactId}/${project.artifactId}.jar" maxParentLevels="0">
 			<classpath>
-				<fileset dir="${build.assemblyDirectory}/dist/cocoa-macosx-x86_64/${artifactId}/${dependencies.directory}">
+				<fileset dir="${build.assemblyDirectory}/dist/cocoa-macosx-x86_64/${project.artifactId}/${dependencies.directory}">
 					<include name="*.jar" />
 				</fileset>
 			</classpath>
@@ -167,22 +171,22 @@
 	<target name="config">
 		<fileset id="config" dir="${build.configDirectory}" />
 
-		<copy todir="${build.assemblyDirectory}/dist/win32-win32-x86/${artifactId}" failonerror="false">
+		<copy todir="${build.assemblyDirectory}/dist/win32-win32-x86/${project.artifactId}" failonerror="false">
 			<fileset refid="config" />
 		</copy>
-		<copy todir="${build.assemblyDirectory}/dist/win32-win32-x86_64/${artifactId}" failonerror="false">
+		<copy todir="${build.assemblyDirectory}/dist/win32-win32-x86_64/${project.artifactId}" failonerror="false">
 			<fileset refid="config" />
 		</copy>
-		<copy todir="${build.assemblyDirectory}/dist/gtk-linux-x86/${artifactId}" failonerror="false">
+		<copy todir="${build.assemblyDirectory}/dist/gtk-linux-x86/${project.artifactId}" failonerror="false">
 			<fileset refid="config" />
 		</copy>
-		<copy todir="${build.assemblyDirectory}/dist/gtk-linux-x86_64/${artifactId}" failonerror="false">
+		<copy todir="${build.assemblyDirectory}/dist/gtk-linux-x86_64/${project.artifactId}" failonerror="false">
 			<fileset refid="config" />
 		</copy>
-		<copy todir="${build.assemblyDirectory}/dist/gtk-linux-armhf/${artifactId}" failonerror="false">
+		<copy todir="${build.assemblyDirectory}/dist/gtk-linux-armhf/${project.artifactId}" failonerror="false">
 			<fileset refid="config" />
 		</copy>
-		<copy todir="${build.assemblyDirectory}/dist/cocoa-macosx-x86_64/${artifactId}" failonerror="false">
+		<copy todir="${build.assemblyDirectory}/dist/cocoa-macosx-x86_64/${project.artifactId}" failonerror="false">
 			<fileset refid="config" />
 		</copy>
 	</target>
@@ -198,22 +202,22 @@
 			<include name="*.command" />
 		</fileset>
 
-		<copy todir="${build.assemblyDirectory}/dist/win32-win32-x86/${artifactId}" failonerror="false" filtering="true">
+		<copy todir="${build.assemblyDirectory}/dist/win32-win32-x86/${project.artifactId}" failonerror="false" filtering="true">
 			<fileset refid="bat" />
 		</copy>
-		<copy todir="${build.assemblyDirectory}/dist/win32-win32-x86_64/${artifactId}" failonerror="false" filtering="true">
+		<copy todir="${build.assemblyDirectory}/dist/win32-win32-x86_64/${project.artifactId}" failonerror="false" filtering="true">
 			<fileset refid="bat" />
 		</copy>
-		<copy todir="${build.assemblyDirectory}/dist/gtk-linux-x86/${artifactId}" failonerror="false" filtering="true">
+		<copy todir="${build.assemblyDirectory}/dist/gtk-linux-x86/${project.artifactId}" failonerror="false" filtering="true">
 			<fileset refid="sh" />
 		</copy>
-		<copy todir="${build.assemblyDirectory}/dist/gtk-linux-x86_64/${artifactId}" failonerror="false" filtering="true">
+		<copy todir="${build.assemblyDirectory}/dist/gtk-linux-x86_64/${project.artifactId}" failonerror="false" filtering="true">
 			<fileset refid="sh" />
 		</copy>
-		<copy todir="${build.assemblyDirectory}/dist/gtk-linux-armhf/${artifactId}" failonerror="false" filtering="true">
+		<copy todir="${build.assemblyDirectory}/dist/gtk-linux-armhf/${project.artifactId}" failonerror="false" filtering="true">
 			<fileset refid="sh" />
 		</copy>
-		<copy todir="${build.assemblyDirectory}/dist/cocoa-macosx-x86_64/${artifactId}" failonerror="false" filtering="true">
+		<copy todir="${build.assemblyDirectory}/dist/cocoa-macosx-x86_64/${project.artifactId}" failonerror="false" filtering="true">
 			<fileset refid="command" />
 		</copy>
 	</target>
@@ -225,94 +229,94 @@
 	</fileset>
 
 	<target name="docs">
-		<copy todir="${build.assemblyDirectory}/dist/win32-win32-x86/${artifactId}">
+		<copy todir="${build.assemblyDirectory}/dist/win32-win32-x86/${project.artifactId}">
 			<fileset refid="docs" />
 		</copy>
-		<copy todir="${build.assemblyDirectory}/dist/win32-win32-x86_64/${artifactId}">
+		<copy todir="${build.assemblyDirectory}/dist/win32-win32-x86_64/${project.artifactId}">
 			<fileset refid="docs" />
 		</copy>
-		<copy todir="${build.assemblyDirectory}/dist/gtk-linux-x86/${artifactId}">
+		<copy todir="${build.assemblyDirectory}/dist/gtk-linux-x86/${project.artifactId}">
 			<fileset refid="docs" />
 		</copy>
-		<copy todir="${build.assemblyDirectory}/dist/gtk-linux-x86_64/${artifactId}">
+		<copy todir="${build.assemblyDirectory}/dist/gtk-linux-x86_64/${project.artifactId}">
 			<fileset refid="docs" />
 		</copy>
-		<copy todir="${build.assemblyDirectory}/dist/gtk-linux-armhf/${artifactId}">
+		<copy todir="${build.assemblyDirectory}/dist/gtk-linux-armhf/${project.artifactId}">
 			<fileset refid="docs" />
 		</copy>
-		<copy todir="${build.assemblyDirectory}/dist/cocoa-macosx-x86_64/${artifactId}">
+		<copy todir="${build.assemblyDirectory}/dist/cocoa-macosx-x86_64/${project.artifactId}">
 			<fileset refid="docs" />
 		</copy>
 	</target>
 
 	<target name="icons">
-		<copy file="${icons.directory}/main.ico" tofile="${build.assemblyDirectory}/dist/gtk-linux-x86/${artifactId}/${artifactId}.icns" failonerror="false" />
-		<copy file="${icons.directory}/main.ico" tofile="${build.assemblyDirectory}/dist/gtk-linux-x86_64/${artifactId}/${artifactId}.icns" failonerror="false" />
-		<copy file="${icons.directory}/main.ico" tofile="${build.assemblyDirectory}/dist/gtk-linux-armhf/${artifactId}/${artifactId}.icns" failonerror="false" />
-		<copy file="${icons.directory}/main.icns" tofile="${build.assemblyDirectory}/dist/cocoa-macosx-x86_64/${artifactId}/${artifactId}.icns" failonerror="false" />
+		<copy file="${icons.directory}/main.ico" tofile="${build.assemblyDirectory}/dist/gtk-linux-x86/${project.artifactId}/${project.artifactId}.icns" failonerror="false" />
+		<copy file="${icons.directory}/main.ico" tofile="${build.assemblyDirectory}/dist/gtk-linux-x86_64/${project.artifactId}/${project.artifactId}.icns" failonerror="false" />
+		<copy file="${icons.directory}/main.ico" tofile="${build.assemblyDirectory}/dist/gtk-linux-armhf/${project.artifactId}/${project.artifactId}.icns" failonerror="false" />
+		<copy file="${icons.directory}/main.icns" tofile="${build.assemblyDirectory}/dist/cocoa-macosx-x86_64/${project.artifactId}/${project.artifactId}.icns" failonerror="false" />
 	</target>
 
 	<target name="jar" depends="check-signature, resources, config, scripts, docs, icons, lib">
-		<jar destfile="${build.assemblyDirectory}/dist/win32-win32-x86/${artifactId}/${launch4j.jarName}" basedir="${build.outputDirectory}" level="9">
+		<jar destfile="${build.assemblyDirectory}/dist/win32-win32-x86/${project.artifactId}/${launch4j.jarName}" basedir="${build.outputDirectory}" level="9">
 			<manifest>
 				<attribute name="Main-Class" value="${mainClass}" />
 				<attribute name="Class-Path" value="${classpath.win32-win32-x86}" />
-				<attribute name="Implementation-Title" value="${name}" />
+				<attribute name="Implementation-Title" value="${project.name}" />
 				<attribute name="Implementation-Version" value="${version.number}" />
 				<attribute name="X-Compile-Source-JDK" value="${build.compiler.source}" />
 				<attribute name="X-Compile-Target-JDK" value="${build.compiler.target}" />
 			</manifest>
 			<metainf refid="docs" />
 		</jar>
-		<jar destfile="${build.assemblyDirectory}/dist/win32-win32-x86_64/${artifactId}/${launch4j.jarName}" basedir="${build.outputDirectory}" level="9">
+		<jar destfile="${build.assemblyDirectory}/dist/win32-win32-x86_64/${project.artifactId}/${launch4j.jarName}" basedir="${build.outputDirectory}" level="9">
 			<manifest>
 				<attribute name="Main-Class" value="${mainClass}" />
 				<attribute name="Class-Path" value="${classpath.win32-win32-x86_64}" />
-				<attribute name="Implementation-Title" value="${name}" />
+				<attribute name="Implementation-Title" value="${project.name}" />
 				<attribute name="Implementation-Version" value="${version.number}" />
 				<attribute name="X-Compile-Source-JDK" value="${build.compiler.source}" />
 				<attribute name="X-Compile-Target-JDK" value="${build.compiler.target}" />
 			</manifest>
 			<metainf refid="docs" />
 		</jar>
-		<jar destfile="${build.assemblyDirectory}/dist/gtk-linux-x86/${artifactId}/${artifactId}.jar" basedir="${build.outputDirectory}" level="9">
+		<jar destfile="${build.assemblyDirectory}/dist/gtk-linux-x86/${project.artifactId}/${project.artifactId}.jar" basedir="${build.outputDirectory}" level="9">
 			<manifest>
 				<attribute name="Main-Class" value="${mainClass}" />
 				<attribute name="Class-Path" value="${classpath.gtk-linux-x86}" />
-				<attribute name="Implementation-Title" value="${name}" />
+				<attribute name="Implementation-Title" value="${project.name}" />
 				<attribute name="Implementation-Version" value="${version.number}" />
 				<attribute name="X-Compile-Source-JDK" value="${build.compiler.source}" />
 				<attribute name="X-Compile-Target-JDK" value="${build.compiler.target}" />
 			</manifest>
 			<metainf refid="docs" />
 		</jar>
-		<jar destfile="${build.assemblyDirectory}/dist/gtk-linux-x86_64/${artifactId}/${artifactId}.jar" basedir="${build.outputDirectory}" level="9">
+		<jar destfile="${build.assemblyDirectory}/dist/gtk-linux-x86_64/${project.artifactId}/${project.artifactId}.jar" basedir="${build.outputDirectory}" level="9">
 			<manifest>
 				<attribute name="Main-Class" value="${mainClass}" />
 				<attribute name="Class-Path" value="${classpath.gtk-linux-x86_64}" />
-				<attribute name="Implementation-Title" value="${name}" />
+				<attribute name="Implementation-Title" value="${project.name}" />
 				<attribute name="Implementation-Version" value="${version.number}" />
 				<attribute name="X-Compile-Source-JDK" value="${build.compiler.source}" />
 				<attribute name="X-Compile-Target-JDK" value="${build.compiler.target}" />
 			</manifest>
 			<metainf refid="docs" />
 		</jar>
-		<jar destfile="${build.assemblyDirectory}/dist/gtk-linux-armhf/${artifactId}/${artifactId}.jar" basedir="${build.outputDirectory}" level="9">
+		<jar destfile="${build.assemblyDirectory}/dist/gtk-linux-armhf/${project.artifactId}/${project.artifactId}.jar" basedir="${build.outputDirectory}" level="9">
 			<manifest>
 				<attribute name="Main-Class" value="${mainClass}" />
 				<attribute name="Class-Path" value="${classpath.gtk-linux-armhf}" />
-				<attribute name="Implementation-Title" value="${name}" />
+				<attribute name="Implementation-Title" value="${project.name}" />
 				<attribute name="Implementation-Version" value="${version.number}" />
 				<attribute name="X-Compile-Source-JDK" value="${build.compiler.source}" />
 				<attribute name="X-Compile-Target-JDK" value="${build.compiler.target}" />
 			</manifest>
 			<metainf refid="docs" />
 		</jar>
-		<jar destfile="${build.assemblyDirectory}/dist/cocoa-macosx-x86_64/${artifactId}/${artifactId}.jar" basedir="${build.outputDirectory}" level="9">
+		<jar destfile="${build.assemblyDirectory}/dist/cocoa-macosx-x86_64/${project.artifactId}/${project.artifactId}.jar" basedir="${build.outputDirectory}" level="9">
 			<manifest>
 				<attribute name="Main-Class" value="${mainClass}" />
 				<attribute name="Class-Path" value="${classpath.cocoa-macosx-x86_64}" />
-				<attribute name="Implementation-Title" value="${name}" />
+				<attribute name="Implementation-Title" value="${project.name}" />
 				<attribute name="Implementation-Version" value="${version.number}" />
 				<attribute name="X-Compile-Source-JDK" value="${build.compiler.source}" />
 				<attribute name="X-Compile-Target-JDK" value="${build.compiler.target}" />
@@ -325,67 +329,67 @@
 		<taskdef name="jarbundler" classname="com.ultramixer.jarbundler.JarBundler" classpath="${jarBundler.directory}/jarbundler-core-3.3.0.jar" />
 
 		<mkdir dir="${build.assemblyDirectory}/bundle/cocoa-macosx-x86_64" />
-		<jarbundler vmoptions="${macos.vmoptions}" dir="${build.assemblyDirectory}/bundle/cocoa-macosx-x86_64" name="${name}" mainclass="${mainClass}" startonmainthread="true" version="${version.number}" icon="${build.assemblyDirectory}/dist/cocoa-macosx-x86_64/${artifactId}/${artifactId}.icns" usejavaxkey="true" jvmversion="${build.compiler.target}+" stubfile="${jarBundler.directory}/JavaApplicationStub" highresolutioncapable="true">
-			<jarfileset dir="${build.assemblyDirectory}/dist/cocoa-macosx-x86_64/${artifactId}" includes="**/*.jar" />
+		<jarbundler vmoptions="${macos.vmoptions}" dir="${build.assemblyDirectory}/bundle/cocoa-macosx-x86_64" name="${project.name}" mainclass="${mainClass}" startonmainthread="true" version="${version.number}" icon="${build.assemblyDirectory}/dist/cocoa-macosx-x86_64/${project.artifactId}/${project.artifactId}.icns" usejavaxkey="true" jvmversion="${build.compiler.target}+" stubfile="${jarBundler.directory}/JavaApplicationStub" highresolutioncapable="true">
+			<jarfileset dir="${build.assemblyDirectory}/dist/cocoa-macosx-x86_64/${project.artifactId}" includes="**/*.jar" />
 		</jarbundler>
 
-		<copy todir="${build.assemblyDirectory}/bundle/cocoa-macosx-x86_64/${name}.app/Contents/Resources/Java" failonerror="false">
+		<copy todir="${build.assemblyDirectory}/bundle/cocoa-macosx-x86_64/${project.name}.app/Contents/Resources/Java" failonerror="false">
 			<fileset refid="config" />
 		</copy>
 
-		<copy todir="${build.assemblyDirectory}/bundle/cocoa-macosx-x86_64/${name}.app/Contents/SharedSupport">
+		<copy todir="${build.assemblyDirectory}/bundle/cocoa-macosx-x86_64/${project.name}.app/Contents/SharedSupport">
 			<fileset refid="docs" />
 		</copy>
 
-		<copy todir="${build.assemblyDirectory}/bundle/cocoa-macosx-x86_64/${name}.app/Contents/Resources/Java" failonerror="false" filtering="true">
+		<copy todir="${build.assemblyDirectory}/bundle/cocoa-macosx-x86_64/${project.name}.app/Contents/Resources/Java" failonerror="false" filtering="true">
 			<fileset refid="command" />
 		</copy>
 
-		<tar destfile="${build.distDirectory}/${artifactId}-${version.number}-cocoa-macosx-x86_64-app.tar.gz" compression="gzip">
+		<tar destfile="${build.distDirectory}/${project.artifactId}-${version.number}-cocoa-macosx-x86_64-app.tar.gz" compression="gzip">
 			<tarfileset dir="${build.assemblyDirectory}/bundle/cocoa-macosx-x86_64" filemode="755">
-				<include name="${name}.app/Contents/MacOS/*" />
-				<include name="${name}.app/Contents/Resources/Java/*.command" />
+				<include name="${project.name}.app/Contents/MacOS/*" />
+				<include name="${project.name}.app/Contents/Resources/Java/*.command" />
 			</tarfileset>
 			<tarfileset dir="${build.assemblyDirectory}/bundle/cocoa-macosx-x86_64">
 				<include name="**" />
-				<exclude name="${name}.app/Contents/MacOS/*" />
-				<exclude name="${name}.app/Contents/Resources/Java/*.command" />
+				<exclude name="${project.name}.app/Contents/MacOS/*" />
+				<exclude name="${project.name}.app/Contents/Resources/Java/*.command" />
 			</tarfileset>
 		</tar>
 	</target>
 
 	<target name="dist-linux" depends="jar">
-		<tar destfile="${build.distDirectory}/${artifactId}-${version.number}-gtk-linux-x86-bin.tar.gz" compression="gzip">
+		<tar destfile="${build.distDirectory}/${project.artifactId}-${version.number}-gtk-linux-x86-bin.tar.gz" compression="gzip">
 			<tarfileset dir="${build.assemblyDirectory}/dist/gtk-linux-x86" filemode="755">
-				<include name="${artifactId}/*.jar" />
-				<include name="${artifactId}/*.sh" />
+				<include name="${project.artifactId}/*.jar" />
+				<include name="${project.artifactId}/*.sh" />
 			</tarfileset>
 			<tarfileset dir="${build.assemblyDirectory}/dist/gtk-linux-x86">
 				<include name="**" />
-				<exclude name="${artifactId}/*.jar" />
-				<exclude name="${artifactId}/*.sh" />
+				<exclude name="${project.artifactId}/*.jar" />
+				<exclude name="${project.artifactId}/*.sh" />
 			</tarfileset>
 		</tar>
-		<tar destfile="${build.distDirectory}/${artifactId}-${version.number}-gtk-linux-x86_64-bin.tar.gz" compression="gzip">
+		<tar destfile="${build.distDirectory}/${project.artifactId}-${version.number}-gtk-linux-x86_64-bin.tar.gz" compression="gzip">
 			<tarfileset dir="${build.assemblyDirectory}/dist/gtk-linux-x86_64" filemode="755">
-				<include name="${artifactId}/*.jar" />
-				<include name="${artifactId}/*.sh" />
+				<include name="${project.artifactId}/*.jar" />
+				<include name="${project.artifactId}/*.sh" />
 			</tarfileset>
 			<tarfileset dir="${build.assemblyDirectory}/dist/gtk-linux-x86_64">
 				<include name="**" />
-				<exclude name="${artifactId}/*.jar" />
-				<exclude name="${artifactId}/*.sh" />
+				<exclude name="${project.artifactId}/*.jar" />
+				<exclude name="${project.artifactId}/*.sh" />
 			</tarfileset>
 		</tar>
-		<tar destfile="${build.distDirectory}/${artifactId}-${version.number}-gtk-linux-armhf-bin.tar.gz" compression="gzip">
+		<tar destfile="${build.distDirectory}/${project.artifactId}-${version.number}-gtk-linux-armhf-bin.tar.gz" compression="gzip">
 			<tarfileset dir="${build.assemblyDirectory}/dist/gtk-linux-armhf" filemode="755">
-				<include name="${artifactId}/*.jar" />
-				<include name="${artifactId}/*.sh" />
+				<include name="${project.artifactId}/*.jar" />
+				<include name="${project.artifactId}/*.sh" />
 			</tarfileset>
 			<tarfileset dir="${build.assemblyDirectory}/dist/gtk-linux-armhf">
 				<include name="**" />
-				<exclude name="${artifactId}/*.jar" />
-				<exclude name="${artifactId}/*.sh" />
+				<exclude name="${project.artifactId}/*.jar" />
+				<exclude name="${project.artifactId}/*.sh" />
 			</tarfileset>
 		</tar>
 	</target>
@@ -435,14 +439,14 @@
 		<chmod perm="+x" file="${launch4j.bindir}/windres" failonerror="false" failifexecutionfails="false" ignoremissing="true" />
 
 		<launch4j bindir="${launch4j.bindir}">
-			<config outfile="${build.assemblyDirectory}/dist/win32-win32-x86/${artifactId}/${launch4j.outFileName}" jarpath="${launch4j.jarName}" headertype="${launch4j.headerType}" dontwrapjar="${launch4j.dontWrapJar}" stayalive="${launch4j.stayAlive}" restartoncrash="${launch4j.restartOnCrash}" priority="${launch4j.priority}" errtitle="${launch4j.errTitle}" chdir="." icon="${icons.directory}/main.ico">
-				<singleInstance mutexname="${mainClass}" windowtitle="${name}" />
+			<config outfile="${build.assemblyDirectory}/dist/win32-win32-x86/${project.artifactId}/${launch4j.outFileName}" jarpath="${launch4j.jarName}" headertype="${launch4j.headerType}" dontwrapjar="${launch4j.dontWrapJar}" stayalive="${launch4j.stayAlive}" restartoncrash="${launch4j.restartOnCrash}" priority="${launch4j.priority}" errtitle="${launch4j.errTitle}" chdir="." icon="${icons.directory}/main.ico">
+				<singleInstance mutexname="${mainClass}" windowtitle="${project.name}" />
 				<jre runtimebits="32" minversion="${build.compiler.target}.0" jdkpreference="${launch4j.jdkPreference}" initialheapsize="${vm.initialHeapSize}" maxheapsize="${vm.maxHeapSize}" />
-				<versionInfo fileversion="${version.number}.0" txtfileversion="${version.number}" filedescription="${name}" copyright="${launch4j.copyright}" productversion="${version.number}.0" txtproductversion="${version.number}" productname="${name}" internalname="${artifactId}" originalfilename="${launch4j.outFileName}" companyname="${launch4j.copyright}" />
+				<versionInfo fileversion="${version.number}.0" txtfileversion="${version.number}" filedescription="${project.name}" copyright="${launch4j.copyright}" productversion="${version.number}.0" txtproductversion="${version.number}" productname="${project.name}" internalname="${project.artifactId}" originalfilename="${launch4j.outFileName}" companyname="${launch4j.copyright}" />
 			</config>
 		</launch4j>
 		<launch4j bindir="${launch4j.bindir}">
-			<config outfile="${build.assemblyDirectory}/dist/win32-win32-x86_64/${artifactId}/${launch4j.feregion.name}.exe" jarpath="${launch4j.jarName}" headertype="${launch4j.feregion.headerType}" dontwrapjar="${launch4j.dontWrapJar}" stayalive="${launch4j.stayAlive}" restartoncrash="${launch4j.restartOnCrash}" priority="${launch4j.priority}" errtitle="${launch4j.errTitle}" chdir=".">
+			<config outfile="${build.assemblyDirectory}/dist/win32-win32-x86_64/${project.artifactId}/${launch4j.feregion.name}.exe" jarpath="${launch4j.jarName}" headertype="${launch4j.feregion.headerType}" dontwrapjar="${launch4j.dontWrapJar}" stayalive="${launch4j.stayAlive}" restartoncrash="${launch4j.restartOnCrash}" priority="${launch4j.priority}" errtitle="${launch4j.errTitle}" chdir=".">
 				<jre minversion="${build.compiler.target}.0" jdkpreference="${launch4j.jdkPreference}" initialheapsize="${feregion.vm.initialHeapSize}" maxheapsize="${feregion.vm.maxHeapSize}" />
 				<classPath mainclass="${feregion.mainClass}" cp="${dependencies.directory}/*.jar" />
 				<versionInfo fileversion="${version.number}.0" txtfileversion="${version.number}" filedescription="${launch4j.feregion.name}" copyright="${launch4j.copyright}" productversion="${version.number}.0" txtproductversion="${version.number}" productname="${launch4j.feregion.name}" internalname="${launch4j.feregion.name}" originalfilename="${launch4j.feregion.name}.exe" companyname="${launch4j.copyright}" />
@@ -450,7 +454,7 @@
 		</launch4j>
 		<echo file="${build.assemblyDirectory}/dist/win32-win32-x86/setup.iss">
 			[Setup]
-			AppName=${name}
+			AppName=${project.name}
 			AppVersion=${version.number}
 			VersionInfoVersion=${version.number}
 			AppId=${innoSetup.AppId.x86}
@@ -459,8 +463,8 @@
 			AppUpdatesURL=${innoSetup.AppUpdatesURL}
 			AppMutex=${mainClass}
 			PrivilegesRequired=lowest
-			DefaultDirName={userappdata}\${name}
-			DefaultGroupName=${name}
+			DefaultDirName={userappdata}\${project.name}
+			DefaultGroupName=${project.name}
 			UninstallDisplayIcon={app}\${launch4j.outFileName}
 			Compression=lzma2
 			SolidCompression=yes
@@ -468,26 +472,26 @@
 			ArchitecturesAllowed=x86
 
 			[Languages]
-			Name: "English"; MessagesFile: "compiler:Default.isl"; LicenseFile: "${artifactId}\LICENSE.txt"
-			Name: "Italiano"; MessagesFile: "compiler:Languages\Italian.isl"; LicenseFile: "${artifactId}\LICENSE.txt"
+			Name: "English"; MessagesFile: "compiler:Default.isl"; LicenseFile: "${project.artifactId}\LICENSE.txt"
+			Name: "Italiano"; MessagesFile: "compiler:Languages\Italian.isl"; LicenseFile: "${project.artifactId}\LICENSE.txt"
 
 			[Run]
-			Filename: "{app}\${launch4j.outFileName}"; Description: "{cm:LaunchProgram,${name}}"; Flags: nowait postinstall skipifsilent
+			Filename: "{app}\${launch4j.outFileName}"; Description: "{cm:LaunchProgram,${project.name}}"; Flags: nowait postinstall skipifsilent
 
 			[Tasks]
 			Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
-			Name: "startupicon"; Description: "{cm:AutoStartProgram,${name}}"; GroupDescription: "{cm:AutoStartProgramGroupDescription}"; Flags: unchecked
+			Name: "startupicon"; Description: "{cm:AutoStartProgram,${project.name}}"; GroupDescription: "{cm:AutoStartProgramGroupDescription}"; Flags: unchecked
 
 			[Icons]
-			Name: "{group}\${name}"; Filename: "{app}\${launch4j.outFileName}"
-			Name: "{group}\{cm:UninstallProgram,${name}}"; Filename: "{uninstallexe}"
-			Name: "{userdesktop}\${name}"; Filename: "{app}\${launch4j.outFileName}"; Tasks: desktopicon
-			Name: "{userstartup}\${name}"; Filename: "{app}\${launch4j.outFileName}"; Tasks: startupicon
+			Name: "{group}\${project.name}"; Filename: "{app}\${launch4j.outFileName}"
+			Name: "{group}\{cm:UninstallProgram,${project.name}}"; Filename: "{uninstallexe}"
+			Name: "{userdesktop}\${project.name}"; Filename: "{app}\${launch4j.outFileName}"; Tasks: desktopicon
+			Name: "{userstartup}\${project.name}"; Filename: "{app}\${launch4j.outFileName}"; Tasks: startupicon
 
 			[Files]
-			Source: "${artifactId}\*"; Excludes: "*.cfg,${dependencies.directory}\*.log"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
-			Source: "${artifactId}\${dependencies.directory}\*.log"; DestDir: "{app}\${dependencies.directory}"; Flags: ignoreversion overwritereadonly uninsremovereadonly; Attribs: hidden readonly
-			Source: "${artifactId}\*.cfg"; DestDir: "{userappdata}\${name}"; Flags: onlyifdoesntexist
+			Source: "${project.artifactId}\*"; Excludes: "*.cfg,${dependencies.directory}\*.log"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
+			Source: "${project.artifactId}\${dependencies.directory}\*.log"; DestDir: "{app}\${dependencies.directory}"; Flags: ignoreversion overwritereadonly uninsremovereadonly; Attribs: hidden readonly
+			Source: "${project.artifactId}\*.cfg"; DestDir: "{userappdata}\${project.name}"; Flags: onlyifdoesntexist
 
 			[Code]
 			procedure CurStepChanged(CurStep: TSetupStep);
@@ -511,7 +515,7 @@
 		</echo>
 
 		<pathconvert pathsep="&#13;&#10;" property="dependencies.log.x86">
-			<fileset dir="${build.assemblyDirectory}/dist/win32-win32-x86/${artifactId}/${dependencies.directory}">
+			<fileset dir="${build.assemblyDirectory}/dist/win32-win32-x86/${project.artifactId}/${dependencies.directory}">
 				<include name="*.jar" />
 			</fileset>
 			<mapper>
@@ -519,29 +523,29 @@
 			</mapper>
 		</pathconvert>
 
-		<echo file="${build.assemblyDirectory}/dist/win32-win32-x86/${artifactId}/${dependencies.directory}/${appId.x86}.log">${dependencies.log.x86}</echo>
+		<echo file="${build.assemblyDirectory}/dist/win32-win32-x86/${project.artifactId}/${dependencies.directory}/${appId.x86}.log">${dependencies.log.x86}</echo>
 
 		<exec osfamily="windows" executable="${innoSetup.directory}/ISCC.exe" failonerror="true">
 			<arg value="${build.assemblyDirectory}/dist/win32-win32-x86/setup.iss" />
 			<arg value="/O${build.distDirectory}" />
-			<arg value="/F${artifactId}-${version.number}-win32-win32-x86-setup" />
+			<arg value="/F${project.artifactId}-${version.number}-win32-win32-x86-setup" />
 		</exec>
 		<exec osfamily="unix" executable="wine" failonerror="true">
 			<arg value="${innoSetup.directory}/ISCC.exe" />
 			<arg value="${build.assemblyDirectory}/dist/win32-win32-x86/setup.iss" />
 			<arg value="/O${build.distDirectory}" />
-			<arg value="/F${artifactId}-${version.number}-win32-win32-x86-setup" />
+			<arg value="/F${project.artifactId}-${version.number}-win32-win32-x86-setup" />
 		</exec>
 
 		<launch4j bindir="${launch4j.bindir}">
-			<config outfile="${build.assemblyDirectory}/dist/win32-win32-x86_64/${artifactId}/${launch4j.outFileName}" jarpath="${launch4j.jarName}" headertype="${launch4j.headerType}" dontwrapjar="${launch4j.dontWrapJar}" stayalive="${launch4j.stayAlive}" restartoncrash="${launch4j.restartOnCrash}" priority="${launch4j.priority}" errtitle="${launch4j.errTitle}" chdir="." icon="${icons.directory}/main.ico">
-				<singleInstance mutexname="${mainClass}" windowtitle="${name}" />
+			<config outfile="${build.assemblyDirectory}/dist/win32-win32-x86_64/${project.artifactId}/${launch4j.outFileName}" jarpath="${launch4j.jarName}" headertype="${launch4j.headerType}" dontwrapjar="${launch4j.dontWrapJar}" stayalive="${launch4j.stayAlive}" restartoncrash="${launch4j.restartOnCrash}" priority="${launch4j.priority}" errtitle="${launch4j.errTitle}" chdir="." icon="${icons.directory}/main.ico">
+				<singleInstance mutexname="${mainClass}" windowtitle="${project.name}" />
 				<jre runtimebits="64" minversion="${build.compiler.target}.0" jdkpreference="${launch4j.jdkPreference}" initialheapsize="${vm.initialHeapSize}" maxheapsize="${vm.maxHeapSize}" />
-				<versionInfo fileversion="${version.number}.0" txtfileversion="${version.number}" filedescription="${name}" copyright="${launch4j.copyright}" productversion="${version.number}.0" txtproductversion="${version.number}" productname="${name}" internalname="${artifactId}" originalfilename="${launch4j.outFileName}" companyname="${launch4j.copyright}" />
+				<versionInfo fileversion="${version.number}.0" txtfileversion="${version.number}" filedescription="${project.name}" copyright="${launch4j.copyright}" productversion="${version.number}.0" txtproductversion="${version.number}" productname="${project.name}" internalname="${project.artifactId}" originalfilename="${launch4j.outFileName}" companyname="${launch4j.copyright}" />
 			</config>
 		</launch4j>
 		<launch4j bindir="${launch4j.bindir}">
-			<config outfile="${build.assemblyDirectory}/dist/win32-win32-x86_64/${artifactId}/${launch4j.feregion.name}.exe" jarpath="${launch4j.jarName}" headertype="${launch4j.feregion.headerType}" dontwrapjar="${launch4j.dontWrapJar}" stayalive="${launch4j.stayAlive}" restartoncrash="${launch4j.restartOnCrash}" priority="${launch4j.priority}" errtitle="${launch4j.errTitle}" chdir=".">
+			<config outfile="${build.assemblyDirectory}/dist/win32-win32-x86_64/${project.artifactId}/${launch4j.feregion.name}.exe" jarpath="${launch4j.jarName}" headertype="${launch4j.feregion.headerType}" dontwrapjar="${launch4j.dontWrapJar}" stayalive="${launch4j.stayAlive}" restartoncrash="${launch4j.restartOnCrash}" priority="${launch4j.priority}" errtitle="${launch4j.errTitle}" chdir=".">
 				<jre minversion="${build.compiler.target}.0" jdkpreference="${launch4j.jdkPreference}" initialheapsize="${feregion.vm.initialHeapSize}" maxheapsize="${feregion.vm.maxHeapSize}" />
 				<classPath mainclass="${feregion.mainClass}" cp="${dependencies.directory}/*.jar" />
 				<versionInfo fileversion="${version.number}.0" txtfileversion="${version.number}" filedescription="${launch4j.feregion.name}" copyright="${launch4j.copyright}" productversion="${version.number}.0" txtproductversion="${version.number}" productname="${launch4j.feregion.name}" internalname="${launch4j.feregion.name}" originalfilename="${launch4j.feregion.name}.exe" companyname="${launch4j.copyright}" />
@@ -549,7 +553,7 @@
 		</launch4j>
 		<echo file="${build.assemblyDirectory}/dist/win32-win32-x86_64/setup.iss">
 			[Setup]
-			AppName=${name}
+			AppName=${project.name}
 			AppVersion=${version.number}
 			VersionInfoVersion=${version.number}
 			AppId=${innoSetup.AppId.x64}
@@ -558,8 +562,8 @@
 			AppUpdatesURL=${innoSetup.AppUpdatesURL}
 			AppMutex=${mainClass}
 			PrivilegesRequired=lowest
-			DefaultDirName={userappdata}\${name}
-			DefaultGroupName=${name}
+			DefaultDirName={userappdata}\${project.name}
+			DefaultGroupName=${project.name}
 			UninstallDisplayIcon={app}\${launch4j.outFileName}
 			Compression=lzma2
 			SolidCompression=yes
@@ -568,26 +572,26 @@
 			ArchitecturesInstallIn64BitMode=x64
 
 			[Languages]
-			Name: "English"; MessagesFile: "compiler:Default.isl"; LicenseFile: "${artifactId}\LICENSE.txt"
-			Name: "Italiano"; MessagesFile: "compiler:Languages\Italian.isl"; LicenseFile: "${artifactId}\LICENSE.txt"
+			Name: "English"; MessagesFile: "compiler:Default.isl"; LicenseFile: "${project.artifactId}\LICENSE.txt"
+			Name: "Italiano"; MessagesFile: "compiler:Languages\Italian.isl"; LicenseFile: "${project.artifactId}\LICENSE.txt"
 
 			[Run]
-			Filename: "{app}\${launch4j.outFileName}"; Description: "{cm:LaunchProgram,${name}}"; Flags: nowait postinstall skipifsilent
+			Filename: "{app}\${launch4j.outFileName}"; Description: "{cm:LaunchProgram,${project.name}}"; Flags: nowait postinstall skipifsilent
 
 			[Tasks]
 			Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
-			Name: "startupicon"; Description: "{cm:AutoStartProgram,${name}}"; GroupDescription: "{cm:AutoStartProgramGroupDescription}"; Flags: unchecked
+			Name: "startupicon"; Description: "{cm:AutoStartProgram,${project.name}}"; GroupDescription: "{cm:AutoStartProgramGroupDescription}"; Flags: unchecked
 
 			[Icons]
-			Name: "{group}\${name}"; Filename: "{app}\${launch4j.outFileName}"
-			Name: "{group}\{cm:UninstallProgram,${name}}"; Filename: "{uninstallexe}"
-			Name: "{userdesktop}\${name}"; Filename: "{app}\${launch4j.outFileName}"; Tasks: desktopicon
-			Name: "{userstartup}\${name}"; Filename: "{app}\${launch4j.outFileName}"; Tasks: startupicon
+			Name: "{group}\${project.name}"; Filename: "{app}\${launch4j.outFileName}"
+			Name: "{group}\{cm:UninstallProgram,${project.name}}"; Filename: "{uninstallexe}"
+			Name: "{userdesktop}\${project.name}"; Filename: "{app}\${launch4j.outFileName}"; Tasks: desktopicon
+			Name: "{userstartup}\${project.name}"; Filename: "{app}\${launch4j.outFileName}"; Tasks: startupicon
 
 			[Files]
-			Source: "${artifactId}\*"; Excludes: "*.cfg,${dependencies.directory}\*.log"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
-			Source: "${artifactId}\${dependencies.directory}\*.log"; DestDir: "{app}\${dependencies.directory}"; Flags: ignoreversion overwritereadonly uninsremovereadonly; Attribs: hidden readonly
-			Source: "${artifactId}\*.cfg"; DestDir: "{userappdata}\${name}"; Flags: onlyifdoesntexist
+			Source: "${project.artifactId}\*"; Excludes: "*.cfg,${dependencies.directory}\*.log"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
+			Source: "${project.artifactId}\${dependencies.directory}\*.log"; DestDir: "{app}\${dependencies.directory}"; Flags: ignoreversion overwritereadonly uninsremovereadonly; Attribs: hidden readonly
+			Source: "${project.artifactId}\*.cfg"; DestDir: "{userappdata}\${project.name}"; Flags: onlyifdoesntexist
 
 			[Code]
 			procedure CurStepChanged(CurStep: TSetupStep);
@@ -611,7 +615,7 @@
 		</echo>
 
 		<pathconvert pathsep="&#13;&#10;" property="dependencies.log.x86_64">
-			<fileset dir="${build.assemblyDirectory}/dist/win32-win32-x86_64/${artifactId}/${dependencies.directory}">
+			<fileset dir="${build.assemblyDirectory}/dist/win32-win32-x86_64/${project.artifactId}/${dependencies.directory}">
 				<include name="*.jar" />
 			</fileset>
 			<mapper>
@@ -619,18 +623,18 @@
 			</mapper>
 		</pathconvert>
 
-		<echo file="${build.assemblyDirectory}/dist/win32-win32-x86_64/${artifactId}/${dependencies.directory}/${appId.x64}.log">${dependencies.log.x86_64}</echo>
+		<echo file="${build.assemblyDirectory}/dist/win32-win32-x86_64/${project.artifactId}/${dependencies.directory}/${appId.x64}.log">${dependencies.log.x86_64}</echo>
 
 		<exec osfamily="windows" executable="${innoSetup.directory}/ISCC.exe" failonerror="true">
 			<arg value="${build.assemblyDirectory}/dist/win32-win32-x86_64/setup.iss" />
 			<arg value="/O${build.distDirectory}" />
-			<arg value="/F${artifactId}-${version.number}-win32-win32-x86_64-setup" />
+			<arg value="/F${project.artifactId}-${version.number}-win32-win32-x86_64-setup" />
 		</exec>
 		<exec osfamily="unix" executable="wine" failonerror="true">
 			<arg value="${innoSetup.directory}/ISCC.exe" />
 			<arg value="${build.assemblyDirectory}/dist/win32-win32-x86_64/setup.iss" />
 			<arg value="/O${build.distDirectory}" />
-			<arg value="/F${artifactId}-${version.number}-win32-win32-x86_64-setup" />
+			<arg value="/F${project.artifactId}-${version.number}-win32-win32-x86_64-setup" />
 		</exec>
 	</target>
 
@@ -664,7 +668,7 @@
 						<include name="*.jar" />
 					</fileset>
 					<fileset dir="${build.assemblyDirectory}">
-						<include name="**/${artifactId}.jar" />
+						<include name="**/${project.artifactId}.jar" />
 					</fileset>
 				</classpath>
 				<batchtest>
@@ -680,8 +684,8 @@
 
 	<target name="sonar-main">
 		<propertyfile file="sonar-project.properties">
-			<entry key="sonar.projectKey" value="${groupId}:${artifactId}" />
-			<entry key="sonar.projectName" value="${name}" />
+			<entry key="sonar.projectKey" value="${project.groupId}:${project.artifactId}" />
+			<entry key="sonar.projectName" value="${project.name}" />
 			<entry key="sonar.projectVersion" value="${version.number}" />
 			<entry key="sonar.sources" value="${build.sourceDirectory}" />
 			<entry key="sonar.language" value="java" />
