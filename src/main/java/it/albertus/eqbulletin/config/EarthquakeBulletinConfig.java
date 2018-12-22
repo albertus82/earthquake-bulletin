@@ -24,14 +24,15 @@ public class EarthquakeBulletinConfig extends LoggingConfig implements LanguageC
 	public static final String DEFAULT_LOGGING_FILES_PATH = SystemUtils.getOsSpecificLocalAppDataDir() + File.separator + Messages.get("msg.application.name");
 	public static final Level DEFAULT_LOGGING_LEVEL = Level.WARNING;
 
-	public static final String CFG_FILE_NAME = "earthquake-bulletin.cfg";
+	private static final String CFG_DIR_NAME = "Earthquake Bulletin";
+	private static final String CFG_FILE_NAME = "earthquake-bulletin.cfg";
 	public static final String LOG_FILE_NAME_PATTERN = "earthquake-bulletin.%g.log";
 
 	private static PreferencesConfiguration instance;
 	private static volatile int instanceCount = 0;
 
 	private EarthquakeBulletinConfig() throws IOException {
-		super(Messages.get("msg.application.name") + File.separator + CFG_FILE_NAME, true);
+		super(CFG_DIR_NAME + File.separator + CFG_FILE_NAME, true);
 		init();
 	}
 
