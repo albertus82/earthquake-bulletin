@@ -11,7 +11,6 @@
 
 	<filter token="project.artifactId" value="${project.artifactId}" />
 	<filter token="project.url" value="${project.url}" />
-	<filter token="project.name" value="${project.name}" />
 
 	<filter token="mainClass" value="${mainClass}" />
 	<filter token="vm.initialHeapSize" value="${vm.initialHeapSize}" />
