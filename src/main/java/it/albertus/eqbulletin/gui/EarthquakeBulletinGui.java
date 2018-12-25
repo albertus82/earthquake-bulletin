@@ -93,7 +93,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 		final Display display = Display.getDefault();
 
 		if (e != null) { // Display error dialog and exit.
-			EnhancedErrorDialog.openError(null, Messages.get("lbl.window.title"), e.getLocalizedMessage() != null ? e.getLocalizedMessage() : e.getMessage(), IStatus.ERROR, e.getCause() != null ? e.getCause() : e, Images.getMainIcons());
+			EnhancedErrorDialog.openError(null, Messages.get("lbl.window.title"), e.getLocalizedMessage() != null ? e.getLocalizedMessage() : e.getMessage(), IStatus.ERROR, e.getCause() != null ? e.getCause() : e, Images.getMainIconArray());
 		}
 		else { // Open main window.
 			final EarthquakeBulletinGui gui = new EarthquakeBulletinGui();
@@ -112,7 +112,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 	@Override
 	protected void configureShell(final Shell shell) {
 		super.configureShell(shell);
-		shell.setImages(Images.getMainIcons());
+		shell.setImages(Images.getMainIconArray());
 		shell.setText(Messages.get("lbl.window.title"));
 	}
 

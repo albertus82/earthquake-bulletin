@@ -2,14 +2,16 @@ package it.albertus.eqbulletin.gui;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collection;
-import java.util.LinkedHashSet;
+import java.util.Collections;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.ImageLoader;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Display;
 
 import it.albertus.util.logging.LoggerFactory;
@@ -18,8 +20,18 @@ public class Images {
 
 	private static final Logger logger = LoggerFactory.getLogger(Images.class);
 
-	// Main application icon (in various formats)
-	private static final Collection<Image> mainIcons = new LinkedHashSet<>();
+	// Main application icon in various formats, sorted by size (area) descending.
+	private static final Map<Rectangle, Image> mainIconMap = new TreeMap<>((r1, r2) -> {
+		final long a1 = r1.width * r1.height;
+		final long a2 = r2.width * r2.height;
+		if (a1 > a2) {
+			return -1;
+		}
+		if (a1 < a2) {
+			return 1;
+		}
+		return 0;
+	});
 
 	private Images() {
 		throw new IllegalAccessError();
@@ -28,16 +40,22 @@ public class Images {
 	static {
 		try (final InputStream stream = Images.class.getResourceAsStream("main.ico")) {
 			for (final ImageData data : new ImageLoader().load(stream)) {
-				mainIcons.add(new Image(Display.getCurrent(), data));
+				final Image image = new Image(Display.getCurrent(), data);
+				mainIconMap.put(image.getBounds(), image);
 			}
 		}
 		catch (final IOException e) {
 			logger.log(Level.WARNING, e.toString(), e);
 		}
+		logger.log(Level.CONFIG, "Main icons: {0}", mainIconMap);
 	}
 
-	public static Image[] getMainIcons() {
-		return mainIcons.toArray(new Image[mainIcons.size()]);
+	public static Image[] getMainIconArray() {
+		return getMainIconMap().values().toArray(new Image[mainIconMap.size()]);
+	}
+
+	public static Map<Rectangle, Image> getMainIconMap() {
+		return Collections.unmodifiableMap(mainIconMap);
 	}
 
 }

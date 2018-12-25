@@ -149,7 +149,7 @@ public class SearchJob extends Job {
 	private void handleError(final Throwable throwable, final String message, final int severity) {
 		new DisplayThreadExecutor(gui.getShell()).execute(() -> {
 			if (gui.getTrayIcon() == null || gui.getTrayIcon().getTrayItem() == null || !gui.getTrayIcon().getTrayItem().getVisible()) {
-				EnhancedErrorDialog.openError(gui.getShell(), Messages.get("lbl.window.title"), message, severity, throwable, Images.getMainIcons());
+				EnhancedErrorDialog.openError(gui.getShell(), Messages.get("lbl.window.title"), message, severity, throwable, Images.getMainIconArray());
 			}
 		});
 	}

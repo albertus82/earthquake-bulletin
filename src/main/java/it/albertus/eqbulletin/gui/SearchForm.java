@@ -369,7 +369,7 @@ public class SearchForm {
 		// Map
 		mapBoundsDialog = new LeafletMapBoundsDialog(gui.getShell());
 		mapBoundsDialog.setText(Messages.get("lbl.map.bounds.title"));
-		mapBoundsDialog.setImages(Images.getMainIcons());
+		mapBoundsDialog.setImages(Images.getMainIconArray());
 		mapBoundsDialog.getOptions().getControls().put(LeafletMapControl.ZOOM, "");
 		mapBoundsDialog.getOptions().getControls().put(LeafletMapControl.ATTRIBUTION, "");
 		mapBoundsDialog.getOptions().getControls().put(LeafletMapControl.SCALE, "");

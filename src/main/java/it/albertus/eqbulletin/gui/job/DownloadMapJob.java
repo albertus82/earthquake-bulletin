@@ -90,7 +90,7 @@ public class DownloadMapJob extends Job {
 	}
 
 	private void showErrorDialog(final Throwable throwable, final String message, final int severity) {
-		new DisplayThreadExecutor(gui.getShell()).execute(() -> EnhancedErrorDialog.openError(gui.getShell(), Messages.get("lbl.window.title"), message, severity, throwable, Images.getMainIcons()));
+		new DisplayThreadExecutor(gui.getShell()).execute(() -> EnhancedErrorDialog.openError(gui.getShell(), Messages.get("lbl.window.title"), message, severity, throwable, Images.getMainIconArray()));
 	}
 
 }

@@ -41,7 +41,7 @@ public class PreferencesListener extends SelectionAdapter implements Listener {
 	}
 
 	@Override
-	public void widgetSelected(final SelectionEvent se) {
+	public void widgetSelected(final SelectionEvent event) {
 		final Language language = Messages.getLanguage();
 		final String timezone = configuration.getString(Preference.TIMEZONE, EarthquakeBulletin.Defaults.TIME_ZONE_ID);
 		final float magnitudeBig = configuration.getFloat(Preference.MAGNITUDE_BIG, ResultsTable.Defaults.MAGNITUDE_BIG);
@@ -49,15 +49,15 @@ public class PreferencesListener extends SelectionAdapter implements Listener {
 		final short mapZoomLevel = configuration.getShort(Preference.MAP_ZOOM_LEVEL, MapCanvas.Defaults.MAP_ZOOM_LEVEL);
 		final boolean mapResizeHq = configuration.getBoolean(Preference.MAP_RESIZE_HQ, MapCanvas.Defaults.MAP_RESIZE_HQ);
 
-		final Preferences preferences = new Preferences(PageDefinition.values(), Preference.values(), configuration, Images.getMainIcons());
+		final Preferences preferences = new Preferences(PageDefinition.values(), Preference.values(), configuration, Images.getMainIconArray());
 		final Shell shell = gui.getShell();
 		try {
 			preferences.openDialog(shell);
 		}
-		catch (final IOException ioe) {
+		catch (final IOException e) {
 			final String message = Messages.get("err.preferences.dialog.open");
-			logger.log(Level.WARNING, message, ioe);
-			EnhancedErrorDialog.openError(shell, Messages.get("lbl.window.title"), message, IStatus.WARNING, ioe, Images.getMainIcons());
+			logger.log(Level.WARNING, message, e);
+			EnhancedErrorDialog.openError(shell, Messages.get("lbl.window.title"), message, IStatus.WARNING, e, Images.getMainIconArray());
 		}
 
 		// Check if must update texts...

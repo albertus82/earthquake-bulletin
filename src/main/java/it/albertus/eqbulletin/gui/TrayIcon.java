@@ -11,6 +11,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ShellAdapter;
 import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.ToolTip;
@@ -73,7 +74,7 @@ public class TrayIcon {
 	}
 
 	private Image getTrayIcon() {
-		return Images.getMainIcons()[1];
+		return Images.getMainIconMap().get(new Rectangle(0, 0, 32, 32));
 	}
 
 	private void iconify() {

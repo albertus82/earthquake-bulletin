@@ -9,6 +9,7 @@ import java.util.function.Supplier;
 
 import org.eclipse.jface.resource.FontRegistry;
 import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.util.Util;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.TableViewer;
@@ -20,6 +21,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
@@ -30,9 +32,9 @@ import it.albertus.eqbulletin.EarthquakeBulletin;
 import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
 import it.albertus.eqbulletin.gui.job.BulletinExporter;
 import it.albertus.eqbulletin.gui.listener.CopyLinkSelectionListener;
+import it.albertus.eqbulletin.gui.listener.EpicenterMapSelectionListener;
 import it.albertus.eqbulletin.gui.listener.ExportCsvSelectionListener;
 import it.albertus.eqbulletin.gui.listener.GoogleMapsBrowserSelectionListener;
-import it.albertus.eqbulletin.gui.listener.EpicenterMapSelectionListener;
 import it.albertus.eqbulletin.gui.listener.OpenInBrowserSelectionListener;
 import it.albertus.eqbulletin.gui.listener.ResultsTableContextMenuDetectListener;
 import it.albertus.eqbulletin.gui.listener.ShowMapListener;
@@ -144,9 +146,7 @@ public class ResultsTable {
 					table.setRedraw(false);
 					final TableColumn sortedColumn = table.getSortColumn();
 					table.setSortColumn(null);
-					for (int j = 0; j < table.getColumns().length; j++) {
-						table.getColumn(j).pack();
-					}
+					packColumns(table);
 					table.setSortColumn(sortedColumn);
 					table.setRedraw(true);
 					initialized = true;
@@ -274,10 +274,26 @@ public class ResultsTable {
 		});
 
 		table.setRedraw(false);
-		for (int j = 0; j < table.getColumns().length; j++) {
-			table.getColumn(j).pack();
-		}
+		packColumns(table);
 		table.setRedraw(true);
+	}
+
+	private static void packColumns(final Table table) {
+		for (int j = 0; j < table.getColumnCount(); j++) {
+			table.getColumn(j).pack();
+			if (Util.isGtk()) { // colmuns are badly resized on GTK, more space is actually needed
+				GC gc = null;
+				try {
+					gc = new GC(table);
+					table.getColumn(j).setWidth(table.getColumn(j).getWidth() + gc.stringExtent(" ").x);
+				}
+				finally {
+					if (gc != null) {
+						gc.dispose();
+					}
+				}
+			}
+		}
 	}
 
 	private TableViewerColumn createTableViewerColumn(final String title, final int colNumber) {
