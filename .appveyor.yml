@@ -13,8 +13,6 @@ environment:
       JAVA_HOME: $(ProgramFiles)\Java\jdk1.8.0
     - platform: x64
       JAVA_HOME: $(ProgramFiles)\Java\jdk11
-      VT_API_URL: https://www.virustotal.com/vtapi/v2/file/scan
-      VT_API_DELAY: 15
       VT_API_KEY:
         secure: 3sqJDjLAS708tR/LiAqKLZTnLLrhGJuWVzzI4nCjLbUUsZB+PPRG3y0BWWnMo14CDhBT4v6yjHTA23RdopoHDWJlBcGhKELKZOLhHsnJLU8=
 
@@ -29,8 +27,7 @@ build_script:
   - ant all
 
 after_build:
-  - FOR /R build %%f IN (*.exe *.tar.gz) DO IF NOT %%~xf == .exec ECHO Test "%%~nxf"
-  - IF "%APPVEYOR_REPO_TAG%" == "true" IF DEFINED VT_API_KEY SET ARTIFACTS_PATH=build\*.* & FOR /R build %%f IN (*.exe *.tar.gz) DO IF NOT %%~xf == .exec ECHO Submitting artifact "%%~nxf" to VirusTotal... & curl -v -F "file=@%%f" -F apikey=%VT_API_KEY% %VT_API_URL% & ECHO Artifact "%%~nxf" submitted to VirusTotal. & TIMEOUT %VT_API_DELAY% /NOBREAK
+  - IF "%APPVEYOR_REPO_TAG%" == "true" IF DEFINED VT_API_KEY SET ARTIFACTS_PATH=build\*.* & FOR /R build %%f IN (*.exe *.tar.gz) DO IF NOT %%~xf == .exec ECHO Submitting artifact "%%~nxf" to VirusTotal... & curl -v -F "file=@%%f" -F apikey=%VT_API_KEY% https://www.virustotal.com/vtapi/v2/file/scan & ECHO Artifact "%%~nxf" submitted to VirusTotal. & TIMEOUT 15 /NOBREAK
 
 artifacts:
   - path: $(ARTIFACTS_PATH)
