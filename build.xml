@@ -445,7 +445,7 @@
 			</config>
 		</launch4j>
 		<launch4j bindir="${launch4j.bindir}">
-			<config outfile="${build.assemblyDirectory}/dist/win32-win32-x86_64/${project.artifactId}/${launch4j.feregion.name}.exe" jarpath="${launch4j.jarName}" headertype="${launch4j.feregion.headerType}" dontwrapjar="${launch4j.dontWrapJar}" stayalive="${launch4j.stayAlive}" restartoncrash="${launch4j.restartOnCrash}" priority="${launch4j.priority}" errtitle="${launch4j.errTitle}" chdir=".">
+			<config outfile="${build.assemblyDirectory}/dist/win32-win32-x86/${project.artifactId}/${launch4j.feregion.name}.exe" jarpath="${launch4j.jarName}" headertype="${launch4j.feregion.headerType}" dontwrapjar="${launch4j.dontWrapJar}" stayalive="${launch4j.stayAlive}" restartoncrash="${launch4j.restartOnCrash}" priority="${launch4j.priority}" errtitle="${launch4j.errTitle}" chdir=".">
 				<jre minversion="${build.compiler.target}.0" jdkpreference="${launch4j.jdkPreference}" initialheapsize="${feregion.vm.initialHeapSize}" maxheapsize="${feregion.vm.maxHeapSize}" />
 				<classPath mainclass="${feregion.mainClass}" cp="${dependencies.directory}/*.jar" />
 				<versionInfo fileversion="${version.number}.0" txtfileversion="${version.number}" filedescription="${launch4j.feregion.name}" copyright="${launch4j.copyright}" productversion="${version.number}.0" txtproductversion="${version.number}" productname="${launch4j.feregion.name}" internalname="${launch4j.feregion.name}" originalfilename="${launch4j.feregion.name}.exe" companyname="${launch4j.copyright}" />
@@ -660,7 +660,7 @@
 		<taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml">
 			<classpath path="${jacoco.directory}/jacocoant.jar" />
 		</taskdef>
-		<jacoco:coverage destfile="${build.distDirectory}/jacoco.exec">
+		<jacoco:coverage destfile="${build.distDirectory}/jacoco/jacoco.exec">
 			<junit printsummary="yes" haltonfailure="yes" fork="true" forkmode="once" maxmemory="64m">
 				<classpath path="${build.outputTestDirectory}">
 					<fileset dir="${dependencies.directory}/test">
@@ -701,6 +701,7 @@
 			<entry key="sonar.tests" value="${build.testSourceDirectory}" />
 			<entry key="sonar.java.test.libraries" value="${dependencies.directory}/compile/common/*.jar,${dependencies.directory}/compile/platform-dependent/**/*.jar,${dependencies.directory}/test/*.jar" />
 			<entry key="sonar.java.test.binaries" value="${build.outputTestDirectory}" />
+			<entry key="sonar.jacoco.reportPaths" value="${build.directory}/jacoco/jacoco.exec" />
 		</propertyfile>
 	</target>
 
