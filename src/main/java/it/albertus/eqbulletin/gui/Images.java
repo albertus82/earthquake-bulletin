@@ -22,8 +22,8 @@ public class Images {
 
 	// Main application icon in various formats, sorted by size (area) descending.
 	private static final Map<Rectangle, Image> mainIconMap = new TreeMap<>((r1, r2) -> {
-		final long a1 = r1.width * r1.height;
-		final long a2 = r2.width * r2.height;
+		final int a1 = r1.width * r1.height;
+		final int a2 = r2.width * r2.height;
 		if (a1 > a2) {
 			return -1;
 		}
