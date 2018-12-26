@@ -29,7 +29,8 @@ build_script:
   - ant all
 
 after_build:
-  - IF "%APPVEYOR_REPO_TAG%" == "true" IF DEFINED VT_API_KEY SET ARTIFACTS_PATH=build\*.* & FOR /R build %%f IN (*.exe,*.tar.gz) DO ECHO Submitting artifact "%%~nxf" to VirusTotal... & curl -v -F "file=@%%f" -F apikey=%VT_API_KEY% %VT_API_URL% & ECHO Artifact "%%~nxf" submitted to VirusTotal. & TIMEOUT %VT_API_DELAY% /NOBREAK
+  - FOR /R build %%f IN (*.exe.,*.tar.gz.) DO ECHO "%%~nxf"
+  - IF "%APPVEYOR_REPO_TAG%" == "true" IF DEFINED VT_API_KEY SET ARTIFACTS_PATH=build\*.* & FOR /R build %%f IN (*.exe.,*.tar.gz.) DO ECHO Submitting artifact "%%~nxf" to VirusTotal... & curl -v -F "file=@%%f" -F apikey=%VT_API_KEY% %VT_API_URL% & ECHO Artifact "%%~nxf" submitted to VirusTotal. & TIMEOUT %VT_API_DELAY% /NOBREAK
 
 artifacts:
   - path: $(ARTIFACTS_PATH)
