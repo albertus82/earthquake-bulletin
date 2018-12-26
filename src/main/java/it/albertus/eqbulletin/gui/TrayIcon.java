@@ -1,5 +1,6 @@
 package it.albertus.eqbulletin.gui;
 
+import java.awt.SystemTray;
 import java.text.DateFormat;
 import java.util.Map;
 import java.util.TimeZone;
@@ -38,7 +39,7 @@ public class TrayIcon {
 	private static final int[] icons = { SWT.ICON_INFORMATION, SWT.ICON_WARNING, SWT.ICON_ERROR };
 
 	public static class Defaults {
-		public static final boolean MINIMIZE_TRAY = true;
+		public static final boolean MINIMIZE_TRAY = SystemTray.isSupported();
 
 		private Defaults() {
 			throw new IllegalAccessError("Constants class");
@@ -58,7 +59,7 @@ public class TrayIcon {
 	private MenuItem exitMenuItem;
 
 	/* To be accessed only from this class */
-	private Image trayIcon;
+	private Image image;
 	private String toolTipText = Messages.get("lbl.tray.tooltip");
 
 	public TrayIcon(final EarthquakeBulletinGui gui) {
@@ -67,13 +68,18 @@ public class TrayIcon {
 			@Override
 			public void shellIconified(final ShellEvent se) {
 				if (configuration.getBoolean(Preference.MINIMIZE_TRAY, Defaults.MINIMIZE_TRAY)) {
-					iconify();
+					if (SystemTray.isSupported()) {
+						iconify();
+					}
+					else {
+						logger.log(Level.INFO, "The system tray is not supported on the current platform.");
+					}
 				}
 			}
 		});
 	}
 
-	private Image getTrayIcon() {
+	private static Image getImage() {
 		return Images.getMainIconMap().get(new Rectangle(0, 0, 32, 32));
 	}
 
@@ -85,8 +91,8 @@ public class TrayIcon {
 
 				if (tray != null) {
 					trayItem = new TrayItem(tray, SWT.NONE);
-					trayIcon = getTrayIcon();
-					trayItem.setImage(trayIcon);
+					image = getImage();
+					trayItem.setImage(image);
 					trayItem.setToolTipText(toolTipText);
 					final TrayRestoreListener trayRestoreListener = new EnhancedTrayRestoreListener(gui.getShell(), trayItem);
 
@@ -125,7 +131,7 @@ public class TrayIcon {
 		if (tray != null && !tray.isDisposed() && trayItem != null && !trayItem.isDisposed()) {
 			gui.getShell().setVisible(false);
 			trayItem.setVisible(true);
-			trayItem.setImage(trayIcon); // Update icon
+			trayItem.setImage(image); // Update icon
 			gui.getShell().setMinimized(false);
 		}
 	}
