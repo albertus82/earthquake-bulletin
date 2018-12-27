@@ -11,14 +11,14 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 
 import it.albertus.eqbulletin.gui.listener.AboutListener;
+import it.albertus.eqbulletin.gui.listener.ArmMenuListener;
 import it.albertus.eqbulletin.gui.listener.CloseListener;
 import it.albertus.eqbulletin.gui.listener.CopyLinkSelectionListener;
+import it.albertus.eqbulletin.gui.listener.EpicenterMapSelectionListener;
 import it.albertus.eqbulletin.gui.listener.EventMenuListener;
 import it.albertus.eqbulletin.gui.listener.ExportCsvSelectionListener;
 import it.albertus.eqbulletin.gui.listener.FileMenuListener;
 import it.albertus.eqbulletin.gui.listener.GoogleMapsBrowserSelectionListener;
-import it.albertus.eqbulletin.gui.listener.HelpMenuListener;
-import it.albertus.eqbulletin.gui.listener.EpicenterMapSelectionListener;
 import it.albertus.eqbulletin.gui.listener.OpenInBrowserSelectionListener;
 import it.albertus.eqbulletin.gui.listener.PreferencesListener;
 import it.albertus.eqbulletin.gui.listener.ShowMapListener;
@@ -177,7 +177,7 @@ public class MenuBar extends AbstractMenu {
 			helpAboutItem.addSelectionListener(new AboutListener(gui));
 		}
 
-		final HelpMenuListener helpMenuListener = new HelpMenuListener(helpSystemInfoItem);
+		final ArmMenuListener helpMenuListener = e -> helpSystemInfoItem.setEnabled(SystemInformationDialog.isAvailable());
 		helpMenu.addMenuListener(helpMenuListener);
 		helpMenuHeader.addArmListener(helpMenuListener);
 
