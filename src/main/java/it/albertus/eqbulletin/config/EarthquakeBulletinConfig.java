@@ -6,6 +6,8 @@ import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.eclipse.jface.util.Util;
+
 import it.albertus.eqbulletin.EarthquakeBulletin;
 import it.albertus.eqbulletin.gui.preference.Preference;
 import it.albertus.eqbulletin.resources.Messages;
@@ -21,9 +23,10 @@ public class EarthquakeBulletinConfig extends LoggingConfig implements LanguageC
 
 	private static final Logger logger = LoggerFactory.getLogger(EarthquakeBulletinConfig.class);
 
-	private static final String DIRECTORY_NAME = "Earthquake Bulletin";
-	private static final String CFG_FILE_NAME = "earthquake-bulletin.cfg";
-	public static final String LOG_FILE_NAME_PATTERN = "earthquake-bulletin.%g.log";
+	private static final String DIRECTORY_NAME = Util.isLinux() ? ".earthquake-bulletin" : "Earthquake Bulletin";
+
+	private static final String CFG_FILE_NAME = Util.isWindows() ? "EarthquakeBulletin.cfg" : "earthquake-bulletin.cfg";
+	public static final String LOG_FILE_NAME_PATTERN = Util.isWindows() ? "EarthquakeBulletin.%g.log" : "earthquake-bulletin.%g.log";
 
 	public static final String DEFAULT_LOGGING_FILES_PATH = SystemUtils.getOsSpecificLocalAppDataDir() + File.separator + DIRECTORY_NAME;
 	public static final Level DEFAULT_LOGGING_LEVEL = Level.WARNING;

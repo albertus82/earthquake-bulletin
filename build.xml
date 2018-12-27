@@ -490,7 +490,7 @@
 			[Files]
 			Source: "${project.artifactId}\*"; Excludes: "*.cfg,${dependencies.directory}\*.log"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
 			Source: "${project.artifactId}\${dependencies.directory}\*.log"; DestDir: "{app}\${dependencies.directory}"; Flags: ignoreversion overwritereadonly uninsremovereadonly; Attribs: hidden readonly
-			Source: "${project.artifactId}\*.cfg"; DestDir: "{userappdata}\${project.name}"; Flags: onlyifdoesntexist
+			;Source: "${project.artifactId}\*.cfg"; DestDir: "{userappdata}\${project.name}"; Flags: onlyifdoesntexist
 
 			[Code]
 			procedure CurStepChanged(CurStep: TSetupStep);
@@ -590,7 +590,7 @@
 			[Files]
 			Source: "${project.artifactId}\*"; Excludes: "*.cfg,${dependencies.directory}\*.log"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
 			Source: "${project.artifactId}\${dependencies.directory}\*.log"; DestDir: "{app}\${dependencies.directory}"; Flags: ignoreversion overwritereadonly uninsremovereadonly; Attribs: hidden readonly
-			Source: "${project.artifactId}\*.cfg"; DestDir: "{userappdata}\${project.name}"; Flags: onlyifdoesntexist
+			;Source: "${project.artifactId}\*.cfg"; DestDir: "{userappdata}\${project.name}"; Flags: onlyifdoesntexist
 
 			[Code]
 			procedure CurStepChanged(CurStep: TSetupStep);
