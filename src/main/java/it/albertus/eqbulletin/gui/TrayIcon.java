@@ -12,7 +12,9 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ShellAdapter;
 import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.ToolTip;
@@ -80,7 +82,12 @@ public class TrayIcon {
 	}
 
 	private static Image getImage() {
-		return Images.getMainIconMap().get(new Rectangle(0, 0, 32, 32));
+		if (Util.isWindows() && new Point(96, 96).equals(Display.getDefault().getDPI())) {
+			return Images.getMainIconMap().get(new Rectangle(0, 0, 16, 16)); // looks slightly better on Windows with no scaling
+		}
+		else {
+			return Images.getMainIconMap().get(new Rectangle(0, 0, 32, 32));
+		}
 	}
 
 	private void iconify() {
