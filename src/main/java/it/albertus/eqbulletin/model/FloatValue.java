@@ -1,12 +1,12 @@
 package it.albertus.eqbulletin.model;
 
-public class FloatValue extends Number implements Comparable<FloatValue> {
+abstract class FloatValue extends Number implements Comparable<FloatValue> {
 
 	private static final long serialVersionUID = 2280288073514757941L;
 
-	protected final float value;
+	final float value;
 
-	public FloatValue(final float value) {
+	FloatValue(final float value) {
 		this.value = value;
 	}
 
