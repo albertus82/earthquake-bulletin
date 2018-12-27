@@ -368,10 +368,10 @@ public class ResultsTable {
 
 			new MenuItem(menu, SWT.SEPARATOR);
 
-			// Google Maps Popup...
-			googleMapsPopupMenuItem = new MenuItem(menu, SWT.PUSH);
-			googleMapsPopupMenuItem.setText(Messages.get(LBL_MENU_ITEM_GOOGLE_MAPS_POPUP));
-			googleMapsPopupMenuItem.addSelectionListener(new EpicenterMapSelectionListener(gui));
+			// Epicenter map popup...
+			epicenterMapPopupMenuItem = new MenuItem(menu, SWT.PUSH);
+			epicenterMapPopupMenuItem.setText(Messages.get(LBL_MENU_ITEM_EPICENTER_MAP_POPUP));
+			epicenterMapPopupMenuItem.addSelectionListener(new EpicenterMapSelectionListener(gui));
 
 			// Google Maps in browser...
 			googleMapsBrowserMenuItem = new MenuItem(menu, SWT.PUSH);

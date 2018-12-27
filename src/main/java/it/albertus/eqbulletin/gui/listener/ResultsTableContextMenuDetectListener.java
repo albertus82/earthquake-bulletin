@@ -2,8 +2,10 @@ package it.albertus.eqbulletin.gui.listener;
 
 import org.eclipse.swt.events.MenuDetectEvent;
 import org.eclipse.swt.events.MenuDetectListener;
+import org.eclipse.swt.widgets.Table;
 
 import it.albertus.eqbulletin.gui.ResultsTable;
+import it.albertus.eqbulletin.gui.ResultsTable.ContextMenu;
 import it.albertus.eqbulletin.model.Earthquake;
 
 public class ResultsTableContextMenuDetectListener implements MenuDetectListener {
@@ -17,13 +19,15 @@ public class ResultsTableContextMenuDetectListener implements MenuDetectListener
 	@Override
 	public void menuDetected(final MenuDetectEvent mde) {
 		final Earthquake selection = (Earthquake) resultsTable.getTableViewer().getStructuredSelection().getFirstElement();
-		resultsTable.getContextMenu().getShowMapMenuItem().setEnabled(selection != null && selection.getEnclosure() != null);
-		resultsTable.getContextMenu().getCopyLinkMenuItem().setEnabled(selection != null && selection.getLink() != null);
-		resultsTable.getContextMenu().getOpenBrowserMenuItem().setEnabled(selection != null && selection.getLink() != null);
-		resultsTable.getContextMenu().getGoogleMapsBrowserMenuItem().setEnabled(selection != null);
-		resultsTable.getContextMenu().getGoogleMapsPopupMenuItem().setEnabled(selection != null);
-		resultsTable.getContextMenu().getExportCsvMenuItem().setEnabled(resultsTable.getTableViewer().getTable() != null && resultsTable.getTableViewer().getTable().getItemCount() > 0);
-		resultsTable.getContextMenu().getMenu().setVisible(true);
+		final ContextMenu contextMenu = resultsTable.getContextMenu();
+		contextMenu.getShowMapMenuItem().setEnabled(selection != null && selection.getEnclosure() != null);
+		contextMenu.getCopyLinkMenuItem().setEnabled(selection != null && selection.getLink() != null);
+		contextMenu.getOpenBrowserMenuItem().setEnabled(selection != null && selection.getLink() != null);
+		contextMenu.getGoogleMapsBrowserMenuItem().setEnabled(selection != null);
+		contextMenu.getEpicenterMapPopupMenuItem().setEnabled(selection != null);
+		final Table table = resultsTable.getTableViewer().getTable();
+		contextMenu.getExportCsvMenuItem().setEnabled(table != null && table.getItemCount() > 0);
+		contextMenu.getMenu().setVisible(true);
 	}
 
 }
