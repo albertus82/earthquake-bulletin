@@ -98,19 +98,19 @@
 				<include name="*.jar" />
 			</fileset>
 		</copy>
-		<copy todir="${build.packagesDirectory}/gtk-linux-x86/${project.artifactId}/${dependencies.directory}">
+		<copy todir="${build.packagesDirectory}/gtk-linux-x86/app/${dependencies.directory}">
 			<resources refid="lib" />
 			<fileset dir="${dependencies.directory}/compile/platform-dependent/gtk-linux-x86">
 				<include name="*.jar" />
 			</fileset>
 		</copy>
-		<copy todir="${build.packagesDirectory}/gtk-linux-x86_64/${project.artifactId}/${dependencies.directory}">
+		<copy todir="${build.packagesDirectory}/gtk-linux-x86_64/app/${dependencies.directory}">
 			<resources refid="lib" />
 			<fileset dir="${dependencies.directory}/compile/platform-dependent/gtk-linux-x86_64">
 				<include name="*.jar" />
 			</fileset>
 		</copy>
-		<copy todir="${build.packagesDirectory}/gtk-linux-armhf/${project.artifactId}/${dependencies.directory}">
+		<copy todir="${build.packagesDirectory}/gtk-linux-armhf/app/${dependencies.directory}">
 			<resources refid="lib" />
 			<fileset dir="${dependencies.directory}/compile/platform-dependent/gtk-linux-armhf">
 				<include name="*.jar" />
@@ -138,23 +138,23 @@
 				</fileset>
 			</classpath>
 		</manifestclasspath>
-		<manifestclasspath property="classpath.gtk-linux-x86" jarfile="${build.packagesDirectory}/gtk-linux-x86/${project.artifactId}/${linux.jarFileName}" maxParentLevels="0">
+		<manifestclasspath property="classpath.gtk-linux-x86" jarfile="${build.packagesDirectory}/gtk-linux-x86/app/${linux.jarFileName}" maxParentLevels="0">
 			<classpath>
-				<fileset dir="${build.packagesDirectory}/gtk-linux-x86/${project.artifactId}/${dependencies.directory}">
+				<fileset dir="${build.packagesDirectory}/gtk-linux-x86/app/${dependencies.directory}">
 					<include name="*.jar" />
 				</fileset>
 			</classpath>
 		</manifestclasspath>
-		<manifestclasspath property="classpath.gtk-linux-x86_64" jarfile="${build.packagesDirectory}/gtk-linux-x86_64/${project.artifactId}/${linux.jarFileName}" maxParentLevels="0">
+		<manifestclasspath property="classpath.gtk-linux-x86_64" jarfile="${build.packagesDirectory}/gtk-linux-x86_64/app/${linux.jarFileName}" maxParentLevels="0">
 			<classpath>
-				<fileset dir="${build.packagesDirectory}/gtk-linux-x86_64/${project.artifactId}/${dependencies.directory}">
+				<fileset dir="${build.packagesDirectory}/gtk-linux-x86_64/app/${dependencies.directory}">
 					<include name="*.jar" />
 				</fileset>
 			</classpath>
 		</manifestclasspath>
-		<manifestclasspath property="classpath.gtk-linux-armhf" jarfile="${build.packagesDirectory}/gtk-linux-armhf/${project.artifactId}/${linux.jarFileName}" maxParentLevels="0">
+		<manifestclasspath property="classpath.gtk-linux-armhf" jarfile="${build.packagesDirectory}/gtk-linux-armhf/app/${linux.jarFileName}" maxParentLevels="0">
 			<classpath>
-				<fileset dir="${build.packagesDirectory}/gtk-linux-armhf/${project.artifactId}/${dependencies.directory}">
+				<fileset dir="${build.packagesDirectory}/gtk-linux-armhf/app/${dependencies.directory}">
 					<include name="*.jar" />
 				</fileset>
 			</classpath>
@@ -170,11 +170,29 @@
 
 	<target name="config">
 		<copy file="${build.configDirectory}/${project.artifactId}.cfg" tofile="${build.packagesDirectory}/win32-win32-x86/config/${windows.cfgFileName}" failonerror="false" />
+		<copy todir="${build.packagesDirectory}/win32-win32-x86/config" failonerror="false">
+			<fileset dir="${build.configDirectory}" excludes="${project.artifactId}.cfg" />
+		</copy>
 		<copy file="${build.configDirectory}/${project.artifactId}.cfg" tofile="${build.packagesDirectory}/win32-win32-x86_64/config/${windows.cfgFileName}" failonerror="false" />
-		<copy file="${build.configDirectory}/${project.artifactId}.cfg" tofile="${build.packagesDirectory}/gtk-linux-x86/${project.artifactId}/.${project.artifactId}/${linux.cfgFileName}" failonerror="false" />
-		<copy file="${build.configDirectory}/${project.artifactId}.cfg" tofile="${build.packagesDirectory}/gtk-linux-x86_64/${project.artifactId}/.${project.artifactId}/${linux.cfgFileName}" failonerror="false" />
-		<copy file="${build.configDirectory}/${project.artifactId}.cfg" tofile="${build.packagesDirectory}/gtk-linux-armhf/${project.artifactId}/.${project.artifactId}/${linux.cfgFileName}" failonerror="false" />
+		<copy todir="${build.packagesDirectory}/win32-win32-x86_64/config" failonerror="false">
+			<fileset dir="${build.configDirectory}" excludes="${project.artifactId}.cfg" />
+		</copy>
+		<copy file="${build.configDirectory}/${project.artifactId}.cfg" tofile="${build.packagesDirectory}/gtk-linux-x86/app/.${project.artifactId}/${linux.cfgFileName}" failonerror="false" />
+		<copy todir="${build.packagesDirectory}/gtk-linux-x86/app/.${project.artifactId}" failonerror="false">
+			<fileset dir="${build.configDirectory}" excludes="${project.artifactId}.cfg" />
+		</copy>
+		<copy file="${build.configDirectory}/${project.artifactId}.cfg" tofile="${build.packagesDirectory}/gtk-linux-x86_64/app/.${project.artifactId}/${linux.cfgFileName}" failonerror="false" />
+		<copy todir="${build.packagesDirectory}/gtk-linux-x86_64/app/.${project.artifactId}" failonerror="false">
+			<fileset dir="${build.configDirectory}" excludes="${project.artifactId}.cfg" />
+		</copy>
+		<copy file="${build.configDirectory}/${project.artifactId}.cfg" tofile="${build.packagesDirectory}/gtk-linux-armhf/app/.${project.artifactId}/${linux.cfgFileName}" failonerror="false" />
+		<copy todir="${build.packagesDirectory}/gtk-linux-armhf/app/.${project.artifactId}" failonerror="false">
+			<fileset dir="${build.configDirectory}" excludes="${project.artifactId}.cfg" />
+		</copy>
 		<copy file="${build.configDirectory}/${project.artifactId}.cfg" tofile="${build.packagesDirectory}/cocoa-macosx-x86_64/config/${macos.cfgFileName}" failonerror="false" />
+		<copy todir="${build.packagesDirectory}/cocoa-macosx-x86_64/config" failonerror="false">
+			<fileset dir="${build.configDirectory}" excludes="${project.artifactId}.cfg" />
+		</copy>
 	</target>
 
 	<target name="scripts">
@@ -194,13 +212,13 @@
 		<copy todir="${build.packagesDirectory}/win32-win32-x86_64/app" failonerror="false" filtering="true">
 			<fileset refid="bat" />
 		</copy>
-		<copy todir="${build.packagesDirectory}/gtk-linux-x86/${project.artifactId}" failonerror="false" filtering="true">
+		<copy todir="${build.packagesDirectory}/gtk-linux-x86/app" failonerror="false" filtering="true">
 			<fileset refid="sh" />
 		</copy>
-		<copy todir="${build.packagesDirectory}/gtk-linux-x86_64/${project.artifactId}" failonerror="false" filtering="true">
+		<copy todir="${build.packagesDirectory}/gtk-linux-x86_64/app" failonerror="false" filtering="true">
 			<fileset refid="sh" />
 		</copy>
-		<copy todir="${build.packagesDirectory}/gtk-linux-armhf/${project.artifactId}" failonerror="false" filtering="true">
+		<copy todir="${build.packagesDirectory}/gtk-linux-armhf/app" failonerror="false" filtering="true">
 			<fileset refid="sh" />
 		</copy>
 		<copy todir="${build.packagesDirectory}/cocoa-macosx-x86_64/scripts" failonerror="false" filtering="true">
@@ -221,13 +239,13 @@
 		<copy todir="${build.packagesDirectory}/win32-win32-x86_64/app">
 			<fileset refid="docs" />
 		</copy>
-		<copy todir="${build.packagesDirectory}/gtk-linux-x86/${project.artifactId}">
+		<copy todir="${build.packagesDirectory}/gtk-linux-x86/app">
 			<fileset refid="docs" />
 		</copy>
-		<copy todir="${build.packagesDirectory}/gtk-linux-x86_64/${project.artifactId}">
+		<copy todir="${build.packagesDirectory}/gtk-linux-x86_64/app">
 			<fileset refid="docs" />
 		</copy>
-		<copy todir="${build.packagesDirectory}/gtk-linux-armhf/${project.artifactId}">
+		<copy todir="${build.packagesDirectory}/gtk-linux-armhf/app">
 			<fileset refid="docs" />
 		</copy>
 		<copy todir="${build.packagesDirectory}/cocoa-macosx-x86_64/docs">
@@ -236,9 +254,9 @@
 	</target>
 
 	<target name="icons">
-		<copy file="${icons.directory}/main.ico" tofile="${build.packagesDirectory}/gtk-linux-x86/${project.artifactId}/${linux.iconFileName}" failonerror="false" />
-		<copy file="${icons.directory}/main.ico" tofile="${build.packagesDirectory}/gtk-linux-x86_64/${project.artifactId}/${linux.iconFileName}" failonerror="false" />
-		<copy file="${icons.directory}/main.ico" tofile="${build.packagesDirectory}/gtk-linux-armhf/${project.artifactId}/${linux.iconFileName}" failonerror="false" />
+		<copy file="${icons.directory}/main.ico" tofile="${build.packagesDirectory}/gtk-linux-x86/app/${linux.iconFileName}" failonerror="false" />
+		<copy file="${icons.directory}/main.ico" tofile="${build.packagesDirectory}/gtk-linux-x86_64/app/${linux.iconFileName}" failonerror="false" />
+		<copy file="${icons.directory}/main.ico" tofile="${build.packagesDirectory}/gtk-linux-armhf/app/${linux.iconFileName}" failonerror="false" />
 		<copy file="${icons.directory}/main.icns" tofile="${build.packagesDirectory}/cocoa-macosx-x86_64/app/${macos.iconFileName}" failonerror="false" />
 	</target>
 
@@ -265,7 +283,7 @@
 			</manifest>
 			<metainf refid="docs" />
 		</jar>
-		<jar destfile="${build.packagesDirectory}/gtk-linux-x86/${project.artifactId}/${linux.jarFileName}" basedir="${build.outputDirectory}" level="9">
+		<jar destfile="${build.packagesDirectory}/gtk-linux-x86/app/${linux.jarFileName}" basedir="${build.outputDirectory}" level="9">
 			<manifest>
 				<attribute name="Main-Class" value="${mainClass}" />
 				<attribute name="Class-Path" value="${classpath.gtk-linux-x86}" />
@@ -276,7 +294,7 @@
 			</manifest>
 			<metainf refid="docs" />
 		</jar>
-		<jar destfile="${build.packagesDirectory}/gtk-linux-x86_64/${project.artifactId}/${linux.jarFileName}" basedir="${build.outputDirectory}" level="9">
+		<jar destfile="${build.packagesDirectory}/gtk-linux-x86_64/app/${linux.jarFileName}" basedir="${build.outputDirectory}" level="9">
 			<manifest>
 				<attribute name="Main-Class" value="${mainClass}" />
 				<attribute name="Class-Path" value="${classpath.gtk-linux-x86_64}" />
@@ -287,7 +305,7 @@
 			</manifest>
 			<metainf refid="docs" />
 		</jar>
-		<jar destfile="${build.packagesDirectory}/gtk-linux-armhf/${project.artifactId}/${linux.jarFileName}" basedir="${build.outputDirectory}" level="9">
+		<jar destfile="${build.packagesDirectory}/gtk-linux-armhf/app/${linux.jarFileName}" basedir="${build.outputDirectory}" level="9">
 			<manifest>
 				<attribute name="Main-Class" value="${mainClass}" />
 				<attribute name="Class-Path" value="${classpath.gtk-linux-armhf}" />
@@ -348,33 +366,33 @@
 
 	<target name="dist-linux" depends="jar, config, scripts, docs, icons">
 		<tar destfile="${build.distDirectory}/${project.artifactId}-${version.number}-gtk-linux-x86-bin.tar.gz" compression="gzip">
-			<tarfileset dir="${build.packagesDirectory}/gtk-linux-x86" filemode="755">
-				<include name="${project.artifactId}/*.jar" />
-				<include name="${project.artifactId}/*.sh" />
+			<tarfileset dir="${build.packagesDirectory}/gtk-linux-x86/app" prefix="${project.artifactId}" filemode="755">
+				<include name="*.jar" />
+				<include name="*.sh" />
 			</tarfileset>
-			<tarfileset dir="${build.packagesDirectory}/gtk-linux-x86">
-				<exclude name="${project.artifactId}/*.jar" />
-				<exclude name="${project.artifactId}/*.sh" />
+			<tarfileset dir="${build.packagesDirectory}/gtk-linux-x86/app" prefix="${project.artifactId}">
+				<exclude name="*.jar" />
+				<exclude name="*.sh" />
 			</tarfileset>
 		</tar>
 		<tar destfile="${build.distDirectory}/${project.artifactId}-${version.number}-gtk-linux-x86_64-bin.tar.gz" compression="gzip">
-			<tarfileset dir="${build.packagesDirectory}/gtk-linux-x86_64" filemode="755">
-				<include name="${project.artifactId}/*.jar" />
-				<include name="${project.artifactId}/*.sh" />
+			<tarfileset dir="${build.packagesDirectory}/gtk-linux-x86_64/app" prefix="${project.artifactId}" filemode="755">
+				<include name="*.jar" />
+				<include name="*.sh" />
 			</tarfileset>
-			<tarfileset dir="${build.packagesDirectory}/gtk-linux-x86_64">
-				<exclude name="${project.artifactId}/*.jar" />
-				<exclude name="${project.artifactId}/*.sh" />
+			<tarfileset dir="${build.packagesDirectory}/gtk-linux-x86_64/app" prefix="${project.artifactId}">
+				<exclude name="*.jar" />
+				<exclude name="*.sh" />
 			</tarfileset>
 		</tar>
 		<tar destfile="${build.distDirectory}/${project.artifactId}-${version.number}-gtk-linux-armhf-bin.tar.gz" compression="gzip">
-			<tarfileset dir="${build.packagesDirectory}/gtk-linux-armhf" filemode="755">
-				<include name="${project.artifactId}/*.jar" />
-				<include name="${project.artifactId}/*.sh" />
+			<tarfileset dir="${build.packagesDirectory}/gtk-linux-armhf/app" prefix="${project.artifactId}" filemode="755">
+				<include name="*.jar" />
+				<include name="*.sh" />
 			</tarfileset>
-			<tarfileset dir="${build.packagesDirectory}/gtk-linux-armhf">
-				<exclude name="${project.artifactId}/*.jar" />
-				<exclude name="${project.artifactId}/*.sh" />
+			<tarfileset dir="${build.packagesDirectory}/gtk-linux-armhf/app" prefix="${project.artifactId}">
+				<exclude name="*.jar" />
+				<exclude name="*.sh" />
 			</tarfileset>
 		</tar>
 	</target>
@@ -635,7 +653,7 @@
 		<jacoco:coverage destfile="${build.distDirectory}/jacoco/jacoco.exec">
 			<junit printsummary="yes" haltonfailure="yes" fork="true" forkmode="once" maxmemory="64m">
 				<classpath path="${build.outputTestDirectory}">
-					<path location="${build.packagesDirectory}/gtk-linux-armhf/${project.artifactId}/${linux.jarFileName}" />
+					<path location="${build.packagesDirectory}/gtk-linux-armhf/app/${linux.jarFileName}" />
 					<fileset dir="${dependencies.directory}/test">
 						<include name="*.jar" />
 					</fileset>
