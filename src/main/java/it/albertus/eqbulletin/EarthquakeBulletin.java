@@ -7,6 +7,8 @@ import it.albertus.util.logging.LoggingSupport;
 
 public class EarthquakeBulletin {
 
+	public static final String ARTIFACT_ID = "earthquake-bulletin";
+
 	public static class Defaults {
 		public static final String TIME_ZONE_ID = "UTC";
 

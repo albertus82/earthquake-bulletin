@@ -1,5 +1,7 @@
 package it.albertus.eqbulletin.config;
 
+import static it.albertus.eqbulletin.EarthquakeBulletin.ARTIFACT_ID;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
@@ -23,10 +25,10 @@ public class EarthquakeBulletinConfig extends LoggingConfig implements LanguageC
 
 	private static final Logger logger = LoggerFactory.getLogger(EarthquakeBulletinConfig.class);
 
-	private static final String DIRECTORY_NAME = Util.isLinux() ? ".earthquake-bulletin" : "Earthquake Bulletin";
+	private static final String DIRECTORY_NAME = Util.isLinux() ? '.' + ARTIFACT_ID : "Earthquake Bulletin";
 
-	private static final String CFG_FILE_NAME = Util.isWindows() ? "EarthquakeBulletin.cfg" : "earthquake-bulletin.cfg";
-	public static final String LOG_FILE_NAME_PATTERN = Util.isWindows() ? "EarthquakeBulletin.%g.log" : "earthquake-bulletin.%g.log";
+	private static final String CFG_FILE_NAME = Util.isLinux() ? ARTIFACT_ID + ".cfg" : "EarthquakeBulletin.cfg";
+	public static final String LOG_FILE_NAME_PATTERN = Util.isLinux() ? ARTIFACT_ID + ".%g.log" : "EarthquakeBulletin.%g.log";
 
 	public static final String DEFAULT_LOGGING_FILES_PATH = SystemUtils.getOsSpecificLocalAppDataDir() + File.separator + DIRECTORY_NAME;
 	public static final Level DEFAULT_LOGGING_LEVEL = Level.WARNING;

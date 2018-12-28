@@ -1,6 +1,6 @@
 #!/bin/sh
 PRG="$0"
-while [ -h "$PRG" ]; do
+while [ -h "$PRG" ] ; do
   ls=`ls -ld "$PRG"`
   link=`expr "$ls" : '.*-> \(.*\)$'`
   if expr "$link" : '/.*' > /dev/null; then
@@ -11,6 +11,6 @@ while [ -h "$PRG" ]; do
 done
 PRGDIR=`dirname "$PRG"`
 if [ "$JAVA_HOME" != "" ]
-  then "$JAVA_HOME/bin/java" -Xms@vm.initialHeapSize@m -Xmx@vm.maxHeapSize@m -classpath "$PRGDIR/@project.artifactId@.jar:$PRGDIR/lib/*" @mainClass@
-  else java -Xms@vm.initialHeapSize@m -Xmx@vm.maxHeapSize@m -classpath "$PRGDIR/@project.artifactId@.jar:$PRGDIR/lib/*" @mainClass@
+  then "$JAVA_HOME/bin/java" -Xms@vm.initialHeapSize@m -Xmx@vm.maxHeapSize@m -classpath "$PRGDIR/@linux.jarFileName@:$PRGDIR/lib/*" @mainClass@
+  else java -Xms@vm.initialHeapSize@m -Xmx@vm.maxHeapSize@m -classpath "$PRGDIR/@linux.jarFileName@:$PRGDIR/lib/*" @mainClass@
 fi
