@@ -315,32 +315,32 @@
 	<target name="dist-macos" depends="jar">
 		<taskdef name="jarbundler" classname="com.ultramixer.jarbundler.JarBundler" classpath="${jarBundler.directory}/jarbundler-core-3.3.0.jar" />
 
-		<mkdir dir="${build.assemblyDirectory}/bundle/cocoa-macosx-x86_64" />
-		<jarbundler vmoptions="${macos.vmoptions}" dir="${build.assemblyDirectory}/bundle/cocoa-macosx-x86_64" name="${project.name}" mainclass="${mainClass}" startonmainthread="true" version="${version.number}" icon="${build.assemblyDirectory}/dist/cocoa-macosx-x86_64/app/${macos.iconFileName}" usejavaxkey="true" jvmversion="${build.compiler.target}+" stubfile="${jarBundler.directory}/universalJavaApplicationStub" highresolutioncapable="true">
+		<mkdir dir="${build.assemblyDirectory}/dist/cocoa-macosx-x86_64/bundle" />
+		<jarbundler vmoptions="${macos.vmoptions}" dir="${build.assemblyDirectory}/dist/cocoa-macosx-x86_64/bundle" name="${project.name}" mainclass="${mainClass}" startonmainthread="true" version="${version.number}" icon="${build.assemblyDirectory}/dist/cocoa-macosx-x86_64/app/${macos.iconFileName}" usejavaxkey="true" jvmversion="${build.compiler.target}+" stubfile="${jarBundler.directory}/universalJavaApplicationStub" highresolutioncapable="true">
 			<jarfileset dir="${build.assemblyDirectory}/dist/cocoa-macosx-x86_64/app" includes="**/*.jar" />
 		</jarbundler>
 
-		<copy todir="${build.assemblyDirectory}/bundle/cocoa-macosx-x86_64/${project.name}.app/Contents/Library/Preferences" failonerror="false">
+		<copy todir="${build.assemblyDirectory}/dist/cocoa-macosx-x86_64/bundle/${project.name}.app/Contents/Library/Preferences" failonerror="false">
 			<fileset dir="${build.assemblyDirectory}/dist/cocoa-macosx-x86_64/config" />
 		</copy>
 
-		<copy todir="${build.assemblyDirectory}/bundle/cocoa-macosx-x86_64/${project.name}.app/Contents/SharedSupport">
+		<copy todir="${build.assemblyDirectory}/dist/cocoa-macosx-x86_64/bundle/${project.name}.app/Contents/SharedSupport">
 			<fileset dir="${build.assemblyDirectory}/dist/cocoa-macosx-x86_64/docs" />
 		</copy>
-		<copy todir="${build.assemblyDirectory}/bundle/cocoa-macosx-x86_64/${project.name}.app/Contents/SharedSupport/Dependencies" failonerror="false">
+		<copy todir="${build.assemblyDirectory}/dist/cocoa-macosx-x86_64/bundle/${project.name}.app/Contents/SharedSupport/Dependencies" failonerror="false">
 			<fileset dir="${build.assemblyDirectory}/dist/cocoa-macosx-x86_64/app/${dependencies.directory}/license" />
 		</copy>
 
-		<copy todir="${build.assemblyDirectory}/bundle/cocoa-macosx-x86_64/${project.name}.app/Contents/Resources/Java" failonerror="false" filtering="true">
+		<copy todir="${build.assemblyDirectory}/dist/cocoa-macosx-x86_64/bundle/${project.name}.app/Contents/Resources/Java" failonerror="false" filtering="true">
 			<fileset dir="${build.assemblyDirectory}/dist/cocoa-macosx-x86_64/scripts" />
 		</copy>
 
 		<tar destfile="${build.distDirectory}/${project.artifactId}-${version.number}-cocoa-macosx-x86_64-app.tar.gz" compression="gzip">
-			<tarfileset dir="${build.assemblyDirectory}/bundle/cocoa-macosx-x86_64" filemode="755">
+			<tarfileset dir="${build.assemblyDirectory}/dist/cocoa-macosx-x86_64/bundle" filemode="755">
 				<include name="${project.name}.app/Contents/MacOS/*" />
 				<include name="${project.name}.app/Contents/Resources/Java/*.command" />
 			</tarfileset>
-			<tarfileset dir="${build.assemblyDirectory}/bundle/cocoa-macosx-x86_64">
+			<tarfileset dir="${build.assemblyDirectory}/dist/cocoa-macosx-x86_64/bundle">
 				<exclude name="${project.name}.app/Contents/MacOS/*" />
 				<exclude name="${project.name}.app/Contents/Resources/Java/*.command" />
 			</tarfileset>
@@ -636,11 +636,9 @@
 		<jacoco:coverage destfile="${build.distDirectory}/jacoco/jacoco.exec">
 			<junit printsummary="yes" haltonfailure="yes" fork="true" forkmode="once" maxmemory="64m">
 				<classpath path="${build.outputTestDirectory}">
+					<path location="${build.assemblyDirectory}/dist/gtk-linux-armhf/${project.artifactId}/${linux.jarFileName}" />
 					<fileset dir="${dependencies.directory}/test">
 						<include name="*.jar" />
-					</fileset>
-					<fileset dir="${build.assemblyDirectory}">
-						<include name="**/${project.artifactId}.jar" />
 					</fileset>
 				</classpath>
 				<batchtest>
