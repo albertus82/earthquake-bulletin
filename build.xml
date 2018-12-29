@@ -494,7 +494,7 @@
 			[Files]
 			Source: "app\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
 			Source: "config\*"; DestDir: "{userappdata}\${project.name}"; Flags: onlyifdoesntexist skipifsourcedoesntexist
-			Source: "setup.log"; DestDir: "{userappdata}\${project.name}"; DestName: "${dependencies.logFileName}"; Flags: ignoreversion overwritereadonly uninsremovereadonly; Attribs: hidden readonly
+			Source: "setup.log"; DestDir: "{localappdata}\${project.name}"; DestName: "${dependencies.logFileName}"; Flags: ignoreversion overwritereadonly uninsremovereadonly; Attribs: hidden readonly
 
 			[Code]
 			procedure CurStepChanged(CurStep: TSetupStep);
@@ -502,7 +502,7 @@
 				jarFileNames: TArrayOfString;
 				i: Integer;
 			begin
-				if (CurStep = ssInstall) and (LoadStringsFromFile(ExpandConstant('{userappdata}\${project.name}\${dependencies.logFileName}'), jarFileNames)) then
+				if (CurStep = ssInstall) and (LoadStringsFromFile(ExpandConstant('{localappdata}\${project.name}\${dependencies.logFileName}'), jarFileNames)) then
 				begin
 					for i := 0 to GetArrayLength(jarFileNames) - 1 do
 						DeleteFile(ExpandConstant('{app}\${dependencies.directory}\' + jarFileNames[i]));
@@ -587,7 +587,7 @@
 			[Files]
 			Source: "app\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
 			Source: "config\*"; DestDir: "{userappdata}\${project.name}"; Flags: onlyifdoesntexist skipifsourcedoesntexist
-			Source: "setup.log"; DestDir: "{userappdata}\${project.name}"; DestName: "${dependencies.logFileName}"; Flags: ignoreversion overwritereadonly uninsremovereadonly; Attribs: hidden readonly
+			Source: "setup.log"; DestDir: "{localappdata}\${project.name}"; DestName: "${dependencies.logFileName}"; Flags: ignoreversion overwritereadonly uninsremovereadonly; Attribs: hidden readonly
 
 			[Code]
 			procedure CurStepChanged(CurStep: TSetupStep);
@@ -595,7 +595,7 @@
 				jarFileNames: TArrayOfString;
 				i: Integer;
 			begin
-				if (CurStep = ssInstall) and (LoadStringsFromFile(ExpandConstant('{userappdata}\${project.name}\${dependencies.logFileName}'), jarFileNames)) then
+				if (CurStep = ssInstall) and (LoadStringsFromFile(ExpandConstant('{localappdata}\${project.name}\${dependencies.logFileName}'), jarFileNames)) then
 				begin
 					for i := 0 to GetArrayLength(jarFileNames) - 1 do
 						DeleteFile(ExpandConstant('{app}\${dependencies.directory}\' + jarFileNames[i]));
