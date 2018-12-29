@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -15,6 +16,8 @@ import java.util.zip.GZIPInputStream;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+
+import com.sun.net.httpserver.Headers;
 
 import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
 import it.albertus.eqbulletin.model.Earthquake;
@@ -126,10 +129,10 @@ public class GeofonBulletinProvider implements BulletinProvider {
 	}
 
 	private static HttpURLConnection prepareConnection(final String url) throws IOException {
-		final HttpURLConnection conn = ConnectionFactory.createHttpConnection(url);
-		conn.setRequestProperty("Accept", "*/html,*/xml,*/*;q=0.9");
-		conn.setRequestProperty("Accept-Encoding", "gzip");
-		return conn;
+		final Headers headers = new Headers();
+		headers.set("Accept", "*/html,*/xml,*/*;q=0.9");
+		headers.set("Accept-Encoding", "gzip");
+		return ConnectionFactory.prepareConnection(new URL(url), headers);
 	}
 
 	private static Rss fetchRss(final InputStream is) throws JAXBException {

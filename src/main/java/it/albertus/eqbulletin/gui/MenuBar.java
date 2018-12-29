@@ -22,6 +22,7 @@ import it.albertus.eqbulletin.gui.listener.GoogleMapsBrowserSelectionListener;
 import it.albertus.eqbulletin.gui.listener.OpenInBrowserSelectionListener;
 import it.albertus.eqbulletin.gui.listener.PreferencesListener;
 import it.albertus.eqbulletin.gui.listener.ShowMapListener;
+import it.albertus.eqbulletin.gui.listener.ShowMomentTensorListener;
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.jface.SwtUtils;
 import it.albertus.jface.cocoa.CocoaEnhancerException;
@@ -117,6 +118,11 @@ public class MenuBar extends AbstractMenu {
 		showMapMenuItem = new MenuItem(eventMenu, SWT.PUSH);
 		showMapMenuItem.setText(Messages.get(LBL_MENU_ITEM_SHOW_MAP));
 		showMapMenuItem.addListener(SWT.Selection, new ShowMapListener(gui));
+
+		// Show moment tensor solution...
+		showMomentTensorMenuItem = new MenuItem(eventMenu, SWT.PUSH);
+		showMomentTensorMenuItem.setText(Messages.get(LBL_MENU_ITEM_SHOW_MOMENT_TENSOR));
+		showMomentTensorMenuItem.addListener(SWT.Selection, new ShowMomentTensorListener(gui));
 
 		new MenuItem(eventMenu, SWT.SEPARATOR);
 

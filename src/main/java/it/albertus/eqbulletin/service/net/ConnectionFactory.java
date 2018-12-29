@@ -1,6 +1,7 @@
 package it.albertus.eqbulletin.service.net;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.Authenticator;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
@@ -12,8 +13,14 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import com.sun.net.httpserver.Headers;
 
 import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
 import it.albertus.eqbulletin.gui.preference.Preference;
@@ -40,6 +47,10 @@ public class ConnectionFactory {
 
 	private static final String USER_AGENT = String.format("Mozilla/5.0 (%s; %s; %s) EarthquakeBulletin/%s (KHTML, like Gecko)", System.getProperty("os.name"), System.getProperty("os.arch"), System.getProperty("os.version"), Version.getInstance().getNumber());
 
+	private static final Collection<Integer> httpRedirectionResponseCodes = Arrays.asList(HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_MOVED_TEMP);
+
+	private static final byte REDIRECTION_LIMIT = 20;
+
 	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getInstance();
 
 	private static final Logger logger = LoggerFactory.getLogger(ConnectionFactory.class);
@@ -48,7 +59,56 @@ public class ConnectionFactory {
 		throw new IllegalAccessError();
 	}
 
-	public static HttpURLConnection createHttpConnection(final URL url) throws IOException {
+	public static HttpURLConnection makeGetRequest(URL url, final Headers headers) throws IOException {
+		HttpURLConnection urlConnection = null;
+		try {
+			urlConnection = prepareConnection(url, headers);
+			byte redirectionCounter = 0;
+			while (httpRedirectionResponseCodes.contains(urlConnection.getResponseCode())) { // Connection starts here
+				final String location = urlConnection.getHeaderField("Location");
+				urlConnection.disconnect();
+				if (location == null || location.isEmpty()) {
+					throw new IllegalStateException("URL \"" + url + "\": server responded with HTTP " + urlConnection.getResponseCode() + " omitting the \"Location\" header.");
+				}
+				if (redirectionCounter++ >= REDIRECTION_LIMIT) {
+					throw new IllegalStateException("The page \"" + url + "\" isn't redirecting properly.");
+				}
+				final String spec;
+				if (location.startsWith("/")) { // Relative
+					final String baseUrl = url.getProtocol() + "://" + url.getHost() + (url.getPort() != -1 ? ":" + url.getPort() : "");
+					spec = baseUrl + location;
+				}
+				else { // Absolute
+					spec = location;
+				}
+				logger.log(Level.FINE, "Redirecting from \"{0}\" to \"{1}\"", new Serializable[] { url, spec });
+				url = new URL(spec);
+				urlConnection = prepareConnection(url, headers);
+			}
+			return urlConnection;
+		}
+		catch (final Exception e) {
+			if (urlConnection != null) {
+				urlConnection.disconnect();
+			}
+			throw e;
+		}
+	}
+
+	public static HttpURLConnection prepareConnection(final URL url, Headers headers) throws IOException {
+		final HttpURLConnection urlConnection = ConnectionFactory.createHttpConnection(url);
+		for (final Entry<String, List<String>> header : headers.entrySet()) {
+			for (final String value : header.getValue()) {
+				urlConnection.addRequestProperty(header.getKey(), value);
+			}
+		}
+		if (headers.containsKey("If-None-Match") && !headers.getFirst("If-None-Match").isEmpty()) {
+			urlConnection.setReadTimeout(Math.min(3000, configuration.getInt(Preference.HTTP_READ_TIMEOUT_MS, ConnectionFactory.Defaults.READ_TIMEOUT_IN_MILLIS)));
+		}
+		return urlConnection;
+	}
+
+	private static HttpURLConnection createHttpConnection(final URL url) throws IOException {
 		final URLConnection connection;
 		if (configuration.getBoolean(Preference.PROXY_ENABLED, Defaults.PROXY_ENABLED)) {
 			Proxy proxy;
@@ -93,10 +153,6 @@ public class ConnectionFactory {
 		else {
 			throw new IllegalArgumentException(String.valueOf(url));
 		}
-	}
-
-	public static HttpURLConnection createHttpConnection(final String url) throws IOException {
-		return createHttpConnection(new URL(url));
 	}
 
 	public static void main(final String... args) throws URISyntaxException {

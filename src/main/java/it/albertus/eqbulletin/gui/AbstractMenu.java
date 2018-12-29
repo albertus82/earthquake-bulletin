@@ -12,6 +12,7 @@ abstract class AbstractMenu {
 	protected static final String LBL_MENU_ITEM_EPICENTER_MAP_POPUP = "lbl.menu.item.epicenter.map.popup";
 	protected static final String LBL_MENU_ITEM_OPEN_BROWSER = "lbl.menu.item.open.browser";
 	protected static final String LBL_MENU_ITEM_SHOW_MAP = "lbl.menu.item.show.map";
+	protected static final String LBL_MENU_ITEM_SHOW_MOMENT_TENSOR = "lbl.menu.item.show.moment.tensor";
 
 	protected MenuItem copyLinkMenuItem;
 	protected MenuItem exportCsvMenuItem;
@@ -19,6 +20,7 @@ abstract class AbstractMenu {
 	protected MenuItem epicenterMapPopupMenuItem;
 	protected MenuItem openBrowserMenuItem;
 	protected MenuItem showMapMenuItem;
+	protected MenuItem showMomentTensorMenuItem;
 
 	public void updateTexts() {
 		copyLinkMenuItem.setText(Messages.get(LBL_MENU_ITEM_COPY_LINK));
@@ -27,6 +29,7 @@ abstract class AbstractMenu {
 		epicenterMapPopupMenuItem.setText(Messages.get(LBL_MENU_ITEM_EPICENTER_MAP_POPUP));
 		openBrowserMenuItem.setText(Messages.get(LBL_MENU_ITEM_OPEN_BROWSER));
 		showMapMenuItem.setText(Messages.get(LBL_MENU_ITEM_SHOW_MAP));
+		showMomentTensorMenuItem.setText(Messages.get(LBL_MENU_ITEM_SHOW_MOMENT_TENSOR));
 	}
 
 	public MenuItem getCopyLinkMenuItem() {
@@ -51,6 +54,10 @@ abstract class AbstractMenu {
 
 	public MenuItem getShowMapMenuItem() {
 		return showMapMenuItem;
+	}
+
+	public MenuItem getShowMomentTensorMenuItem() {
+		return showMomentTensorMenuItem;
 	}
 
 }

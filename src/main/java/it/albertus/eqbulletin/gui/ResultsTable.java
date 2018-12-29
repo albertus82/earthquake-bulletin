@@ -38,6 +38,7 @@ import it.albertus.eqbulletin.gui.listener.GoogleMapsBrowserSelectionListener;
 import it.albertus.eqbulletin.gui.listener.OpenInBrowserSelectionListener;
 import it.albertus.eqbulletin.gui.listener.ResultsTableContextMenuDetectListener;
 import it.albertus.eqbulletin.gui.listener.ShowMapListener;
+import it.albertus.eqbulletin.gui.listener.ShowMomentTensorListener;
 import it.albertus.eqbulletin.gui.preference.Preference;
 import it.albertus.eqbulletin.model.Earthquake;
 import it.albertus.eqbulletin.model.Status;
@@ -279,13 +280,13 @@ public class ResultsTable {
 	}
 
 	private static void packColumns(final Table table) {
-		for (int j = 0; j < table.getColumnCount(); j++) {
-			table.getColumn(j).pack();
+		for (final TableColumn column : table.getColumns()) {
+			column.pack();
 			if (Util.isGtk()) { // colmuns are badly resized on GTK, more space is actually needed
 				GC gc = null;
 				try {
 					gc = new GC(table);
-					table.getColumn(j).setWidth(table.getColumn(j).getWidth() + gc.stringExtent(" ").x);
+					column.setWidth(column.getWidth() + gc.stringExtent(" ").x);
 				}
 				finally {
 					if (gc != null) {
@@ -353,6 +354,11 @@ public class ResultsTable {
 			showMapMenuItem.setText(Messages.get(LBL_MENU_ITEM_SHOW_MAP));
 			showMapMenuItem.addListener(SWT.Selection, new ShowMapListener(gui));
 			menu.setDefaultItem(showMapMenuItem);
+
+			// Show moment tensor solution...
+			showMomentTensorMenuItem = new MenuItem(menu, SWT.PUSH);
+			showMomentTensorMenuItem.setText(Messages.get(LBL_MENU_ITEM_SHOW_MOMENT_TENSOR));
+			showMomentTensorMenuItem.addListener(SWT.Selection, new ShowMomentTensorListener(gui));
 
 			new MenuItem(menu, SWT.SEPARATOR);
 

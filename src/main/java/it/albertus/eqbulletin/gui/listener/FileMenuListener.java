@@ -1,14 +1,12 @@
 package it.albertus.eqbulletin.gui.listener;
 
-import org.eclipse.swt.events.ArmEvent;
-import org.eclipse.swt.events.ArmListener;
 import org.eclipse.swt.events.MenuEvent;
-import org.eclipse.swt.events.MenuListener;
+import org.eclipse.swt.events.TypedEvent;
 
 import it.albertus.eqbulletin.gui.EarthquakeBulletinGui;
 import it.albertus.eqbulletin.gui.ResultsTable;
 
-public class FileMenuListener implements ArmListener, MenuListener {
+public class FileMenuListener implements ArmMenuListener {
 
 	private final EarthquakeBulletinGui gui;
 
@@ -17,21 +15,12 @@ public class FileMenuListener implements ArmListener, MenuListener {
 	}
 
 	@Override
-	public void widgetArmed(final ArmEvent e) {
-		manageExportCsvItem();
-	}
-
-	@Override
-	public void menuShown(final MenuEvent e) {
-		manageExportCsvItem();
-	}
-
-	@Override
 	public void menuHidden(final MenuEvent e) {
 		gui.getMenuBar().getExportCsvMenuItem().setEnabled(true); // re-enable the accelerator
 	}
 
-	private void manageExportCsvItem() {
+	@Override
+	public void menuArmed(final TypedEvent e) {
 		final ResultsTable resultsTable = gui.getResultsTable();
 		gui.getMenuBar().getExportCsvMenuItem().setEnabled(resultsTable != null && resultsTable.getTableViewer() != null && resultsTable.getTableViewer().getTable() != null && resultsTable.getTableViewer().getTable().getItemCount() > 0);
 	}
