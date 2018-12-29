@@ -466,7 +466,7 @@
 			AppUpdatesURL=${innoSetup.AppUpdatesURL}
 			AppMutex=${mainClass}
 			PrivilegesRequired=lowest
-			DefaultDirName={userappdata}\${project.name}
+			DefaultDirName={localappdata}\${project.name}
 			DefaultGroupName=${project.name}
 			UninstallDisplayIcon={app}\${windows.exeFileName}
 			Compression=lzma2
@@ -558,7 +558,7 @@
 			AppUpdatesURL=${innoSetup.AppUpdatesURL}
 			AppMutex=${mainClass}
 			PrivilegesRequired=lowest
-			DefaultDirName={userappdata}\${project.name}
+			DefaultDirName={localappdata}\${project.name}
 			DefaultGroupName=${project.name}
 			UninstallDisplayIcon={app}\${windows.exeFileName}
 			Compression=lzma2
