@@ -22,4 +22,9 @@ public class MomentTensor implements Serializable {
 		return etag;
 	}
 
+	@Override
+	public String toString() {
+		return "MomentTensor [etag=" + etag + "]";
+	}
+
 }

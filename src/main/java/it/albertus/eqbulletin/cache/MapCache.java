@@ -31,7 +31,7 @@ public class MapCache implements Cache<String, MapImage> {
 
 	private MapCache() {}
 
-	private final Map<String, MapImage> cache = new LinkedHashMap<>();
+	private final Map<String, MapImage> cache = new LinkedHashMap<>(16, 0.75f, true);
 
 	@Override
 	public void put(final String guid, final MapImage map) {

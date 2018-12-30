@@ -63,4 +63,9 @@ class PackedMomentTensor implements Serializable {
 		}
 	}
 
+	@Override
+	public String toString() {
+		return "PackedMomentTensor [etag=" + etag + "]";
+	}
+
 }

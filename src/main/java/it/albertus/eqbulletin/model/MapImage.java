@@ -22,4 +22,9 @@ public class MapImage implements Serializable {
 		return etag;
 	}
 
+	@Override
+	public String toString() {
+		return "MapImage [etag=" + etag + "]";
+	}
+
 }

@@ -20,7 +20,7 @@ public class MomentTensorCache implements Cache<String, MomentTensor> {
 
 	private MomentTensorCache() {}
 
-	private final Map<String, PackedMomentTensor> cache = new LinkedHashMap<>();
+	private final Map<String, PackedMomentTensor> cache = new LinkedHashMap<>(16, 0.75f, true);
 
 	@Override
 	public void put(final String guid, final MomentTensor mt) {
