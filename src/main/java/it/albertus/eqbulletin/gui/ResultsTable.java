@@ -15,22 +15,28 @@ import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
 import it.albertus.eqbulletin.EarthquakeBulletin;
 import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
 import it.albertus.eqbulletin.gui.job.BulletinExporter;
+import it.albertus.eqbulletin.gui.job.MomentTensorRetriever;
 import it.albertus.eqbulletin.gui.listener.CopyLinkSelectionListener;
 import it.albertus.eqbulletin.gui.listener.EpicenterMapSelectionListener;
 import it.albertus.eqbulletin.gui.listener.ExportCsvSelectionListener;
@@ -41,6 +47,7 @@ import it.albertus.eqbulletin.gui.listener.ShowMapListener;
 import it.albertus.eqbulletin.gui.listener.ShowMomentTensorListener;
 import it.albertus.eqbulletin.gui.preference.Preference;
 import it.albertus.eqbulletin.model.Earthquake;
+import it.albertus.eqbulletin.model.MomentTensor;
 import it.albertus.eqbulletin.model.Status;
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.jface.SwtUtils;
@@ -59,11 +66,13 @@ public class ResultsTable {
 
 	private static final int TOOLTIP_TIME_DISPLAYED = 5000;
 
+	private static final String MT = "MT";
+
 	private static final String SYM_NAME_FONT_DEFAULT = ResultsTable.class.getName().toLowerCase() + ".default";
 
 	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getInstance();
 
-	public static final ThreadLocal<DateFormat> dateFormat = ThreadLocal.withInitial(() -> new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z"));
+	public static final ThreadLocal<DateFormat> dateFormats = ThreadLocal.withInitial(() -> new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z"));
 
 	private class EarthquakeViewerComparator extends ViewerComparator {
 
@@ -116,6 +125,14 @@ public class ResultsTable {
 				rc = eq1.getStatus().compareTo(eq2.getStatus());
 				break;
 			case 6:
+				if (eq1.getMomentTensorUrl() == null && eq2.getMomentTensorUrl() == null || eq1.getMomentTensorUrl() != null && eq2.getMomentTensorUrl() != null) {
+					rc = 0;
+				}
+				else {
+					rc = eq1.getMomentTensorUrl() != null ? -1 : 1;
+				}
+				break;
+			case 7:
 				rc = eq1.getRegion().compareTo(eq2.getRegion());
 				break;
 			default:
@@ -170,7 +187,7 @@ public class ResultsTable {
 
 	private void createColumns(final Table table) {
 		int i = 0;
-		for (final String suffix : new String[] { "time", "magnitude", "latitude", "longitude", "depth", "status", "region" }) {
+		for (final String suffix : new String[] { "time", "magnitude", "latitude", "longitude", "depth", "status", "mt", "region" }) {
 			labelsMap.put(i++, () -> Messages.get("lbl.table." + suffix));
 		}
 
@@ -178,7 +195,7 @@ public class ResultsTable {
 		col.setLabelProvider(new EarthquakeColumnLabelProvider() {
 			@Override
 			protected String getText(final Earthquake element) {
-				final DateFormat df = dateFormat.get();
+				final DateFormat df = dateFormats.get();
 				df.setTimeZone(TimeZone.getTimeZone(configuration.getString(Preference.TIMEZONE, EarthquakeBulletin.Defaults.TIME_ZONE_ID)));
 				return df.format(element.getTime());
 			}
@@ -270,7 +287,36 @@ public class ResultsTable {
 		col.setLabelProvider(new EarthquakeColumnLabelProvider() {
 			@Override
 			protected String getText(final Earthquake element) {
+				return element.getMomentTensorUrl() != null ? MT : "";
+			}
+
+			@Override
+			protected Color getForeground(final Earthquake element) {
+				return table.getDisplay().getSystemColor(SWT.COLOR_LINK_FOREGROUND);
+			}
+		});
+
+		col = createTableViewerColumn(labelsMap.get(7).get(), 7);
+		col.setLabelProvider(new EarthquakeColumnLabelProvider() {
+			@Override
+			protected String getText(final Earthquake element) {
 				return String.valueOf(element.getRegion());
+			}
+		});
+
+		table.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(final MouseEvent e) {
+				if (e.button == 1) {
+					final ViewerCell cell = tableViewer.getCell(new Point(e.x, e.y));
+					if (cell != null && cell.getColumnIndex() == 6 && MT.equals(cell.getText()) && cell.getElement() instanceof Earthquake) {
+						final Shell shell = table.getShell();
+						final MomentTensor momentTensor = MomentTensorRetriever.retrieve((Earthquake) cell.getElement(), shell);
+						if (momentTensor != null) {
+							new MomentTensorDialog(shell, momentTensor.getText()).open();
+						}
+					}
+				}
 			}
 		});
 

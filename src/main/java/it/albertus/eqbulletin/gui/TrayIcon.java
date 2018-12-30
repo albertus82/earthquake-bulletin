@@ -149,7 +149,7 @@ public class TrayIcon {
 			text.append("M ").append(earthquake.getMagnitude()).append(", ").append(earthquake.getRegion());
 
 			final StringBuilder message = new StringBuilder();
-			final DateFormat df = ResultsTable.dateFormat.get();
+			final DateFormat df = ResultsTable.dateFormats.get();
 			df.setTimeZone(TimeZone.getTimeZone(configuration.getString(Preference.TIMEZONE, EarthquakeBulletin.Defaults.TIME_ZONE_ID)));
 			message.append(df.format(earthquake.getTime())).append(' ');
 			message.append(earthquake.getLatitude()).append(' ');
@@ -189,7 +189,7 @@ public class TrayIcon {
 			buf.append(NewLine.SYSTEM_LINE_SEPARATOR);
 			buf.append("M ").append(earthquake.getMagnitude()).append(", ").append(earthquake.getRegion());
 			buf.append(NewLine.SYSTEM_LINE_SEPARATOR);
-			final DateFormat df = ResultsTable.dateFormat.get();
+			final DateFormat df = ResultsTable.dateFormats.get();
 			df.setTimeZone(TimeZone.getTimeZone(configuration.getString(Preference.TIMEZONE, EarthquakeBulletin.Defaults.TIME_ZONE_ID)));
 			buf.append(df.format(earthquake.getTime())).append(' ');
 			buf.append(earthquake.getLatitude()).append(' ');

@@ -25,7 +25,7 @@ public class ShowMomentTensorListener implements Listener {
 		if (tableViewer != null && !tableViewer.getTable().isDisposed() && tableViewer.getStructuredSelection() != null) {
 			final Earthquake selectedItem = (Earthquake) tableViewer.getStructuredSelection().getFirstElement();
 			final Shell shell = gui.getShell();
-			if (selectedItem != null && shell != null && !shell.isDisposed()) {
+			if (selectedItem != null && selectedItem.getMomentTensorUrl() != null && shell != null && !shell.isDisposed()) {
 				final MomentTensor momentTensor = MomentTensorRetriever.retrieve(selectedItem, shell);
 				if (momentTensor != null) {
 					new MomentTensorDialog(shell, momentTensor.getText()).open();

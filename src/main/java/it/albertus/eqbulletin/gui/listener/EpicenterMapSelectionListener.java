@@ -57,7 +57,7 @@ public class EpicenterMapSelectionListener extends SelectionAdapter {
 			final StringBuilder title = new StringBuilder("M ");
 			title.append(selection.getMagnitude()).append(", ").append(selection.getRegion());
 			title.append(NewLine.SYSTEM_LINE_SEPARATOR);
-			final DateFormat df = ResultsTable.dateFormat.get();
+			final DateFormat df = ResultsTable.dateFormats.get();
 			df.setTimeZone(TimeZone.getTimeZone(configuration.getString(Preference.TIMEZONE, EarthquakeBulletin.Defaults.TIME_ZONE_ID)));
 			title.append(df.format(selection.getTime())).append(' ');
 			title.append(selection.getLatitude()).append(' ');
