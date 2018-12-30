@@ -40,8 +40,7 @@ class PackedMomentTensor implements Serializable {
 			try (final DeflaterOutputStream dos = new DeflaterOutputStream(baos)) {
 				logger.log(Level.FINE, "text.length() = {0,number,#}", text.length());
 				dos.write(text.getBytes(charset));
-				dos.finish();
-			}
+			} // The stream is finished and closed automatically.
 			final byte[] bytes = baos.toByteArray();
 			logger.log(Level.FINE, "bytes.length = {0,number,#}", bytes.length);
 			return new PackedMomentTensor(bytes, momentTensor.getEtag());
