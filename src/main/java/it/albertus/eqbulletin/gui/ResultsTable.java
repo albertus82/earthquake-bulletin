@@ -303,6 +303,16 @@ public class ResultsTable {
 			protected Color getForeground(final Earthquake element) {
 				return table.getDisplay().getSystemColor(SWT.COLOR_LINK_FOREGROUND);
 			}
+
+			@Override
+			protected String getToolTipText(final Earthquake element) {
+				return element.getMomentTensorUrl() != null ? Messages.get("lbl.table.mt.tooltip") : null;
+			}
+
+			@Override
+			public int getToolTipTimeDisplayed(final Object object) {
+				return TOOLTIP_TIME_DISPLAYED;
+			}
 		});
 
 		col = createTableViewerColumn(labelsMap.get(COL_IDX_REGION).get(), COL_IDX_REGION);
