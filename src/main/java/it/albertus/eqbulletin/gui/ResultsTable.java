@@ -68,6 +68,15 @@ public class ResultsTable {
 
 	private static final String MT = "MT";
 
+	private static final int COL_IDX_TIME = 0;
+	private static final int COL_IDX_MAGNITUDE = 1;
+	private static final int COL_IDX_LATITUDE = 2;
+	private static final int COL_IDX_LONGITUDE = 3;
+	private static final int COL_IDX_DEPTH = 4;
+	private static final int COL_IDX_STATUS = 5;
+	private static final int COL_IDX_MT = 6;
+	private static final int COL_IDX_REGION = 7;
+
 	private static final String SYM_NAME_FONT_DEFAULT = ResultsTable.class.getName().toLowerCase() + ".default";
 
 	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getInstance();
@@ -106,25 +115,25 @@ public class ResultsTable {
 			final Earthquake eq2 = (Earthquake) e2;
 			int rc;
 			switch (propertyIndex) {
-			case 0:
+			case COL_IDX_TIME:
 				rc = eq1.getTime().compareTo(eq2.getTime());
 				break;
-			case 1:
+			case COL_IDX_MAGNITUDE:
 				rc = Float.compare(eq1.getMagnitude(), eq2.getMagnitude());
 				break;
-			case 2:
+			case COL_IDX_LATITUDE:
 				rc = eq1.getLatitude().compareTo(eq2.getLatitude());
 				break;
-			case 3:
+			case COL_IDX_LONGITUDE:
 				rc = eq1.getLongitude().compareTo(eq2.getLongitude());
 				break;
-			case 4:
+			case COL_IDX_DEPTH:
 				rc = eq1.getDepth().compareTo(eq2.getDepth());
 				break;
-			case 5:
+			case COL_IDX_STATUS:
 				rc = eq1.getStatus().compareTo(eq2.getStatus());
 				break;
-			case 6:
+			case COL_IDX_MT:
 				if (eq1.getMomentTensorUrl() == null && eq2.getMomentTensorUrl() == null || eq1.getMomentTensorUrl() != null && eq2.getMomentTensorUrl() != null) {
 					rc = 0;
 				}
@@ -132,7 +141,7 @@ public class ResultsTable {
 					rc = eq1.getMomentTensorUrl() != null ? -1 : 1;
 				}
 				break;
-			case 7:
+			case COL_IDX_REGION:
 				rc = eq1.getRegion().compareTo(eq2.getRegion());
 				break;
 			default:
@@ -191,7 +200,7 @@ public class ResultsTable {
 			labelsMap.put(i++, () -> Messages.get("lbl.table." + suffix));
 		}
 
-		TableViewerColumn col = createTableViewerColumn(labelsMap.get(0).get(), 0);
+		TableViewerColumn col = createTableViewerColumn(labelsMap.get(COL_IDX_TIME).get(), COL_IDX_TIME);
 		col.setLabelProvider(new EarthquakeColumnLabelProvider() {
 			@Override
 			protected String getText(final Earthquake element) {
@@ -201,7 +210,7 @@ public class ResultsTable {
 			}
 		});
 
-		col = createTableViewerColumn(labelsMap.get(1).get(), 1);
+		col = createTableViewerColumn(labelsMap.get(COL_IDX_MAGNITUDE).get(), COL_IDX_MAGNITUDE);
 		col.getColumn().setAlignment(SWT.CENTER);
 		col.setLabelProvider(new EarthquakeColumnLabelProvider() {
 			@Override
@@ -232,7 +241,7 @@ public class ResultsTable {
 			}
 		});
 
-		col = createTableViewerColumn(labelsMap.get(2).get(), 2);
+		col = createTableViewerColumn(labelsMap.get(COL_IDX_LATITUDE).get(), COL_IDX_LATITUDE);
 		col.getColumn().setAlignment(SWT.RIGHT);
 		col.setLabelProvider(new EarthquakeColumnLabelProvider() {
 			@Override
@@ -241,7 +250,7 @@ public class ResultsTable {
 			}
 		});
 
-		col = createTableViewerColumn(labelsMap.get(3).get(), 3);
+		col = createTableViewerColumn(labelsMap.get(COL_IDX_LONGITUDE).get(), COL_IDX_LONGITUDE);
 		col.getColumn().setAlignment(SWT.RIGHT);
 		col.setLabelProvider(new EarthquakeColumnLabelProvider() {
 			@Override
@@ -250,7 +259,7 @@ public class ResultsTable {
 			}
 		});
 
-		col = createTableViewerColumn(labelsMap.get(4).get(), 4);
+		col = createTableViewerColumn(labelsMap.get(COL_IDX_DEPTH).get(), COL_IDX_DEPTH);
 		col.getColumn().setAlignment(SWT.RIGHT);
 		col.setLabelProvider(new EarthquakeColumnLabelProvider() {
 			@Override
@@ -259,7 +268,7 @@ public class ResultsTable {
 			}
 		});
 
-		col = createTableViewerColumn(labelsMap.get(5).get(), 5);
+		col = createTableViewerColumn(labelsMap.get(COL_IDX_STATUS).get(), COL_IDX_STATUS);
 		col.getColumn().setAlignment(SWT.CENTER);
 		col.setLabelProvider(new EarthquakeColumnLabelProvider() {
 			@Override
@@ -283,7 +292,7 @@ public class ResultsTable {
 			}
 		});
 
-		col = createTableViewerColumn(labelsMap.get(6).get(), 6);
+		col = createTableViewerColumn(labelsMap.get(COL_IDX_MT).get(), COL_IDX_MT);
 		col.setLabelProvider(new EarthquakeColumnLabelProvider() {
 			@Override
 			protected String getText(final Earthquake element) {
@@ -296,7 +305,7 @@ public class ResultsTable {
 			}
 		});
 
-		col = createTableViewerColumn(labelsMap.get(7).get(), 7);
+		col = createTableViewerColumn(labelsMap.get(COL_IDX_REGION).get(), COL_IDX_REGION);
 		col.setLabelProvider(new EarthquakeColumnLabelProvider() {
 			@Override
 			protected String getText(final Earthquake element) {
@@ -309,7 +318,7 @@ public class ResultsTable {
 			public void mouseDown(final MouseEvent e) {
 				if (e.button == 1) {
 					final ViewerCell cell = tableViewer.getCell(new Point(e.x, e.y));
-					if (cell != null && cell.getColumnIndex() == 6 && MT.equals(cell.getText()) && cell.getElement() instanceof Earthquake) {
+					if (cell != null && cell.getColumnIndex() == COL_IDX_MT && MT.equals(cell.getText()) && cell.getElement() instanceof Earthquake) {
 						final Shell shell = table.getShell();
 						final MomentTensor momentTensor = MomentTensorRetriever.retrieve((Earthquake) cell.getElement(), shell);
 						if (momentTensor != null) {
