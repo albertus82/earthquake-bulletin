@@ -37,8 +37,8 @@ public class MapCache implements Cache<String, MapImage> {
 	public void put(final String guid, final MapImage map) {
 		cache.put(guid, map);
 		while (cache.size() > 0 && cache.size() > configuration.getByte(Preference.MAP_CACHE_SIZE, Defaults.CACHE_SIZE)) {
-			final String eldestGuid = cache.keySet().iterator().next();
-			cache.remove(eldestGuid);
+			final String firstKey = cache.keySet().iterator().next();
+			cache.remove(firstKey);
 		}
 	}
 

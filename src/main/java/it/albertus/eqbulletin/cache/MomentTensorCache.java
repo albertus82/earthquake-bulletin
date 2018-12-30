@@ -26,8 +26,8 @@ public class MomentTensorCache implements Cache<String, MomentTensor> {
 	public void put(final String guid, final MomentTensor mt) {
 		cache.put(guid, PackedMomentTensor.pack(mt));
 		while (cache.size() > 0 && cache.size() > CACHE_SIZE) {
-			final String eldestGuid = cache.keySet().iterator().next();
-			cache.remove(eldestGuid);
+			final String firstKey = cache.keySet().iterator().next();
+			cache.remove(firstKey);
 		}
 	}
 
