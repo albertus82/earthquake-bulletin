@@ -8,7 +8,7 @@ import it.albertus.eqbulletin.gui.preference.Preference;
 import it.albertus.eqbulletin.model.MapImage;
 import it.albertus.jface.preference.IPreferencesConfiguration;
 
-public class MapCache {
+public class MapCache implements Cache<String, MapImage> {
 
 	public static class Defaults {
 		public static final byte CACHE_SIZE = 20;
@@ -33,6 +33,7 @@ public class MapCache {
 
 	private final Map<String, MapImage> cache = new LinkedHashMap<>();
 
+	@Override
 	public void put(final String guid, final MapImage map) {
 		cache.put(guid, map);
 		while (cache.size() > 0 && cache.size() > configuration.getByte(Preference.MAP_CACHE_SIZE, Defaults.CACHE_SIZE)) {
@@ -41,21 +42,24 @@ public class MapCache {
 		}
 	}
 
+	@Override
 	public MapImage get(final String guid) {
 		return cache.get(guid);
 	}
 
+	@Override
 	public boolean contains(final String guid) {
 		return cache.containsKey(guid);
 	}
 
-	public int size() {
+	@Override
+	public int getSize() {
 		return cache.size();
 	}
 
 	@Override
 	public String toString() {
-		return "MapCache [size=" + size() + "]";
+		return "MapCache [size=" + getSize() + "]";
 	}
 
 }

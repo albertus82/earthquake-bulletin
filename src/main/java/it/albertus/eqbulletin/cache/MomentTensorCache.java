@@ -5,7 +5,7 @@ import java.util.Map;
 
 import it.albertus.eqbulletin.model.MomentTensor;
 
-public class MomentTensorCache {
+public class MomentTensorCache implements Cache<String, MomentTensor> {
 
 	private static final byte CACHE_SIZE = Byte.MAX_VALUE;
 
@@ -20,31 +20,35 @@ public class MomentTensorCache {
 
 	private MomentTensorCache() {}
 
-	private final Map<String, MomentTensor> cache = new LinkedHashMap<>(); // TODO compress
+	private final Map<String, PackedMomentTensor> cache = new LinkedHashMap<>();
 
+	@Override
 	public void put(final String guid, final MomentTensor mt) {
-		cache.put(guid, mt);
+		cache.put(guid, PackedMomentTensor.pack(mt));
 		while (cache.size() > 0 && cache.size() > CACHE_SIZE) {
 			final String eldestGuid = cache.keySet().iterator().next();
 			cache.remove(eldestGuid);
 		}
 	}
 
+	@Override
 	public MomentTensor get(final String guid) {
-		return cache.get(guid);
+		return contains(guid) ? cache.get(guid).unpack() : null;
 	}
 
+	@Override
 	public boolean contains(final String guid) {
 		return cache.containsKey(guid);
 	}
 
-	public int size() {
+	@Override
+	public int getSize() {
 		return cache.size();
 	}
 
 	@Override
 	public String toString() {
-		return "MomentTensorCache [size=" + size() + "]";
+		return "MomentTensorCache [size=" + getSize() + "]";
 	}
 
 }

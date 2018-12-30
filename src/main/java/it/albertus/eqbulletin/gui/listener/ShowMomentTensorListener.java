@@ -28,8 +28,7 @@ public class ShowMomentTensorListener implements Listener {
 			if (selectedItem != null && shell != null && !shell.isDisposed()) {
 				final MomentTensor momentTensor = MomentTensorRetriever.retrieve(selectedItem, shell);
 				if (momentTensor != null) {
-					final MomentTensorDialog dialog = new MomentTensorDialog(shell, momentTensor.getText());
-					dialog.open();
+					new MomentTensorDialog(shell, momentTensor.getText()).open();
 				}
 			}
 		}

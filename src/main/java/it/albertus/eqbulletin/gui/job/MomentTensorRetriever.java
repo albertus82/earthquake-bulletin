@@ -34,7 +34,7 @@ import it.albertus.util.logging.LoggerFactory;
 
 public class MomentTensorRetriever implements IRunnableWithProgress {
 
-	private static final int BUFFER_SIZE = 2048;
+	private static final int BUFFER_SIZE = 512;
 
 	private static final String TASK_NAME = "Fetching moment tensor";
 
@@ -48,12 +48,13 @@ public class MomentTensorRetriever implements IRunnableWithProgress {
 		final MomentTensorCache cache = MomentTensorCache.getInstance();
 		final String guid = earthquake.getGuid();
 		if (!cache.contains(guid)) {
-			logger.log(Level.FINE, "Cache miss for key \"{0}\". Cache size: {1}", new Serializable[] { guid, cache.size() });
+			logger.log(Level.FINE, "Cache miss for key \"{0}\". Cache size: {1}", new Serializable[] { guid, cache.getSize() });
 			try {
 				SwtUtils.blockShell(shell);
 				final MomentTensorRetriever operation = new MomentTensorRetriever(earthquake);
 				ModalContext.run(operation, true, new NullProgressMonitor(), shell.getDisplay());
 				cache.put(guid, operation.getResult());
+				return operation.getResult(); // Avoid unpack the first time.
 			}
 			catch (final InvocationTargetException e) {
 				final String message = Messages.get("err.job.mt.show");
@@ -72,7 +73,7 @@ public class MomentTensorRetriever implements IRunnableWithProgress {
 			}
 		}
 		else {
-			logger.log(Level.FINE, "Cache hit for key \"{0}\". Cache size: {1}", new Serializable[] { guid, cache.size() });
+			logger.log(Level.FINE, "Cache hit for key \"{0}\". Cache size: {1}", new Serializable[] { guid, cache.getSize() });
 		}
 		return cache.get(guid);
 	}

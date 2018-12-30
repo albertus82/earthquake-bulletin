@@ -5,7 +5,6 @@ import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.util.Util;
-import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -27,6 +26,8 @@ public class MomentTensorDialog extends Dialog {
 
 	private final String contents;
 
+	private static final boolean LIMIT_HEIGHT = false;
+
 	public MomentTensorDialog(final Shell parent, final String contents) {
 		super(parent, SWT.SHEET | SWT.RESIZE | SWT.MAX);
 		if (contents == null) {
@@ -36,7 +37,7 @@ public class MomentTensorDialog extends Dialog {
 		setText(Messages.get("lbl.mt.title"));
 	}
 
-	public int open() {
+	public void open() {
 		final Shell shell = new Shell(getParent(), getStyle());
 		final Point defaultSize = getSize(shell);
 		shell.setText(getText());
@@ -47,7 +48,9 @@ public class MomentTensorDialog extends Dialog {
 		GridLayoutFactory.swtDefaults().applyTo(shell);
 		createContents(shell);
 		shell.pack();
-		shell.setSize(shell.getSize().x, defaultSize.y);
+		if (LIMIT_HEIGHT) {
+			shell.setSize(shell.getSize().x, defaultSize.y);
+		}
 		shell.open();
 		final Display display = getParent().getDisplay();
 		while (!shell.isDisposed()) {
@@ -55,7 +58,6 @@ public class MomentTensorDialog extends Dialog {
 				display.sleep();
 			}
 		}
-		return Window.CANCEL;
 	}
 
 	private static Point getSize(final Shell shell) {
