@@ -119,7 +119,7 @@ public class MenuBar extends AbstractMenu {
 		showMapMenuItem.setText(Messages.get(LBL_MENU_ITEM_SHOW_MAP));
 		showMapMenuItem.addListener(SWT.Selection, new ShowMapListener(gui));
 
-		// Show moment tensor solution...
+		// Show moment tensor...
 		showMomentTensorMenuItem = new MenuItem(eventMenu, SWT.PUSH);
 		showMomentTensorMenuItem.setText(Messages.get(LBL_MENU_ITEM_SHOW_MOMENT_TENSOR));
 		showMomentTensorMenuItem.addListener(SWT.Selection, new ShowMomentTensorListener(gui));

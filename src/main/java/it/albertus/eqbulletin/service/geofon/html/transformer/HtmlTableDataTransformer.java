@@ -110,7 +110,7 @@ public class HtmlTableDataTransformer {
 			final Earthquake earthquake = new Earthquake(guid, time.getTime(), magnitude, new Latitude(latitude), new Longitude(longitude), new Depth(depth), status, region, link, enclosure);
 
 			if (lines[6].contains(MOMENT_TENSOR_FILENAME)) {
-				earthquake.setMomentTensor(new URL(eventBaseUrl + MOMENT_TENSOR_FILENAME));
+				earthquake.setMomentTensorUrl(new URL(eventBaseUrl + MOMENT_TENSOR_FILENAME));
 			}
 
 			return earthquake;

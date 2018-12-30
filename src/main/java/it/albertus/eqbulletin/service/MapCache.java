@@ -44,30 +44,7 @@ public class MapCache {
 
 	@Override
 	public String toString() {
-		return "MapCache [cache=" + cache + "]";
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + cache.hashCode();
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (!(obj instanceof MapCache)) {
-			return false;
-		}
-		MapCache other = (MapCache) obj;
-		return cache.equals(other.cache);
+		return "MapCache [size()=" + size() + "]";
 	}
 
 }

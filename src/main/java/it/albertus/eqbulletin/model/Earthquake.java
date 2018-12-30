@@ -6,7 +6,7 @@ import java.util.Date;
 
 public class Earthquake implements Serializable, Comparable<Earthquake> {
 
-	private static final long serialVersionUID = 3052012419295604392L;
+	private static final long serialVersionUID = 8898737586060629885L;
 
 	private final String guid;
 	private final Date time;
@@ -15,7 +15,7 @@ public class Earthquake implements Serializable, Comparable<Earthquake> {
 	private final Longitude longitude;
 	private final Depth depth;
 	private final Status status;
-	private URL momentTensor;
+	private URL momentTensorUrl;
 	private final String region;
 	private final URL link;
 	private final URL enclosure;
@@ -61,12 +61,12 @@ public class Earthquake implements Serializable, Comparable<Earthquake> {
 		return status;
 	}
 
-	public URL getMomentTensor() {
-		return momentTensor;
+	public URL getMomentTensorUrl() {
+		return momentTensorUrl;
 	}
 
-	public void setMomentTensor(final URL momentTensor) {
-		this.momentTensor = momentTensor;
+	public void setMomentTensorUrl(final URL momentTensorUrl) {
+		this.momentTensorUrl = momentTensorUrl;
 	}
 
 	public String getRegion() {
@@ -87,7 +87,7 @@ public class Earthquake implements Serializable, Comparable<Earthquake> {
 
 	@Override
 	public String toString() {
-		return "Earthquake [guid=" + guid + ", time=" + time + ", magnitude=" + magnitude + ", latitude=" + latitude + ", longitude=" + longitude + ", depth=" + depth + ", status=" + status + ", momentTensor=" + momentTensor + ", region=" + region + ", link=" + link + ", enclosure=" + enclosure + "]";
+		return "Earthquake [guid=" + guid + ", time=" + time + ", magnitude=" + magnitude + ", latitude=" + latitude + ", longitude=" + longitude + ", depth=" + depth + ", status=" + status + ", momentTensorUrl=" + momentTensorUrl + ", region=" + region + ", link=" + link + ", enclosure=" + enclosure + "]";
 	}
 
 	@Override
