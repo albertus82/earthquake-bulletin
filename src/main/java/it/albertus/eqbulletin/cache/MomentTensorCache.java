@@ -1,4 +1,4 @@
-package it.albertus.eqbulletin.service;
+package it.albertus.eqbulletin.cache;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -44,7 +44,7 @@ public class MomentTensorCache {
 
 	@Override
 	public String toString() {
-		return "MomentTensorCache [size()=" + size() + "]";
+		return "MomentTensorCache [size=" + size() + "]";
 	}
 
 }

@@ -3,6 +3,7 @@ package it.albertus.eqbulletin.gui.job;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
@@ -20,10 +21,10 @@ import org.eclipse.swt.widgets.Shell;
 
 import com.sun.net.httpserver.Headers;
 
+import it.albertus.eqbulletin.cache.MomentTensorCache;
 import it.albertus.eqbulletin.model.Earthquake;
 import it.albertus.eqbulletin.model.MomentTensor;
 import it.albertus.eqbulletin.resources.Messages;
-import it.albertus.eqbulletin.service.MomentTensorCache;
 import it.albertus.eqbulletin.service.net.ConnectionFactory;
 import it.albertus.jface.EnhancedErrorDialog;
 import it.albertus.jface.SwtUtils;
@@ -47,7 +48,7 @@ public class MomentTensorRetriever implements IRunnableWithProgress {
 		final MomentTensorCache cache = MomentTensorCache.getInstance();
 		final String guid = earthquake.getGuid();
 		if (!cache.contains(guid)) {
-			logger.log(Level.FINE, "Cache miss for key \"{0}\".", guid);
+			logger.log(Level.FINE, "Cache miss for key \"{0}\". Cache size: {1}", new Serializable[] { guid, cache.size() });
 			try {
 				SwtUtils.blockShell(shell);
 				final MomentTensorRetriever operation = new MomentTensorRetriever(earthquake);
@@ -71,7 +72,7 @@ public class MomentTensorRetriever implements IRunnableWithProgress {
 			}
 		}
 		else {
-			logger.log(Level.FINE, "Cache hit for key \"{0}\".", guid);
+			logger.log(Level.FINE, "Cache hit for key \"{0}\". Cache size: {1}", new Serializable[] { guid, cache.size() });
 		}
 		return cache.get(guid);
 	}
@@ -100,6 +101,7 @@ public class MomentTensorRetriever implements IRunnableWithProgress {
 						charsetName = StringUtils.substringAfter(contentType, "charset=").trim();
 					}
 				}
+				logger.log(Level.FINE, "Content-Type charset: {0}", charsetName);
 				result = new MomentTensor(out.toString(charsetName), connection.getHeaderField("Etag"));
 			}
 		}

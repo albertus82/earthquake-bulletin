@@ -10,6 +10,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.SWT;
 
+import it.albertus.eqbulletin.cache.MapCache;
 import it.albertus.eqbulletin.gui.EarthquakeBulletinGui;
 import it.albertus.eqbulletin.gui.Images;
 import it.albertus.eqbulletin.gui.MapCanvas;
@@ -47,11 +48,12 @@ public class DownloadMapJob extends Job {
 
 		if (earthquake.getEnclosure() != null) {
 			final MapCanvas mapCanvas = gui.getMapCanvas();
+			final MapCache cache = MapCache.getInstance();
 
 			new DisplayThreadExecutor(gui.getShell()).execute(() -> {
 				gui.getShell().setCursor(gui.getShell().getDisplay().getSystemCursor(SWT.CURSOR_WAIT));
-				if (mapCanvas.getCache().contains(earthquake.getGuid())) { // show cached map immediately if available
-					mapCanvas.setImage(earthquake.getGuid(), mapCanvas.getCache().get(earthquake.getGuid()));
+				if (cache.contains(earthquake.getGuid())) { // show cached map immediately if available
+					mapCanvas.setImage(earthquake.getGuid(), cache.get(earthquake.getGuid()));
 				}
 			});
 
@@ -70,14 +72,14 @@ public class DownloadMapJob extends Job {
 			catch (final Exception e) {
 				final String message = Messages.get("err.job.map");
 				logger.log(Level.WARNING, message, e);
-				if (!mapCanvas.getCache().contains(earthquake.getGuid())) { // show error dialog only if not present in cache
+				if (!cache.contains(earthquake.getGuid())) { // show error dialog only if not present in cache
 					showErrorDialog(e, message, IStatus.WARNING);
 				}
 			}
 			catch (final LinkageError e) {
 				final String message = Messages.get("err.job.map");
 				logger.log(Level.SEVERE, message, e);
-				if (!mapCanvas.getCache().contains(earthquake.getGuid())) { // show error dialog only if not present in cache
+				if (!cache.contains(earthquake.getGuid())) { // show error dialog only if not present in cache
 					showErrorDialog(e, message, IStatus.ERROR);
 				}
 			}

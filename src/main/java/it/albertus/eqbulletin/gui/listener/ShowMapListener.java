@@ -5,11 +5,11 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
+import it.albertus.eqbulletin.cache.MapCache;
 import it.albertus.eqbulletin.gui.EarthquakeBulletinGui;
 import it.albertus.eqbulletin.gui.MapCanvas;
 import it.albertus.eqbulletin.gui.job.DownloadMapJob;
 import it.albertus.eqbulletin.model.Earthquake;
-import it.albertus.eqbulletin.service.MapCache;
 
 public class ShowMapListener implements Listener {
 
@@ -27,7 +27,7 @@ public class ShowMapListener implements Listener {
 			if (selectedItem != null) {
 				final String guid = selectedItem.getGuid();
 				final MapCanvas mapCanvas = gui.getMapCanvas();
-				final MapCache cache = mapCanvas.getCache();
+				final MapCache cache = MapCache.getInstance();
 				if (mapCanvas.getDownloadMapJob() == null || mapCanvas.getDownloadMapJob().getState() == Job.NONE) {
 					if (cache.contains(guid) && cache.get(guid).getEtag() != null) {
 						mapCanvas.setDownloadMapJob(new DownloadMapJob(gui, selectedItem, cache.get(guid).getEtag()));

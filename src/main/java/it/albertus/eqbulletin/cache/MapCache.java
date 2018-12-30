@@ -1,4 +1,4 @@
-package it.albertus.eqbulletin.service;
+package it.albertus.eqbulletin.cache;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -19,6 +19,17 @@ public class MapCache {
 	}
 
 	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getInstance();
+
+	private static MapCache instance;
+
+	public static synchronized MapCache getInstance() {
+		if (instance == null) {
+			instance = new MapCache();
+		}
+		return instance;
+	}
+
+	private MapCache() {}
 
 	private final Map<String, MapImage> cache = new LinkedHashMap<>();
 
@@ -44,7 +55,7 @@ public class MapCache {
 
 	@Override
 	public String toString() {
-		return "MapCache [size()=" + size() + "]";
+		return "MapCache [size=" + size() + "]";
 	}
 
 }

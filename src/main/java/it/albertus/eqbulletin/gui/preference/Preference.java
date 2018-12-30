@@ -19,6 +19,7 @@ import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.swt.widgets.Composite;
 
 import it.albertus.eqbulletin.EarthquakeBulletin;
+import it.albertus.eqbulletin.cache.MapCache;
 import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
 import it.albertus.eqbulletin.gui.CloseDialog;
 import it.albertus.eqbulletin.gui.EarthquakeBulletinGui;
@@ -29,7 +30,6 @@ import it.albertus.eqbulletin.gui.TrayIcon;
 import it.albertus.eqbulletin.model.Format;
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.eqbulletin.resources.Messages.Language;
-import it.albertus.eqbulletin.service.MapCache;
 import it.albertus.eqbulletin.service.net.ConnectionFactory;
 import it.albertus.jface.SwtUtils;
 import it.albertus.jface.preference.FieldEditorDetails;

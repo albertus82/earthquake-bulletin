@@ -33,12 +33,12 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 
+import it.albertus.eqbulletin.cache.MapCache;
 import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
 import it.albertus.eqbulletin.gui.job.DownloadMapJob;
 import it.albertus.eqbulletin.gui.preference.Preference;
 import it.albertus.eqbulletin.model.MapImage;
 import it.albertus.eqbulletin.resources.Messages;
-import it.albertus.eqbulletin.service.MapCache;
 import it.albertus.jface.EnhancedErrorDialog;
 import it.albertus.jface.HqImageResizer;
 import it.albertus.jface.preference.IPreferencesConfiguration;
@@ -64,7 +64,6 @@ public class MapCanvas {
 
 	private final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getInstance();
 
-	private final MapCache cache = new MapCache();
 	private final Canvas canvas;
 
 	private String guid;
@@ -180,7 +179,7 @@ public class MapCanvas {
 	public void setImage(final String guid, final MapImage mapImage) {
 		final byte[] imageBytes = mapImage.getBytes();
 		if (imageBytes != null && imageBytes.length > 0) {
-			cache.put(guid, mapImage);
+			MapCache.getInstance().put(guid, mapImage);
 			try (final InputStream is = new ByteArrayInputStream(imageBytes)) {
 				final Image oldImage = this.image;
 				this.image = new Image(canvas.getDisplay(), is);
@@ -335,7 +334,7 @@ public class MapCanvas {
 			final String fileName = saveDialog.open();
 			if (fileName != null && !fileName.trim().isEmpty()) {
 				try {
-					Files.write(Paths.get(fileName), cache.get(guid).getBytes());
+					Files.write(Paths.get(fileName), MapCache.getInstance().get(guid).getBytes());
 				}
 				catch (final Exception e) {
 					final String message = Messages.get("err.image.save", fileName);
@@ -360,10 +359,6 @@ public class MapCanvas {
 
 	public Canvas getCanvas() {
 		return canvas;
-	}
-
-	public MapCache getCache() {
-		return cache;
 	}
 
 	public DownloadMapJob getDownloadMapJob() {
