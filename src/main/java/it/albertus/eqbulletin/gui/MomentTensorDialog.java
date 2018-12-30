@@ -29,7 +29,7 @@ public class MomentTensorDialog extends Dialog {
 	private static final boolean LIMIT_HEIGHT = false;
 
 	public MomentTensorDialog(final Shell parent, final String contents) {
-		super(parent, SWT.SHEET | SWT.RESIZE | SWT.MAX);
+		super(parent, SWT.SHEET | SWT.RESIZE);
 		if (contents == null) {
 			throw new NullPointerException("contents cannot be null");
 		}
