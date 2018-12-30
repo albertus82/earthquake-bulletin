@@ -85,26 +85,23 @@ public class ResultsTable {
 
 	private class EarthquakeViewerComparator extends ViewerComparator {
 
-		private static final int DESCENDING = 1;
+		@SuppressWarnings("unused")
+		private static final byte ASCENDING = 0; // NOSONAR
+		private static final byte DESCENDING = 1;
 
-		private int propertyIndex;
+		private int propertyIndex = 0;
 		private int direction = DESCENDING;
 
-		public EarthquakeViewerComparator() {
-			this.propertyIndex = 0;
-			direction = DESCENDING;
+		private int getDirection() {
+			return direction == DESCENDING ? SWT.DOWN : SWT.UP;
 		}
 
-		public int getDirection() {
-			return direction == 1 ? SWT.DOWN : SWT.UP;
-		}
-
-		public void setColumn(final int column) {
-			if (column == this.propertyIndex) {
+		private void setColumn(final int columnIndex) {
+			if (columnIndex == propertyIndex) {
 				direction = 1 - direction;
 			}
 			else {
-				this.propertyIndex = column;
+				propertyIndex = columnIndex;
 				direction = DESCENDING;
 			}
 		}
@@ -200,129 +197,14 @@ public class ResultsTable {
 			labelsMap.put(i++, () -> Messages.get("lbl.table." + suffix));
 		}
 
-		TableViewerColumn col = createTableViewerColumn(labelsMap.get(COL_IDX_TIME).get(), COL_IDX_TIME);
-		col.setLabelProvider(new EarthquakeColumnLabelProvider() {
-			@Override
-			protected String getText(final Earthquake element) {
-				final DateFormat df = dateFormats.get();
-				df.setTimeZone(TimeZone.getTimeZone(configuration.getString(Preference.TIMEZONE, EarthquakeBulletin.Defaults.TIME_ZONE_ID)));
-				return df.format(element.getTime());
-			}
-		});
-
-		col = createTableViewerColumn(labelsMap.get(COL_IDX_MAGNITUDE).get(), COL_IDX_MAGNITUDE);
-		col.getColumn().setAlignment(SWT.CENTER);
-		col.setLabelProvider(new EarthquakeColumnLabelProvider() {
-			@Override
-			protected String getText(final Earthquake element) {
-				return Float.toString(element.getMagnitude());
-			}
-
-			@Override
-			protected Color getForeground(final Earthquake element) {
-				if (element.getMagnitude() >= configuration.getFloat(Preference.MAGNITUDE_XXL, Defaults.MAGNITUDE_XXL)) {
-					return table.getDisplay().getSystemColor(SWT.COLOR_RED);
-				}
-				else {
-					return super.getForeground(element);
-				}
-			}
-
-			@Override
-			protected Font getFont(final Earthquake element) {
-				if (element.getMagnitude() >= configuration.getFloat(Preference.MAGNITUDE_BIG, Defaults.MAGNITUDE_BIG) && getTableViewer().getTable().getItemCount() != 0) {
-					final FontRegistry fontRegistry = JFaceResources.getFontRegistry();
-					if (!fontRegistry.hasValueFor(SYM_NAME_FONT_DEFAULT)) {
-						fontRegistry.put(SYM_NAME_FONT_DEFAULT, getTableViewer().getTable().getItem(0).getFont(0).getFontData());
-					}
-					return fontRegistry.getBold(SYM_NAME_FONT_DEFAULT);
-				}
-				return super.getFont(element);
-			}
-		});
-
-		col = createTableViewerColumn(labelsMap.get(COL_IDX_LATITUDE).get(), COL_IDX_LATITUDE);
-		col.getColumn().setAlignment(SWT.RIGHT);
-		col.setLabelProvider(new EarthquakeColumnLabelProvider() {
-			@Override
-			protected String getText(final Earthquake element) {
-				return String.valueOf(element.getLatitude());
-			}
-		});
-
-		col = createTableViewerColumn(labelsMap.get(COL_IDX_LONGITUDE).get(), COL_IDX_LONGITUDE);
-		col.getColumn().setAlignment(SWT.RIGHT);
-		col.setLabelProvider(new EarthquakeColumnLabelProvider() {
-			@Override
-			protected String getText(final Earthquake element) {
-				return String.valueOf(element.getLongitude());
-			}
-		});
-
-		col = createTableViewerColumn(labelsMap.get(COL_IDX_DEPTH).get(), COL_IDX_DEPTH);
-		col.getColumn().setAlignment(SWT.RIGHT);
-		col.setLabelProvider(new EarthquakeColumnLabelProvider() {
-			@Override
-			protected String getText(final Earthquake element) {
-				return String.valueOf(element.getDepth());
-			}
-		});
-
-		col = createTableViewerColumn(labelsMap.get(COL_IDX_STATUS).get(), COL_IDX_STATUS);
-		col.getColumn().setAlignment(SWT.CENTER);
-		col.setLabelProvider(new EarthquakeColumnLabelProvider() {
-			@Override
-			protected String getText(final Earthquake element) {
-				return String.valueOf(element.getStatus());
-			}
-
-			@Override
-			protected Color getForeground(final Earthquake element) {
-				return table.getDisplay().getSystemColor(Status.A.equals(element.getStatus()) ? SWT.COLOR_RED : SWT.COLOR_DARK_GREEN);
-			}
-
-			@Override
-			protected String getToolTipText(final Earthquake element) {
-				return element.getStatus().getDescription();
-			}
-
-			@Override
-			public int getToolTipTimeDisplayed(final Object object) {
-				return TOOLTIP_TIME_DISPLAYED;
-			}
-		});
-
-		col = createTableViewerColumn(labelsMap.get(COL_IDX_MT).get(), COL_IDX_MT);
-		col.getColumn().setAlignment(SWT.CENTER);
-		col.setLabelProvider(new EarthquakeColumnLabelProvider() {
-			@Override
-			protected String getText(final Earthquake element) {
-				return element.getMomentTensorUrl() != null ? MT : "";
-			}
-
-			@Override
-			protected Color getForeground(final Earthquake element) {
-				return table.getDisplay().getSystemColor(SWT.COLOR_LINK_FOREGROUND);
-			}
-
-			@Override
-			protected String getToolTipText(final Earthquake element) {
-				return element.getMomentTensorUrl() != null ? Messages.get("lbl.table.mt.tooltip") : null;
-			}
-
-			@Override
-			public int getToolTipTimeDisplayed(final Object object) {
-				return TOOLTIP_TIME_DISPLAYED;
-			}
-		});
-
-		col = createTableViewerColumn(labelsMap.get(COL_IDX_REGION).get(), COL_IDX_REGION);
-		col.setLabelProvider(new EarthquakeColumnLabelProvider() {
-			@Override
-			protected String getText(final Earthquake element) {
-				return String.valueOf(element.getRegion());
-			}
-		});
+		createTimeColumn();
+		createMagnitudeColumn();
+		createLatitudeColumn();
+		createLongitudeColumn();
+		createDepthColumn();
+		createStatusColumn();
+		createMomentTensorColumn();
+		createRegionColumn();
 
 		table.addMouseListener(new MouseAdapter() {
 			@Override
@@ -345,6 +227,169 @@ public class ResultsTable {
 		table.setRedraw(true);
 	}
 
+	private void createTimeColumn() {
+		final TableViewerColumn col = createTableViewerColumn(labelsMap.get(COL_IDX_TIME).get(), COL_IDX_TIME);
+		col.setLabelProvider(new EarthquakeColumnLabelProvider() {
+			@Override
+			protected String getText(final Earthquake element) {
+				final DateFormat df = dateFormats.get();
+				df.setTimeZone(TimeZone.getTimeZone(configuration.getString(Preference.TIMEZONE, EarthquakeBulletin.Defaults.TIME_ZONE_ID)));
+				return df.format(element.getTime());
+			}
+		});
+	}
+
+	private void createMagnitudeColumn() {
+		final TableViewerColumn col = createTableViewerColumn(labelsMap.get(COL_IDX_MAGNITUDE).get(), COL_IDX_MAGNITUDE);
+		col.getColumn().setAlignment(SWT.CENTER);
+		col.setLabelProvider(new EarthquakeColumnLabelProvider() {
+			@Override
+			protected String getText(final Earthquake element) {
+				return Float.toString(element.getMagnitude());
+			}
+
+			@Override
+			protected Color getForeground(final Earthquake element) {
+				if (element.getMagnitude() >= configuration.getFloat(Preference.MAGNITUDE_XXL, Defaults.MAGNITUDE_XXL)) {
+					return col.getColumn().getDisplay().getSystemColor(SWT.COLOR_RED);
+				}
+				else {
+					return super.getForeground(element);
+				}
+			}
+
+			@Override
+			protected Font getFont(final Earthquake element) {
+				if (element.getMagnitude() >= configuration.getFloat(Preference.MAGNITUDE_BIG, Defaults.MAGNITUDE_BIG) && getTableViewer().getTable().getItemCount() != 0) {
+					final FontRegistry fontRegistry = JFaceResources.getFontRegistry();
+					if (!fontRegistry.hasValueFor(SYM_NAME_FONT_DEFAULT)) {
+						fontRegistry.put(SYM_NAME_FONT_DEFAULT, getTableViewer().getTable().getItem(0).getFont(0).getFontData());
+					}
+					return fontRegistry.getBold(SYM_NAME_FONT_DEFAULT);
+				}
+				return super.getFont(element);
+			}
+		});
+	}
+
+	private void createLatitudeColumn() {
+		final TableViewerColumn col = createTableViewerColumn(labelsMap.get(COL_IDX_LATITUDE).get(), COL_IDX_LATITUDE);
+		col.getColumn().setAlignment(SWT.RIGHT);
+		col.setLabelProvider(new EarthquakeColumnLabelProvider() {
+			@Override
+			protected String getText(final Earthquake element) {
+				return String.valueOf(element.getLatitude());
+			}
+		});
+	}
+
+	private void createLongitudeColumn() {
+		final TableViewerColumn col = createTableViewerColumn(labelsMap.get(COL_IDX_LONGITUDE).get(), COL_IDX_LONGITUDE);
+		col.getColumn().setAlignment(SWT.RIGHT);
+		col.setLabelProvider(new EarthquakeColumnLabelProvider() {
+			@Override
+			protected String getText(final Earthquake element) {
+				return String.valueOf(element.getLongitude());
+			}
+		});
+	}
+
+	private void createDepthColumn() {
+		final TableViewerColumn col = createTableViewerColumn(labelsMap.get(COL_IDX_DEPTH).get(), COL_IDX_DEPTH);
+		col.getColumn().setAlignment(SWT.RIGHT);
+		col.setLabelProvider(new EarthquakeColumnLabelProvider() {
+			@Override
+			protected String getText(final Earthquake element) {
+				return String.valueOf(element.getDepth());
+			}
+		});
+	}
+
+	private void createStatusColumn() {
+		final TableViewerColumn col = createTableViewerColumn(labelsMap.get(COL_IDX_STATUS).get(), COL_IDX_STATUS);
+		col.getColumn().setAlignment(SWT.CENTER);
+		col.setLabelProvider(new EarthquakeColumnLabelProvider() {
+			@Override
+			protected String getText(final Earthquake element) {
+				return String.valueOf(element.getStatus());
+			}
+
+			@Override
+			protected Color getForeground(final Earthquake element) {
+				return col.getColumn().getDisplay().getSystemColor(Status.A.equals(element.getStatus()) ? SWT.COLOR_RED : SWT.COLOR_DARK_GREEN);
+			}
+
+			@Override
+			protected String getToolTipText(final Earthquake element) {
+				return element.getStatus().getDescription();
+			}
+
+			@Override
+			public int getToolTipTimeDisplayed(final Object object) {
+				return TOOLTIP_TIME_DISPLAYED;
+			}
+		});
+	}
+
+	private void createMomentTensorColumn() {
+		final TableViewerColumn col = createTableViewerColumn(labelsMap.get(COL_IDX_MT).get(), COL_IDX_MT);
+		col.getColumn().setAlignment(SWT.CENTER);
+		col.setLabelProvider(new EarthquakeColumnLabelProvider() {
+			@Override
+			protected String getText(final Earthquake element) {
+				return element.getMomentTensorUrl() != null ? MT : "";
+			}
+
+			@Override
+			protected Color getForeground(final Earthquake element) {
+				return col.getColumn().getDisplay().getSystemColor(SWT.COLOR_LINK_FOREGROUND);
+			}
+
+			@Override
+			protected String getToolTipText(final Earthquake element) {
+				return element.getMomentTensorUrl() != null ? Messages.get("lbl.table.mt.tooltip") : null;
+			}
+
+			@Override
+			public int getToolTipTimeDisplayed(final Object object) {
+				return TOOLTIP_TIME_DISPLAYED;
+			}
+		});
+	}
+
+	private void createRegionColumn() {
+		final TableViewerColumn col = createTableViewerColumn(labelsMap.get(COL_IDX_REGION).get(), COL_IDX_REGION);
+		col.setLabelProvider(new EarthquakeColumnLabelProvider() {
+			@Override
+			protected String getText(final Earthquake element) {
+				return String.valueOf(element.getRegion());
+			}
+		});
+	}
+
+	private TableViewerColumn createTableViewerColumn(final String title, final int index) {
+		final TableViewerColumn viewerColumn = new TableViewerColumn(tableViewer, SWT.NONE);
+		final TableColumn column = viewerColumn.getColumn();
+		column.setText(title);
+		column.setResizable(true);
+		column.setMoveable(true);
+		column.addSelectionListener(createSelectionAdapter(column, index));
+		return viewerColumn;
+	}
+
+	private SelectionAdapter createSelectionAdapter(final TableColumn column, final int index) {
+		return new SelectionAdapter() {
+			@Override
+			public void widgetSelected(final SelectionEvent e) {
+				comparator.setColumn(index);
+				final Table table = tableViewer.getTable();
+				table.setSortDirection(comparator.getDirection());
+				table.setSortColumn(column);
+				tableViewer.refresh();
+			}
+		};
+	}
+
 	private static void packColumns(final Table table) {
 		for (final TableColumn column : table.getColumns()) {
 			column.pack();
@@ -363,34 +408,16 @@ public class ResultsTable {
 		}
 	}
 
-	private TableViewerColumn createTableViewerColumn(final String title, final int colNumber) {
-		final TableViewerColumn viewerColumn = new TableViewerColumn(tableViewer, SWT.NONE);
-		final TableColumn column = viewerColumn.getColumn();
-		column.setText(title);
-		column.setResizable(true);
-		column.setMoveable(true);
-		column.addSelectionListener(createSelectionAdapter(column, colNumber));
-		return viewerColumn;
-	}
-
-	private SelectionAdapter createSelectionAdapter(final TableColumn column, final int index) {
-		return new SelectionAdapter() {
-			@Override
-			public void widgetSelected(final SelectionEvent e) {
-				comparator.setColumn(index);
-				tableViewer.getTable().setSortDirection(comparator.getDirection());
-				tableViewer.getTable().setSortColumn(column);
-				tableViewer.refresh();
-			}
-		};
-	}
-
 	public void updateTexts() {
-		final Table table = tableViewer.getTable();
-		for (final Entry<Integer, Supplier<String>> e : labelsMap.entrySet()) {
-			table.getColumn(e.getKey()).setText(e.getValue().get());
+		if (tableViewer != null) {
+			final Table table = tableViewer.getTable();
+			for (final Entry<Integer, Supplier<String>> e : labelsMap.entrySet()) {
+				table.getColumn(e.getKey()).setText(e.getValue().get());
+			}
 		}
-		contextMenu.updateTexts();
+		if (contextMenu != null) {
+			contextMenu.updateTexts();
+		}
 	}
 
 	public TableViewer getTableViewer() {
@@ -411,8 +438,8 @@ public class ResultsTable {
 
 		private final Menu menu;
 
-		public ContextMenu(final EarthquakeBulletinGui gui) {
-			final Table table = ResultsTable.this.getTableViewer().getTable();
+		private ContextMenu(final EarthquakeBulletinGui gui) {
+			final Table table = tableViewer.getTable();
 			menu = new Menu(table);
 
 			// Show map...
