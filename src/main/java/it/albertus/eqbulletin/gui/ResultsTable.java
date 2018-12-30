@@ -293,6 +293,7 @@ public class ResultsTable {
 		});
 
 		col = createTableViewerColumn(labelsMap.get(COL_IDX_MT).get(), COL_IDX_MT);
+		col.getColumn().setAlignment(SWT.CENTER);
 		col.setLabelProvider(new EarthquakeColumnLabelProvider() {
 			@Override
 			protected String getText(final Earthquake element) {
