@@ -37,7 +37,7 @@ public class ImageDownloader {
 				final boolean gzip = responseContentEncoding != null && responseContentEncoding.toLowerCase().contains("gzip");
 				try (final InputStream internalInputStream = urlConnection.getInputStream(); final InputStream inputStream = gzip ? new GZIPInputStream(internalInputStream) : internalInputStream; final ByteArrayOutputStream buffer = new ByteArrayOutputStream()) {
 					IOUtils.copy(inputStream, buffer, BUFFER_SIZE);
-					return new MapImage(buffer.toByteArray(), urlConnection.getHeaderField("etag"));
+					return new MapImage(buffer.toByteArray(), urlConnection.getHeaderField("Etag"));
 				}
 			}
 		}
