@@ -1,5 +1,10 @@
 package it.albertus.eqbulletin.gui;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
@@ -24,23 +29,26 @@ import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.jface.DisplayThreadExecutor;
 import it.albertus.jface.JFaceMessages;
 import it.albertus.jface.SwtUtils;
+import it.albertus.util.logging.LoggerFactory;
 
 public class MomentTensorDialog extends Dialog {
 
 	private static final boolean LIMIT_HEIGHT = false;
 
-	private static MomentTensorDialog instance;
+	private static final Logger logger = LoggerFactory.getLogger(MomentTensorDialog.class);
 
-	private final MomentTensor momentTensor;
+	private static final Collection<MomentTensorDialog> instances = new ArrayList<>(1);
+
+	private MomentTensor momentTensor;
 	private final Earthquake earthquake;
 
 	private Text text;
 
 	public MomentTensorDialog(final Shell parent, final MomentTensor momentTensor, final Earthquake earthquake) {
 		super(parent, SWT.SHEET | SWT.RESIZE);
-		setInstance(this);
-		this.momentTensor = momentTensor;
 		this.earthquake = earthquake;
+		this.momentTensor = momentTensor;
+		addInstance(this); // Available for update on-the-fly.
 		setText(Messages.get("lbl.mt.title"));
 	}
 
@@ -65,6 +73,7 @@ public class MomentTensorDialog extends Dialog {
 				display.sleep();
 			}
 		}
+		removeInstance(this); // Not available for update on-the-fly.
 	}
 
 	private static Point getSize(final Shell shell) {
@@ -114,20 +123,35 @@ public class MomentTensorDialog extends Dialog {
 		return buttonComposite;
 	}
 
-	private static synchronized void setInstance(final MomentTensorDialog instance) {
-		MomentTensorDialog.instance = instance;
+	private static synchronized void addInstance(final MomentTensorDialog instance) {
+		instances.add(instance);
+		logger.log(instances.size() == 1 ? Level.FINE : Level.WARNING, "Moment tensor dialog instance added; instances.size() = {0}.", instances.size());
+	}
+
+	private static synchronized void removeInstance(final MomentTensorDialog instance) {
+		instances.remove(instance);
+		logger.log(instances.isEmpty() ? Level.FINE : Level.WARNING, "Moment tensor dialog instance removed; instances.size() = {0}.", instances.size());
 	}
 
 	public static synchronized void update(final MomentTensor momentTensor, final Earthquake earthquake) {
-		new DisplayThreadExecutor(instance.text).execute(() -> {
-			if (instance != null && earthquake.equals(instance.earthquake) && instance.text != null && !instance.text.isDisposed()) {
-				final String oldValue = instance.text.getText();
-				final String newValue = momentTensor.getText().trim();
-				if (!newValue.equals(oldValue)) {
-					instance.text.setText(newValue);
-				}
+		for (final MomentTensorDialog instance : instances) {
+			if (earthquake.equals(instance.earthquake)) {
+				logger.log(Level.FINE, "Updating moment tensor dialog instance {0}...", instance);
+				instance.momentTensor = momentTensor; // Useful when the Text field is not initialized.
+				new DisplayThreadExecutor(instance.text).execute(() -> {
+					if (instance.text != null && !instance.text.isDisposed()) {
+						final String oldValue = instance.text.getText();
+						final String newValue = instance.momentTensor.getText().trim();
+						if (!newValue.equals(oldValue)) {
+							instance.text.setText(newValue); // Update the Text field on-the-fly.
+						}
+					}
+				});
+				logger.log(Level.FINE, "Moment tensor dialog instance {0} updated.", instance);
+				return;
 			}
-		});
+		}
+		logger.log(Level.WARNING, "No moment tensor dialog instance found to update for GUID \"{0}\".", earthquake.getGuid());
 	}
 
 }

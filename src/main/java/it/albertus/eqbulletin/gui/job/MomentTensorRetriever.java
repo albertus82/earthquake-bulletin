@@ -98,12 +98,8 @@ public class MomentTensorRetriever implements IRunnableWithProgress {
 					operation.run();
 					final MomentTensor updatedMomentTensor = operation.getResult();
 					if (updatedMomentTensor != null && !cachedMomentTensor.getText().equals(updatedMomentTensor.getText())) {
-						final String guid = earthquake.getGuid();
-						logger.log(Level.FINE, "Updating moment tensor on-the-fly for key \"{0}\"...", guid);
 						MomentTensorDialog.update(updatedMomentTensor, earthquake); // Update UI on-the-fly.
-						logger.log(Level.FINE, "Moment tensor updated on-the-fly. Updating moment tensor cache for key \"{0}\"...", guid);
-						MomentTensorCache.getInstance().put(guid, updatedMomentTensor);
-						logger.log(Level.FINE, "Moment tensor cache updated for key \"{0}\".", guid);
+						MomentTensorCache.getInstance().put(earthquake.getGuid(), updatedMomentTensor);
 					}
 				}
 				catch (final Exception e) {
