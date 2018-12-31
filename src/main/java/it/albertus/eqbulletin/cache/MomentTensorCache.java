@@ -23,8 +23,8 @@ public class MomentTensorCache implements Cache<String, MomentTensor> {
 	private final Map<String, PackedMomentTensor> cache = new LinkedHashMap<>(16, 0.75f, true);
 
 	@Override
-	public void put(final String guid, final MomentTensor mt) {
-		cache.put(guid, PackedMomentTensor.pack(mt));
+	public void put(final String guid, final MomentTensor momentTensor) {
+		cache.put(guid, PackedMomentTensor.pack(momentTensor));
 		while (cache.size() > 0 && cache.size() > CACHE_SIZE) {
 			final String firstKey = cache.keySet().iterator().next();
 			cache.remove(firstKey);
@@ -33,7 +33,8 @@ public class MomentTensorCache implements Cache<String, MomentTensor> {
 
 	@Override
 	public MomentTensor get(final String guid) {
-		return contains(guid) ? cache.get(guid).unpack() : null;
+		final PackedMomentTensor element = cache.get(guid);
+		return element != null ? element.unpack() : null;
 	}
 
 	@Override

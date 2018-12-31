@@ -18,22 +18,29 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
+import it.albertus.eqbulletin.model.Earthquake;
+import it.albertus.eqbulletin.model.MomentTensor;
 import it.albertus.eqbulletin.resources.Messages;
+import it.albertus.jface.DisplayThreadExecutor;
 import it.albertus.jface.JFaceMessages;
 import it.albertus.jface.SwtUtils;
 
 public class MomentTensorDialog extends Dialog {
 
-	private final String contents;
-
 	private static final boolean LIMIT_HEIGHT = false;
 
-	public MomentTensorDialog(final Shell parent, final String contents) {
+	private static MomentTensorDialog instance;
+
+	private final MomentTensor momentTensor;
+	private final Earthquake earthquake;
+
+	private Text text;
+
+	public MomentTensorDialog(final Shell parent, final MomentTensor momentTensor, final Earthquake earthquake) {
 		super(parent, SWT.SHEET | SWT.RESIZE);
-		if (contents == null) {
-			throw new NullPointerException("contents cannot be null");
-		}
-		this.contents = contents.trim();
+		setInstance(this);
+		this.momentTensor = momentTensor;
+		this.earthquake = earthquake;
 		setText(Messages.get("lbl.mt.title"));
 	}
 
@@ -67,17 +74,17 @@ public class MomentTensorDialog extends Dialog {
 	}
 
 	private void createContents(final Shell shell) {
-		final Text text = new Text(shell, SWT.BORDER | SWT.READ_ONLY | SWT.V_SCROLL | SWT.H_SCROLL);
+		text = new Text(shell, SWT.BORDER | SWT.READ_ONLY | SWT.V_SCROLL | SWT.H_SCROLL);
 		text.setEditable(false);
 		if (Util.isWindows()) {
 			text.setBackground(text.getDisplay().getSystemColor(SWT.COLOR_LIST_BACKGROUND));
 		}
 		text.setFont(JFaceResources.getTextFont());
-		text.setText(contents);
+		text.setText(momentTensor.getText().trim());
 		GC gc = null;
 		try {
 			gc = new GC(text);
-			final Point textExtent = gc.textExtent(contents);
+			final Point textExtent = gc.textExtent(momentTensor.getText().trim());
 			GridDataFactory.fillDefaults().grab(true, true).hint(textExtent.x, SWT.DEFAULT).applyTo(text);
 		}
 		finally {
@@ -105,6 +112,22 @@ public class MomentTensorDialog extends Dialog {
 
 		shell.setDefaultButton(closeButton);
 		return buttonComposite;
+	}
+
+	private static synchronized void setInstance(final MomentTensorDialog instance) {
+		MomentTensorDialog.instance = instance;
+	}
+
+	public static synchronized void update(final MomentTensor momentTensor, final Earthquake earthquake) {
+		new DisplayThreadExecutor(instance.text).execute(() -> {
+			if (instance != null && earthquake.equals(instance.earthquake) && instance.text != null && !instance.text.isDisposed()) {
+				final String oldValue = instance.text.getText();
+				final String newValue = momentTensor.getText().trim();
+				if (!newValue.equals(oldValue)) {
+					instance.text.setText(newValue);
+				}
+			}
+		});
 	}
 
 }

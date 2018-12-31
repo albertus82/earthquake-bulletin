@@ -23,12 +23,12 @@ public class ShowMomentTensorListener implements Listener {
 	public void handleEvent(final Event event) {
 		final TableViewer tableViewer = gui.getResultsTable().getTableViewer();
 		if (tableViewer != null && !tableViewer.getTable().isDisposed() && tableViewer.getStructuredSelection() != null) {
-			final Earthquake selectedItem = (Earthquake) tableViewer.getStructuredSelection().getFirstElement();
+			final Earthquake earthquake = (Earthquake) tableViewer.getStructuredSelection().getFirstElement();
 			final Shell shell = gui.getShell();
-			if (selectedItem != null && selectedItem.getMomentTensorUrl() != null && shell != null && !shell.isDisposed()) {
-				final MomentTensor momentTensor = MomentTensorRetriever.retrieve(selectedItem, shell);
+			if (earthquake != null && earthquake.getMomentTensorUrl() != null && shell != null && !shell.isDisposed()) {
+				final MomentTensor momentTensor = MomentTensorRetriever.retrieve(earthquake, shell);
 				if (momentTensor != null) {
-					new MomentTensorDialog(shell, momentTensor.getText()).open();
+					new MomentTensorDialog(shell, momentTensor, earthquake).open();
 				}
 			}
 		}

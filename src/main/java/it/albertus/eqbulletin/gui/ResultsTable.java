@@ -212,10 +212,11 @@ public class ResultsTable {
 				if (e.button == 1) {
 					final ViewerCell cell = tableViewer.getCell(new Point(e.x, e.y));
 					if (cell != null && cell.getColumnIndex() == COL_IDX_MT && MT.equals(cell.getText()) && cell.getElement() instanceof Earthquake) {
+						final Earthquake earthquake = (Earthquake) cell.getElement();
 						final Shell shell = table.getShell();
-						final MomentTensor momentTensor = MomentTensorRetriever.retrieve((Earthquake) cell.getElement(), shell);
+						final MomentTensor momentTensor = MomentTensorRetriever.retrieve(earthquake, shell);
 						if (momentTensor != null) {
-							new MomentTensorDialog(shell, momentTensor.getText()).open();
+							new MomentTensorDialog(shell, momentTensor, earthquake).open();
 						}
 					}
 				}
