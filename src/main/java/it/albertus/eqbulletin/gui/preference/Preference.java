@@ -19,7 +19,7 @@ import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.swt.widgets.Composite;
 
 import it.albertus.eqbulletin.EarthquakeBulletin;
-import it.albertus.eqbulletin.cache.MapCache;
+import it.albertus.eqbulletin.cache.MapImageCache;
 import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
 import it.albertus.eqbulletin.gui.CloseDialog;
 import it.albertus.eqbulletin.gui.EarthquakeBulletinGui;
@@ -67,7 +67,7 @@ public enum Preference implements IPreference {
 
 	MAP_ZOOM_LEVEL(new PreferenceDetailsBuilder(GENERAL).defaultValue(MapCanvas.Defaults.MAP_ZOOM_LEVEL).separate().build(), new FieldEditorDetailsBuilder(DefaultComboFieldEditor.class).labelsAndValues(getZoomComboOptions()).build()),
 	MAP_RESIZE_HQ(new PreferenceDetailsBuilder(GENERAL).defaultValue(MapCanvas.Defaults.MAP_RESIZE_HQ).build(), new FieldEditorDetailsBuilder(DefaultBooleanFieldEditor.class).build()),
-	MAP_CACHE_SIZE(new PreferenceDetailsBuilder(GENERAL).defaultValue(MapCache.Defaults.CACHE_SIZE).build(), new FieldEditorDetailsBuilder(ScaleIntegerFieldEditor.class).scaleMinimum(1).scaleMaximum(Byte.MAX_VALUE).scalePageIncrement(8).build()),
+	MAP_CACHE_SIZE(new PreferenceDetailsBuilder(GENERAL).defaultValue(MapImageCache.Defaults.CACHE_SIZE).build(), new FieldEditorDetailsBuilder(ScaleIntegerFieldEditor.class).scaleMinimum(1).scaleMaximum(Byte.MAX_VALUE).scalePageIncrement(8).build()),
 
 	MAGNITUDE_BIG(new PreferenceDetailsBuilder(GENERAL).defaultValue(ResultsTable.Defaults.MAGNITUDE_BIG).separate().build(), new FieldEditorDetailsBuilder(FloatFieldEditor.class).numberValidRange(SearchForm.MAGNITUDE_MIN_VALUE, SearchForm.MAGNITUDE_MAX_VALUE).build()),
 	MAGNITUDE_XXL(new PreferenceDetailsBuilder(GENERAL).defaultValue(ResultsTable.Defaults.MAGNITUDE_XXL).build(), new FieldEditorDetailsBuilder(FloatFieldEditor.class).numberValidRange(SearchForm.MAGNITUDE_MIN_VALUE, SearchForm.MAGNITUDE_MAX_VALUE).build()),

@@ -8,7 +8,7 @@ import it.albertus.eqbulletin.gui.preference.Preference;
 import it.albertus.eqbulletin.model.MapImage;
 import it.albertus.jface.preference.IPreferencesConfiguration;
 
-public class MapCache implements Cache<String, MapImage> {
+public class MapImageCache implements Cache<String, MapImage> {
 
 	public static class Defaults {
 		public static final byte CACHE_SIZE = 20;
@@ -20,16 +20,16 @@ public class MapCache implements Cache<String, MapImage> {
 
 	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getInstance();
 
-	private static MapCache instance;
+	private static MapImageCache instance;
 
-	public static synchronized MapCache getInstance() {
+	public static synchronized MapImageCache getInstance() {
 		if (instance == null) {
-			instance = new MapCache();
+			instance = new MapImageCache();
 		}
 		return instance;
 	}
 
-	private MapCache() {}
+	private MapImageCache() {}
 
 	private final Map<String, MapImage> cache = new LinkedHashMap<>(16, 0.75f, true);
 
@@ -59,7 +59,7 @@ public class MapCache implements Cache<String, MapImage> {
 
 	@Override
 	public String toString() {
-		return "MapCache [size=" + getSize() + "]";
+		return "MapImageCache [size=" + getSize() + "]";
 	}
 
 }

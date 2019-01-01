@@ -7,36 +7,36 @@ import java.util.logging.Logger;
 
 import org.eclipse.swt.widgets.Shell;
 
-import it.albertus.eqbulletin.cache.MomentTensorCache;
-import it.albertus.eqbulletin.gui.MomentTensorDialog;
+import it.albertus.eqbulletin.cache.MapImageCache;
+import it.albertus.eqbulletin.gui.MapCanvas;
 import it.albertus.eqbulletin.model.Earthquake;
-import it.albertus.eqbulletin.model.MomentTensor;
+import it.albertus.eqbulletin.model.MapImage;
 import it.albertus.eqbulletin.resources.Messages;
-import it.albertus.eqbulletin.service.job.MomentTensorDownloadJob;
-import it.albertus.eqbulletin.service.net.MomentTensorDownloader;
+import it.albertus.eqbulletin.service.job.MapImageDownloadJob;
+import it.albertus.eqbulletin.service.net.MapImageDownloader;
 import it.albertus.jface.EnhancedErrorDialog;
 import it.albertus.jface.SwtUtils;
 import it.albertus.util.DaemonThreadFactory;
 import it.albertus.util.logging.LoggerFactory;
 
-public class MomentTensorRetriever implements Retriever<Earthquake, MomentTensor> {
+public class MapImageRetriever implements Retriever<Earthquake, MapImage> {
 
-	private static final Logger logger = LoggerFactory.getLogger(MomentTensorRetriever.class);
+	private static final Logger logger = LoggerFactory.getLogger(MapImageRetriever.class);
 
 	private static final ThreadFactory threadFactory = new DaemonThreadFactory();
 
 	@Override
-	public MomentTensor retrieve(final Earthquake earthquake, final Shell shell) {
-		final MomentTensorCache cache = MomentTensorCache.getInstance();
+	public MapImage retrieve(final Earthquake earthquake, final Shell shell) {
+		final MapImageCache cache = MapImageCache.getInstance();
 		final String guid = earthquake.getGuid();
-		final MomentTensor cachedObject = cache.get(guid);
+		final MapImage cachedObject = cache.get(guid);
 		if (cachedObject == null) {
 			logger.log(Level.FINE, "Cache miss for key \"{0}\". Cache size: {1}.", new Serializable[] { guid, cache.getSize() });
 			try {
 				SwtUtils.setWaitCursor(shell);
-				final MomentTensorDownloadJob job = new MomentTensorDownloadJob(earthquake);
+				final MapImageDownloadJob job = new MapImageDownloadJob(earthquake);
 				JobRunner.run(job, shell.getDisplay());
-				final MomentTensor downloadedObject = job.getDownloadedObject();
+				final MapImage downloadedObject = job.getDownloadedObject();
 				if (downloadedObject != null) {
 					cache.put(guid, downloadedObject);
 					return downloadedObject; // Avoid unpack from cache the first time.
@@ -60,14 +60,14 @@ public class MomentTensorRetriever implements Retriever<Earthquake, MomentTensor
 		return cache.get(guid);
 	}
 
-	private static void checkForUpdateAndRefreshIfNeeded(final MomentTensor cachedObject, final Earthquake earthquake) {
+	private static void checkForUpdateAndRefreshIfNeeded(final MapImage cachedObject, final Earthquake earthquake) {
 		if (cachedObject.getEtag() != null && !cachedObject.getEtag().trim().isEmpty()) {
 			final Runnable checkForUpdate = () -> {
 				try {
-					final MomentTensor downloadedObject = new MomentTensorDownloader().download(earthquake, cachedObject);
-					if (downloadedObject != null && !cachedObject.getText().equals(downloadedObject.getText())) {
-						MomentTensorDialog.update(downloadedObject, earthquake); // Update UI on-the-fly.
-						MomentTensorCache.getInstance().put(earthquake.getGuid(), downloadedObject);
+					final MapImage downloadedObject = new MapImageDownloader().download(earthquake, cachedObject);
+					if (!cachedObject.equals(downloadedObject)) {
+						MapCanvas.updateMapImage(downloadedObject, earthquake); // Update UI on-the-fly.
+						MapImageCache.getInstance().put(earthquake.getGuid(), downloadedObject);
 					}
 				}
 				catch (final Exception e) {

@@ -33,12 +33,12 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 
-import it.albertus.eqbulletin.cache.MapCache;
 import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
-import it.albertus.eqbulletin.gui.async.DownloadMapJob;
 import it.albertus.eqbulletin.gui.preference.Preference;
+import it.albertus.eqbulletin.model.Earthquake;
 import it.albertus.eqbulletin.model.MapImage;
 import it.albertus.eqbulletin.resources.Messages;
+import it.albertus.jface.DisplayThreadExecutor;
 import it.albertus.jface.EnhancedErrorDialog;
 import it.albertus.jface.HqImageResizer;
 import it.albertus.jface.preference.IPreferencesConfiguration;
@@ -66,18 +66,20 @@ public class MapCanvas {
 
 	private final Canvas canvas;
 
-	private String guid;
+	private Earthquake earthquake;
+	private MapImage mapImage;
+
 	private Image image;
 
 	private int zoomLevel = configuration.getShort(Preference.MAP_ZOOM_LEVEL, Defaults.MAP_ZOOM_LEVEL);
 
 	private Image resized;
 
-	private DownloadMapJob downloadMapJob;
-
 	private final MenuItem downloadMenuItem;
 	private final MenuItem zoomMenuItem;
 	private final Map<Integer, MenuItem> zoomSubMenuItems = new HashMap<>();
+
+	private static MapCanvas instance;
 
 	public MapCanvas(final Composite parent) {
 		canvas = new Canvas(parent, SWT.BORDER);
@@ -107,6 +109,7 @@ public class MapCanvas {
 		}
 
 		zoomSubMenu.addMenuListener(new MenuAdapter() {
+
 			@Override
 			public void menuShown(final MenuEvent e) {
 				for (final Entry<Integer, MenuItem> entry : zoomSubMenuItems.entrySet()) {
@@ -155,6 +158,12 @@ public class MapCanvas {
 				}
 			}
 		});
+
+		setInstance(this);
+	}
+
+	private static void setInstance(final MapCanvas instance) {
+		MapCanvas.instance = instance;
 	}
 
 	public void setZoomLevel(final int zoomLevel) {
@@ -166,33 +175,6 @@ public class MapCanvas {
 
 	public void refresh() {
 		paintImage(zoomLevel);
-	}
-
-	public Image getImage() {
-		return image;
-	}
-
-	public String getGuid() {
-		return guid;
-	}
-
-	public void setImage(final String guid, final MapImage mapImage) {
-		final byte[] imageBytes = mapImage.getBytes();
-		if (imageBytes != null && imageBytes.length > 0) {
-			MapCache.getInstance().put(guid, mapImage);
-			try (final InputStream is = new ByteArrayInputStream(imageBytes)) {
-				final Image oldImage = this.image;
-				this.image = new Image(canvas.getDisplay(), is);
-				this.guid = guid;
-				paintImage(this.zoomLevel);
-				if (oldImage != null) {
-					oldImage.dispose();
-				}
-			}
-			catch (final Exception e) {
-				logger.log(Level.WARNING, e.toString(), e);
-			}
-		}
 	}
 
 	public void clear() {
@@ -212,7 +194,7 @@ public class MapCanvas {
 			image.dispose();
 			image = null;
 		}
-		guid = null;
+		earthquake = null;
 	}
 
 	private void paintImage(final int scalePercent) {
@@ -322,19 +304,19 @@ public class MapCanvas {
 	}
 
 	private boolean canSaveImage() {
-		return image != null && guid != null;
+		return image != null && earthquake != null;
 	}
 
 	private void saveImage() {
 		if (canSaveImage()) {
 			final FileDialog saveDialog = new FileDialog(canvas.getShell(), SWT.SAVE);
 			saveDialog.setFilterExtensions(new String[] { "*.JPG;*.jpg" });
-			saveDialog.setFileName(guid.toLowerCase() + ".jpg");
+			saveDialog.setFileName(earthquake.getGuid().toLowerCase() + ".jpg");
 			saveDialog.setOverwrite(true);
 			final String fileName = saveDialog.open();
 			if (fileName != null && !fileName.trim().isEmpty()) {
 				try {
-					Files.write(Paths.get(fileName), MapCache.getInstance().get(guid).getBytes());
+					Files.write(Paths.get(fileName), mapImage.getBytes());
 				}
 				catch (final Exception e) {
 					final String message = Messages.get("err.image.save", fileName);
@@ -357,20 +339,44 @@ public class MapCanvas {
 		return canvas.getDisplay().getSystemColor(SWT.COLOR_WHITE);
 	}
 
-	public Canvas getCanvas() {
-		return canvas;
-	}
-
-	public DownloadMapJob getDownloadMapJob() {
-		return downloadMapJob;
-	}
-
-	public void setDownloadMapJob(DownloadMapJob downloadMapJob) {
-		this.downloadMapJob = downloadMapJob;
-	}
-
 	public static Collection<Integer> getZoomLevels() {
 		return Collections.unmodifiableCollection(zoomLevels);
+	}
+
+	public static synchronized void setMapImage(final MapImage mapImage, final Earthquake earthquake) {
+		if (instance != null) {
+			logger.log(Level.FINE, "Setting map image canvas for GUID \"{0}\"...", earthquake.getGuid());
+			update(mapImage, earthquake);
+		}
+	}
+
+	public static synchronized void updateMapImage(final MapImage mapImage, final Earthquake earthquake) {
+		if (instance != null && earthquake.equals(instance.earthquake)) {
+			logger.log(Level.FINE, "Updating map image canvas for GUID \"{0}\"...", earthquake.getGuid());
+			update(mapImage, earthquake);
+		}
+	}
+
+	private static void update(final MapImage mapImage, final Earthquake earthquake) {
+		final byte[] imageBytes = mapImage.getBytes();
+		if (imageBytes != null && imageBytes.length > 0) {
+			new DisplayThreadExecutor(instance.canvas).execute(() -> {
+				try (final InputStream is = new ByteArrayInputStream(imageBytes)) {
+					final Image oldImage = instance.image;
+					instance.image = new Image(instance.canvas.getDisplay(), is);
+					instance.mapImage = mapImage;
+					instance.earthquake = earthquake;
+					instance.paintImage(instance.zoomLevel);
+					if (oldImage != null) {
+						oldImage.dispose();
+					}
+					logger.log(Level.FINE, "Map image canvas set/updated for GUID \"{0}\".", earthquake.getGuid());
+				}
+				catch (final Exception e) {
+					logger.log(Level.WARNING, e.toString(), e);
+				}
+			});
+		}
 	}
 
 }

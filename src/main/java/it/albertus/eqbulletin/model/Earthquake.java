@@ -6,7 +6,7 @@ import java.util.Date;
 
 public class Earthquake implements Serializable, Comparable<Earthquake> {
 
-	private static final long serialVersionUID = 8898737586060629885L;
+	private static final long serialVersionUID = -8121452375652796685L;
 
 	private final String guid;
 	private final Date time;
@@ -18,9 +18,9 @@ public class Earthquake implements Serializable, Comparable<Earthquake> {
 	private URL momentTensorUrl;
 	private final String region;
 	private final URL link;
-	private final URL enclosure;
+	private final URL enclosureUrl;
 
-	public Earthquake(String guid, Date time, float magnitude, Latitude latitude, Longitude longitude, Depth depth, Status status, String region, URL link, URL enclosure) {
+	public Earthquake(String guid, Date time, float magnitude, Latitude latitude, Longitude longitude, Depth depth, Status status, String region, URL link, URL enclosureUrl) {
 		this.guid = guid;
 		this.time = time;
 		this.magnitude = magnitude;
@@ -30,7 +30,7 @@ public class Earthquake implements Serializable, Comparable<Earthquake> {
 		this.status = status;
 		this.region = region;
 		this.link = link;
-		this.enclosure = enclosure;
+		this.enclosureUrl = enclosureUrl;
 	}
 
 	public String getGuid() {
@@ -77,8 +77,8 @@ public class Earthquake implements Serializable, Comparable<Earthquake> {
 		return link;
 	}
 
-	public URL getEnclosure() {
-		return enclosure;
+	public URL getEnclosureUrl() {
+		return enclosureUrl;
 	}
 
 	public String getGoogleMapsUrl() {
@@ -87,7 +87,7 @@ public class Earthquake implements Serializable, Comparable<Earthquake> {
 
 	@Override
 	public String toString() {
-		return "Earthquake [guid=" + guid + ", time=" + time + ", magnitude=" + magnitude + ", latitude=" + latitude + ", longitude=" + longitude + ", depth=" + depth + ", status=" + status + ", momentTensorUrl=" + momentTensorUrl + ", region=" + region + ", link=" + link + ", enclosure=" + enclosure + "]";
+		return "Earthquake [guid=" + guid + ", time=" + time + ", magnitude=" + magnitude + ", latitude=" + latitude + ", longitude=" + longitude + ", depth=" + depth + ", status=" + status + ", momentTensorUrl=" + momentTensorUrl + ", region=" + region + ", link=" + link + ", enclosureUrl=" + enclosureUrl + "]";
 	}
 
 	@Override

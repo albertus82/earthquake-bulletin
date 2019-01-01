@@ -4,7 +4,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.TimeoutException;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.jobs.IJobManager;
 import org.eclipse.core.runtime.jobs.Job;
@@ -13,7 +12,7 @@ import org.eclipse.jface.operation.IThreadListener;
 import org.eclipse.jface.operation.ModalContext;
 import org.eclipse.swt.widgets.Display;
 
-public class ModalContextRunner {
+public class JobRunner {
 
 	static {
 		System.setProperty(IJobManager.PROP_USE_DAEMON_THREADS, Boolean.TRUE.toString());
@@ -25,7 +24,7 @@ public class ModalContextRunner {
 
 	public static void run(final Job job, final Display display) throws OperationException {
 		try {
-			new ModalContextRunner(job).run(display);
+			new JobRunner(job).run(display);
 		}
 		catch (final TimeoutException e) {
 			throw new IllegalStateException(e);
@@ -33,13 +32,13 @@ public class ModalContextRunner {
 	}
 
 	public static void run(final Job job, final Display display, final long timeoutMillis, final boolean daemonThread) throws OperationException, TimeoutException {
-		final ModalContextRunner modalContextRunner = new ModalContextRunner(job);
+		final JobRunner modalContextRunner = new JobRunner(job);
 		modalContextRunner.setTimeoutMillis(timeoutMillis);
 		modalContextRunner.setDaemon(daemonThread);
 		modalContextRunner.run(display);
 	}
 
-	private ModalContextRunner(final Job job) {
+	private JobRunner(final Job job) {
 		this.job = job;
 	}
 
@@ -67,7 +66,7 @@ public class ModalContextRunner {
 			}
 			throw new TimeoutException();
 		}
-		if (job.getResult().matches(IStatus.ERROR | IStatus.WARNING)) {
+		if (!job.getResult().isOK()) {
 			throw new OperationException(job.getResult());
 		}
 	}

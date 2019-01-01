@@ -19,7 +19,7 @@ import it.albertus.util.logging.LoggerFactory;
 
 public class MomentTensorDownloader implements Downloader<Earthquake, MomentTensor> {
 
-	private static final int BUFFER_SIZE = 512;
+	private static final short BUFFER_SIZE = 512;
 
 	private static final Logger logger = LoggerFactory.getLogger(MomentTensorDownloader.class);
 
@@ -28,27 +28,17 @@ public class MomentTensorDownloader implements Downloader<Earthquake, MomentTens
 		return download(earthquake, null);
 	}
 
-	public MomentTensor download(final Earthquake earthquake, final MomentTensor cachedMomentTensor) throws IOException {
-		///////////////////////////////////////////////////////////////////
-		//				try {
-		//					TimeUnit.SECONDS.sleep(10);
-		//				}
-		//				catch (InterruptedException e) {
-		//					e.printStackTrace();
-		//				}
-		//				if (true) {
-		//					throw new IOException("dsfdfds");
-		//				}
-		///////////////////////////////////////////////////////////////////
+	@Override
+	public MomentTensor download(final Earthquake earthquake, final MomentTensor cached) throws IOException {
 		final Headers headers = new Headers();
 		headers.set("Accept", "text/*");
 		headers.set("Accept-Encoding", "gzip");
-		if (cachedMomentTensor != null && cachedMomentTensor.getEtag() != null && !cachedMomentTensor.getEtag().trim().isEmpty()) {
-			headers.set("If-None-Match", cachedMomentTensor.getEtag());
+		if (cached != null && cached.getEtag() != null && !cached.getEtag().trim().isEmpty()) {
+			headers.set("If-None-Match", cached.getEtag());
 		}
 		final HttpURLConnection connection = ConnectionFactory.makeGetRequest(earthquake.getMomentTensorUrl(), headers);
 		if (connection.getResponseCode() == HttpURLConnection.HTTP_NOT_MODIFIED) {
-			return cachedMomentTensor; // Not modified.
+			return cached; // Not modified.
 		}
 		else {
 			final String responseContentEncoding = connection.getContentEncoding();

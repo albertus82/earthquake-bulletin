@@ -1,5 +1,6 @@
 package it.albertus.eqbulletin.service.job;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import org.eclipse.core.internal.jobs.JobStatus;
@@ -13,37 +14,39 @@ import it.albertus.eqbulletin.model.MomentTensor;
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.eqbulletin.service.net.MomentTensorDownloader;
 
-public class MomentTensorDownloadJob extends Job {
-
-	private static final String NAME = "Download moment tensor";
+public class MomentTensorDownloadJob extends Job implements DownloadJob<MomentTensor> {
 
 	private final Earthquake earthquake;
 
-	private MomentTensor momentTensor; // The result.
+	private MomentTensor downloadedObject;
 
 	public MomentTensorDownloadJob(final Earthquake earthquake) {
-		super(NAME);
+		super(MomentTensorDownloadJob.class.getSimpleName());
 		this.earthquake = earthquake;
 	}
 
 	@Override
 	public IStatus run(final IProgressMonitor monitor) {
-		monitor.beginTask(NAME, IProgressMonitor.UNKNOWN);
+		monitor.beginTask(MomentTensorDownloadJob.class.getSimpleName(), IProgressMonitor.UNKNOWN);
 		try {
-			momentTensor = new MomentTensorDownloader().download(earthquake);
+			downloadedObject = new MomentTensorDownloader().download(earthquake);
 			monitor.done();
 			return JobStatus.OK_STATUS;
 		}
+		catch (final FileNotFoundException e) {
+			return new Status(IStatus.INFO, getClass().getName(), Messages.get("err.job.mt.not.found"), e);
+		}
 		catch (final IOException e) {
-			return new Status(IStatus.WARNING, getClass().getName(), Messages.get("err.job.mt.show"), e);
+			return new Status(IStatus.WARNING, getClass().getName(), Messages.get("err.job.mt"), e);
 		}
 		catch (final Exception e) {
-			return new Status(IStatus.ERROR, getClass().getName(), Messages.get("err.job.mt.show"), e);
+			return new Status(IStatus.ERROR, getClass().getName(), Messages.get("err.job.mt"), e);
 		}
 	}
 
-	public MomentTensor getMomentTensor() {
-		return momentTensor;
+	@Override
+	public MomentTensor getDownloadedObject() {
+		return downloadedObject;
 	}
 
 }
