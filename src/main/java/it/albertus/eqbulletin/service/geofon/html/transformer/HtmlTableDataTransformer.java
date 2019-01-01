@@ -47,7 +47,7 @@ public class HtmlTableDataTransformer {
 
 	private static final ThreadLocal<DateFormat> htmlDateFormat = ThreadLocal.withInitial(() -> {
 		final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+		dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 		return dateFormat;
 	});
 
@@ -82,7 +82,7 @@ public class HtmlTableDataTransformer {
 		try {
 			final String[] lines = td.split(NewLine.SYSTEM_LINE_SEPARATOR);
 
-			final Calendar time = Calendar.getInstance();
+			final Calendar time = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 			time.setTime(parseHtmlDate(lines[0].substring(lines[0].lastIndexOf(timePrefix) + timePrefix.length(), lines[0].indexOf(timeSuffix)).trim()));
 
 			final String guid = lines[0].substring(lines[0].indexOf(guidPrefix) + guidPrefix.length(), lines[0].lastIndexOf(guidSuffix)).trim();

@@ -28,7 +28,7 @@ public class RssItemTransformer {
 
 	private static final ThreadLocal<DateFormat> rssDateFormat = ThreadLocal.withInitial(() -> {
 		final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+		dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 		return dateFormat;
 	});
 
