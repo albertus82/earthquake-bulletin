@@ -31,7 +31,7 @@ public class MomentTensorDownloader implements Downloader<Earthquake, MomentTens
 	@Override
 	public MomentTensor download(final Earthquake earthquake, final MomentTensor cached) throws IOException {
 		final Headers headers = new Headers();
-		headers.set("Accept", "text/*");
+		headers.set("Accept", "text/*,*/*;0.9");
 		headers.set("Accept-Encoding", "gzip");
 		if (cached != null && cached.getEtag() != null && !cached.getEtag().trim().isEmpty()) {
 			headers.set("If-None-Match", cached.getEtag());
