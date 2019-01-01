@@ -12,11 +12,11 @@ import com.sun.net.httpserver.Headers;
 import it.albertus.eqbulletin.model.MapImage;
 import it.albertus.util.IOUtils;
 
-public class ImageDownloader {
+public class ImageFetcher {
 
 	private static final short BUFFER_SIZE = 8192;
 
-	private ImageDownloader() {
+	private ImageFetcher() {
 		throw new IllegalAccessError();
 	}
 
