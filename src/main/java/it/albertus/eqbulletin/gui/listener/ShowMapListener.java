@@ -8,7 +8,7 @@ import org.eclipse.swt.widgets.Listener;
 import it.albertus.eqbulletin.cache.MapCache;
 import it.albertus.eqbulletin.gui.EarthquakeBulletinGui;
 import it.albertus.eqbulletin.gui.MapCanvas;
-import it.albertus.eqbulletin.gui.job.DownloadMapJob;
+import it.albertus.eqbulletin.gui.async.DownloadMapJob;
 import it.albertus.eqbulletin.model.Earthquake;
 
 public class ShowMapListener implements Listener {

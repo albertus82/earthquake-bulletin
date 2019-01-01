@@ -35,8 +35,8 @@ import org.eclipse.swt.widgets.TableColumn;
 
 import it.albertus.eqbulletin.EarthquakeBulletin;
 import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
+import it.albertus.eqbulletin.gui.async.BulletinExporter;
 import it.albertus.eqbulletin.gui.async.MomentTensorRetriever;
-import it.albertus.eqbulletin.gui.job.BulletinExporter;
 import it.albertus.eqbulletin.gui.listener.CopyLinkSelectionListener;
 import it.albertus.eqbulletin.gui.listener.EpicenterMapSelectionListener;
 import it.albertus.eqbulletin.gui.listener.ExportCsvSelectionListener;

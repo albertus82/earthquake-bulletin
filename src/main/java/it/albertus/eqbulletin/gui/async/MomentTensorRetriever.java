@@ -11,8 +11,6 @@ import org.eclipse.swt.widgets.Shell;
 
 import it.albertus.eqbulletin.cache.MomentTensorCache;
 import it.albertus.eqbulletin.gui.MomentTensorDialog;
-import it.albertus.eqbulletin.gui.job.ModalContextRunner;
-import it.albertus.eqbulletin.gui.job.OperationException;
 import it.albertus.eqbulletin.model.Earthquake;
 import it.albertus.eqbulletin.model.MomentTensor;
 import it.albertus.eqbulletin.resources.Messages;

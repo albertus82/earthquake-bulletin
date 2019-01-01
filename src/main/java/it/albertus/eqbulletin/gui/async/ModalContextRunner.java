@@ -1,4 +1,4 @@
-package it.albertus.eqbulletin.gui.job;
+package it.albertus.eqbulletin.gui.async;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.TimeoutException;

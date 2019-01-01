@@ -35,7 +35,7 @@ import org.eclipse.swt.widgets.MenuItem;
 
 import it.albertus.eqbulletin.cache.MapCache;
 import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
-import it.albertus.eqbulletin.gui.job.DownloadMapJob;
+import it.albertus.eqbulletin.gui.async.DownloadMapJob;
 import it.albertus.eqbulletin.gui.preference.Preference;
 import it.albertus.eqbulletin.model.MapImage;
 import it.albertus.eqbulletin.resources.Messages;

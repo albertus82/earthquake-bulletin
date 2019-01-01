@@ -28,8 +28,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
+import it.albertus.eqbulletin.gui.async.SearchJob;
 import it.albertus.eqbulletin.gui.decoration.SearchFormControlValidatorDecoration;
-import it.albertus.eqbulletin.gui.job.SearchJob;
 import it.albertus.eqbulletin.gui.listener.AreaMapSelectionListener;
 import it.albertus.eqbulletin.gui.listener.AutoRefreshButtonSelectionListener;
 import it.albertus.eqbulletin.gui.listener.ClearButtonSelectionListener;

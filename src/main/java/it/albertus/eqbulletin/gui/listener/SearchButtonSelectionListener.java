@@ -5,7 +5,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 
 import it.albertus.eqbulletin.gui.EarthquakeBulletinGui;
-import it.albertus.eqbulletin.gui.job.SearchJob;
+import it.albertus.eqbulletin.gui.async.SearchJob;
 
 public class SearchButtonSelectionListener extends SelectionAdapter {
 
