@@ -87,21 +87,30 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 		logger.log(Level.CONFIG, "{0}", configuration);
 	}
 
-	public static void run(final InitializationException e) {
+	public static void run(final InitializationException ie) {
 		Display.setAppName(Messages.get("msg.application.name"));
 		Display.setAppVersion(Version.getInstance().getNumber());
 		final Display display = Display.getDefault();
 
-		if (e != null) { // Display error dialog and exit.
-			EnhancedErrorDialog.openError(null, Messages.get("lbl.window.title"), e.getLocalizedMessage() != null ? e.getLocalizedMessage() : e.getMessage(), IStatus.ERROR, e.getCause() != null ? e.getCause() : e, Images.getMainIconArray());
+		if (ie != null) { // Display error dialog and exit.
+			EnhancedErrorDialog.openError(null, Messages.get("lbl.window.title"), ie.getLocalizedMessage() != null ? ie.getLocalizedMessage() : ie.getMessage(), IStatus.ERROR, ie.getCause() != null ? ie.getCause() : ie, Images.getMainIconArray());
 		}
 		else { // Open main window.
 			final EarthquakeBulletinGui gui = new EarthquakeBulletinGui();
 			gui.open();
 			final Shell shell = gui.getShell();
-			while (!shell.isDisposed()) {
-				if (!display.isDisposed() && !display.readAndDispatch()) {
-					display.sleep();
+			try {
+				while (!shell.isDisposed()) {
+					if (!display.isDisposed() && !display.readAndDispatch()) {
+						display.sleep();
+					}
+				}
+			}
+			catch (final Exception e) {
+				final String message = Messages.get("err.fatal");
+				logger.log(Level.SEVERE, message, e);
+				if (!shell.isDisposed()) {
+					EnhancedErrorDialog.openError(shell, Messages.get("msg.application.name"), message, IStatus.ERROR, e, display.getSystemImage(SWT.ICON_ERROR));
 				}
 			}
 		}
