@@ -8,7 +8,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.swt.SWT;
 
 import it.albertus.eqbulletin.cache.MapCache;
 import it.albertus.eqbulletin.gui.EarthquakeBulletinGui;
@@ -20,6 +19,7 @@ import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.eqbulletin.service.net.ImageDownloader;
 import it.albertus.jface.DisplayThreadExecutor;
 import it.albertus.jface.EnhancedErrorDialog;
+import it.albertus.jface.SwtUtils;
 import it.albertus.util.logging.LoggerFactory;
 
 public class DownloadMapJob extends Job {
@@ -51,7 +51,7 @@ public class DownloadMapJob extends Job {
 			final MapCache cache = MapCache.getInstance();
 
 			new DisplayThreadExecutor(gui.getShell()).execute(() -> {
-				gui.getShell().setCursor(gui.getShell().getDisplay().getSystemCursor(SWT.CURSOR_WAIT));
+				SwtUtils.setWaitCursor(gui.getShell());
 				if (cache.contains(earthquake.getGuid())) { // show cached map immediately if available
 					mapCanvas.setImage(earthquake.getGuid(), cache.get(earthquake.getGuid()));
 				}
@@ -84,7 +84,7 @@ public class DownloadMapJob extends Job {
 				}
 			}
 
-			new DisplayThreadExecutor(mapCanvas.getCanvas()).execute(() -> gui.getShell().setCursor(null));
+			new DisplayThreadExecutor(mapCanvas.getCanvas()).execute(() -> SwtUtils.setDefaultCursor(gui.getShell()));
 		}
 
 		monitor.done();

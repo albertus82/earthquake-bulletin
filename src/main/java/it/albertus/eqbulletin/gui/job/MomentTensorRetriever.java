@@ -4,21 +4,20 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 
+import org.eclipse.core.internal.jobs.JobStatus;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.eclipse.jface.operation.ModalContext;
-import org.eclipse.swt.SWT;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.widgets.Shell;
 
 import com.sun.net.httpserver.Headers;
@@ -36,7 +35,7 @@ import it.albertus.util.IOUtils;
 import it.albertus.util.StringUtils;
 import it.albertus.util.logging.LoggerFactory;
 
-public class MomentTensorRetriever implements IRunnableWithProgress {
+public class MomentTensorRetriever extends Job {
 
 	private static final int BUFFER_SIZE = 512;
 
@@ -46,41 +45,42 @@ public class MomentTensorRetriever implements IRunnableWithProgress {
 
 	private static final ExecutorService executorService = Executors.newSingleThreadExecutor(new DaemonThreadFactory());
 
+	private static MomentTensorRetriever instance;
+
 	private final Earthquake earthquake;
 	private final MomentTensor cachedMomentTensor;
 
-	private MomentTensor result;
+	private MomentTensor momentTensor; // The result.
 
 	public static MomentTensor retrieve(final Earthquake earthquake, final Shell shell) {
+		if (instance != null && instance.getState() != Job.NONE) {
+			logger.log(Level.FINE, "Job already running, ignored call for GUID {0}.", earthquake.getGuid());
+			return null;
+		}
 		final MomentTensorCache cache = MomentTensorCache.getInstance();
 		final String guid = earthquake.getGuid();
 		final MomentTensor cachedMomentTensor = cache.get(guid);
 		if (cachedMomentTensor == null) {
 			logger.log(Level.FINE, "Cache miss for key \"{0}\". Cache size: {1}", new Serializable[] { guid, cache.getSize() });
 			try {
-				SwtUtils.blockShell(shell);
-				final MomentTensorRetriever operation = new MomentTensorRetriever(earthquake);
-				ModalContext.run(operation, true, new NullProgressMonitor(), shell.getDisplay());
-				final MomentTensor momentTensor = operation.getResult();
+				SwtUtils.setWaitCursor(shell);
+				instance = new MomentTensorRetriever(earthquake);
+				ModalContextRunner.run(instance, shell.getDisplay());
+				final MomentTensor momentTensor = instance.getMomentTensor();
 				if (momentTensor != null) {
 					cache.put(guid, momentTensor);
 					return momentTensor; // Avoid unpack from cache the first time.
 				}
 			}
-			catch (final InvocationTargetException e) {
-				final String message = Messages.get("err.job.mt.show");
-				logger.log(Level.WARNING, message, e);
-				SwtUtils.unblockShell(shell);
-				EnhancedErrorDialog.openError(shell, Messages.get("lbl.window.title"), message, IStatus.WARNING, e.getCause() != null ? e.getCause() : e, shell.getDisplay().getSystemImage(SWT.ICON_WARNING));
-			}
-			catch (final Exception e) {
-				final String message = Messages.get("err.job.mt.show");
-				logger.log(Level.SEVERE, message, e);
-				SwtUtils.unblockShell(shell);
-				EnhancedErrorDialog.openError(shell, Messages.get("lbl.window.title"), message, IStatus.ERROR, e, shell.getDisplay().getSystemImage(SWT.ICON_ERROR));
+			catch (final OperationException e) {
+				logger.log(e.getLoggingLevel(), e.getMessage());
+				SwtUtils.setDefaultCursor(shell);
+				if (!shell.isDisposed()) {
+					EnhancedErrorDialog.openError(shell, Messages.get("lbl.window.title"), e.getMessage(), e.getSeverity(), e.getCause(), shell.getDisplay().getSystemImage(e.getSystemImageId()));
+				}
 			}
 			finally {
-				SwtUtils.unblockShell(shell);
+				SwtUtils.setDefaultCursor(shell);
 			}
 		}
 		else {
@@ -96,7 +96,7 @@ public class MomentTensorRetriever implements IRunnableWithProgress {
 				try {
 					final MomentTensorRetriever operation = new MomentTensorRetriever(earthquake, cachedMomentTensor);
 					operation.run();
-					final MomentTensor updatedMomentTensor = operation.getResult();
+					final MomentTensor updatedMomentTensor = operation.getMomentTensor();
 					if (updatedMomentTensor != null && !cachedMomentTensor.getText().equals(updatedMomentTensor.getText())) {
 						MomentTensorDialog.update(updatedMomentTensor, earthquake); // Update UI on-the-fly.
 						MomentTensorCache.getInstance().put(earthquake.getGuid(), updatedMomentTensor);
@@ -115,23 +115,39 @@ public class MomentTensorRetriever implements IRunnableWithProgress {
 	}
 
 	private MomentTensorRetriever(final Earthquake earthquake, final MomentTensor cachedMomentTensor) {
+		super(TASK_NAME);
 		this.earthquake = earthquake;
 		this.cachedMomentTensor = cachedMomentTensor;
 	}
 
 	@Override
-	public void run(final IProgressMonitor monitor) throws InvocationTargetException {
+	public IStatus run(final IProgressMonitor monitor) {
 		monitor.beginTask(TASK_NAME, IProgressMonitor.UNKNOWN);
 		try {
 			run();
+			monitor.done();
+			return JobStatus.OK_STATUS;
 		}
 		catch (final IOException e) {
-			throw new InvocationTargetException(e);
+			return new Status(IStatus.WARNING, getClass().getName(), Messages.get("err.job.mt.show"), e);
 		}
-		monitor.done();
+		catch (final Exception e) {
+			return new Status(IStatus.ERROR, getClass().getName(), Messages.get("err.job.mt.show"), e);
+		}
 	}
 
 	private void run() throws IOException {
+		///////////////////////////////////////////////////////////////////
+		//		try {
+		//			TimeUnit.SECONDS.sleep(6);
+		//		}
+		//		catch (InterruptedException e) {
+		//			e.printStackTrace();
+		//		}
+		//				if (true) {
+		//					throw new IOException("dsfdfds");
+		//				}
+		///////////////////////////////////////////////////////////////////
 		final Headers headers = new Headers();
 		headers.set("Accept", "text/*");
 		headers.set("Accept-Encoding", "gzip");
@@ -140,7 +156,7 @@ public class MomentTensorRetriever implements IRunnableWithProgress {
 		}
 		final HttpURLConnection connection = ConnectionFactory.makeGetRequest(earthquake.getMomentTensorUrl(), headers);
 		if (connection.getResponseCode() == HttpURLConnection.HTTP_NOT_MODIFIED) {
-			result = cachedMomentTensor; // Not modified.
+			momentTensor = cachedMomentTensor; // Not modified.
 		}
 		else {
 			final String responseContentEncoding = connection.getContentEncoding();
@@ -156,13 +172,13 @@ public class MomentTensorRetriever implements IRunnableWithProgress {
 					}
 				}
 				logger.log(Level.FINE, "Content-Type charset: {0}", charsetName);
-				result = new MomentTensor(out.toString(charsetName), connection.getHeaderField("Etag"));
+				momentTensor = new MomentTensor(out.toString(charsetName), connection.getHeaderField("Etag"));
 			}
 		}
 	}
 
-	private MomentTensor getResult() {
-		return result;
+	private MomentTensor getMomentTensor() {
+		return momentTensor;
 	}
 
 }
