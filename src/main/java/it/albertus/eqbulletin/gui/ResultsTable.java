@@ -35,8 +35,8 @@ import org.eclipse.swt.widgets.TableColumn;
 
 import it.albertus.eqbulletin.EarthquakeBulletin;
 import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
+import it.albertus.eqbulletin.gui.async.MomentTensorRetriever;
 import it.albertus.eqbulletin.gui.job.BulletinExporter;
-import it.albertus.eqbulletin.gui.job.MomentTensorRetriever;
 import it.albertus.eqbulletin.gui.listener.CopyLinkSelectionListener;
 import it.albertus.eqbulletin.gui.listener.EpicenterMapSelectionListener;
 import it.albertus.eqbulletin.gui.listener.ExportCsvSelectionListener;
@@ -214,7 +214,7 @@ public class ResultsTable {
 					if (cell != null && cell.getColumnIndex() == COL_IDX_MT && MT.equals(cell.getText()) && cell.getElement() instanceof Earthquake) {
 						final Earthquake earthquake = (Earthquake) cell.getElement();
 						final Shell shell = table.getShell();
-						final MomentTensor momentTensor = MomentTensorRetriever.retrieve(earthquake, shell);
+						final MomentTensor momentTensor = new MomentTensorRetriever().retrieve(earthquake, shell);
 						if (momentTensor != null) {
 							new MomentTensorDialog(shell, momentTensor, earthquake).open();
 						}

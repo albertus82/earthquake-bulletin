@@ -1,4 +1,4 @@
-package it.albertus.eqbulletin.gui.job;
+package it.albertus.eqbulletin.service.job;
 
 import java.io.IOException;
 
@@ -13,24 +13,24 @@ import it.albertus.eqbulletin.model.MomentTensor;
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.eqbulletin.service.net.MomentTensorDownloader;
 
-public class MomentTensorFetchJob extends Job {
+public class MomentTensorDownloadJob extends Job {
 
-	private static final String TASK_NAME = "Fetching moment tensor";
+	private static final String NAME = "Download moment tensor";
 
 	private final Earthquake earthquake;
 
 	private MomentTensor momentTensor; // The result.
 
-	public MomentTensorFetchJob(final Earthquake earthquake) {
-		super(TASK_NAME);
+	public MomentTensorDownloadJob(final Earthquake earthquake) {
+		super(NAME);
 		this.earthquake = earthquake;
 	}
 
 	@Override
 	public IStatus run(final IProgressMonitor monitor) {
-		monitor.beginTask(TASK_NAME, IProgressMonitor.UNKNOWN);
+		monitor.beginTask(NAME, IProgressMonitor.UNKNOWN);
 		try {
-			momentTensor = MomentTensorDownloader.download(earthquake);
+			momentTensor = new MomentTensorDownloader().download(earthquake);
 			monitor.done();
 			return JobStatus.OK_STATUS;
 		}

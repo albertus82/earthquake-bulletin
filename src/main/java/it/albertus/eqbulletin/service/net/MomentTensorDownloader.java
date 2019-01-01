@@ -17,24 +17,25 @@ import it.albertus.util.IOUtils;
 import it.albertus.util.StringUtils;
 import it.albertus.util.logging.LoggerFactory;
 
-public class MomentTensorDownloader {
+public class MomentTensorDownloader implements Downloader<Earthquake, MomentTensor> {
 
 	private static final int BUFFER_SIZE = 512;
 
 	private static final Logger logger = LoggerFactory.getLogger(MomentTensorDownloader.class);
 
-	public static MomentTensor download(final Earthquake earthquake) throws IOException {
+	@Override
+	public MomentTensor download(final Earthquake earthquake) throws IOException {
 		return download(earthquake, null);
 	}
 
-	public static MomentTensor download(final Earthquake earthquake, final MomentTensor cachedMomentTensor) throws IOException {
+	public MomentTensor download(final Earthquake earthquake, final MomentTensor cachedMomentTensor) throws IOException {
 		///////////////////////////////////////////////////////////////////
-		//		try {
-		//			TimeUnit.SECONDS.sleep(6);
-		//		}
-		//		catch (InterruptedException e) {
-		//			e.printStackTrace();
-		//		}
+		//				try {
+		//					TimeUnit.SECONDS.sleep(10);
+		//				}
+		//				catch (InterruptedException e) {
+		//					e.printStackTrace();
+		//				}
 		//				if (true) {
 		//					throw new IOException("dsfdfds");
 		//				}

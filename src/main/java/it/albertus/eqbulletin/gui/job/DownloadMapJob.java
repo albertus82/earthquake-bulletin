@@ -16,7 +16,7 @@ import it.albertus.eqbulletin.gui.MapCanvas;
 import it.albertus.eqbulletin.model.Earthquake;
 import it.albertus.eqbulletin.model.MapImage;
 import it.albertus.eqbulletin.resources.Messages;
-import it.albertus.eqbulletin.service.net.ImageFetcher;
+import it.albertus.eqbulletin.service.net.ImageDownloader;
 import it.albertus.jface.DisplayThreadExecutor;
 import it.albertus.jface.EnhancedErrorDialog;
 import it.albertus.jface.SwtUtils;
@@ -58,7 +58,7 @@ public class DownloadMapJob extends Job {
 			});
 
 			try {
-				final MapImage image = ImageFetcher.downloadImage(earthquake.getEnclosure(), etag);
+				final MapImage image = ImageDownloader.downloadImage(earthquake.getEnclosure(), etag);
 
 				if (image != null) {
 					new DisplayThreadExecutor(mapCanvas.getCanvas()).execute(() -> mapCanvas.setImage(earthquake.getGuid(), image));
