@@ -213,7 +213,7 @@ public class MapCanvas {
 			}
 			else {
 				if (configuration.getBoolean(Preference.MAP_RESIZE_HQ, Defaults.MAP_RESIZE_HQ) && (scalePercent == AUTO_SCALE || scalePercent % 100 != 0 && scalePercent <= MAX_HQ_RESIZE_RATIO)) {
-					logger.log(Level.FINE, "HQ resizing scale {0}", scalePercent);
+					logger.log(Level.FINE, "HQ resizing scale {0}.", scalePercent);
 					final Image oldImage = resized;
 					resized = HqImageResizer.resize(image, resizedRect.height / (float) originalRect.height);
 					prepareCanvas(gc, scalePercent);
@@ -223,7 +223,7 @@ public class MapCanvas {
 					}
 				}
 				else { // Fast low-quality resizing
-					logger.log(Level.FINE, "LQ Resizing scale {0}", scalePercent);
+					logger.log(Level.FINE, "LQ Resizing scale {0}.", scalePercent);
 					prepareCanvas(gc, scalePercent);
 					gc.drawImage(image, 0, 0, originalRect.width, originalRect.height, resizedRect.x, resizedRect.y, resizedRect.width, resizedRect.height);
 				}
@@ -345,14 +345,14 @@ public class MapCanvas {
 
 	public static synchronized void setMapImage(final MapImage mapImage, final Earthquake earthquake) {
 		if (instance != null) {
-			logger.log(Level.FINE, "Setting map image canvas for GUID \"{0}\"...", earthquake.getGuid());
+			logger.log(Level.FINE, "Setting map image canvas for {0}...", earthquake);
 			update(mapImage, earthquake);
 		}
 	}
 
 	public static synchronized void updateMapImage(final MapImage mapImage, final Earthquake earthquake) {
 		if (instance != null && earthquake.equals(instance.earthquake)) {
-			logger.log(Level.FINE, "Updating map image canvas for GUID \"{0}\"...", earthquake.getGuid());
+			logger.log(Level.FINE, "Updating map image canvas for {0}...", earthquake);
 			update(mapImage, earthquake);
 		}
 	}
@@ -370,7 +370,7 @@ public class MapCanvas {
 					if (oldImage != null) {
 						oldImage.dispose();
 					}
-					logger.log(Level.FINE, "Map image canvas set/updated for GUID \"{0}\".", earthquake.getGuid());
+					logger.log(Level.FINE, "Map image canvas set/updated for {0}.", earthquake);
 				}
 				catch (final Exception e) {
 					logger.log(Level.WARNING, e.toString(), e);

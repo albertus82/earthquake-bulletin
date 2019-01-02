@@ -151,7 +151,7 @@ public class MomentTensorDialog extends Dialog {
 				return;
 			}
 		}
-		logger.log(Level.WARNING, "No moment tensor dialog instance found to update for GUID \"{0}\".", earthquake.getGuid());
+		logger.log(Level.WARNING, "No moment tensor dialog instance found to update for {0}.", earthquake);
 	}
 
 }
