@@ -43,8 +43,9 @@ public class MomentTensorAsyncOperation extends AsyncOperation<Earthquake> {
 	}
 
 	private void cacheHit(final MomentTensor cachedObject, final Earthquake earthquake, final Shell shell) {
-		checkForUpdateAndRefreshIfNeeded(cachedObject, earthquake, shell);
-		new MomentTensorDialog(shell, cachedObject, earthquake).open(); // Blocking!
+		final MomentTensorDialog dialog = new MomentTensorDialog(shell, cachedObject, earthquake);
+		checkForUpdateAndRefreshIfNeeded(cachedObject, earthquake, shell); // Async
+		dialog.open(); // Blocking!
 	}
 
 	private void cacheMiss(final Earthquake earthquake, final Shell shell) {
@@ -58,8 +59,8 @@ public class MomentTensorAsyncOperation extends AsyncOperation<Earthquake> {
 					}
 					final MomentTensor downloadedObject = job.getDownloadedObject();
 					if (downloadedObject != null) {
-						MomentTensorCache.getInstance().put(earthquake.getGuid(), downloadedObject);
 						new DisplayThreadExecutor(shell, true).execute(() -> new MomentTensorDialog(shell, downloadedObject, earthquake).open()); // Async
+						MomentTensorCache.getInstance().put(earthquake.getGuid(), downloadedObject);
 					}
 				}
 				catch (final AsyncOperationException e) {

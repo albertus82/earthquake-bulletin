@@ -52,27 +52,31 @@ public class MomentTensorDialog extends Dialog {
 	}
 
 	public void open() {
-		final Shell shell = new Shell(getParent(), getStyle());
-		final Point defaultSize = getSize(shell);
-		shell.setText(getText());
-		final Image[] images = Images.getMainIconArray();
-		if (images != null && images.length > 0) {
-			shell.setImages(images);
-		}
-		GridLayoutFactory.swtDefaults().applyTo(shell);
-		createContents(shell);
-		shell.pack();
-		if (LIMIT_HEIGHT) {
-			shell.setSize(shell.getSize().x, defaultSize.y);
-		}
-		shell.open();
-		final Display display = getParent().getDisplay();
-		while (!shell.isDisposed()) {
-			if (!display.readAndDispatch()) {
-				display.sleep();
+		try {
+			final Shell shell = new Shell(getParent(), getStyle());
+			final Point defaultSize = getSize(shell);
+			shell.setText(getText());
+			final Image[] images = Images.getMainIconArray();
+			if (images != null && images.length > 0) {
+				shell.setImages(images);
+			}
+			GridLayoutFactory.swtDefaults().applyTo(shell);
+			createContents(shell);
+			shell.pack();
+			if (LIMIT_HEIGHT) {
+				shell.setSize(shell.getSize().x, defaultSize.y);
+			}
+			shell.open();
+			final Display display = getParent().getDisplay();
+			while (!shell.isDisposed()) {
+				if (!display.readAndDispatch()) {
+					display.sleep();
+				}
 			}
 		}
-		removeInstance(this); // Not available for update on-the-fly.
+		finally {
+			removeInstance(this); // Not available for update on-the-fly.
+		}
 	}
 
 	private static Point getSize(final Shell shell) {
