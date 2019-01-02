@@ -5,7 +5,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
 import it.albertus.eqbulletin.gui.EarthquakeBulletinGui;
-import it.albertus.eqbulletin.gui.async.MapImageService;
+import it.albertus.eqbulletin.gui.async.MapImageAsyncService;
 import it.albertus.eqbulletin.model.Earthquake;
 
 public class ShowMapListener implements Listener {
@@ -21,7 +21,7 @@ public class ShowMapListener implements Listener {
 		final TableViewer tableViewer = gui.getResultsTable().getTableViewer();
 		if (tableViewer != null && !tableViewer.getTable().isDisposed() && tableViewer.getStructuredSelection() != null) {
 			final Earthquake earthquake = (Earthquake) tableViewer.getStructuredSelection().getFirstElement();
-			new MapImageService().setCanvasImage(earthquake, gui.getShell());
+			new MapImageAsyncService().setCanvasImage(earthquake, gui.getShell());
 		}
 	}
 
