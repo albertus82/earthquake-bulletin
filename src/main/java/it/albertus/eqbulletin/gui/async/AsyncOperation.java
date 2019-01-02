@@ -16,7 +16,15 @@ public abstract class AsyncOperation<T> {
 
 	private static final Logger logger = LoggerFactory.getLogger(AsyncOperation.class);
 
-	protected static final ThreadFactory threadFactory = new DaemonThreadFactory();
+	protected static final ThreadFactory threadFactory = new DaemonThreadFactory() {
+		@Override
+		public Thread newThread(final Runnable r) {
+			final Thread thread = super.newThread(r);
+			thread.setPriority(Thread.MIN_PRIORITY);
+			thread.setUncaughtExceptionHandler((t, e) -> logger.log(Level.SEVERE, t.toString(), e));
+			return thread;
+		}
+	};
 
 	private static final AtomicInteger operationCount = new AtomicInteger();
 
