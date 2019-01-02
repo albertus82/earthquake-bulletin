@@ -65,7 +65,7 @@ public class MapImageAsyncOperation extends AsyncOperation<Earthquake> {
 				catch (final AsyncOperationException e) {
 					logger.log(e.getLoggingLevel(), e.getMessage());
 					if (!shell.isDisposed()) {
-						new DisplayThreadExecutor(shell).execute(() -> EnhancedErrorDialog.openError(shell, Messages.get("lbl.window.title"), e.getMessage(), e.getSeverity(), e.getCause(), Images.getMainIconArray()));
+						new DisplayThreadExecutor(shell, true).execute(() -> EnhancedErrorDialog.openError(shell, Messages.get("lbl.window.title"), e.getMessage(), e.getSeverity(), e.getCause(), Images.getMainIconArray()));
 					}
 				}
 				finally {
@@ -94,6 +94,9 @@ public class MapImageAsyncOperation extends AsyncOperation<Earthquake> {
 				}
 			};
 			threadFactory.newThread(checkForUpdate).start();
+		}
+		else {
+			setDefaultCursor(shell);
 		}
 	}
 
