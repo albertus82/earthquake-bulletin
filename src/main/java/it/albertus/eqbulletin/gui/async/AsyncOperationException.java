@@ -5,18 +5,18 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.swt.SWT;
 
-public class OperationException extends Exception {
+public class AsyncOperationException extends Exception {
 
 	private static final long serialVersionUID = 1940542061335327247L;
 
 	private final int severity;
 
-	public OperationException(final IStatus status) {
+	public AsyncOperationException(final IStatus status) {
 		super(status.getMessage(), status.getException());
 		this.severity = status.getSeverity();
 	}
 
-	public OperationException(final String message, final Throwable cause) {
+	public AsyncOperationException(final String message, final Throwable cause) {
 		super(message, cause);
 		this.severity = IStatus.ERROR;
 	}

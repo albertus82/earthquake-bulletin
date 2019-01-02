@@ -5,7 +5,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
 import it.albertus.eqbulletin.gui.EarthquakeBulletinGui;
-import it.albertus.eqbulletin.gui.async.MomentTensorAsyncService;
+import it.albertus.eqbulletin.gui.async.MomentTensorAsyncOperation;
 import it.albertus.eqbulletin.model.Earthquake;
 
 public class ShowMomentTensorListener implements Listener {
@@ -21,7 +21,7 @@ public class ShowMomentTensorListener implements Listener {
 		final TableViewer tableViewer = gui.getResultsTable().getTableViewer();
 		if (tableViewer != null && !tableViewer.getTable().isDisposed() && tableViewer.getStructuredSelection() != null) {
 			final Earthquake earthquake = (Earthquake) tableViewer.getStructuredSelection().getFirstElement();
-			MomentTensorAsyncService.openDialog(earthquake, gui.getShell());
+			MomentTensorAsyncOperation.openDialog(earthquake, gui.getShell());
 		}
 	}
 
