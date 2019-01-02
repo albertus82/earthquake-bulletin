@@ -43,8 +43,8 @@ public class MapImageAsyncOperation extends AsyncOperation<Earthquake> {
 	}
 
 	private void cacheHit(final MapImage cachedObject, final Earthquake earthquake, final Shell shell) {
-		MapCanvas.setMapImage(cachedObject, earthquake);
 		checkForUpdateAndRefreshIfNeeded(cachedObject, earthquake, shell);
+		MapCanvas.setMapImage(cachedObject, earthquake);
 	}
 
 	private void cacheMiss(final Earthquake earthquake, final Shell shell) {
@@ -58,8 +58,8 @@ public class MapImageAsyncOperation extends AsyncOperation<Earthquake> {
 					}
 					final MapImage downloadedObject = job.getDownloadedObject();
 					if (downloadedObject != null) {
+						new DisplayThreadExecutor(shell, true).execute(() -> MapCanvas.setMapImage(downloadedObject, earthquake));
 						MapImageCache.getInstance().put(earthquake.getGuid(), downloadedObject);
-						new DisplayThreadExecutor(shell).execute(() -> MapCanvas.setMapImage(downloadedObject, earthquake));
 					}
 				}
 				catch (final AsyncOperationException e) {
@@ -82,7 +82,7 @@ public class MapImageAsyncOperation extends AsyncOperation<Earthquake> {
 				try {
 					final MapImage downloadedObject = MapImageDownloader.download(earthquake, cachedObject);
 					if (!cachedObject.equals(downloadedObject)) {
-						new DisplayThreadExecutor(shell).execute(() -> MapCanvas.updateMapImage(downloadedObject, earthquake)); // Update UI on-the-fly.
+						new DisplayThreadExecutor(shell, true).execute(() -> MapCanvas.updateMapImage(downloadedObject, earthquake)); // Update UI on-the-fly.
 						MapImageCache.getInstance().put(earthquake.getGuid(), downloadedObject);
 					}
 				}
