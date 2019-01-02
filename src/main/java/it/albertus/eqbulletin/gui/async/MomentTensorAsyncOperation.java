@@ -59,7 +59,7 @@ public class MomentTensorAsyncOperation extends AsyncOperation<Earthquake> {
 					final MomentTensor downloadedObject = job.getDownloadedObject();
 					if (downloadedObject != null) {
 						MomentTensorCache.getInstance().put(earthquake.getGuid(), downloadedObject);
-						new DisplayThreadExecutor(shell).execute(() -> new MomentTensorDialog(shell, downloadedObject, earthquake).open());
+						new DisplayThreadExecutor(shell, true).execute(() -> new MomentTensorDialog(shell, downloadedObject, earthquake).open()); // Async
 					}
 				}
 				catch (final AsyncOperationException e) {
