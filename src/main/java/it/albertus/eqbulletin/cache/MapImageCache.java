@@ -34,7 +34,7 @@ public class MapImageCache implements Cache<String, MapImage> {
 	private final Map<String, MapImage> cache = new LinkedHashMap<>(16, 0.75f, true);
 
 	@Override
-	public void put(final String guid, final MapImage map) {
+	public synchronized void put(final String guid, final MapImage map) {
 		cache.put(guid, map);
 		while (cache.size() > 0 && cache.size() > configuration.getByte(Preference.MAP_CACHE_SIZE, Defaults.CACHE_SIZE)) {
 			final String firstKey = cache.keySet().iterator().next();
@@ -43,12 +43,12 @@ public class MapImageCache implements Cache<String, MapImage> {
 	}
 
 	@Override
-	public MapImage get(final String guid) {
+	public synchronized MapImage get(final String guid) {
 		return cache.get(guid);
 	}
 
 	@Override
-	public boolean contains(final String guid) {
+	public synchronized boolean contains(final String guid) {
 		return cache.containsKey(guid);
 	}
 
