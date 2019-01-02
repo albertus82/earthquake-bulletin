@@ -27,7 +27,7 @@ public class MomentTensorDownloadJob extends Job implements DownloadJob<MomentTe
 
 	@Override
 	public IStatus run(final IProgressMonitor monitor) {
-		monitor.beginTask(MomentTensorDownloadJob.class.getSimpleName(), IProgressMonitor.UNKNOWN);
+		monitor.beginTask(getName(), IProgressMonitor.UNKNOWN);
 		try {
 			downloadedObject = MomentTensorDownloader.download(earthquake);
 			monitor.done();

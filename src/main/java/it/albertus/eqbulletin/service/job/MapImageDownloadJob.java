@@ -27,7 +27,7 @@ public class MapImageDownloadJob extends Job implements DownloadJob<MapImage> {
 
 	@Override
 	public IStatus run(final IProgressMonitor monitor) {
-		monitor.beginTask(MapImageDownloadJob.class.getSimpleName(), IProgressMonitor.UNKNOWN);
+		monitor.beginTask(getName(), IProgressMonitor.UNKNOWN);
 		try {
 			downloadedObject = MapImageDownloader.download(earthquake);
 			monitor.done();
