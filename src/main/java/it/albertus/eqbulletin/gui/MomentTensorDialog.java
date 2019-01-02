@@ -92,11 +92,12 @@ public class MomentTensorDialog extends Dialog {
 			text.setBackground(text.getDisplay().getSystemColor(SWT.COLOR_LIST_BACKGROUND));
 		}
 		text.setFont(JFaceResources.getTextFont());
-		text.setText(momentTensor.getText().trim());
+		final String momentTensorText = momentTensor.getText().trim();
+		text.setText(momentTensorText);
 		GC gc = null;
 		try {
 			gc = new GC(text);
-			final Point textExtent = gc.textExtent(momentTensor.getText().trim());
+			final Point textExtent = gc.textExtent(momentTensorText);
 			GridDataFactory.fillDefaults().grab(true, true).hint(textExtent.x, SWT.DEFAULT).applyTo(text);
 		}
 		finally {
