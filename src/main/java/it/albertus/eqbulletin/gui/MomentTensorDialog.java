@@ -37,7 +37,7 @@ public class MomentTensorDialog extends Dialog {
 
 	private static final Logger logger = LoggerFactory.getLogger(MomentTensorDialog.class);
 
-	private static final Collection<MomentTensorDialog> instances = new ArrayList<>(1);
+	private static final Collection<MomentTensorDialog> instances = new ArrayList<>();
 
 	private MomentTensor momentTensor;
 	private final Earthquake earthquake;

@@ -38,7 +38,6 @@ import it.albertus.eqbulletin.gui.preference.Preference;
 import it.albertus.eqbulletin.model.Earthquake;
 import it.albertus.eqbulletin.model.MapImage;
 import it.albertus.eqbulletin.resources.Messages;
-import it.albertus.jface.DisplayThreadExecutor;
 import it.albertus.jface.EnhancedErrorDialog;
 import it.albertus.jface.HqImageResizer;
 import it.albertus.jface.preference.IPreferencesConfiguration;
@@ -360,22 +359,20 @@ public class MapCanvas {
 	private static void update(final MapImage mapImage, final Earthquake earthquake) {
 		final byte[] imageBytes = mapImage.getBytes();
 		if (imageBytes != null && imageBytes.length > 0) {
-			new DisplayThreadExecutor(instance.canvas).execute(() -> {
-				try (final InputStream is = new ByteArrayInputStream(imageBytes)) {
-					final Image oldImage = instance.image;
-					instance.image = new Image(instance.canvas.getDisplay(), is);
-					instance.mapImage = mapImage;
-					instance.earthquake = earthquake;
-					instance.paintImage(instance.zoomLevel);
-					if (oldImage != null) {
-						oldImage.dispose();
-					}
-					logger.log(Level.FINE, "Map image canvas set/updated for {0}.", earthquake);
+			try (final InputStream is = new ByteArrayInputStream(imageBytes)) {
+				final Image oldImage = instance.image;
+				instance.image = new Image(instance.canvas.getDisplay(), is);
+				instance.mapImage = mapImage;
+				instance.earthquake = earthquake;
+				instance.paintImage(instance.zoomLevel);
+				if (oldImage != null) {
+					oldImage.dispose();
 				}
-				catch (final Exception e) {
-					logger.log(Level.WARNING, e.toString(), e);
-				}
-			});
+				logger.log(Level.FINE, "Map image canvas set/updated for {0}.", earthquake);
+			}
+			catch (final Exception e) {
+				logger.log(Level.WARNING, e.toString(), e);
+			}
 		}
 	}
 
