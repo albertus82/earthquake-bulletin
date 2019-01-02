@@ -81,7 +81,7 @@ public class MapImageAsyncService {
 				try {
 					final MapImage downloadedObject = MapImageDownloader.download(earthquake, cachedObject);
 					if (!cachedObject.equals(downloadedObject)) {
-						MapCanvas.updateMapImage(downloadedObject, earthquake); // Update UI on-the-fly.
+						new DisplayThreadExecutor(shell).execute(() -> MapCanvas.updateMapImage(downloadedObject, earthquake)); // Update UI on-the-fly.
 						MapImageCache.getInstance().put(earthquake.getGuid(), downloadedObject);
 					}
 				}

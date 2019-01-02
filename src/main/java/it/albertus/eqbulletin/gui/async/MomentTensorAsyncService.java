@@ -81,7 +81,7 @@ public class MomentTensorAsyncService {
 				try {
 					final MomentTensor downloadedObject = MomentTensorDownloader.download(earthquake, cachedObject);
 					if (downloadedObject != null && !cachedObject.getText().equals(downloadedObject.getText())) {
-						new DisplayThreadExecutor(shell).execute(() -> MomentTensorDialog.update(downloadedObject, earthquake)); // Update UI on-the-fly.
+						new DisplayThreadExecutor(shell).execute(() -> MomentTensorDialog.updateMomentTensorText(downloadedObject, earthquake)); // Update UI on-the-fly.
 						MomentTensorCache.getInstance().put(earthquake.getGuid(), downloadedObject);
 					}
 				}

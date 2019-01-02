@@ -132,7 +132,7 @@ public class MomentTensorDialog extends Dialog {
 		logger.log(instances.isEmpty() ? Level.FINE : Level.WARNING, "Moment tensor dialog instance removed; instances.size() = {0}.", instances.size());
 	}
 
-	public static synchronized void update(final MomentTensor momentTensor, final Earthquake earthquake) {
+	public static synchronized void updateMomentTensorText(final MomentTensor momentTensor, final Earthquake earthquake) {
 		for (final MomentTensorDialog instance : instances) {
 			if (earthquake.equals(instance.earthquake)) {
 				logger.log(Level.FINE, "Updating moment tensor dialog instance {0}...", instance);
