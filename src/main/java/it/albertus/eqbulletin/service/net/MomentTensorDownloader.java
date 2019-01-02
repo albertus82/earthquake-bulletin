@@ -17,19 +17,17 @@ import it.albertus.util.IOUtils;
 import it.albertus.util.StringUtils;
 import it.albertus.util.logging.LoggerFactory;
 
-public class MomentTensorDownloader implements Downloader<Earthquake, MomentTensor> {
+public class MomentTensorDownloader {
 
 	private static final short BUFFER_SIZE = 512;
 
 	private static final Logger logger = LoggerFactory.getLogger(MomentTensorDownloader.class);
 
-	@Override
-	public MomentTensor download(final Earthquake earthquake) throws IOException {
+	public static MomentTensor download(final Earthquake earthquake) throws IOException {
 		return download(earthquake, null);
 	}
 
-	@Override
-	public MomentTensor download(final Earthquake earthquake, final MomentTensor cached) throws IOException {
+	public static MomentTensor download(final Earthquake earthquake, final MomentTensor cached) throws IOException {
 		final Headers headers = new Headers();
 		headers.set("Accept", "text/*,*/*;0.9");
 		headers.set("Accept-Encoding", "gzip");
@@ -57,6 +55,10 @@ public class MomentTensorDownloader implements Downloader<Earthquake, MomentTens
 				return new MomentTensor(out.toString(charsetName), connection.getHeaderField("Etag"));
 			}
 		}
+	}
+
+	private MomentTensorDownloader() {
+		throw new IllegalAccessError();
 	}
 
 }

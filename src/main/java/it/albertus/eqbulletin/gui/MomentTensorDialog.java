@@ -26,7 +26,6 @@ import org.eclipse.swt.widgets.Text;
 import it.albertus.eqbulletin.model.Earthquake;
 import it.albertus.eqbulletin.model.MomentTensor;
 import it.albertus.eqbulletin.resources.Messages;
-import it.albertus.jface.DisplayThreadExecutor;
 import it.albertus.jface.JFaceMessages;
 import it.albertus.jface.SwtUtils;
 import it.albertus.util.logging.LoggerFactory;
@@ -138,15 +137,13 @@ public class MomentTensorDialog extends Dialog {
 			if (earthquake.equals(instance.earthquake)) {
 				logger.log(Level.FINE, "Updating moment tensor dialog instance {0}...", instance);
 				instance.momentTensor = momentTensor; // Useful when the Text field is not initialized.
-				new DisplayThreadExecutor(instance.text).execute(() -> {
-					if (instance.text != null && !instance.text.isDisposed()) {
-						final String oldValue = instance.text.getText();
-						final String newValue = instance.momentTensor.getText().trim();
-						if (!newValue.equals(oldValue)) {
-							instance.text.setText(newValue); // Update the Text field on-the-fly.
-						}
+				if (instance.text != null && !instance.text.isDisposed()) {
+					final String oldValue = instance.text.getText();
+					final String newValue = instance.momentTensor.getText().trim();
+					if (!newValue.equals(oldValue)) {
+						instance.text.setText(newValue); // Update the Text field on-the-fly.
 					}
-				});
+				}
 				logger.log(Level.FINE, "Moment tensor dialog instance {0} updated.", instance);
 				return;
 			}

@@ -3,8 +3,9 @@ package it.albertus.eqbulletin.gui.async;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.eclipse.core.runtime.jobs.IJobManager;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
+
+import it.albertus.jface.SwtUtils;
 
 public class JobManager {
 
@@ -12,17 +13,17 @@ public class JobManager {
 		System.setProperty(IJobManager.PROP_USE_DAEMON_THREADS, Boolean.TRUE.toString());
 	}
 
-	private static final AtomicInteger count = new AtomicInteger();
+	private static final AtomicInteger jobsCount = new AtomicInteger();
 
 	public static void setWaitCursor(final Shell shell) {
-		if (shell != null && !shell.isDisposed() && count.getAndIncrement() == 0) {
-			shell.setCursor(shell.getDisplay().getSystemCursor(SWT.CURSOR_WAIT));
+		if (jobsCount.getAndIncrement() == 0) {
+			SwtUtils.setWaitCursor(shell);
 		}
 	}
 
 	public static void setDefaultCursor(final Shell shell) {
-		if (shell != null && !shell.isDisposed() && count.decrementAndGet() == 0) {
-			shell.setCursor(null);
+		if (jobsCount.decrementAndGet() == 0) {
+			SwtUtils.setDefaultCursor(shell);
 		}
 	}
 

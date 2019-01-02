@@ -12,17 +12,15 @@ import it.albertus.eqbulletin.model.Earthquake;
 import it.albertus.eqbulletin.model.MapImage;
 import it.albertus.util.IOUtils;
 
-public class MapImageDownloader implements Downloader<Earthquake, MapImage> {
+public class MapImageDownloader {
 
 	private static final short BUFFER_SIZE = 8192;
 
-	@Override
-	public MapImage download(final Earthquake earthquake) throws IOException {
+	public static MapImage download(final Earthquake earthquake) throws IOException {
 		return download(earthquake, null);
 	}
 
-	@Override
-	public MapImage download(final Earthquake earthquake, final MapImage cached) throws IOException {
+	public static MapImage download(final Earthquake earthquake, final MapImage cached) throws IOException {
 		final Headers headers = new Headers();
 		headers.set("Accept", "image/*,*/*;0.9");
 		headers.set("Accept-Encoding", "gzip");
@@ -41,6 +39,10 @@ public class MapImageDownloader implements Downloader<Earthquake, MapImage> {
 				return new MapImage(out.toByteArray(), connection.getHeaderField("Etag"));
 			}
 		}
+	}
+
+	private MapImageDownloader() {
+		throw new IllegalAccessError();
 	}
 
 }

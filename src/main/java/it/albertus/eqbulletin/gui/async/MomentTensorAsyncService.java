@@ -70,8 +70,8 @@ public class MomentTensorAsyncService {
 		}
 		else {
 			logger.log(Level.FINE, "Cache hit for key \"{0}\". Cache size: {1}.", new Serializable[] { guid, cache.getSize() });
-			new MomentTensorDialog(shell, cachedObject, earthquake).open();
 			checkForUpdateAndRefreshIfNeeded(cachedObject, earthquake, shell);
+			new MomentTensorDialog(shell, cachedObject, earthquake).open();
 		}
 	}
 
@@ -79,9 +79,9 @@ public class MomentTensorAsyncService {
 		if (cachedObject.getEtag() != null && !cachedObject.getEtag().trim().isEmpty()) {
 			final Runnable checkForUpdate = () -> {
 				try {
-					final MomentTensor downloadedObject = new MomentTensorDownloader().download(earthquake, cachedObject);
+					final MomentTensor downloadedObject = MomentTensorDownloader.download(earthquake, cachedObject);
 					if (downloadedObject != null && !cachedObject.getText().equals(downloadedObject.getText())) {
-						MomentTensorDialog.update(downloadedObject, earthquake); // Update UI on-the-fly.
+						new DisplayThreadExecutor(shell).execute(() -> MomentTensorDialog.update(downloadedObject, earthquake)); // Update UI on-the-fly.
 						MomentTensorCache.getInstance().put(earthquake.getGuid(), downloadedObject);
 					}
 				}

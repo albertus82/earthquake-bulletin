@@ -29,7 +29,7 @@ public class MomentTensorDownloadJob extends Job implements DownloadJob<MomentTe
 	public IStatus run(final IProgressMonitor monitor) {
 		monitor.beginTask(MomentTensorDownloadJob.class.getSimpleName(), IProgressMonitor.UNKNOWN);
 		try {
-			downloadedObject = new MomentTensorDownloader().download(earthquake);
+			downloadedObject = MomentTensorDownloader.download(earthquake);
 			monitor.done();
 			return JobStatus.OK_STATUS;
 		}

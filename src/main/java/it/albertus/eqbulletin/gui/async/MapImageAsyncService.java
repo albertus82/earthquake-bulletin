@@ -79,7 +79,7 @@ public class MapImageAsyncService {
 		if (cachedObject.getEtag() != null && !cachedObject.getEtag().trim().isEmpty()) {
 			final Runnable checkForUpdate = () -> {
 				try {
-					final MapImage downloadedObject = new MapImageDownloader().download(earthquake, cachedObject);
+					final MapImage downloadedObject = MapImageDownloader.download(earthquake, cachedObject);
 					if (!cachedObject.equals(downloadedObject)) {
 						MapCanvas.updateMapImage(downloadedObject, earthquake); // Update UI on-the-fly.
 						MapImageCache.getInstance().put(earthquake.getGuid(), downloadedObject);
