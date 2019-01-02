@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 import org.eclipse.swt.widgets.Shell;
 
 import it.albertus.eqbulletin.cache.MapImageCache;
+import it.albertus.eqbulletin.gui.Images;
 import it.albertus.eqbulletin.gui.MapCanvas;
 import it.albertus.eqbulletin.model.Earthquake;
 import it.albertus.eqbulletin.model.MapImage;
@@ -19,11 +20,26 @@ import it.albertus.jface.SwtUtils;
 import it.albertus.util.DaemonThreadFactory;
 import it.albertus.util.logging.LoggerFactory;
 
-public class MapImageRetriever implements Retriever<Earthquake, MapImage> {
+public class MapImageService implements Retriever<Earthquake, MapImage> {
 
-	private static final Logger logger = LoggerFactory.getLogger(MapImageRetriever.class);
+	private static final Logger logger = LoggerFactory.getLogger(MapImageService.class);
 
 	private static final ThreadFactory threadFactory = new DaemonThreadFactory();
+
+	public void setCanvasImage(final Earthquake earthquake, final Shell shell) {
+		if (earthquake != null && earthquake.getEnclosureUrl() != null && shell != null && !shell.isDisposed()) {
+			try {
+				SwtUtils.setWaitCursor(shell);
+				final MapImage mapImage = new MapImageService().retrieve(earthquake, shell);
+				if (mapImage != null) {
+					MapCanvas.setMapImage(mapImage, earthquake);
+				}
+			}
+			finally {
+				SwtUtils.setDefaultCursor(shell);
+			}
+		}
+	}
 
 	@Override
 	public MapImage retrieve(final Earthquake earthquake, final Shell shell) {
@@ -46,7 +62,7 @@ public class MapImageRetriever implements Retriever<Earthquake, MapImage> {
 				logger.log(e.getLoggingLevel(), e.getMessage());
 				SwtUtils.setDefaultCursor(shell);
 				if (!shell.isDisposed()) {
-					EnhancedErrorDialog.openError(shell, Messages.get("lbl.window.title"), e.getMessage(), e.getSeverity(), e.getCause(), shell.getDisplay().getSystemImage(e.getSystemImageId()));
+					EnhancedErrorDialog.openError(shell, Messages.get("lbl.window.title"), e.getMessage(), e.getSeverity(), e.getCause(), Images.getMainIconArray());
 				}
 			}
 			finally {

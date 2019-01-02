@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 import org.eclipse.swt.widgets.Shell;
 
 import it.albertus.eqbulletin.cache.MomentTensorCache;
+import it.albertus.eqbulletin.gui.Images;
 import it.albertus.eqbulletin.gui.MomentTensorDialog;
 import it.albertus.eqbulletin.model.Earthquake;
 import it.albertus.eqbulletin.model.MomentTensor;
@@ -19,11 +20,20 @@ import it.albertus.jface.SwtUtils;
 import it.albertus.util.DaemonThreadFactory;
 import it.albertus.util.logging.LoggerFactory;
 
-public class MomentTensorRetriever implements Retriever<Earthquake, MomentTensor> {
+public class MomentTensorService implements Retriever<Earthquake, MomentTensor> {
 
-	private static final Logger logger = LoggerFactory.getLogger(MomentTensorRetriever.class);
+	private static final Logger logger = LoggerFactory.getLogger(MomentTensorService.class);
 
 	private static final ThreadFactory threadFactory = new DaemonThreadFactory();
+
+	public void openDialog(final Earthquake earthquake, final Shell shell) {
+		if (earthquake != null && earthquake.getMomentTensorUrl() != null && shell != null && !shell.isDisposed()) {
+			final MomentTensor momentTensor = retrieve(earthquake, shell);
+			if (momentTensor != null) {
+				new MomentTensorDialog(shell, momentTensor, earthquake).open();
+			}
+		}
+	}
 
 	@Override
 	public MomentTensor retrieve(final Earthquake earthquake, final Shell shell) {
@@ -46,7 +56,7 @@ public class MomentTensorRetriever implements Retriever<Earthquake, MomentTensor
 				logger.log(e.getLoggingLevel(), e.getMessage());
 				SwtUtils.setDefaultCursor(shell);
 				if (!shell.isDisposed()) {
-					EnhancedErrorDialog.openError(shell, Messages.get("lbl.window.title"), e.getMessage(), e.getSeverity(), e.getCause(), shell.getDisplay().getSystemImage(e.getSystemImageId()));
+					EnhancedErrorDialog.openError(shell, Messages.get("lbl.window.title"), e.getMessage(), e.getSeverity(), e.getCause(), Images.getMainIconArray());
 				}
 			}
 			finally {

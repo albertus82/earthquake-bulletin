@@ -29,14 +29,13 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
 import it.albertus.eqbulletin.EarthquakeBulletin;
 import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
 import it.albertus.eqbulletin.gui.async.BulletinExporter;
-import it.albertus.eqbulletin.gui.async.MomentTensorRetriever;
+import it.albertus.eqbulletin.gui.async.MomentTensorService;
 import it.albertus.eqbulletin.gui.listener.CopyLinkSelectionListener;
 import it.albertus.eqbulletin.gui.listener.EpicenterMapSelectionListener;
 import it.albertus.eqbulletin.gui.listener.ExportCsvSelectionListener;
@@ -47,7 +46,6 @@ import it.albertus.eqbulletin.gui.listener.ShowMapListener;
 import it.albertus.eqbulletin.gui.listener.ShowMomentTensorListener;
 import it.albertus.eqbulletin.gui.preference.Preference;
 import it.albertus.eqbulletin.model.Earthquake;
-import it.albertus.eqbulletin.model.MomentTensor;
 import it.albertus.eqbulletin.model.Status;
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.jface.SwtUtils;
@@ -213,11 +211,7 @@ public class ResultsTable {
 					final ViewerCell cell = tableViewer.getCell(new Point(e.x, e.y));
 					if (cell != null && cell.getColumnIndex() == COL_IDX_MT && MT.equals(cell.getText()) && cell.getElement() instanceof Earthquake) {
 						final Earthquake earthquake = (Earthquake) cell.getElement();
-						final Shell shell = table.getShell();
-						final MomentTensor momentTensor = new MomentTensorRetriever().retrieve(earthquake, shell);
-						if (momentTensor != null) {
-							new MomentTensorDialog(shell, momentTensor, earthquake).open();
-						}
+						new MomentTensorService().openDialog(earthquake, table.getShell());
 					}
 				}
 			}
