@@ -4,7 +4,6 @@ import static it.albertus.eqbulletin.EarthquakeBulletin.ARTIFACT_ID;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -15,7 +14,6 @@ import it.albertus.eqbulletin.gui.preference.Preference;
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.eqbulletin.util.InitializationException;
 import it.albertus.jface.preference.PreferencesConfiguration;
-import it.albertus.util.NewLine;
 import it.albertus.util.SystemUtils;
 import it.albertus.util.config.LanguageConfig;
 import it.albertus.util.config.LoggingConfig;
@@ -47,7 +45,7 @@ public class EarthquakeBulletinConfig extends LoggingConfig implements LanguageC
 				instance = new PreferencesConfiguration(new EarthquakeBulletinConfig());
 				instanceCount++;
 				if (logger.isLoggable(Level.CONFIG)) {
-					logger.log(Level.CONFIG, "Created {0} instance: {1}", new String[] { PreferencesConfiguration.class.getSimpleName(), Arrays.toString(Thread.currentThread().getStackTrace()).replace(", ", NewLine.SYSTEM_LINE_SEPARATOR + '\t') });
+					logger.log(Level.CONFIG, "Created {0} instance.", PreferencesConfiguration.class.getSimpleName());
 				}
 				if (instanceCount > 1) {
 					throw new InitializationException("Detected multiple instances of singleton " + PreferencesConfiguration.class);

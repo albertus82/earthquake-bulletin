@@ -108,8 +108,11 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 			}
 			catch (final Exception e) {
 				final String message = Messages.get("err.fatal");
-				logger.log(Level.SEVERE, message, e);
-				if (!shell.isDisposed()) {
+				if (shell.isDisposed()) {
+					logger.log(Level.FINE, message, e);
+				}
+				else {
+					logger.log(Level.SEVERE, message, e);
 					EnhancedErrorDialog.openError(shell, Messages.get("msg.application.name"), message, IStatus.ERROR, e, display.getSystemImage(SWT.ICON_ERROR));
 				}
 			}
