@@ -20,58 +20,63 @@ import it.albertus.jface.DisplayThreadExecutor;
 import it.albertus.jface.EnhancedErrorDialog;
 import it.albertus.util.logging.LoggerFactory;
 
-public class MomentTensorAsyncOperation extends AsyncOperation {
+public class MomentTensorAsyncOperation extends AsyncOperation<Earthquake> {
 
 	private static final Logger logger = LoggerFactory.getLogger(MomentTensorAsyncOperation.class);
 
-	public static void openDialog(final Earthquake earthquake, final Shell shell) {
+	@Override
+	public void execute(final Earthquake earthquake, final Shell shell) {
 		if (earthquake != null && earthquake.getMomentTensorUrl() != null && shell != null && !shell.isDisposed()) {
 			setWaitCursor(shell);
-			execute(earthquake, shell);
+			final MomentTensorCache cache = MomentTensorCache.getInstance();
+			final String guid = earthquake.getGuid();
+			final MomentTensor cachedObject = cache.get(guid);
+			if (cachedObject == null) {
+				logger.log(Level.FINE, "Cache miss for key \"{0}\". Cache size: {1}.", new Serializable[] { guid, cache.getSize() });
+				cacheMiss(earthquake, shell);
+			}
+			else {
+				logger.log(Level.FINE, "Cache hit for key \"{0}\". Cache size: {1}.", new Serializable[] { guid, cache.getSize() });
+				cacheHit(cachedObject, earthquake, shell);
+			}
 		}
 	}
 
-	private static void execute(final Earthquake earthquake, final Shell shell) {
-		final MomentTensorCache cache = MomentTensorCache.getInstance();
-		final String guid = earthquake.getGuid();
-		final MomentTensor cachedObject = cache.get(guid);
-		if (cachedObject == null) {
-			logger.log(Level.FINE, "Cache miss for key \"{0}\". Cache size: {1}.", new Serializable[] { guid, cache.getSize() });
-			final MomentTensorDownloadJob job = new MomentTensorDownloadJob(earthquake);
-			job.addJobChangeListener(new JobChangeAdapter() {
-				@Override
-				public void done(final IJobChangeEvent event) {
-					try {
-						if (!event.getResult().isOK()) {
-							throw new AsyncOperationException(job.getResult());
-						}
-						final MomentTensor downloadedObject = job.getDownloadedObject();
-						if (downloadedObject != null) {
-							cache.put(guid, downloadedObject);
-							new DisplayThreadExecutor(shell).execute(() -> new MomentTensorDialog(shell, downloadedObject, earthquake).open());
-						}
+	private void cacheHit(final MomentTensor cachedObject, final Earthquake earthquake, final Shell shell) {
+		checkForUpdateAndRefreshIfNeeded(cachedObject, earthquake, shell);
+		new MomentTensorDialog(shell, cachedObject, earthquake).open(); // Blocking!
+	}
+
+	private void cacheMiss(final Earthquake earthquake, final Shell shell) {
+		final MomentTensorDownloadJob job = new MomentTensorDownloadJob(earthquake);
+		job.addJobChangeListener(new JobChangeAdapter() {
+			@Override
+			public void done(final IJobChangeEvent event) {
+				try {
+					if (!event.getResult().isOK()) {
+						throw new AsyncOperationException(job.getResult());
 					}
-					catch (final AsyncOperationException e) {
-						logger.log(e.getLoggingLevel(), e.getMessage());
-						if (!shell.isDisposed()) {
-							new DisplayThreadExecutor(shell).execute(() -> EnhancedErrorDialog.openError(shell, Messages.get("lbl.window.title"), e.getMessage(), e.getSeverity(), e.getCause(), Images.getMainIconArray()));
-						}
-					}
-					finally {
-						new DisplayThreadExecutor(shell).execute(() -> setDefaultCursor(shell));
+					final MomentTensor downloadedObject = job.getDownloadedObject();
+					if (downloadedObject != null) {
+						MomentTensorCache.getInstance().put(earthquake.getGuid(), downloadedObject);
+						new DisplayThreadExecutor(shell).execute(() -> new MomentTensorDialog(shell, downloadedObject, earthquake).open());
 					}
 				}
-			});
-			job.schedule();
-		}
-		else {
-			logger.log(Level.FINE, "Cache hit for key \"{0}\". Cache size: {1}.", new Serializable[] { guid, cache.getSize() });
-			checkForUpdateAndRefreshIfNeeded(cachedObject, earthquake, shell);
-			new MomentTensorDialog(shell, cachedObject, earthquake).open();
-		}
+				catch (final AsyncOperationException e) {
+					logger.log(e.getLoggingLevel(), e.getMessage());
+					if (!shell.isDisposed()) {
+						new DisplayThreadExecutor(shell).execute(() -> EnhancedErrorDialog.openError(shell, Messages.get("lbl.window.title"), e.getMessage(), e.getSeverity(), e.getCause(), Images.getMainIconArray()));
+					}
+				}
+				finally {
+					new DisplayThreadExecutor(shell).execute(() -> setDefaultCursor(shell));
+				}
+			}
+		});
+		job.schedule();
 	}
 
-	private static void checkForUpdateAndRefreshIfNeeded(final MomentTensor cachedObject, final Earthquake earthquake, final Shell shell) {
+	private void checkForUpdateAndRefreshIfNeeded(final MomentTensor cachedObject, final Earthquake earthquake, final Shell shell) {
 		if (cachedObject.getEtag() != null && !cachedObject.getEtag().trim().isEmpty()) {
 			final Runnable checkForUpdate = () -> {
 				try {

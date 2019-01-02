@@ -211,7 +211,7 @@ public class ResultsTable {
 					final ViewerCell cell = tableViewer.getCell(new Point(e.x, e.y));
 					if (cell != null && cell.getColumnIndex() == COL_IDX_MT && MT.equals(cell.getText()) && cell.getElement() instanceof Earthquake) {
 						final Earthquake earthquake = (Earthquake) cell.getElement();
-						MomentTensorAsyncOperation.openDialog(earthquake, table.getShell());
+						new MomentTensorAsyncOperation().execute(earthquake, table.getShell());
 					}
 				}
 			}

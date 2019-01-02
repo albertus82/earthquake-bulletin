@@ -9,7 +9,7 @@ import org.eclipse.swt.widgets.Shell;
 import it.albertus.jface.SwtUtils;
 import it.albertus.util.DaemonThreadFactory;
 
-public abstract class AsyncOperation {
+public abstract class AsyncOperation<T> {
 
 	protected static final ThreadFactory threadFactory = new DaemonThreadFactory();
 
@@ -19,20 +19,18 @@ public abstract class AsyncOperation {
 		System.setProperty(IJobManager.PROP_USE_DAEMON_THREADS, Boolean.TRUE.toString());
 	}
 
-	protected static void setWaitCursor(final Shell shell) {
+	public abstract void execute(T arg, Shell shell);
+
+	protected void setWaitCursor(final Shell shell) {
 		if (jobsCount.getAndIncrement() == 0) {
 			SwtUtils.setWaitCursor(shell);
 		}
 	}
 
-	protected static void setDefaultCursor(final Shell shell) {
+	protected void setDefaultCursor(final Shell shell) {
 		if (jobsCount.decrementAndGet() == 0) {
 			SwtUtils.setDefaultCursor(shell);
 		}
-	}
-
-	protected AsyncOperation() {
-		throw new IllegalAccessError();
 	}
 
 }
