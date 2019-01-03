@@ -361,21 +361,26 @@ public class MapCanvas {
 	}
 
 	private static void update(final MapImage mapImage, final Earthquake earthquake) {
-		final byte[] imageBytes = mapImage.getBytes();
-		if (imageBytes != null && imageBytes.length > 0) {
-			try (final InputStream is = new ByteArrayInputStream(imageBytes)) {
-				final Image oldImage = instance.image;
-				instance.image = new Image(instance.canvas.getDisplay(), is);
-				instance.mapImage = mapImage;
-				instance.earthquake = earthquake;
-				instance.paintImage(instance.zoomLevel);
-				if (oldImage != null) {
-					oldImage.dispose();
+		if (instance.mapImage != null && instance.mapImage.getEtag() != null && instance.mapImage.getEtag().equals(mapImage.getEtag())) {
+			logger.log(Level.FINE, "Map image canvas already set for {0}.", earthquake);
+		}
+		else {
+			final byte[] imageBytes = mapImage.getBytes();
+			if (imageBytes != null && imageBytes.length > 0) {
+				try (final InputStream is = new ByteArrayInputStream(imageBytes)) {
+					final Image oldImage = instance.image;
+					instance.image = new Image(instance.canvas.getDisplay(), is);
+					instance.mapImage = mapImage;
+					instance.earthquake = earthquake;
+					instance.paintImage(instance.zoomLevel);
+					if (oldImage != null) {
+						oldImage.dispose();
+					}
+					logger.log(Level.FINE, "Map image canvas set/updated for {0}.", earthquake);
 				}
-				logger.log(Level.FINE, "Map image canvas set/updated for {0}.", earthquake);
-			}
-			catch (final Exception e) {
-				logger.log(Level.WARNING, e.toString(), e);
+				catch (final Exception e) {
+					logger.log(Level.WARNING, e.toString(), e);
+				}
 			}
 		}
 	}
