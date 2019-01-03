@@ -31,7 +31,7 @@ public class MapImageDownloadJob extends Job implements DownloadJob<MapImage> {
 		try {
 			downloadedObject = MapImageDownloader.download(earthquake);
 			monitor.done();
-			return JobStatus.OK_STATUS;
+			return monitor.isCanceled() ? JobStatus.CANCEL_STATUS : JobStatus.OK_STATUS;
 		}
 		catch (final FileNotFoundException e) {
 			return new Status(IStatus.INFO, getClass().getName(), Messages.get("err.job.map.not.found"), e);

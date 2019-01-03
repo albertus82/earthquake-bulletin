@@ -4,7 +4,9 @@ import java.io.Serializable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.swt.widgets.Shell;
 
@@ -24,10 +26,13 @@ public class MapImageAsyncOperation extends AsyncOperation<Earthquake> {
 
 	private static final Logger logger = LoggerFactory.getLogger(MapImageAsyncOperation.class);
 
+	private static Job currentJob;
+
 	@Override
 	public void execute(final Earthquake earthquake, final Shell shell) {
 		if (earthquake != null && earthquake.getEnclosureUrl() != null && shell != null && !shell.isDisposed()) {
 			setWaitCursor(shell);
+			cancelCurrentJob();
 			final MapImageCache cache = MapImageCache.getInstance();
 			final String guid = earthquake.getGuid();
 			final MapImage cachedObject = cache.get(guid);
@@ -53,19 +58,21 @@ public class MapImageAsyncOperation extends AsyncOperation<Earthquake> {
 			@Override
 			public void done(final IJobChangeEvent event) {
 				try {
-					if (!event.getResult().isOK()) {
+					if (!event.getResult().isOK() && event.getResult().getSeverity() != IStatus.CANCEL) {
 						throw new AsyncOperationException(job.getResult());
 					}
 					final MapImage downloadedObject = job.getDownloadedObject();
 					if (downloadedObject != null) {
-						new DisplayThreadExecutor(shell, true).execute(() -> MapCanvas.setMapImage(downloadedObject, earthquake));
+						if (event.getResult().getSeverity() != IStatus.CANCEL) {
+							new DisplayThreadExecutor(shell, true).execute(() -> MapCanvas.setMapImage(downloadedObject, earthquake));
+						}
 						MapImageCache.getInstance().put(earthquake.getGuid(), downloadedObject);
 					}
 				}
 				catch (final AsyncOperationException e) {
 					logger.log(e.getLoggingLevel(), e.getMessage());
 					if (!shell.isDisposed()) {
-						new DisplayThreadExecutor(shell, true).execute(() -> EnhancedErrorDialog.openError(shell, Messages.get("lbl.window.title"), e.getMessage(), e.getSeverity(), e.getCause(), Images.getMainIconArray()));
+						new DisplayThreadExecutor(shell, true).execute(() -> EnhancedErrorDialog.openError(shell, Messages.get("lbl.window.title"), e.getMessage(), e.getSeverity(), e.getCause() != null ? e.getCause() : e, Images.getMainIconArray()));
 					}
 				}
 				finally {
@@ -74,6 +81,7 @@ public class MapImageAsyncOperation extends AsyncOperation<Earthquake> {
 			}
 		});
 		job.schedule();
+		setCurrentJob(job);
 	}
 
 	private void checkForUpdateAndRefreshIfNeeded(final MapImage cachedObject, final Earthquake earthquake, final Shell shell) {
@@ -97,6 +105,16 @@ public class MapImageAsyncOperation extends AsyncOperation<Earthquake> {
 		}
 		else {
 			setDefaultCursor(shell);
+		}
+	}
+
+	private static synchronized void setCurrentJob(final Job job) {
+		currentJob = job;
+	}
+
+	private static synchronized void cancelCurrentJob() {
+		if (currentJob != null) {
+			currentJob.cancel();
 		}
 	}
 
