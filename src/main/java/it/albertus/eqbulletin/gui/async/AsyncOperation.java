@@ -35,19 +35,17 @@ public abstract class AsyncOperation<T> {
 	public abstract void execute(T arg, Shell shell);
 
 	protected void setWaitCursor(final Shell shell) {
-		final int count = operationCount.getAndIncrement();
-		logger.log(Level.FINE, "setWaitCursor() - operationCount = {0}", count);
-		if (count == 0) {
+		logger.log(Level.FINE, "setWaitCursor() - operationCount = {0}", operationCount);
+		if (operationCount.getAndIncrement() == 0) {
 			SwtUtils.setWaitCursor(shell);
 		}
 	}
 
 	protected void setDefaultCursor(final Shell shell) {
-		final int count = operationCount.updateAndGet(o -> o > 1 ? o - 1 : 0);
-		logger.log(Level.FINE, "setDefaultCursor() - operationCount = {0}", count);
-		if (count == 0) {
+		if (operationCount.updateAndGet(o -> o > 1 ? o - 1 : 0) == 0) {
 			SwtUtils.setDefaultCursor(shell);
 		}
+		logger.log(Level.FINE, "setDefaultCursor() - operationCount = {0}", operationCount);
 	}
 
 }
