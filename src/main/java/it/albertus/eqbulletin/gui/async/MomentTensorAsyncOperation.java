@@ -66,7 +66,7 @@ public class MomentTensorAsyncOperation extends AsyncOperation<Earthquake> {
 				catch (final AsyncOperationException e) {
 					logger.log(e.getLoggingLevel(), e.getMessage());
 					if (!shell.isDisposed()) {
-						new DisplayThreadExecutor(shell, true).execute(() -> EnhancedErrorDialog.openError(shell, Messages.get("lbl.window.title"), e.getMessage(), e.getSeverity(), e.getCause(), Images.getMainIconArray()));
+						new DisplayThreadExecutor(shell, true).execute(() -> EnhancedErrorDialog.openError(shell, Messages.get("lbl.window.title"), e.getMessage(), e.getSeverity(), e.getCause() != null ? e.getCause() : e, Images.getMainIconArray()));
 					}
 				}
 				finally {
