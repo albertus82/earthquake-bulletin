@@ -350,7 +350,7 @@ public class MapCanvas {
 	}
 
 	public static synchronized void updateMapImage(final MapImage mapImage, final Earthquake earthquake) {
-		if (instance != null && earthquake.equals(instance.earthquake)) {
+		if (instance != null && earthquake.equals(instance.earthquake)) { // Only if the provided image belongs to the current earthquake.
 			logger.log(Level.FINE, "Updating map image canvas for {0}...", earthquake);
 			update(mapImage, earthquake);
 		}
