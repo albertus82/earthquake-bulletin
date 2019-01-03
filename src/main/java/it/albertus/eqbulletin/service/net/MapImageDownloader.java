@@ -22,7 +22,7 @@ public class MapImageDownloader {
 
 	public static MapImage download(final Earthquake earthquake, final MapImage cached) throws IOException {
 		final Headers headers = new Headers();
-		headers.set("Accept", "image/*,*/*;0.9");
+		headers.set("Accept", "image/jpeg,image/*;q=0.9,*/*;q=0.8");
 		headers.set("Accept-Encoding", "gzip");
 		if (cached != null && cached.getEtag() != null && !cached.getEtag().trim().isEmpty()) {
 			headers.set("If-None-Match", cached.getEtag());

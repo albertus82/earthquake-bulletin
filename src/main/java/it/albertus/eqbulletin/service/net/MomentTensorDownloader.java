@@ -29,7 +29,7 @@ public class MomentTensorDownloader {
 
 	public static MomentTensor download(final Earthquake earthquake, final MomentTensor cached) throws IOException {
 		final Headers headers = new Headers();
-		headers.set("Accept", "text/*,*/*;0.9");
+		headers.set("Accept", "text/plain,text/*;q=0.9,*/*;q=0.8");
 		headers.set("Accept-Encoding", "gzip");
 		if (cached != null && cached.getEtag() != null && !cached.getEtag().trim().isEmpty()) {
 			headers.set("If-None-Match", cached.getEtag());
