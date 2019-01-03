@@ -1,6 +1,7 @@
 package it.albertus.eqbulletin.gui.async;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
@@ -101,17 +102,18 @@ public class SearchJob extends Job {
 			});
 
 			try {
-				final Earthquake[] newData = provider.getEarthquakes(jobVariables).toArray(new Earthquake[0]);
+				final List<Earthquake> newDataList = provider.getEarthquakes(jobVariables);
+				final Earthquake[] newDataArray = newDataList.toArray(new Earthquake[0]);
 
 				new DisplayThreadExecutor(gui.getShell()).execute(() -> {
-					final Earthquake[] oldData = (Earthquake[]) gui.getResultsTable().getTableViewer().getInput();
-					gui.getResultsTable().getTableViewer().setInput(newData);
-					gui.getTrayIcon().updateToolTipText(newData.length > 0 ? newData[0] : null);
-					if (oldData != null && !Arrays.equals(newData, oldData)) {
+					final Earthquake[] oldDataArray = (Earthquake[]) gui.getResultsTable().getTableViewer().getInput();
+					gui.getResultsTable().getTableViewer().setInput(newDataArray);
+					gui.getTrayIcon().updateToolTipText(newDataArray.length > 0 ? newDataArray[0] : null);
+					if (gui.getMapCanvas().getEarthquake() != null && !newDataList.contains(gui.getMapCanvas().getEarthquake())) {
 						gui.getMapCanvas().clear();
-						if (newData.length > 0 && newData[0] != null && oldData.length > 0 && !newData[0].equals(oldData[0]) && gui.getTrayIcon().getTrayItem() != null && gui.getTrayIcon().getTrayItem().getVisible()) {
-							gui.getTrayIcon().showBalloonToolTip(newData[0]);
-						}
+					}
+					if (oldDataArray != null && !Arrays.equals(newDataArray, oldDataArray) && newDataArray.length > 0 && newDataArray[0] != null && oldDataArray.length > 0 && !newDataArray[0].equals(oldDataArray[0]) && gui.getTrayIcon().getTrayItem() != null && gui.getTrayIcon().getTrayItem().getVisible()) {
+						gui.getTrayIcon().showBalloonToolTip(newDataArray[0]);
 					}
 				});
 			}

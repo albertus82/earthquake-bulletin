@@ -172,6 +172,10 @@ public class MapCanvas {
 		}
 	}
 
+	public Earthquake getEarthquake() {
+		return earthquake;
+	}
+
 	public void refresh() {
 		paintImage(zoomLevel);
 	}
