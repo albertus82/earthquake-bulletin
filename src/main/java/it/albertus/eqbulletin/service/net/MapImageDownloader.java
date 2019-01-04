@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 
 import com.sun.net.httpserver.Headers;
@@ -11,10 +12,13 @@ import com.sun.net.httpserver.Headers;
 import it.albertus.eqbulletin.model.Earthquake;
 import it.albertus.eqbulletin.model.MapImage;
 import it.albertus.util.IOUtils;
+import it.albertus.util.logging.LoggerFactory;
 
 public class MapImageDownloader {
 
 	private static final short BUFFER_SIZE = 8192;
+
+	private static final Logger logger = LoggerFactory.getLogger(MapImageDownloader.class);
 
 	public static MapImage download(final Earthquake earthquake) throws IOException {
 		return download(earthquake, null);
@@ -38,6 +42,7 @@ public class MapImageDownloader {
 				IOUtils.copy(in, out, BUFFER_SIZE);
 				final MapImage downloaded = new MapImage(out.toByteArray(), connection.getHeaderField("Etag"));
 				if (downloaded.equals(cached)) {
+					logger.fine("downloaded.equals(cached)");
 					return cached;
 				}
 				else {

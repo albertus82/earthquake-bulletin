@@ -54,6 +54,7 @@ public class MomentTensorDownloader {
 				logger.log(Level.FINE, "Content-Type charset: {0}", charsetName);
 				final MomentTensor downloaded = new MomentTensor(out.toString(charsetName), connection.getHeaderField("Etag"));
 				if (downloaded.equals(cached)) {
+					logger.fine("downloaded.equals(cached)");
 					return cached;
 				}
 				else {
