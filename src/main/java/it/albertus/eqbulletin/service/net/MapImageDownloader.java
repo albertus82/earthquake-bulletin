@@ -36,7 +36,13 @@ public class MapImageDownloader {
 			final boolean gzip = responseContentEncoding != null && responseContentEncoding.toLowerCase().contains("gzip");
 			try (final InputStream raw = connection.getInputStream(); final InputStream in = gzip ? new GZIPInputStream(raw) : raw; final ByteArrayOutputStream out = new ByteArrayOutputStream()) {
 				IOUtils.copy(in, out, BUFFER_SIZE);
-				return new MapImage(out.toByteArray(), connection.getHeaderField("Etag"));
+				final MapImage downloaded = new MapImage(out.toByteArray(), connection.getHeaderField("Etag"));
+				if (downloaded.equals(cached)) {
+					return cached;
+				}
+				else {
+					return downloaded;
+				}
 			}
 		}
 	}

@@ -52,7 +52,13 @@ public class MomentTensorDownloader {
 					}
 				}
 				logger.log(Level.FINE, "Content-Type charset: {0}", charsetName);
-				return new MomentTensor(out.toString(charsetName), connection.getHeaderField("Etag"));
+				final MomentTensor downloaded = new MomentTensor(out.toString(charsetName), connection.getHeaderField("Etag"));
+				if (downloaded.equals(cached)) {
+					return cached;
+				}
+				else {
+					return downloaded;
+				}
 			}
 		}
 	}

@@ -361,7 +361,7 @@ public class MapCanvas {
 	}
 
 	private static void update(final MapImage mapImage, final Earthquake earthquake) {
-		if (instance.mapImage != null && instance.mapImage.getEtag() != null && instance.mapImage.getEtag().equals(mapImage.getEtag())) {
+		if (mapImage.equals(instance.mapImage)) {
 			logger.log(Level.FINE, "Map image canvas already set for {0}.", earthquake);
 		}
 		else {
