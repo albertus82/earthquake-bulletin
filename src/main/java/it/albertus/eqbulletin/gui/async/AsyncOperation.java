@@ -34,14 +34,14 @@ public abstract class AsyncOperation<T> {
 
 	public abstract void execute(T arg, Shell shell);
 
-	protected void setWaitCursor(final Shell shell) {
-		logger.log(Level.FINE, "setWaitCursor() - operationCount = {0}", operationCount);
+	protected static void setAppStartingCursor(final Shell shell) {
+		logger.log(Level.FINE, "setAppStartingCursor() - operationCount = {0}", operationCount);
 		if (operationCount.getAndIncrement() == 0) {
-			SwtUtils.setWaitCursor(shell);
+			SwtUtils.setAppStartingCursor(shell);
 		}
 	}
 
-	protected void setDefaultCursor(final Shell shell) {
+	protected static void setDefaultCursor(final Shell shell) {
 		if (operationCount.updateAndGet(o -> o > 1 ? o - 1 : 0) == 0) {
 			SwtUtils.setDefaultCursor(shell);
 		}

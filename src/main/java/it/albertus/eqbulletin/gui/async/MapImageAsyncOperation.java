@@ -31,7 +31,7 @@ public class MapImageAsyncOperation extends AsyncOperation<Earthquake> {
 	@Override
 	public void execute(final Earthquake earthquake, final Shell shell) {
 		if (earthquake != null && earthquake.getEnclosureUrl() != null && shell != null && !shell.isDisposed()) {
-			setWaitCursor(shell);
+			setAppStartingCursor(shell);
 			cancelCurrentJob();
 			final MapImageCache cache = MapImageCache.getInstance();
 			final String guid = earthquake.getGuid();

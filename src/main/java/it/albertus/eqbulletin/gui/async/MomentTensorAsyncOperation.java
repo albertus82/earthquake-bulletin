@@ -27,7 +27,7 @@ public class MomentTensorAsyncOperation extends AsyncOperation<Earthquake> {
 	@Override
 	public void execute(final Earthquake earthquake, final Shell shell) {
 		if (earthquake != null && earthquake.getMomentTensorUrl() != null && shell != null && !shell.isDisposed()) {
-			setWaitCursor(shell);
+			setAppStartingCursor(shell);
 			final MomentTensorCache cache = MomentTensorCache.getInstance();
 			final String guid = earthquake.getGuid();
 			final MomentTensor cachedObject = cache.get(guid);

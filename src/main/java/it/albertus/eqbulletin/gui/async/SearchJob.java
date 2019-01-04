@@ -58,7 +58,7 @@ public class SearchJob extends Job {
 
 			new DisplayThreadExecutor(gui.getShell()).execute(() -> {
 				gui.getSearchForm().getSearchButton().setText(Messages.get("lbl.form.button.stop"));
-				gui.getShell().setCursor(gui.getShell().getDisplay().getSystemCursor(SWT.CURSOR_WAIT));
+				gui.getShell().setCursor(gui.getShell().getDisplay().getSystemCursor(SWT.CURSOR_APPSTARTING));
 
 				// Search parameters
 				final SearchForm form = gui.getSearchForm();
