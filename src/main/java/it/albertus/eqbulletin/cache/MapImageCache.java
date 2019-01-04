@@ -10,6 +10,8 @@ import it.albertus.jface.preference.IPreferencesConfiguration;
 
 public class MapImageCache implements Cache<String, MapImage> {
 
+	private static final long serialVersionUID = 14746911870762927L;
+
 	public static class Defaults {
 		public static final byte CACHE_SIZE = 20;
 

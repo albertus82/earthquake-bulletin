@@ -1,6 +1,8 @@
 package it.albertus.eqbulletin.cache;
 
-public interface Cache<K, V> {
+import java.io.Serializable;
+
+public interface Cache<K, V> extends Serializable {
 
 	void put(K key, V value);
 

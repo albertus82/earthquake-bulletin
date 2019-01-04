@@ -7,6 +7,8 @@ import it.albertus.eqbulletin.model.MomentTensor;
 
 public class MomentTensorCache implements Cache<String, MomentTensor> {
 
+	private static final long serialVersionUID = -6126159757256952811L;
+
 	private static final byte CACHE_SIZE = Byte.MAX_VALUE;
 
 	private static MomentTensorCache instance;
