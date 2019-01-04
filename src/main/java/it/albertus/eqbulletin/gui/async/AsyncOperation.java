@@ -6,9 +6,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.eclipse.core.runtime.jobs.IJobManager;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
 
-import it.albertus.jface.SwtUtils;
 import it.albertus.util.DaemonThreadFactory;
 import it.albertus.util.logging.LoggerFactory;
 
@@ -36,14 +36,14 @@ public abstract class AsyncOperation<T> {
 
 	protected static void setAppStartingCursor(final Shell shell) {
 		logger.log(Level.FINE, "setAppStartingCursor() - operationCount = {0}", operationCount);
-		if (operationCount.getAndIncrement() == 0) {
-			SwtUtils.setAppStartingCursor(shell);
+		if (operationCount.getAndIncrement() == 0 && shell != null && !shell.isDisposed()) {
+			shell.setCursor(shell.getDisplay().getSystemCursor(SWT.CURSOR_APPSTARTING));
 		}
 	}
 
 	protected static void setDefaultCursor(final Shell shell) {
-		if (operationCount.updateAndGet(o -> o > 1 ? o - 1 : 0) == 0) {
-			SwtUtils.setDefaultCursor(shell);
+		if (operationCount.updateAndGet(o -> o > 1 ? o - 1 : 0) == 0 && shell != null && !shell.isDisposed()) {
+			shell.setCursor(null);
 		}
 		logger.log(Level.FINE, "setDefaultCursor() - operationCount = {0}", operationCount);
 	}
