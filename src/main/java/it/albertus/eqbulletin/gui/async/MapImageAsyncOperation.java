@@ -88,8 +88,8 @@ public class MapImageAsyncOperation extends AsyncOperation<Earthquake> {
 		if (cachedObject.getEtag() != null && !cachedObject.getEtag().trim().isEmpty()) {
 			final Runnable checkForUpdate = () -> {
 				try {
-					final MapImage downloadedObject = MapImageDownloader.download(earthquake, cachedObject);
-					if (!cachedObject.equals(downloadedObject)) {
+					final MapImage downloadedObject = new MapImageDownloader().download(() -> false, earthquake, cachedObject);
+					if (downloadedObject != null && !downloadedObject.equals(cachedObject)) {
 						new DisplayThreadExecutor(shell, true).execute(() -> MapCanvas.updateMapImage(downloadedObject, earthquake)); // Update UI on-the-fly.
 						MapImageCache.getInstance().put(earthquake.getGuid(), downloadedObject);
 					}

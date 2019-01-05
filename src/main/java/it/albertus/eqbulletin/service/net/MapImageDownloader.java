@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 
@@ -11,20 +12,24 @@ import com.sun.net.httpserver.Headers;
 
 import it.albertus.eqbulletin.model.Earthquake;
 import it.albertus.eqbulletin.model.MapImage;
+import it.albertus.eqbulletin.util.Cancelable;
+import it.albertus.eqbulletin.util.CancellationStatus;
 import it.albertus.util.IOUtils;
 import it.albertus.util.logging.LoggerFactory;
 
-public class MapImageDownloader {
+public class MapImageDownloader implements Cancelable {
 
 	private static final short BUFFER_SIZE = 8192;
 
 	private static final Logger logger = LoggerFactory.getLogger(MapImageDownloader.class);
 
-	public static MapImage download(final Earthquake earthquake) throws IOException {
-		return download(earthquake, null);
+	private InputStream connectionInputStream;
+
+	public MapImage download(final CancellationStatus status, final Earthquake earthquake) throws IOException {
+		return download(status, earthquake, null);
 	}
 
-	public static MapImage download(final Earthquake earthquake, final MapImage cached) throws IOException {
+	public MapImage download(final CancellationStatus status, final Earthquake earthquake, final MapImage cached) throws IOException {
 		final Headers headers = new Headers();
 		headers.set("Accept", "image/jpeg,image/*;q=0.9,*/*;q=0.8");
 		headers.set("Accept-Encoding", "gzip");
@@ -39,6 +44,7 @@ public class MapImageDownloader {
 			final String responseContentEncoding = connection.getContentEncoding();
 			final boolean gzip = responseContentEncoding != null && responseContentEncoding.toLowerCase().contains("gzip");
 			try (final InputStream raw = connection.getInputStream(); final InputStream in = gzip ? new GZIPInputStream(raw) : raw; final ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+				this.connectionInputStream = raw;
 				IOUtils.copy(in, out, BUFFER_SIZE);
 				final MapImage downloaded = new MapImage(out.toByteArray(), connection.getHeaderField("Etag"));
 				if (downloaded.equals(cached)) {
@@ -49,11 +55,29 @@ public class MapImageDownloader {
 					return downloaded;
 				}
 			}
+			catch (final IOException e) {
+				if (status.isCanceled()) {
+					logger.log(Level.FINE, e.toString(), e);
+					return null;
+				}
+				else {
+					throw e;
+				}
+			}
 		}
 	}
 
-	private MapImageDownloader() {
-		throw new IllegalAccessError();
+	@Override
+	public void cancel() {
+		if (connectionInputStream != null) {
+			try {
+				connectionInputStream.close();
+				logger.fine("Download canceled.");
+			}
+			catch (final Exception e) {
+				logger.log(Level.FINE, e.toString(), e);
+			}
+		}
 	}
 
 }

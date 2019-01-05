@@ -20,6 +20,8 @@ public class MapImageDownloadJob extends Job implements DownloadJob<MapImage> {
 
 	private MapImage downloadedObject;
 
+	private MapImageDownloader downloader;
+
 	public MapImageDownloadJob(final Earthquake earthquake) {
 		super(MapImageDownloadJob.class.getSimpleName());
 		this.earthquake = earthquake;
@@ -29,7 +31,8 @@ public class MapImageDownloadJob extends Job implements DownloadJob<MapImage> {
 	public IStatus run(final IProgressMonitor monitor) {
 		monitor.beginTask(getName(), IProgressMonitor.UNKNOWN);
 		try {
-			downloadedObject = MapImageDownloader.download(earthquake);
+			downloader = new MapImageDownloader();
+			downloadedObject = downloader.download(monitor::isCanceled, earthquake);
 			monitor.done();
 			return monitor.isCanceled() ? JobStatus.CANCEL_STATUS : JobStatus.OK_STATUS;
 		}
@@ -47,6 +50,11 @@ public class MapImageDownloadJob extends Job implements DownloadJob<MapImage> {
 	@Override
 	public MapImage getDownloadedObject() {
 		return downloadedObject;
+	}
+
+	@Override
+	protected void canceling() {
+		downloader.cancel();
 	}
 
 }
