@@ -3,7 +3,6 @@ package it.albertus.eqbulletin.service.job;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import org.eclipse.core.internal.jobs.JobStatus;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -32,7 +31,7 @@ public class MomentTensorDownloadJob extends Job implements DownloadJob<MomentTe
 		try {
 			downloadedObject = new MomentTensorDownloader().download(earthquake);
 			monitor.done();
-			return JobStatus.OK_STATUS;
+			return Status.OK_STATUS;
 		}
 		catch (final FileNotFoundException e) {
 			return new Status(IStatus.INFO, getClass().getName(), Messages.get("err.job.mt.not.found"), e);
