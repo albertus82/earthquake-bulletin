@@ -102,7 +102,7 @@ public class SearchJob extends Job {
 			});
 
 			try {
-				final List<Earthquake> newDataList = provider.getEarthquakes(jobVariables);
+				final List<Earthquake> newDataList = provider.getEarthquakes(jobVariables, monitor::isCanceled);
 				final Earthquake[] newDataArray = newDataList.toArray(new Earthquake[0]);
 
 				new DisplayThreadExecutor(gui.getShell()).execute(() -> {

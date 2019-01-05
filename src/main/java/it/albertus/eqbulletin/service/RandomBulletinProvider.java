@@ -12,11 +12,12 @@ import it.albertus.eqbulletin.model.Earthquake;
 import it.albertus.eqbulletin.model.Latitude;
 import it.albertus.eqbulletin.model.Longitude;
 import it.albertus.eqbulletin.model.Status;
+import it.albertus.eqbulletin.util.CancellationStatus;
 
 public class RandomBulletinProvider implements BulletinProvider {
 
 	@Override
-	public List<Earthquake> getEarthquakes(final SearchJobVars jobVariables) {
+	public List<Earthquake> getEarthquakes(final SearchJobVars jobVariables, final CancellationStatus cs) {
 		final List<Earthquake> earthquakes = new ArrayList<>();
 		for (int i = 0; i < 20; i++) {
 			final Calendar date = Calendar.getInstance();

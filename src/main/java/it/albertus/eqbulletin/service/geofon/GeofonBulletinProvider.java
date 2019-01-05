@@ -33,6 +33,7 @@ import it.albertus.eqbulletin.service.geofon.html.transformer.HtmlTableDataTrans
 import it.albertus.eqbulletin.service.geofon.rss.transformer.RssItemTransformer;
 import it.albertus.eqbulletin.service.geofon.rss.xml.Rss;
 import it.albertus.eqbulletin.service.net.ConnectionFactory;
+import it.albertus.eqbulletin.util.CancellationStatus;
 import it.albertus.util.NewLine;
 import it.albertus.util.config.IConfiguration;
 import it.albertus.util.logging.LoggerFactory;
@@ -47,10 +48,8 @@ public class GeofonBulletinProvider implements BulletinProvider {
 
 	private HttpURLConnection urlConnection;
 
-	private boolean cancelled;
-
 	@Override
-	public List<Earthquake> getEarthquakes(final SearchJobVars jobVariables) throws FetchException, DecodeException {
+	public List<Earthquake> getEarthquakes(final SearchJobVars jobVariables, final CancellationStatus status) throws FetchException, DecodeException {
 		final String url = getUrl(jobVariables.getParams());
 
 		Rss rss = null;
@@ -58,7 +57,7 @@ public class GeofonBulletinProvider implements BulletinProvider {
 
 		try {
 			synchronized (this) {
-				if (cancelled) {
+				if (status.isCanceled()) {
 					throw new CancelException();
 				}
 				else {
@@ -107,7 +106,6 @@ public class GeofonBulletinProvider implements BulletinProvider {
 
 	@Override
 	public synchronized void cancel() {
-		cancelled = true;
 		if (urlConnection != null) {
 			try {
 				urlConnection.getInputStream().close(); // Interrupt blocking I/O
