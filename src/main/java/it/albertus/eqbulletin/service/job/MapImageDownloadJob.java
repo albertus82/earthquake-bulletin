@@ -25,6 +25,7 @@ public class MapImageDownloadJob extends Job implements DownloadJob<MapImage> {
 	public MapImageDownloadJob(final Earthquake earthquake) {
 		super(MapImageDownloadJob.class.getSimpleName());
 		this.earthquake = earthquake;
+		setUser(true);
 	}
 
 	@Override

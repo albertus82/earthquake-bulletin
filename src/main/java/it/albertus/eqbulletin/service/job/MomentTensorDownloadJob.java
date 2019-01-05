@@ -23,6 +23,7 @@ public class MomentTensorDownloadJob extends Job implements DownloadJob<MomentTe
 	public MomentTensorDownloadJob(final Earthquake earthquake) {
 		super(MomentTensorDownloadJob.class.getSimpleName());
 		this.earthquake = earthquake;
+		setUser(true);
 	}
 
 	@Override
