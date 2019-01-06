@@ -12,7 +12,7 @@ import org.eclipse.swt.widgets.Shell;
 import it.albertus.util.DaemonThreadFactory;
 import it.albertus.util.logging.LoggerFactory;
 
-public abstract class AsyncOperation<T> {
+public abstract class AsyncOperation {
 
 	private static final Logger logger = LoggerFactory.getLogger(AsyncOperation.class);
 
@@ -32,8 +32,6 @@ public abstract class AsyncOperation<T> {
 		System.setProperty(IJobManager.PROP_USE_DAEMON_THREADS, Boolean.TRUE.toString());
 	}
 
-	public abstract void execute(T arg, Shell shell);
-
 	protected static void setAppStartingCursor(final Shell shell) {
 		logger.log(Level.FINE, "setAppStartingCursor() - operationCount = {0}", operationCount);
 		if (operationCount.getAndIncrement() == 0 && shell != null && !shell.isDisposed()) {
@@ -46,6 +44,10 @@ public abstract class AsyncOperation<T> {
 			shell.setCursor(null);
 		}
 		logger.log(Level.FINE, "setDefaultCursor() - operationCount = {0}", operationCount);
+	}
+
+	protected AsyncOperation() {
+		throw new IllegalAccessError();
 	}
 
 }

@@ -22,14 +22,13 @@ import it.albertus.jface.DisplayThreadExecutor;
 import it.albertus.jface.EnhancedErrorDialog;
 import it.albertus.util.logging.LoggerFactory;
 
-public class MapImageAsyncOperation extends AsyncOperation<Earthquake> {
+public class MapImageAsyncOperation extends AsyncOperation {
 
 	private static final Logger logger = LoggerFactory.getLogger(MapImageAsyncOperation.class);
 
 	private static Job currentJob;
 
-	@Override
-	public void execute(final Earthquake earthquake, final Shell shell) {
+	public static void execute(final Earthquake earthquake, final Shell shell) {
 		if (earthquake != null && earthquake.getEnclosureUrl() != null && shell != null && !shell.isDisposed()) {
 			setAppStartingCursor(shell);
 			cancelCurrentJob();
@@ -47,12 +46,12 @@ public class MapImageAsyncOperation extends AsyncOperation<Earthquake> {
 		}
 	}
 
-	private void cacheHit(final MapImage cachedObject, final Earthquake earthquake, final Shell shell) {
+	private static void cacheHit(final MapImage cachedObject, final Earthquake earthquake, final Shell shell) {
 		checkForUpdateAndRefreshIfNeeded(cachedObject, earthquake, shell);
 		MapCanvas.setMapImage(cachedObject, earthquake);
 	}
 
-	private void cacheMiss(final Earthquake earthquake, final Shell shell) {
+	private static void cacheMiss(final Earthquake earthquake, final Shell shell) {
 		final MapImageDownloadJob job = new MapImageDownloadJob(earthquake);
 		job.addJobChangeListener(new JobChangeAdapter() {
 			@Override
@@ -84,11 +83,11 @@ public class MapImageAsyncOperation extends AsyncOperation<Earthquake> {
 		setCurrentJob(job);
 	}
 
-	private void checkForUpdateAndRefreshIfNeeded(final MapImage cachedObject, final Earthquake earthquake, final Shell shell) {
+	private static void checkForUpdateAndRefreshIfNeeded(final MapImage cachedObject, final Earthquake earthquake, final Shell shell) {
 		if (cachedObject.getEtag() != null && !cachedObject.getEtag().trim().isEmpty()) {
 			final Runnable checkForUpdate = () -> {
 				try {
-					final MapImage downloadedObject = new MapImageDownloader().download(() -> false, earthquake, cachedObject);
+					final MapImage downloadedObject = new MapImageDownloader().download(earthquake, cachedObject, () -> false);
 					if (downloadedObject != null && !downloadedObject.equals(cachedObject)) {
 						new DisplayThreadExecutor(shell, true).execute(() -> MapCanvas.updateMapImage(downloadedObject, earthquake)); // Update UI on-the-fly.
 						MapImageCache.getInstance().put(earthquake.getGuid(), downloadedObject);
@@ -116,6 +115,10 @@ public class MapImageAsyncOperation extends AsyncOperation<Earthquake> {
 		if (currentJob != null) {
 			currentJob.cancel();
 		}
+	}
+
+	private MapImageAsyncOperation() {
+		throw new IllegalAccessError();
 	}
 
 }

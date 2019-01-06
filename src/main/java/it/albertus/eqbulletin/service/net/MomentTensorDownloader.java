@@ -23,11 +23,11 @@ public class MomentTensorDownloader {
 
 	private static final Logger logger = LoggerFactory.getLogger(MomentTensorDownloader.class);
 
-	public MomentTensor download(final Earthquake earthquake) throws IOException {
+	public static MomentTensor download(final Earthquake earthquake) throws IOException {
 		return download(earthquake, null);
 	}
 
-	public MomentTensor download(final Earthquake earthquake, final MomentTensor cached) throws IOException {
+	public static MomentTensor download(final Earthquake earthquake, final MomentTensor cached) throws IOException {
 		final Headers headers = new Headers();
 		headers.set("Accept", "text/plain,text/*;q=0.9,*/*;q=0.8");
 		headers.set("Accept-Encoding", "gzip");
@@ -62,6 +62,10 @@ public class MomentTensorDownloader {
 				}
 			}
 		}
+	}
+
+	private MomentTensorDownloader() {
+		throw new IllegalAccessError();
 	}
 
 }

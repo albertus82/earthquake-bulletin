@@ -21,7 +21,7 @@ public class ShowMapListener implements Listener {
 		final TableViewer tableViewer = gui.getResultsTable().getTableViewer();
 		if (tableViewer != null && !tableViewer.getTable().isDisposed() && tableViewer.getStructuredSelection() != null) {
 			final Earthquake earthquake = (Earthquake) tableViewer.getStructuredSelection().getFirstElement();
-			new MapImageAsyncOperation().execute(earthquake, gui.getShell());
+			MapImageAsyncOperation.execute(earthquake, gui.getShell());
 		}
 	}
 

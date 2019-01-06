@@ -32,7 +32,7 @@ public class MapImageDownloadJob extends Job implements DownloadJob<MapImage> {
 		monitor.beginTask(getName(), IProgressMonitor.UNKNOWN);
 		try {
 			downloader = new MapImageDownloader();
-			downloadedObject = downloader.download(monitor::isCanceled, earthquake);
+			downloadedObject = downloader.download(earthquake, monitor::isCanceled);
 			monitor.done();
 			return monitor.isCanceled() ? Status.CANCEL_STATUS : Status.OK_STATUS;
 		}

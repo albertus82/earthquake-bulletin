@@ -20,12 +20,11 @@ import it.albertus.jface.DisplayThreadExecutor;
 import it.albertus.jface.EnhancedErrorDialog;
 import it.albertus.util.logging.LoggerFactory;
 
-public class MomentTensorAsyncOperation extends AsyncOperation<Earthquake> {
+public class MomentTensorAsyncOperation extends AsyncOperation {
 
 	private static final Logger logger = LoggerFactory.getLogger(MomentTensorAsyncOperation.class);
 
-	@Override
-	public void execute(final Earthquake earthquake, final Shell shell) {
+	public static void execute(final Earthquake earthquake, final Shell shell) {
 		if (earthquake != null && earthquake.getMomentTensorUrl() != null && shell != null && !shell.isDisposed()) {
 			setAppStartingCursor(shell);
 			final MomentTensorCache cache = MomentTensorCache.getInstance();
@@ -42,13 +41,13 @@ public class MomentTensorAsyncOperation extends AsyncOperation<Earthquake> {
 		}
 	}
 
-	private void cacheHit(final MomentTensor cachedObject, final Earthquake earthquake, final Shell shell) {
+	private static void cacheHit(final MomentTensor cachedObject, final Earthquake earthquake, final Shell shell) {
 		final MomentTensorDialog dialog = new MomentTensorDialog(shell, cachedObject, earthquake);
 		checkForUpdateAndRefreshIfNeeded(cachedObject, earthquake, shell); // Async
 		dialog.open(); // Blocking!
 	}
 
-	private void cacheMiss(final Earthquake earthquake, final Shell shell) {
+	private static void cacheMiss(final Earthquake earthquake, final Shell shell) {
 		final MomentTensorDownloadJob job = new MomentTensorDownloadJob(earthquake);
 		job.addJobChangeListener(new JobChangeAdapter() {
 			@Override
@@ -77,11 +76,11 @@ public class MomentTensorAsyncOperation extends AsyncOperation<Earthquake> {
 		job.schedule();
 	}
 
-	private void checkForUpdateAndRefreshIfNeeded(final MomentTensor cachedObject, final Earthquake earthquake, final Shell shell) {
+	private static void checkForUpdateAndRefreshIfNeeded(final MomentTensor cachedObject, final Earthquake earthquake, final Shell shell) {
 		if (cachedObject.getEtag() != null && !cachedObject.getEtag().trim().isEmpty()) {
 			final Runnable checkForUpdate = () -> {
 				try {
-					final MomentTensor downloadedObject = new MomentTensorDownloader().download(earthquake, cachedObject);
+					final MomentTensor downloadedObject = MomentTensorDownloader.download(earthquake, cachedObject);
 					if (downloadedObject != null && downloadedObject.equals(cachedObject)) {
 						new DisplayThreadExecutor(shell, true).execute(() -> MomentTensorDialog.updateMomentTensorText(downloadedObject, earthquake)); // Update UI on-the-fly.
 						MomentTensorCache.getInstance().put(earthquake.getGuid(), downloadedObject);
@@ -99,6 +98,10 @@ public class MomentTensorAsyncOperation extends AsyncOperation<Earthquake> {
 		else {
 			setDefaultCursor(shell);
 		}
+	}
+
+	private MomentTensorAsyncOperation() {
+		throw new IllegalAccessError();
 	}
 
 }
