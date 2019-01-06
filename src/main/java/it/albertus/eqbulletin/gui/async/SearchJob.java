@@ -11,7 +11,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
 
 import com.dmurph.URIEncoder;
@@ -58,7 +57,7 @@ public class SearchJob extends Job {
 
 			new DisplayThreadExecutor(gui.getShell()).execute(() -> {
 				gui.getSearchForm().getSearchButton().setText(Messages.get("lbl.form.button.stop"));
-				gui.getShell().setCursor(gui.getShell().getDisplay().getSystemCursor(SWT.CURSOR_APPSTARTING));
+				AsyncOperation.setAppStartingCursor(gui.getShell());
 
 				// Search parameters
 				final SearchForm form = gui.getSearchForm();
@@ -141,7 +140,7 @@ public class SearchJob extends Job {
 				else {
 					gui.getSearchForm().cancelJob();
 				}
-				gui.getShell().setCursor(null);
+				AsyncOperation.setDefaultCursor(gui.getShell());
 			});
 		}
 		monitor.done();
