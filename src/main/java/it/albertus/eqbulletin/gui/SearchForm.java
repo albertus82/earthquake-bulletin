@@ -152,15 +152,15 @@ public class SearchForm {
 
 	private final LeafletMapBoundsDialog mapBoundsDialog;
 
-	private final TraverseListener formFieldTraverseListener = new FormFieldTraverseListener(this);
-	private final ModifyListener formTextModifyListener = new FormTextModifyListener(this);
-	private final VerifyListener coordinatesVerifyListener = new FloatVerifyListener(true);
-
 	private final Collection<ControlValidator<Text>> validators = new ArrayList<>();
 
 	private SearchJob searchJob;
 
 	public SearchForm(final EarthquakeBulletinGui gui) {
+		final TraverseListener formFieldTraverseListener = new FormFieldTraverseListener(gui);
+		final ModifyListener formTextModifyListener = new FormTextModifyListener(this);
+		final VerifyListener coordinatesVerifyListener = new FloatVerifyListener(true);
+
 		formComposite = new Composite(gui.getShell(), SWT.NONE);
 		GridLayoutFactory.swtDefaults().margins(0, 0).numColumns(2).applyTo(formComposite);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.TOP).grab(true, false).applyTo(formComposite);
