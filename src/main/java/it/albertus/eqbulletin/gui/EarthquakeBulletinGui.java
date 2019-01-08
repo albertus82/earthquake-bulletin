@@ -90,7 +90,6 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 	public static void run(final InitializationException ie) {
 		Display.setAppName(Messages.get("msg.application.name"));
 		Display.setAppVersion(Version.getInstance().getNumber());
-
 		final Display display = Display.getDefault();
 
 		if (ie != null) { // Display error dialog and exit.
@@ -366,6 +365,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 			}
 
 			logger.log(Level.CONFIG, "{0}", configuration);
+
 			try {
 				configuration.save(); // save configuration
 			}
