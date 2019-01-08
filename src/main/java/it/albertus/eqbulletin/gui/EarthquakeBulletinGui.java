@@ -26,6 +26,8 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TableColumn;
 
+import it.albertus.eqbulletin.cache.MapImageCache;
+import it.albertus.eqbulletin.cache.MomentTensorCache;
 import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
 import it.albertus.eqbulletin.gui.listener.CloseListener;
 import it.albertus.eqbulletin.gui.preference.Preference;
@@ -90,6 +92,12 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 	public static void run(final InitializationException ie) {
 		Display.setAppName(Messages.get("msg.application.name"));
 		Display.setAppVersion(Version.getInstance().getNumber());
+
+		new Thread(() -> {
+			MomentTensorCache.deserialize();
+			MapImageCache.deserialize();
+		}, "Restore caches.").start();
+
 		final Display display = Display.getDefault();
 
 		if (ie != null) { // Display error dialog and exit.
@@ -158,6 +166,10 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 		getShell().addListener(SWT.Move, listener);
 		getShell().addListener(SWT.Activate, new MaximizeShellListener());
 		getShell().addListener(SWT.Deactivate, new DeactivateShellListener());
+		getShell().addDisposeListener(e -> new Thread(() -> {
+			MomentTensorCache.serialize();
+			MapImageCache.serialize();
+		}, "Save caches").start());
 
 		if (SwtUtils.isGtk3() == null || SwtUtils.isGtk3()) { // fixes invisible (transparent) shell bug with some Linux distibutions
 			setMinimizedMaximizedShellStatus();
@@ -337,45 +349,42 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 				sashWeights.add(weight);
 			}
 		}
-		new Thread("Save shell status") { // don't perform I/O in UI thread
-			@Override
-			public void run() {
-				try {
-					configuration.reload(); // make sure the properties are up-to-date
-				}
-				catch (final IOException e) {
-					logger.log(Level.WARNING, e.toString(), e);
-					return; // abort
-				}
-				final Properties properties = configuration.getProperties();
-
-				if (shellMaximized != null) {
-					properties.setProperty(SHELL_MAXIMIZED, Boolean.toString(shellMaximized));
-				}
-				if (shellSize != null) {
-					properties.setProperty(SHELL_SIZE_X, Integer.toString(shellSize.x));
-					properties.setProperty(SHELL_SIZE_Y, Integer.toString(shellSize.y));
-				}
-				if (shellLocation != null) {
-					properties.setProperty(SHELL_LOCATION_X, Integer.toString(shellLocation.x));
-					properties.setProperty(SHELL_LOCATION_Y, Integer.toString(shellLocation.y));
-				}
-
-				// Save sash weights
-				for (int i = 0; i < sashWeights.size(); i++) {
-					properties.setProperty(SHELL_SASH_WEIGHT + '.' + i, Integer.toString(sashWeights.get(i)));
-				}
-
-				logger.log(Level.CONFIG, "{0}", configuration);
-
-				try {
-					configuration.save(); // save configuration
-				}
-				catch (final IOException e) {
-					logger.log(Level.WARNING, e.toString(), e);
-				}
+		new Thread(() -> { // don't perform I/O in UI thread
+			try {
+				configuration.reload(); // make sure the properties are up-to-date
 			}
-		}.start();
+			catch (final IOException e) {
+				logger.log(Level.WARNING, e.toString(), e);
+				return; // abort
+			}
+			final Properties properties = configuration.getProperties();
+
+			if (shellMaximized != null) {
+				properties.setProperty(SHELL_MAXIMIZED, Boolean.toString(shellMaximized));
+			}
+			if (shellSize != null) {
+				properties.setProperty(SHELL_SIZE_X, Integer.toString(shellSize.x));
+				properties.setProperty(SHELL_SIZE_Y, Integer.toString(shellSize.y));
+			}
+			if (shellLocation != null) {
+				properties.setProperty(SHELL_LOCATION_X, Integer.toString(shellLocation.x));
+				properties.setProperty(SHELL_LOCATION_Y, Integer.toString(shellLocation.y));
+			}
+
+			// Save sash weights
+			for (int i = 0; i < sashWeights.size(); i++) {
+				properties.setProperty(SHELL_SASH_WEIGHT + '.' + i, Integer.toString(sashWeights.get(i)));
+			}
+
+			logger.log(Level.CONFIG, "{0}", configuration);
+
+			try {
+				configuration.save(); // save configuration
+			}
+			catch (final IOException e) {
+				logger.log(Level.WARNING, e.toString(), e);
+			}
+		}, "Save shell status").start();
 	}
 
 }

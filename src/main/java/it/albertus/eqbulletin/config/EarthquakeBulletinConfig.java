@@ -25,11 +25,17 @@ public class EarthquakeBulletinConfig extends LoggingConfig implements LanguageC
 
 	private static final String DIRECTORY_NAME = Util.isLinux() ? '.' + ARTIFACT_ID : "Earthquake Bulletin";
 
+	public static final String APPDATA_DIRECTORY = SystemUtils.getOsSpecificLocalAppDataDir() + File.separator + DIRECTORY_NAME;
+
 	private static final String CFG_FILE_NAME = Util.isLinux() ? ARTIFACT_ID + ".cfg" : "EarthquakeBulletin.cfg";
 	public static final String LOG_FILE_NAME_PATTERN = Util.isLinux() ? ARTIFACT_ID + ".%g.log" : "EarthquakeBulletin.%g.log";
 
-	public static final String DEFAULT_LOGGING_FILES_PATH = SystemUtils.getOsSpecificLocalAppDataDir() + File.separator + DIRECTORY_NAME + File.separator + "log";
+	public static final String DEFAULT_LOGGING_FILES_PATH = APPDATA_DIRECTORY + File.separator + "log";
 	public static final Level DEFAULT_LOGGING_LEVEL = Level.WARNING;
+
+	private static final String CACHE_DIRECTORY = APPDATA_DIRECTORY + File.separator + "cache";
+	public static final String MAP_CACHE_FILE = CACHE_DIRECTORY + File.separator + "map-cache.ser";
+	public static final String MT_CACHE_FILE = CACHE_DIRECTORY + File.separator + "mt-cache.ser";
 
 	private static PreferencesConfiguration instance;
 	private static volatile int instanceCount = 0;

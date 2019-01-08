@@ -1,13 +1,26 @@
 package it.albertus.eqbulletin.cache;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
 import it.albertus.eqbulletin.model.MomentTensor;
+import it.albertus.util.logging.LoggerFactory;
 
 public class MomentTensorCache implements Cache<String, MomentTensor> {
 
 	private static final long serialVersionUID = -6126159757256952811L;
+
+	private static final Logger logger = LoggerFactory.getLogger(MomentTensorCache.class);
 
 	private static final byte CACHE_SIZE = Byte.MAX_VALUE;
 
@@ -52,6 +65,35 @@ public class MomentTensorCache implements Cache<String, MomentTensor> {
 	@Override
 	public String toString() {
 		return "MomentTensorCache [size=" + getSize() + "]";
+	}
+
+	public static synchronized void serialize() {
+		if (instance != null) {
+			final File file = new File(EarthquakeBulletinConfig.MT_CACHE_FILE);
+			file.getParentFile().mkdirs();
+			try (final FileOutputStream fos = new FileOutputStream(file); final ObjectOutputStream oos = new ObjectOutputStream(fos)) {
+				logger.log(Level.CONFIG, "Serializing {0} into \"{1}\"...", new Serializable[] { instance, file });
+				oos.writeObject(instance);
+				logger.log(Level.CONFIG, "{0} serialized successfully.", instance);
+			}
+			catch (final IOException e) {
+				logger.log(Level.WARNING, "Cannot serialize " + instance + ':', e);
+			}
+		}
+	}
+
+	public static synchronized void deserialize() {
+		final File file = new File(EarthquakeBulletinConfig.MT_CACHE_FILE);
+		if (file.isFile()) {
+			try (final FileInputStream fis = new FileInputStream(file); final ObjectInputStream ois = new ObjectInputStream(fis)) {
+				logger.log(Level.CONFIG, "Deserializing {0} from \"{1}\"...", new Serializable[] { MomentTensorCache.class, file });
+				MomentTensorCache.instance = (MomentTensorCache) ois.readObject();
+				logger.log(Level.CONFIG, "{0} deserialized successfully.", instance);
+			}
+			catch (final IOException | ClassNotFoundException e) {
+				logger.log(Level.WARNING, "Cannot deserialize " + MomentTensorCache.class + ':', e);
+			}
+		}
 	}
 
 }
