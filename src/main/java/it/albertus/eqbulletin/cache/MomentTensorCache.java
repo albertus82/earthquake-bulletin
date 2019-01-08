@@ -28,7 +28,10 @@ public class MomentTensorCache implements Cache<String, MomentTensor> {
 
 	public static synchronized MomentTensorCache getInstance() {
 		if (instance == null) {
-			instance = new MomentTensorCache();
+			instance = deserialize();
+			if (instance == null) {
+				instance = new MomentTensorCache();
+			}
 		}
 		return instance;
 	}
@@ -44,6 +47,7 @@ public class MomentTensorCache implements Cache<String, MomentTensor> {
 			final String firstKey = cache.keySet().iterator().next();
 			cache.remove(firstKey);
 		}
+		serialize(instance);
 	}
 
 	@Override
@@ -67,7 +71,7 @@ public class MomentTensorCache implements Cache<String, MomentTensor> {
 		return "MomentTensorCache [size=" + getSize() + "]";
 	}
 
-	public static synchronized void serialize() {
+	private static void serialize(final MomentTensorCache instance) {
 		if (instance != null) {
 			final File file = new File(EarthquakeBulletinConfig.MT_CACHE_FILE);
 			file.getParentFile().mkdirs();
@@ -82,18 +86,20 @@ public class MomentTensorCache implements Cache<String, MomentTensor> {
 		}
 	}
 
-	public static synchronized void deserialize() {
+	private static MomentTensorCache deserialize() {
 		final File file = new File(EarthquakeBulletinConfig.MT_CACHE_FILE);
 		if (file.isFile()) {
 			try (final FileInputStream fis = new FileInputStream(file); final ObjectInputStream ois = new ObjectInputStream(fis)) {
 				logger.log(Level.CONFIG, "Deserializing {0} from \"{1}\"...", new Serializable[] { MomentTensorCache.class, file });
-				MomentTensorCache.instance = (MomentTensorCache) ois.readObject();
-				logger.log(Level.CONFIG, "{0} deserialized successfully.", instance);
+				final MomentTensorCache deserialized = (MomentTensorCache) ois.readObject();
+				logger.log(Level.CONFIG, "{0} deserialized successfully.", deserialized);
+				return deserialized;
 			}
 			catch (final IOException | ClassNotFoundException e) {
 				logger.log(Level.WARNING, "Cannot deserialize " + MomentTensorCache.class + ':', e);
 			}
 		}
+		return null;
 	}
 
 }

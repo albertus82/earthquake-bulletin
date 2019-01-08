@@ -26,8 +26,6 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TableColumn;
 
-import it.albertus.eqbulletin.cache.MapImageCache;
-import it.albertus.eqbulletin.cache.MomentTensorCache;
 import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
 import it.albertus.eqbulletin.gui.listener.CloseListener;
 import it.albertus.eqbulletin.gui.preference.Preference;
@@ -92,11 +90,6 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 	public static void run(final InitializationException ie) {
 		Display.setAppName(Messages.get("msg.application.name"));
 		Display.setAppVersion(Version.getInstance().getNumber());
-
-		new Thread(() -> {
-			MomentTensorCache.deserialize();
-			MapImageCache.deserialize();
-		}, "Restore caches.").start();
 
 		final Display display = Display.getDefault();
 
@@ -166,10 +159,6 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 		getShell().addListener(SWT.Move, listener);
 		getShell().addListener(SWT.Activate, new MaximizeShellListener());
 		getShell().addListener(SWT.Deactivate, new DeactivateShellListener());
-		getShell().addDisposeListener(e -> new Thread(() -> {
-			MomentTensorCache.serialize();
-			MapImageCache.serialize();
-		}, "Save caches").start());
 
 		if (SwtUtils.isGtk3() == null || SwtUtils.isGtk3()) { // fixes invisible (transparent) shell bug with some Linux distibutions
 			setMinimizedMaximizedShellStatus();
@@ -376,10 +365,9 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 				properties.setProperty(SHELL_SASH_WEIGHT + '.' + i, Integer.toString(sashWeights.get(i)));
 			}
 
-			logger.log(Level.CONFIG, "Saving configuration: {0}...", configuration);
+			logger.log(Level.CONFIG, "{0}", configuration);
 			try {
 				configuration.save(); // save configuration
-				logger.config("Configuration saved successfully.");
 			}
 			catch (final IOException e) {
 				logger.log(Level.WARNING, e.toString(), e);

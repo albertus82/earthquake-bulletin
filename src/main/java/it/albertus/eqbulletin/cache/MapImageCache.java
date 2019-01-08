@@ -38,7 +38,10 @@ public class MapImageCache implements Cache<String, MapImage> {
 
 	public static synchronized MapImageCache getInstance() {
 		if (instance == null) {
-			instance = new MapImageCache();
+			instance = deserialize();
+			if (instance == null) {
+				instance = new MapImageCache();
+			}
 		}
 		return instance;
 	}
@@ -54,6 +57,7 @@ public class MapImageCache implements Cache<String, MapImage> {
 			final String firstKey = cache.keySet().iterator().next();
 			cache.remove(firstKey);
 		}
+		serialize(instance);
 	}
 
 	@Override
@@ -76,7 +80,7 @@ public class MapImageCache implements Cache<String, MapImage> {
 		return "MapImageCache [size=" + getSize() + "]";
 	}
 
-	public static synchronized void serialize() {
+	private static void serialize(final MapImageCache instance) {
 		if (instance != null) {
 			final File file = new File(EarthquakeBulletinConfig.MAP_CACHE_FILE);
 			file.getParentFile().mkdirs();
@@ -91,18 +95,20 @@ public class MapImageCache implements Cache<String, MapImage> {
 		}
 	}
 
-	public static synchronized void deserialize() {
+	private static MapImageCache deserialize() {
 		final File file = new File(EarthquakeBulletinConfig.MAP_CACHE_FILE);
 		if (file.isFile()) {
 			try (final FileInputStream fis = new FileInputStream(file); final ObjectInputStream ois = new ObjectInputStream(fis)) {
 				logger.log(Level.CONFIG, "Deserializing {0} from \"{1}\"...", new Serializable[] { MapImageCache.class, file });
-				MapImageCache.instance = (MapImageCache) ois.readObject();
-				logger.log(Level.CONFIG, "{0} deserialized successfully.", instance);
+				final MapImageCache deserialized = (MapImageCache) ois.readObject();
+				logger.log(Level.CONFIG, "{0} deserialized successfully.", deserialized);
+				return deserialized;
 			}
 			catch (final IOException | ClassNotFoundException e) {
 				logger.log(Level.WARNING, "Cannot deserialize " + MapImageCache.class + ':', e);
 			}
 		}
+		return null;
 	}
 
 }
