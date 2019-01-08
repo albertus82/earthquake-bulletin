@@ -376,10 +376,10 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 				properties.setProperty(SHELL_SASH_WEIGHT + '.' + i, Integer.toString(sashWeights.get(i)));
 			}
 
-			logger.log(Level.CONFIG, "{0}", configuration);
-
+			logger.log(Level.CONFIG, "Saving configuration: {0}...", configuration);
 			try {
 				configuration.save(); // save configuration
+				logger.config("Configuration saved successfully.");
 			}
 			catch (final IOException e) {
 				logger.log(Level.WARNING, e.toString(), e);
