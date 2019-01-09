@@ -1,28 +1,19 @@
 package it.albertus.eqbulletin.cache;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
 import it.albertus.eqbulletin.gui.preference.Preference;
 import it.albertus.eqbulletin.model.MapImage;
 import it.albertus.jface.preference.IPreferencesConfiguration;
-import it.albertus.util.logging.LoggerFactory;
 
 public class MapImageCache implements Cache<String, MapImage> {
 
 	private static final long serialVersionUID = 14746911870762927L;
 
-	private static final Logger logger = LoggerFactory.getLogger(MapImageCache.class);
+	private static final String MAP_CACHE_FILE = CacheManager.CACHE_DIRECTORY + File.separator + "map-cache.ser";
 
 	public static class Defaults {
 		public static final byte CACHE_SIZE = 20;
@@ -35,12 +26,17 @@ public class MapImageCache implements Cache<String, MapImage> {
 
 	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getInstance();
 
+	private static final CacheManager<MapImageCache> manager = new CacheManager<>();
+
 	private static MapImageCache instance;
 
 	public static synchronized MapImageCache getInstance() {
 		if (instance == null) {
-			if (configuration.getBoolean(Preference.MT_CACHE_SAVE, Defaults.CACHE_SAVE)) {
-				instance = deserialize();
+			if (configuration.getBoolean(Preference.MAP_CACHE_SAVE, Defaults.CACHE_SAVE)) {
+				instance = manager.deserialize(MAP_CACHE_FILE);
+			}
+			else {
+				manager.delete(MAP_CACHE_FILE);
 			}
 			if (instance == null) {
 				instance = new MapImageCache();
@@ -60,7 +56,9 @@ public class MapImageCache implements Cache<String, MapImage> {
 			final String firstKey = cache.keySet().iterator().next();
 			cache.remove(firstKey);
 		}
-		serialize(instance);
+		if (configuration.getBoolean(Preference.MAP_CACHE_SAVE, Defaults.CACHE_SAVE)) {
+			manager.serialize(instance, MAP_CACHE_FILE);
+		}
 	}
 
 	@Override
@@ -81,37 +79,6 @@ public class MapImageCache implements Cache<String, MapImage> {
 	@Override
 	public String toString() {
 		return "MapImageCache [size=" + getSize() + "]";
-	}
-
-	private static void serialize(final MapImageCache instance) {
-		if (instance != null) {
-			final File file = new File(EarthquakeBulletinConfig.MAP_CACHE_FILE);
-			file.getParentFile().mkdirs();
-			try (final FileOutputStream fos = new FileOutputStream(file); final ObjectOutputStream oos = new ObjectOutputStream(fos)) {
-				logger.log(Level.CONFIG, "Serializing {0} into \"{1}\"...", new Serializable[] { instance, file });
-				oos.writeObject(instance);
-				logger.log(Level.CONFIG, "{0} serialized successfully.", instance);
-			}
-			catch (final IOException e) {
-				logger.log(Level.WARNING, "Cannot serialize " + instance + ':', e);
-			}
-		}
-	}
-
-	private static MapImageCache deserialize() {
-		final File file = new File(EarthquakeBulletinConfig.MAP_CACHE_FILE);
-		if (file.isFile()) {
-			try (final FileInputStream fis = new FileInputStream(file); final ObjectInputStream ois = new ObjectInputStream(fis)) {
-				logger.log(Level.CONFIG, "Deserializing {0} from \"{1}\"...", new Serializable[] { MapImageCache.class, file });
-				final MapImageCache deserialized = (MapImageCache) ois.readObject();
-				logger.log(Level.CONFIG, "{0} deserialized successfully.", deserialized);
-				return deserialized;
-			}
-			catch (final IOException | ClassNotFoundException e) {
-				logger.log(Level.WARNING, "Cannot deserialize " + MapImageCache.class + ':', e);
-			}
-		}
-		return null;
 	}
 
 }

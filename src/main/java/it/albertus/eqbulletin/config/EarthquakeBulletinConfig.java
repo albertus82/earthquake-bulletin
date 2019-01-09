@@ -33,10 +33,6 @@ public class EarthquakeBulletinConfig extends LoggingConfig implements LanguageC
 	public static final String DEFAULT_LOGGING_FILES_PATH = APPDATA_DIRECTORY + File.separator + "log";
 	public static final Level DEFAULT_LOGGING_LEVEL = Level.WARNING;
 
-	private static final String CACHE_DIRECTORY = APPDATA_DIRECTORY + File.separator + "cache";
-	public static final String MAP_CACHE_FILE = CACHE_DIRECTORY + File.separator + "map-cache.ser";
-	public static final String MT_CACHE_FILE = CACHE_DIRECTORY + File.separator + "mt-cache.ser";
-
 	private static PreferencesConfiguration instance;
 	private static volatile int instanceCount = 0;
 
