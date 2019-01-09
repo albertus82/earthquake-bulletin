@@ -13,7 +13,7 @@ public class MomentTensorCache implements Cache<String, MomentTensor> {
 
 	private static final long serialVersionUID = -3278285082043132654L;
 
-	private static final String MT_CACHE_FILE = CacheManager.CACHE_DIRECTORY + File.separator + "mt-cache.ser";
+	private static final String MT_CACHE_FILE = CacheManager.CACHE_DIRECTORY + File.separator + "mtcache.ser";
 
 	public static class Defaults {
 		public static final byte CACHE_SIZE = 20;

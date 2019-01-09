@@ -13,7 +13,7 @@ public class MapImageCache implements Cache<String, MapImage> {
 
 	private static final long serialVersionUID = 14746911870762927L;
 
-	private static final String MAP_CACHE_FILE = CacheManager.CACHE_DIRECTORY + File.separator + "map-cache.ser";
+	private static final String MAP_CACHE_FILE = CacheManager.CACHE_DIRECTORY + File.separator + "mapcache.ser";
 
 	public static class Defaults {
 		public static final byte CACHE_SIZE = 20;
