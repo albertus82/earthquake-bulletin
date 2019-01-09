@@ -26,6 +26,7 @@ public class MapImageCache implements Cache<String, MapImage> {
 
 	public static class Defaults {
 		public static final byte CACHE_SIZE = 20;
+		public static final boolean CACHE_SAVE = true;
 
 		private Defaults() {
 			throw new IllegalAccessError("Constants class");
@@ -38,7 +39,9 @@ public class MapImageCache implements Cache<String, MapImage> {
 
 	public static synchronized MapImageCache getInstance() {
 		if (instance == null) {
-			instance = deserialize();
+			if (configuration.getBoolean(Preference.MT_CACHE_SAVE, Defaults.CACHE_SAVE)) {
+				instance = deserialize();
+			}
 			if (instance == null) {
 				instance = new MapImageCache();
 			}

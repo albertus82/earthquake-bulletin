@@ -1,5 +1,6 @@
 package it.albertus.eqbulletin.gui.preference;
 
+import static it.albertus.eqbulletin.gui.preference.PageDefinition.CACHE;
 import static it.albertus.eqbulletin.gui.preference.PageDefinition.CONNECTION;
 import static it.albertus.eqbulletin.gui.preference.PageDefinition.CRITERIA;
 import static it.albertus.eqbulletin.gui.preference.PageDefinition.GENERAL;
@@ -20,6 +21,7 @@ import org.eclipse.swt.widgets.Composite;
 
 import it.albertus.eqbulletin.EarthquakeBulletin;
 import it.albertus.eqbulletin.cache.MapImageCache;
+import it.albertus.eqbulletin.cache.MomentTensorCache;
 import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
 import it.albertus.eqbulletin.gui.CloseDialog;
 import it.albertus.eqbulletin.gui.EarthquakeBulletinGui;
@@ -67,7 +69,6 @@ public enum Preference implements IPreference {
 
 	MAP_ZOOM_LEVEL(new PreferenceDetailsBuilder(GENERAL).defaultValue(MapCanvas.Defaults.MAP_ZOOM_LEVEL).separate().build(), new FieldEditorDetailsBuilder(DefaultComboFieldEditor.class).labelsAndValues(getZoomComboOptions()).build()),
 	MAP_RESIZE_HQ(new PreferenceDetailsBuilder(GENERAL).defaultValue(MapCanvas.Defaults.MAP_RESIZE_HQ).build(), new FieldEditorDetailsBuilder(DefaultBooleanFieldEditor.class).build()),
-	MAP_CACHE_SIZE(new PreferenceDetailsBuilder(GENERAL).defaultValue(MapImageCache.Defaults.CACHE_SIZE).build(), new FieldEditorDetailsBuilder(ScaleIntegerFieldEditor.class).scaleMinimum(1).scaleMaximum(Byte.MAX_VALUE).scalePageIncrement(8).build()),
 
 	MAGNITUDE_BIG(new PreferenceDetailsBuilder(GENERAL).defaultValue(ResultsTable.Defaults.MAGNITUDE_BIG).separate().build(), new FieldEditorDetailsBuilder(FloatFieldEditor.class).numberValidRange(SearchForm.MAGNITUDE_MIN_VALUE, SearchForm.MAGNITUDE_MAX_VALUE).build()),
 	MAGNITUDE_XXL(new PreferenceDetailsBuilder(GENERAL).defaultValue(ResultsTable.Defaults.MAGNITUDE_XXL).build(), new FieldEditorDetailsBuilder(FloatFieldEditor.class).numberValidRange(SearchForm.MAGNITUDE_MIN_VALUE, SearchForm.MAGNITUDE_MAX_VALUE).build()),
@@ -96,6 +97,11 @@ public enum Preference implements IPreference {
 	CRITERIA_RESTRICT(new PreferenceDetailsBuilder(CRITERIA).defaultValue(SearchForm.Defaults.CRITERIA_RESTRICT).label(() -> Messages.get("lbl.form.criteria.restrict")).build(), new FieldEditorDetailsBuilder(DefaultBooleanFieldEditor.class).build()),
 	AUTOREFRESH_ENABLED(new PreferenceDetailsBuilder(CRITERIA).defaultValue(SearchForm.Defaults.AUTOREFRESH_ENABLED).build(), new FieldEditorDetailsBuilder(DefaultBooleanFieldEditor.class).build()),
 	AUTOREFRESH_MINS(new PreferenceDetailsBuilder(CRITERIA).parent(AUTOREFRESH_ENABLED).label(() -> Messages.get("lbl.form.button.autorefresh")).build(), new FieldEditorDetailsBuilder(EnhancedIntegerFieldEditor.class).numberMinimum(SearchForm.AUTOREFRESH_MIN_VALUE).emptyStringAllowed(true).textLimit(SearchForm.AUTOREFRESH_TEXT_LIMIT).build()),
+
+	MAP_CACHE_SIZE(new PreferenceDetailsBuilder(CACHE).defaultValue(MapImageCache.Defaults.CACHE_SIZE).build(), new FieldEditorDetailsBuilder(ScaleIntegerFieldEditor.class).scaleMinimum(1).scaleMaximum(Byte.MAX_VALUE).scalePageIncrement(8).build()),
+	MAP_CACHE_SAVE(new PreferenceDetailsBuilder(CACHE).defaultValue(MapImageCache.Defaults.CACHE_SAVE).build(), new FieldEditorDetailsBuilder(DefaultBooleanFieldEditor.class).build()),
+	MT_CACHE_SIZE(new PreferenceDetailsBuilder(CACHE).defaultValue(MomentTensorCache.Defaults.CACHE_SIZE).build(), new FieldEditorDetailsBuilder(ScaleIntegerFieldEditor.class).scaleMinimum(1).scaleMaximum(Byte.MAX_VALUE).scalePageIncrement(8).build()),
+	MT_CACHE_SAVE(new PreferenceDetailsBuilder(CACHE).defaultValue(MomentTensorCache.Defaults.CACHE_SAVE).build(), new FieldEditorDetailsBuilder(DefaultBooleanFieldEditor.class).build()),
 
 	LOGGING_LEVEL(new PreferenceDetailsBuilder(LOGGING).defaultValue(EarthquakeBulletinConfig.DEFAULT_LOGGING_LEVEL.getName()).build(), new FieldEditorDetailsBuilder(DefaultComboFieldEditor.class).labelsAndValues(getLoggingComboOptions()).build()),
 	LOGGING_FILES_ENABLED(new PreferenceDetailsBuilder(LOGGING).separate().defaultValue(LoggingConfig.DEFAULT_LOGGING_FILES_ENABLED).build(), new FieldEditorDetailsBuilder(DefaultBooleanFieldEditor.class).build()),

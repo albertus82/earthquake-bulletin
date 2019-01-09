@@ -13,7 +13,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
+import it.albertus.eqbulletin.gui.preference.Preference;
 import it.albertus.eqbulletin.model.MomentTensor;
+import it.albertus.jface.preference.IPreferencesConfiguration;
 import it.albertus.util.logging.LoggerFactory;
 
 public class MomentTensorCache implements Cache<String, MomentTensor> {
@@ -22,13 +24,24 @@ public class MomentTensorCache implements Cache<String, MomentTensor> {
 
 	private static final Logger logger = LoggerFactory.getLogger(MomentTensorCache.class);
 
-	private static final byte CACHE_SIZE = Byte.MAX_VALUE;
+	public static class Defaults {
+		public static final byte CACHE_SIZE = 20;
+		public static final boolean CACHE_SAVE = true;
+
+		private Defaults() {
+			throw new IllegalAccessError("Constants class");
+		}
+	}
+
+	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getInstance();
 
 	private static MomentTensorCache instance;
 
 	public static synchronized MomentTensorCache getInstance() {
 		if (instance == null) {
-			instance = deserialize();
+			if (configuration.getBoolean(Preference.MT_CACHE_SAVE, Defaults.CACHE_SAVE)) {
+				instance = deserialize();
+			}
 			if (instance == null) {
 				instance = new MomentTensorCache();
 			}
@@ -43,7 +56,7 @@ public class MomentTensorCache implements Cache<String, MomentTensor> {
 	@Override
 	public synchronized void put(final String guid, final MomentTensor momentTensor) {
 		cache.put(guid, PackedMomentTensor.pack(momentTensor));
-		while (cache.size() > 0 && cache.size() > CACHE_SIZE) {
+		while (cache.size() > 0 && cache.size() > configuration.getByte(Preference.MT_CACHE_SIZE, Defaults.CACHE_SIZE)) {
 			final String firstKey = cache.keySet().iterator().next();
 			cache.remove(firstKey);
 		}
