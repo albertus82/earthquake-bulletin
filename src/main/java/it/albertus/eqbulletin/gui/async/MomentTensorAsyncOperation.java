@@ -81,7 +81,7 @@ public class MomentTensorAsyncOperation extends AsyncOperation {
 			final Runnable checkForUpdate = () -> {
 				try {
 					final MomentTensor downloadedObject = MomentTensorDownloader.download(earthquake, cachedObject);
-					if (downloadedObject != null && downloadedObject.equals(cachedObject)) {
+					if (downloadedObject != null && !downloadedObject.equals(cachedObject)) {
 						new DisplayThreadExecutor(shell, true).execute(() -> MomentTensorDialog.updateMomentTensorText(downloadedObject, earthquake)); // Update UI on-the-fly.
 						MomentTensorCache.getInstance().put(earthquake.getGuid(), downloadedObject);
 					}
