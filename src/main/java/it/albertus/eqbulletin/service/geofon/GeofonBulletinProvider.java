@@ -9,7 +9,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.function.Supplier;
+import java.util.function.BooleanSupplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
@@ -49,7 +49,7 @@ public class GeofonBulletinProvider implements BulletinProvider {
 	private HttpURLConnection urlConnection;
 
 	@Override
-	public List<Earthquake> getEarthquakes(final SearchJobVars jobVariables, final Supplier<Boolean> canceled) throws FetchException, DecodeException {
+	public List<Earthquake> getEarthquakes(final SearchJobVars jobVariables, final BooleanSupplier canceled) throws FetchException, DecodeException {
 		final String url = getUrl(jobVariables.getParams());
 
 		Rss rss = null;
@@ -57,7 +57,7 @@ public class GeofonBulletinProvider implements BulletinProvider {
 
 		try {
 			synchronized (this) {
-				if (canceled.get()) {
+				if (canceled.getAsBoolean()) {
 					throw new CancelException();
 				}
 				else {

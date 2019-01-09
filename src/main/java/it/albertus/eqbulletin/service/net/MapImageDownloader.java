@@ -4,7 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.util.function.Supplier;
+import java.util.function.BooleanSupplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
@@ -24,11 +24,11 @@ public class MapImageDownloader {
 
 	private InputStream connectionInputStream;
 
-	public MapImage download(final Earthquake earthquake, final Supplier<Boolean> canceled) throws IOException {
+	public MapImage download(final Earthquake earthquake, final BooleanSupplier canceled) throws IOException {
 		return download(earthquake, null, canceled);
 	}
 
-	public MapImage download(final Earthquake earthquake, final MapImage cached, final Supplier<Boolean> canceled) throws IOException {
+	public MapImage download(final Earthquake earthquake, final MapImage cached, final BooleanSupplier canceled) throws IOException {
 		final Headers headers = new Headers();
 		headers.set("Accept", "image/jpeg,image/*;q=0.9,*/*;q=0.8");
 		headers.set("Accept-Encoding", "gzip");
@@ -55,7 +55,7 @@ public class MapImageDownloader {
 				}
 			}
 			catch (final IOException e) {
-				if (canceled.get()) {
+				if (canceled.getAsBoolean()) {
 					logger.log(Level.FINE, e.toString(), e);
 					return null;
 				}
