@@ -27,7 +27,7 @@ public class CacheManager<T extends Cache<?, ?>> {
 			final File file = new File(pathname);
 			file.getParentFile().mkdirs();
 			try (final FileOutputStream fos = new FileOutputStream(file); final ObjectOutputStream oos = new ObjectOutputStream(fos)) {
-				logger.log(Level.CONFIG, "Serializing {0} into \"{1}\"...", new Serializable[] { instance, file });
+				logger.log(Level.CONFIG, "Serializing {0} to \"{1}\"...", new Serializable[] { instance, file });
 				oos.writeObject(instance);
 				logger.log(Level.CONFIG, "{0} serialized successfully.", instance);
 			}
@@ -41,15 +41,14 @@ public class CacheManager<T extends Cache<?, ?>> {
 		final File file = new File(pathname);
 		if (file.isFile()) {
 			try (final FileInputStream fis = new FileInputStream(file); final ObjectInputStream ois = new ObjectInputStream(fis)) {
-				logger.log(Level.CONFIG, "Deserializing {0} from \"{1}\"...", new Serializable[] { MapImageCache.class, file });
-				final Object readObject = ois.readObject();
+				logger.log(Level.CONFIG, "Deserializing cache object from \"{0}\"...", file);
 				@SuppressWarnings("unchecked")
-				final T deserialized = (T) readObject;
+				final T deserialized = (T) ois.readObject();
 				logger.log(Level.CONFIG, "{0} deserialized successfully.", deserialized);
 				return deserialized;
 			}
 			catch (final IOException | ClassNotFoundException e) {
-				logger.log(Level.WARNING, "Cannot deserialize " + MapImageCache.class + ':', e);
+				logger.log(Level.WARNING, "Cannot deserialize cache object from \"" + file + "\":", e);
 			}
 		}
 		return null;
@@ -63,7 +62,7 @@ public class CacheManager<T extends Cache<?, ?>> {
 			}
 		}
 		catch (final IOException e) {
-			logger.log(Level.WARNING, "Cannot delete cache file \"{0}\".", path);
+			logger.log(Level.WARNING, "Cannot delete cache file \"" + path + "\":", e);
 		}
 	}
 
