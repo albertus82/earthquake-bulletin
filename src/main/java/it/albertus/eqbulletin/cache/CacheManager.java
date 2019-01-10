@@ -37,17 +37,22 @@ public class CacheManager<T extends Cache<?, ?>> {
 		}
 	}
 
-	T deserialize(final String pathname) {
+	T deserialize(final String pathname, final Class<T> clazz) {
 		final File file = new File(pathname);
 		if (file.isFile()) {
 			try (final FileInputStream fis = new FileInputStream(file); final ObjectInputStream ois = new ObjectInputStream(fis)) {
 				logger.log(Level.CONFIG, "Deserializing cache object from \"{0}\"...", file);
 				@SuppressWarnings("unchecked")
 				final T deserialized = (T) ois.readObject();
-				logger.log(Level.CONFIG, "{0} deserialized successfully.", deserialized);
-				return deserialized;
+				if (clazz.isInstance(deserialized)) {
+					logger.log(Level.CONFIG, "{0} deserialized successfully.", deserialized);
+					return deserialized;
+				}
+				else {
+					throw new ClassCastException(deserialized.getClass().getName() + " cannot be cast to " + clazz.getName());
+				}
 			}
-			catch (final IOException | ClassNotFoundException e) {
+			catch (final IOException | ClassNotFoundException | ClassCastException e) {
 				logger.log(Level.WARNING, "Cannot deserialize cache object from \"" + file + "\":", e);
 			}
 		}

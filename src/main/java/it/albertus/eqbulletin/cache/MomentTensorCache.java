@@ -13,7 +13,7 @@ public class MomentTensorCache implements Cache<String, MomentTensor> {
 
 	private static final long serialVersionUID = -3278285082043132654L;
 
-	private static final String MT_CACHE_FILE = CacheManager.CACHE_DIRECTORY + File.separator + "mtcache.ser";
+	private static final String CACHE_FILE = CacheManager.CACHE_DIRECTORY + File.separator + "mtcache.ser";
 
 	public static class Defaults {
 		public static final byte CACHE_SIZE = 20;
@@ -33,10 +33,10 @@ public class MomentTensorCache implements Cache<String, MomentTensor> {
 	public static synchronized MomentTensorCache getInstance() {
 		if (instance == null) {
 			if (configuration.getBoolean(Preference.MT_CACHE_SAVE, Defaults.CACHE_SAVE)) {
-				instance = manager.deserialize(MT_CACHE_FILE);
+				instance = manager.deserialize(CACHE_FILE, MomentTensorCache.class);
 			}
 			else {
-				manager.delete(MT_CACHE_FILE);
+				manager.delete(CACHE_FILE);
 			}
 			if (instance == null) {
 				instance = new MomentTensorCache();
@@ -57,7 +57,7 @@ public class MomentTensorCache implements Cache<String, MomentTensor> {
 			cache.remove(firstKey);
 		}
 		if (configuration.getBoolean(Preference.MT_CACHE_SAVE, Defaults.CACHE_SAVE)) {
-			manager.serialize(instance, MT_CACHE_FILE);
+			manager.serialize(instance, CACHE_FILE);
 		}
 	}
 

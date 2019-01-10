@@ -13,7 +13,7 @@ public class MapImageCache implements Cache<String, MapImage> {
 
 	private static final long serialVersionUID = 14746911870762927L;
 
-	private static final String MAP_CACHE_FILE = CacheManager.CACHE_DIRECTORY + File.separator + "mapcache.ser";
+	private static final String CACHE_FILE = CacheManager.CACHE_DIRECTORY + File.separator + "mapcache.ser";
 
 	public static class Defaults {
 		public static final byte CACHE_SIZE = 20;
@@ -33,10 +33,10 @@ public class MapImageCache implements Cache<String, MapImage> {
 	public static synchronized MapImageCache getInstance() {
 		if (instance == null) {
 			if (configuration.getBoolean(Preference.MAP_CACHE_SAVE, Defaults.CACHE_SAVE)) {
-				instance = manager.deserialize(MAP_CACHE_FILE);
+				instance = manager.deserialize(CACHE_FILE, MapImageCache.class);
 			}
 			else {
-				manager.delete(MAP_CACHE_FILE);
+				manager.delete(CACHE_FILE);
 			}
 			if (instance == null) {
 				instance = new MapImageCache();
@@ -57,7 +57,7 @@ public class MapImageCache implements Cache<String, MapImage> {
 			cache.remove(firstKey);
 		}
 		if (configuration.getBoolean(Preference.MAP_CACHE_SAVE, Defaults.CACHE_SAVE)) {
-			manager.serialize(instance, MAP_CACHE_FILE);
+			manager.serialize(instance, CACHE_FILE);
 		}
 	}
 
