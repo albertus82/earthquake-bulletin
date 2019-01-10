@@ -60,55 +60,42 @@ public class ConnectionFactory {
 	}
 
 	public static HttpURLConnection makeGetRequest(URL url, final Headers headers) throws IOException {
-		HttpURLConnection urlConnection = null;
-//		try {
-			urlConnection = prepareConnection(url, headers);
-			byte redirectionCounter = 0;
-			while (httpRedirectionResponseCodes.contains(urlConnection.getResponseCode())) { // Connection starts here
-				final String location = urlConnection.getHeaderField("Location");
-//				urlConnection.disconnect();
-				if (location == null || location.isEmpty()) {
-					throw new IllegalStateException("URL \"" + url + "\": server responded with HTTP " + urlConnection.getResponseCode() + " omitting the \"Location\" header.");
-				}
-				if (redirectionCounter++ >= REDIRECTION_LIMIT) {
-					throw new IllegalStateException("The page \"" + url + "\" isn't redirecting properly.");
-				}
-				final String spec;
-				if (location.startsWith("/")) { // Relative
-					final String baseUrl = url.getProtocol() + "://" + url.getHost() + (url.getPort() != -1 ? ":" + url.getPort() : "");
-					spec = baseUrl + location;
-				}
-				else { // Absolute
-					spec = location;
-				}
-				logger.log(Level.FINE, "Redirecting from \"{0}\" to \"{1}\"", new Serializable[] { url, spec });
-				url = new URL(spec);
-				urlConnection = prepareConnection(url, headers);
+		HttpURLConnection urlConnection = prepareConnection(url, headers);
+		byte redirectionCounter = 0;
+		while (httpRedirectionResponseCodes.contains(urlConnection.getResponseCode())) { // Connection starts here
+			final String location = urlConnection.getHeaderField("Location");
+			if (location == null || location.isEmpty()) {
+				throw new IllegalStateException("URL \"" + url + "\": server responded with HTTP " + urlConnection.getResponseCode() + " omitting the \"Location\" header.");
 			}
-			return urlConnection;
-//		}
-//		catch (final Exception e) {
-//			if (urlConnection != null) {
-//				urlConnection.disconnect();
-//			}
-//			throw e;
-//		}
+			if (redirectionCounter++ >= REDIRECTION_LIMIT) {
+				throw new IllegalStateException("The page \"" + url + "\" isn't redirecting properly.");
+			}
+			final String spec;
+			if (location.startsWith("/")) { // Relative
+				final String baseUrl = url.getProtocol() + "://" + url.getHost() + (url.getPort() != -1 ? ":" + url.getPort() : "");
+				spec = baseUrl + location;
+			}
+			else { // Absolute
+				spec = location;
+			}
+			logger.log(Level.FINE, "Redirecting from \"{0}\" to \"{1}\"", new Serializable[] { url, spec });
+			url = new URL(spec);
+			urlConnection = prepareConnection(url, headers);
+		}
+		return urlConnection;
 	}
 
 	public static HttpURLConnection prepareConnection(final URL url, final Headers headers) throws IOException {
-		final HttpURLConnection urlConnection = ConnectionFactory.createHttpConnection(url);
+		final HttpURLConnection urlConnection = createConnection(url);
 		for (final Entry<String, List<String>> header : headers.entrySet()) {
 			for (final String value : header.getValue()) {
 				urlConnection.addRequestProperty(header.getKey(), value);
 			}
 		}
-		if (headers.containsKey("If-None-Match") && !headers.getFirst("If-None-Match").isEmpty()) {
-			urlConnection.setReadTimeout(Math.min(3000, configuration.getInt(Preference.HTTP_READ_TIMEOUT_MS, ConnectionFactory.Defaults.READ_TIMEOUT_IN_MILLIS)));
-		}
 		return urlConnection;
 	}
 
-	private static HttpURLConnection createHttpConnection(final URL url) throws IOException {
+	private static HttpURLConnection createConnection(final URL url) throws IOException {
 		final URLConnection connection;
 		if (configuration.getBoolean(Preference.PROXY_ENABLED, Defaults.PROXY_ENABLED)) {
 			Proxy proxy;
