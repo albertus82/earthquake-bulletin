@@ -61,12 +61,12 @@ public class ConnectionFactory {
 
 	public static HttpURLConnection makeGetRequest(URL url, final Headers headers) throws IOException {
 		HttpURLConnection urlConnection = null;
-		try {
+//		try {
 			urlConnection = prepareConnection(url, headers);
 			byte redirectionCounter = 0;
 			while (httpRedirectionResponseCodes.contains(urlConnection.getResponseCode())) { // Connection starts here
 				final String location = urlConnection.getHeaderField("Location");
-				urlConnection.disconnect();
+//				urlConnection.disconnect();
 				if (location == null || location.isEmpty()) {
 					throw new IllegalStateException("URL \"" + url + "\": server responded with HTTP " + urlConnection.getResponseCode() + " omitting the \"Location\" header.");
 				}
@@ -86,13 +86,13 @@ public class ConnectionFactory {
 				urlConnection = prepareConnection(url, headers);
 			}
 			return urlConnection;
-		}
-		catch (final Exception e) {
-			if (urlConnection != null) {
-				urlConnection.disconnect();
-			}
-			throw e;
-		}
+//		}
+//		catch (final Exception e) {
+//			if (urlConnection != null) {
+//				urlConnection.disconnect();
+//			}
+//			throw e;
+//		}
 	}
 
 	public static HttpURLConnection prepareConnection(final URL url, final Headers headers) throws IOException {
