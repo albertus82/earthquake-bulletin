@@ -9,7 +9,6 @@ import java.net.PasswordAuthentication;
 import java.net.Proxy;
 import java.net.Proxy.Type;
 import java.net.ProxySelector;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -139,24 +138,6 @@ public class ConnectionFactory {
 		}
 		else {
 			throw new IllegalArgumentException(String.valueOf(url));
-		}
-	}
-
-	public static void main(final String... args) throws URISyntaxException {
-		System.setProperty("java.net.useSystemProxies", "true");
-		logger.info("detecting proxies");
-		for (final Proxy proxy : ProxySelector.getDefault().select(new URI("https://foo/bar"))) { // NOSONAR test
-			logger.log(Level.INFO, "proxy type: {0}", proxy.type());
-			final InetSocketAddress addr = (InetSocketAddress) proxy.address();
-			if (addr == null) {
-				logger.info("No Proxy");
-			}
-			else {
-				logger.log(Level.INFO, "proxy hostname: {0}", addr.getHostName());
-				System.setProperty("http.proxyHost", addr.getHostName());
-				logger.log(Level.INFO, "proxy port: {0}", addr.getPort());
-				System.setProperty("http.proxyPort", Integer.toString(addr.getPort()));
-			}
 		}
 	}
 
