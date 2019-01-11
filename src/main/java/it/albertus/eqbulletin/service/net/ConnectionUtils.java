@@ -14,7 +14,10 @@ public class ConnectionUtils {
 	private static final Logger logger = LoggerFactory.getLogger(ConnectionUtils.class);
 
 	public static Charset detectCharset(final URLConnection connection) {
-		String contentType = connection.getContentType();
+		return detectCharset(connection.getContentType());
+	}
+
+	public static Charset detectCharset(String contentType) {
 		if (contentType != null) {
 			contentType = contentType.toLowerCase();
 			if (contentType.contains("charset=")) {
