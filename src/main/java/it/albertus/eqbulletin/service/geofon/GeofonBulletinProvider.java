@@ -81,11 +81,6 @@ public class GeofonBulletinProvider implements BulletinProvider {
 		catch (final Exception e) {
 			throw new FetchException(Messages.get("err.job.fetch"), e);
 		}
-//		finally {
-//			if (urlConnection != null) {
-//				urlConnection.disconnect();
-//			}
-//		}
 
 		// Decode
 		try {
