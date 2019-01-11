@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
@@ -37,19 +38,23 @@ public class MomentTensorDownloader {
 			return cached; // Not modified.
 		}
 		else {
-			final String responseContentEncoding = connection.getContentEncoding();
-			final boolean gzip = responseContentEncoding != null && responseContentEncoding.toLowerCase().contains("gzip");
-			final Charset charset = ConnectionUtils.detectCharset(connection);
-			try (final InputStream raw = connection.getInputStream(); final InputStream in = gzip ? new GZIPInputStream(raw) : raw; final ByteArrayOutputStream out = new ByteArrayOutputStream()) {
-				IOUtils.copy(in, out, BUFFER_SIZE);
-				final MomentTensor downloaded = new MomentTensor(out.toString(charset.name()), connection.getHeaderField("Etag"));
-				if (downloaded.equals(cached)) {
-					logger.fine("downloaded.equals(cached)");
-					return cached;
-				}
-				else {
-					return downloaded;
-				}
+			return parseResponseContent(connection, cached);
+		}
+	}
+
+	private static MomentTensor parseResponseContent(final URLConnection connection, final MomentTensor cached) throws IOException {
+		final String responseContentEncoding = connection.getContentEncoding();
+		final boolean gzip = responseContentEncoding != null && responseContentEncoding.toLowerCase().contains("gzip");
+		final Charset charset = ConnectionUtils.detectCharset(connection);
+		try (final InputStream raw = connection.getInputStream(); final InputStream in = gzip ? new GZIPInputStream(raw) : raw; final ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+			IOUtils.copy(in, out, BUFFER_SIZE);
+			final MomentTensor downloaded = new MomentTensor(out.toString(charset.name()), connection.getHeaderField("Etag"));
+			if (downloaded.equals(cached)) {
+				logger.fine("downloaded.equals(cached)");
+				return cached;
+			}
+			else {
+				return downloaded;
 			}
 		}
 	}

@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.URLConnection;
 import java.util.function.BooleanSupplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -48,7 +49,7 @@ public class MapImageDownloader {
 		}
 	}
 
-	private MapImage parseResponseContent(final HttpURLConnection connection, final MapImage cached, final BooleanSupplier canceled) throws IOException {
+	private MapImage parseResponseContent(final URLConnection connection, final MapImage cached, final BooleanSupplier canceled) throws IOException {
 		final String responseContentEncoding = connection.getContentEncoding();
 		final boolean gzip = responseContentEncoding != null && responseContentEncoding.toLowerCase().contains("gzip");
 		try (final InputStream raw = connection.getInputStream(); final InputStream in = gzip ? new GZIPInputStream(raw) : raw; final ByteArrayOutputStream out = new ByteArrayOutputStream()) {
