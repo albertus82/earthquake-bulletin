@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -65,7 +66,7 @@ public class FERegionTest {
 
 	@Test
 	public void compareWithPerlOutput() throws IOException {
-		try (final InputStream is = getClass().getResourceAsStream("perl.out.gz"); final GZIPInputStream gzis = new GZIPInputStream(is); final InputStreamReader isr = new InputStreamReader(gzis); final BufferedReader br = new BufferedReader(isr)) {
+		try (final InputStream is = getClass().getResourceAsStream("perl.out.gz"); final GZIPInputStream gzis = new GZIPInputStream(is); final InputStreamReader isr = new InputStreamReader(gzis, StandardCharsets.US_ASCII); final BufferedReader br = new BufferedReader(isr)) {
 			for (int lon = -180; lon <= 180; lon++) {
 				for (int lat = -90; lat <= 90; lat++) {
 					final String name = instance.getGeographicRegion(Integer.toString(lon), Integer.toString(lat)).getName();
@@ -73,7 +74,7 @@ public class FERegionTest {
 				}
 			}
 		}
-		try (final InputStream is = getClass().getResourceAsStream("perlext.out.gz"); final GZIPInputStream gzis = new GZIPInputStream(is); final InputStreamReader isr = new InputStreamReader(gzis); final BufferedReader br = new BufferedReader(isr)) {
+		try (final InputStream is = getClass().getResourceAsStream("perlext.out.gz"); final GZIPInputStream gzis = new GZIPInputStream(is); final InputStreamReader isr = new InputStreamReader(gzis, StandardCharsets.US_ASCII); final BufferedReader br = new BufferedReader(isr)) {
 			for (int lon = -540; lon <= 540; lon += 5) {
 				for (int lat = -90; lat <= 90; lat += 5) {
 					final String name = instance.getGeographicRegion(Integer.toString(lon), Integer.toString(lat)).getName();
