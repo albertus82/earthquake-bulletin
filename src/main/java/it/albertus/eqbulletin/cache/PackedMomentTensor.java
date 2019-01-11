@@ -36,13 +36,13 @@ class PackedMomentTensor implements Serializable {
 
 	static PackedMomentTensor pack(final MomentTensor momentTensor) {
 		final String text = momentTensor.getText();
-		logger.log(Level.FINE, "text.length() = {0,number,#} chars.", text.length());
+		logger.log(Level.FINE, "Original text.length() = {0,number,#} chars.", text.length());
 		try (final ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 			try (final DeflaterOutputStream dos = new DeflaterOutputStream(baos)) {
 				dos.write(text.getBytes(charset));
 			} // The stream is finished and closed automatically.
 			final byte[] bytes = baos.toByteArray();
-			logger.log(Level.FINE, "bytes.length = {0,number,#} bytes.", bytes.length);
+			logger.log(Level.FINE, "Compressed bytes.length = {0,number,#} bytes.", bytes.length);
 			return new PackedMomentTensor(bytes, momentTensor.getEtag());
 		}
 		catch (final IOException e) {
@@ -51,11 +51,11 @@ class PackedMomentTensor implements Serializable {
 	}
 
 	MomentTensor unpack() {
-		logger.log(Level.FINE, "bytes.length = {0,number,#} bytes.", bytes.length);
+		logger.log(Level.FINE, "Compressed bytes.length = {0,number,#} bytes.", bytes.length);
 		try (final ByteArrayInputStream bais = new ByteArrayInputStream(bytes); final InflaterInputStream dis = new InflaterInputStream(bais); final ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 			IOUtils.copy(dis, baos, BUFFER_SIZE);
 			final String text = baos.toString(charset.name());
-			logger.log(Level.FINE, "text.length() = {0,number,#} chars.", text.length());
+			logger.log(Level.FINE, "Expanded text.length() = {0,number,#} chars.", text.length());
 			return new MomentTensor(text, etag);
 		}
 		catch (final IOException e) {
