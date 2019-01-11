@@ -35,33 +35,41 @@ public class MapImageDownloader {
 		if (cached != null && cached.getEtag() != null && !cached.getEtag().trim().isEmpty()) {
 			headers.set("If-None-Match", cached.getEtag());
 		}
+		if (canceled.getAsBoolean()) {
+			logger.fine("Download canceled.");
+			return null;
+		}
 		final HttpURLConnection connection = ConnectionFactory.makeGetRequest(earthquake.getEnclosureUrl(), headers);
 		if (connection.getResponseCode() == HttpURLConnection.HTTP_NOT_MODIFIED) {
 			return cached; // Not modified.
 		}
 		else {
-			final String responseContentEncoding = connection.getContentEncoding();
-			final boolean gzip = responseContentEncoding != null && responseContentEncoding.toLowerCase().contains("gzip");
-			try (final InputStream raw = connection.getInputStream(); final InputStream in = gzip ? new GZIPInputStream(raw) : raw; final ByteArrayOutputStream out = new ByteArrayOutputStream()) {
-				this.connectionInputStream = raw;
-				IOUtils.copy(in, out, BUFFER_SIZE);
-				final MapImage downloaded = new MapImage(out.toByteArray(), connection.getHeaderField("Etag"));
-				if (downloaded.equals(cached)) {
-					logger.fine("downloaded.equals(cached)");
-					return cached;
-				}
-				else {
-					return downloaded;
-				}
+			return parseResponseContent(connection, cached, canceled);
+		}
+	}
+
+	private MapImage parseResponseContent(final HttpURLConnection connection, final MapImage cached, final BooleanSupplier canceled) throws IOException {
+		final String responseContentEncoding = connection.getContentEncoding();
+		final boolean gzip = responseContentEncoding != null && responseContentEncoding.toLowerCase().contains("gzip");
+		try (final InputStream raw = connection.getInputStream(); final InputStream in = gzip ? new GZIPInputStream(raw) : raw; final ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+			this.connectionInputStream = raw;
+			IOUtils.copy(in, out, BUFFER_SIZE);
+			final MapImage downloaded = new MapImage(out.toByteArray(), connection.getHeaderField("Etag"));
+			if (downloaded.equals(cached)) {
+				logger.fine("downloaded.equals(cached)");
+				return cached;
 			}
-			catch (final IOException e) {
-				if (canceled.getAsBoolean()) {
-					logger.log(Level.FINE, e.toString(), e);
-					return null;
-				}
-				else {
-					throw e;
-				}
+			else {
+				return downloaded;
+			}
+		}
+		catch (final IOException e) {
+			if (canceled.getAsBoolean()) {
+				logger.log(Level.FINE, "Download canceled:", e);
+				return null;
+			}
+			else {
+				throw e;
 			}
 		}
 	}
