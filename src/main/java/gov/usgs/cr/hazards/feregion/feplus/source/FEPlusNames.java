@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.TreeMap;
@@ -17,7 +18,7 @@ public class FEPlusNames {
 	 * possible.
 	 */
 	public FEPlusNames() throws IOException {
-		try (final InputStream is = getClass().getResourceAsStream("fenames.asc"); final InputStreamReader isr = new InputStreamReader(is); final BufferedReader br = new BufferedReader(isr)) {
+		try (final InputStream is = getClass().getResourceAsStream("fenames.asc"); final InputStreamReader isr = new InputStreamReader(is, StandardCharsets.US_ASCII); final BufferedReader br = new BufferedReader(isr)) {
 			Integer fenum = null;
 			String line;
 			while ((line = br.readLine()) != null) {

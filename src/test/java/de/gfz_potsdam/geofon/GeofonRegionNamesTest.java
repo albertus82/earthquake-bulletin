@@ -19,7 +19,7 @@ public class GeofonRegionNamesTest {
 
 	@Test
 	public void test() {
-		final Map<Integer, String> names = grnames.getNames();
+		final Map<Integer, String> names = grnames.getMap();
 		Assert.assertEquals(757, names.size());
 		for (final Entry<Integer, String> entry : names.entrySet()) {
 			Assert.assertNotNull(entry.getValue());

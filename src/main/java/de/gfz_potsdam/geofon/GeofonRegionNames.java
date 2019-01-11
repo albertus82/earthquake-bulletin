@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -17,7 +18,7 @@ public class GeofonRegionNames {
 	 */
 	public GeofonRegionNames() throws IOException {
 		// Read the file of region names...
-		try (final InputStream is = getClass().getResourceAsStream("names.asc"); final InputStreamReader isr = new InputStreamReader(is); final BufferedReader br = new BufferedReader(isr)) {
+		try (final InputStream is = getClass().getResourceAsStream("names.asc"); final InputStreamReader isr = new InputStreamReader(is, StandardCharsets.US_ASCII); final BufferedReader br = new BufferedReader(isr)) {
 			int fenum = 1;
 			String line;
 			while ((line = br.readLine()) != null) {
@@ -26,7 +27,7 @@ public class GeofonRegionNames {
 		}
 	}
 
-	public Map<Integer, String> getNames() {
+	public Map<Integer, String> getMap() {
 		return names;
 	}
 
