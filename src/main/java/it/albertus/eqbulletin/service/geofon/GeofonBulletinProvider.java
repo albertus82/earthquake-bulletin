@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -34,6 +35,7 @@ import it.albertus.eqbulletin.service.geofon.html.transformer.HtmlTableDataTrans
 import it.albertus.eqbulletin.service.geofon.rss.transformer.RssItemTransformer;
 import it.albertus.eqbulletin.service.geofon.rss.xml.Rss;
 import it.albertus.eqbulletin.service.net.ConnectionFactory;
+import it.albertus.eqbulletin.service.net.ConnectionUtils;
 import it.albertus.util.NewLine;
 import it.albertus.util.config.IConfiguration;
 import it.albertus.util.logging.LoggerFactory;
@@ -46,7 +48,7 @@ public class GeofonBulletinProvider implements BulletinProvider {
 
 	private static final IConfiguration configuration = EarthquakeBulletinConfig.getInstance();
 
-	private HttpURLConnection urlConnection;
+	private HttpURLConnection connection;
 
 	@Override
 	public List<Earthquake> getEarthquakes(final SearchJobVars jobVariables, final BooleanSupplier canceled) throws FetchException, DecodeException {
@@ -61,17 +63,18 @@ public class GeofonBulletinProvider implements BulletinProvider {
 					throw new CancelException();
 				}
 				else {
-					urlConnection = prepareConnection(url);
+					connection = prepareConnection(url);
 				}
 			}
-			final String responseContentEncoding = urlConnection.getContentEncoding(); // Connection starts here
+			final String responseContentEncoding = connection.getContentEncoding(); // Connection starts here
 			final boolean gzip = responseContentEncoding != null && responseContentEncoding.toLowerCase().contains("gzip");
-			try (final InputStream internalInputStream = urlConnection.getInputStream(); final InputStream inputStream = gzip ? new GZIPInputStream(internalInputStream) : internalInputStream) {
+			final Charset charset = ConnectionUtils.detectCharset(connection);
+			try (final InputStream raw = connection.getInputStream(); final InputStream in = gzip ? new GZIPInputStream(raw) : raw) {
 				if (Format.RSS.equals(jobVariables.getFormat())) {
-					rss = fetchRss(inputStream);
+					rss = fetchRss(in, charset);
 				}
 				else if (Format.HTML.equals(jobVariables.getFormat())) {
-					html = fetchHtml(inputStream);
+					html = fetchHtml(in, charset);
 				}
 				else {
 					throw new UnsupportedOperationException(String.valueOf(jobVariables.getFormat()));
@@ -101,9 +104,9 @@ public class GeofonBulletinProvider implements BulletinProvider {
 
 	@Override
 	public synchronized void cancel() {
-		if (urlConnection != null) {
+		if (connection != null) {
 			try {
-				urlConnection.getInputStream().close(); // Interrupt blocking I/O
+				connection.getInputStream().close(); // Interrupt blocking I/O
 			}
 			catch (final Exception e) {
 				logger.log(Level.FINE, e.toString(), e);
@@ -128,15 +131,17 @@ public class GeofonBulletinProvider implements BulletinProvider {
 		return ConnectionFactory.prepareConnection(new URL(url), headers);
 	}
 
-	private static Rss fetchRss(final InputStream is) throws JAXBException {
+	private static Rss fetchRss(final InputStream is, final Charset charset) throws JAXBException, IOException {
 		final JAXBContext jaxbContext = JAXBContext.newInstance(Rss.class);
 		final Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-		return (Rss) jaxbUnmarshaller.unmarshal(is);
+		try (final InputStreamReader isr = new InputStreamReader(is, charset); final BufferedReader br = new BufferedReader(isr)) {
+			return (Rss) jaxbUnmarshaller.unmarshal(br);
+		}
 	}
 
-	private static TableData fetchHtml(final InputStream is) throws IOException {
+	private static TableData fetchHtml(final InputStream is, final Charset charset) throws IOException {
 		final TableData td = new TableData();
-		try (final BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
+		try (final InputStreamReader isr = new InputStreamReader(is, charset); final BufferedReader br = new BufferedReader(isr)) {
 			String line = null;
 			while ((line = br.readLine()) != null) {
 				if (line.trim().toLowerCase().contains("<tr")) {
