@@ -28,7 +28,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
-import it.albertus.eqbulletin.gui.async.SearchJob;
 import it.albertus.eqbulletin.gui.decoration.SearchFormControlValidatorDecoration;
 import it.albertus.eqbulletin.gui.listener.AreaMapSelectionListener;
 import it.albertus.eqbulletin.gui.listener.AutoRefreshButtonSelectionListener;
@@ -153,8 +152,6 @@ public class SearchForm {
 	private final LeafletMapBoundsDialog mapBoundsDialog;
 
 	private final Collection<ControlValidator<Text>> validators = new ArrayList<>();
-
-	private SearchJob searchJob;
 
 	public SearchForm(final EarthquakeBulletinGui gui) {
 		final TraverseListener formFieldTraverseListener = new FormFieldTraverseListener(gui);
@@ -387,16 +384,6 @@ public class SearchForm {
 		return true;
 	}
 
-	public void cancelJob() {
-		final SearchJob job = getSearchJob();
-		if (job != null) {
-			job.setCanceled(true);
-			job.cancel();
-			setSearchJob(null);
-			searchButton.setText(Messages.get("lbl.form.button.submit"));
-		}
-	}
-
 	public void updateTexts() {
 		periodFromDateTime.setLocale(Messages.Language.ENGLISH.equals(Messages.getLanguage()) ? Locale.US : Messages.getLanguage().getLocale());
 		periodToDateTime.setLocale(Messages.Language.ENGLISH.equals(Messages.getLanguage()) ? Locale.US : Messages.getLanguage().getLocale());
@@ -470,14 +457,6 @@ public class SearchForm {
 			}
 		}
 		return value;
-	}
-
-	public SearchJob getSearchJob() {
-		return searchJob;
-	}
-
-	public void setSearchJob(final SearchJob searchJob) {
-		this.searchJob = searchJob;
 	}
 
 	public Composite getFormComposite() {

@@ -18,10 +18,8 @@ public class FormFieldTraverseListener implements TraverseListener {
 
 	@Override
 	public void keyTraversed(final TraverseEvent e) {
-		if (e.detail == SWT.TRAVERSE_RETURN && (gui.getSearchForm().getSearchJob() == null || gui.getSearchForm().getSearchJob().getState() != Job.RUNNING) && gui.getSearchForm().isValid()) {
-			gui.getSearchForm().cancelJob();
-			gui.getSearchForm().setSearchJob(new SearchJob(gui));
-			gui.getSearchForm().getSearchJob().schedule();
+		if (e.detail == SWT.TRAVERSE_RETURN && (SearchJob.getCurrentJob() == null || SearchJob.getCurrentJob().getState() != Job.RUNNING) && gui.getSearchForm().isValid()) {
+			SearchJob.scheduleNewJob(gui);
 		}
 	}
 

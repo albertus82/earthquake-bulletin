@@ -32,12 +32,14 @@ public class SearchJob extends Job {
 
 	private static final Logger logger = LoggerFactory.getLogger(SearchJob.class);
 
+	private static SearchJob currentJob;
+
 	private final EarthquakeBulletinGui gui;
 
 	private BulletinProvider provider;
 	private boolean canceled;
 
-	public SearchJob(final EarthquakeBulletinGui gui) {
+	private SearchJob(final EarthquakeBulletinGui gui) {
 		super(SearchJob.class.getSimpleName());
 		this.gui = gui;
 		this.setUser(true);
@@ -138,7 +140,7 @@ public class SearchJob extends Job {
 					gui.getSearchForm().getSearchButton().setText(Messages.get("lbl.form.button.submit"));
 				}
 				else {
-					gui.getSearchForm().cancelJob();
+					cancelCurrentJob();
 				}
 				AsyncOperation.setDefaultCursor(gui.getShell());
 			});
@@ -172,8 +174,23 @@ public class SearchJob extends Job {
 		return !canceled;
 	}
 
-	public void setCanceled(final boolean canceled) {
-		this.canceled = canceled;
+	public static synchronized SearchJob getCurrentJob() {
+		return currentJob;
+	}
+
+	public static synchronized void cancelCurrentJob() {
+		if (currentJob != null) {
+			currentJob.canceled = true;
+			currentJob.cancel();
+			currentJob.gui.getSearchForm().getSearchButton().setText(Messages.get("lbl.form.button.submit"));
+			currentJob = null;
+		}
+	}
+
+	public static synchronized void scheduleNewJob(final EarthquakeBulletinGui gui) {
+		cancelCurrentJob();
+		currentJob = new SearchJob(gui);
+		currentJob.schedule();
 	}
 
 }
