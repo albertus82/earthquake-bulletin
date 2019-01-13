@@ -1,9 +1,9 @@
-package it.albertus.eqbulletin.service.geofon.html;
+package it.albertus.eqbulletin.service.html;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TableData {
+public class HtmlBulletin {
 
 	private final List<String> items = new ArrayList<>();
 
@@ -31,16 +31,16 @@ public class TableData {
 		if (obj == null) {
 			return false;
 		}
-		if (!(obj instanceof TableData)) {
+		if (!(obj instanceof HtmlBulletin)) {
 			return false;
 		}
-		final TableData other = (TableData) obj;
+		final HtmlBulletin other = (HtmlBulletin) obj;
 		return items.equals(other.items);
 	}
 
 	@Override
 	public String toString() {
-		return "TableData [items=" + items + "]";
+		return "HtmlBulletin [items=" + items + "]";
 	}
 
 }

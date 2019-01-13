@@ -1,10 +1,10 @@
-package it.albertus.eqbulletin.service.geofon.rss.xml;
+package it.albertus.eqbulletin.service.rss.xml;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement
-public class Rss {
+@XmlRootElement(name = "rss")
+public class RssBulletin {
 
 	private Channel channel;
 
@@ -29,7 +29,7 @@ public class Rss {
 
 	@Override
 	public String toString() {
-		return "Rss [" + (channel != null ? "channel=" + channel + ", " : "") + (version != null ? "version=" + version : "") + "]";
+		return "RssBulletin [" + (channel != null ? "channel=" + channel + ", " : "") + (version != null ? "version=" + version : "") + "]";
 	}
 
 }

@@ -1,6 +1,7 @@
 package it.albertus.eqbulletin.service;
 
-import java.util.List;
+import java.io.IOException;
+import java.util.Collection;
 import java.util.function.BooleanSupplier;
 
 import it.albertus.eqbulletin.model.Earthquake;
@@ -16,8 +17,10 @@ public interface BulletinProvider {
 	 *         from data source
 	 * @throws DecodeException if an error occurs while decoding earthquake
 	 *         informations fetched from data source
+	 * @throws CancelException 
+	 * @throws IOException 
 	 */
-	List<Earthquake> getEarthquakes(SearchJobVars jobVariables, BooleanSupplier canceled) throws FetchException, DecodeException;
+	Collection<Earthquake> getEarthquakes(SearchRequest jobVariables, BooleanSupplier canceled) throws FetchException, DecodeException, IOException, CancelException;
 
 	/** Requests the cancellation of the operation. */
 	void cancel();

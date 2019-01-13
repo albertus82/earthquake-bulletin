@@ -1,4 +1,4 @@
-package it.albertus.eqbulletin.service.geofon.html.transformer;
+package it.albertus.eqbulletin.service.html;
 
 import java.net.URL;
 import java.text.DateFormat;
@@ -16,12 +16,11 @@ import it.albertus.eqbulletin.model.Earthquake;
 import it.albertus.eqbulletin.model.Latitude;
 import it.albertus.eqbulletin.model.Longitude;
 import it.albertus.eqbulletin.model.Status;
-import it.albertus.eqbulletin.service.geofon.GeofonBulletinProvider;
-import it.albertus.eqbulletin.service.geofon.html.TableData;
+import it.albertus.eqbulletin.service.GeofonBulletinProvider;
 import it.albertus.util.NewLine;
 import it.albertus.util.config.IConfiguration;
 
-public class HtmlTableDataTransformer {
+public class HtmlBulletinDecoder {
 
 	private static final String MOMENT_TENSOR_FILENAME = "mt.txt";
 
@@ -53,7 +52,7 @@ public class HtmlTableDataTransformer {
 
 	private static final IConfiguration configuration = EarthquakeBulletinConfig.getInstance();
 
-	private HtmlTableDataTransformer() {
+	private HtmlBulletinDecoder() {
 		throw new IllegalAccessError();
 	}
 
@@ -66,19 +65,19 @@ public class HtmlTableDataTransformer {
 		}
 	}
 
-	public static List<Earthquake> fromHtml(final TableData tableData) {
+	public static List<Earthquake> decode(final HtmlBulletin data) {
 		final List<Earthquake> earthquakes = new ArrayList<>();
-		if (tableData != null && tableData.getItems().size() > 1) {
+		if (data != null && data.getItems().size() > 1) {
 			// Discards first and last <td>
-			for (int index = 1; index < tableData.getItems().size() - 1; index++) {
-				final Earthquake converted = fromHtml(tableData.getItems().get(index));
+			for (int index = 1; index < data.getItems().size() - 1; index++) {
+				final Earthquake converted = decode(data.getItems().get(index));
 				earthquakes.add(converted);
 			}
 		}
 		return earthquakes;
 	}
 
-	private static Earthquake fromHtml(final String td) {
+	private static Earthquake decode(final String td) {
 		try {
 			final String[] lines = td.split(NewLine.SYSTEM_LINE_SEPARATOR);
 

@@ -1,4 +1,4 @@
-package it.albertus.eqbulletin.service.geofon.rss.transformer;
+package it.albertus.eqbulletin.service.rss;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -18,13 +18,13 @@ import it.albertus.eqbulletin.model.Latitude;
 import it.albertus.eqbulletin.model.Longitude;
 import it.albertus.eqbulletin.model.Status;
 import it.albertus.eqbulletin.resources.Messages;
-import it.albertus.eqbulletin.service.geofon.rss.xml.Item;
-import it.albertus.eqbulletin.service.geofon.rss.xml.Rss;
+import it.albertus.eqbulletin.service.rss.xml.Item;
+import it.albertus.eqbulletin.service.rss.xml.RssBulletin;
 import it.albertus.util.logging.LoggerFactory;
 
-public class RssItemTransformer {
+public class RssBulletinDecoder {
 
-	private static final Logger logger = LoggerFactory.getLogger(RssItemTransformer.class);
+	private static final Logger logger = LoggerFactory.getLogger(RssBulletinDecoder.class);
 
 	private static final ThreadLocal<DateFormat> rssDateFormat = ThreadLocal.withInitial(() -> {
 		final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -32,7 +32,7 @@ public class RssItemTransformer {
 		return dateFormat;
 	});
 
-	private RssItemTransformer() {
+	private RssBulletinDecoder() {
 		throw new IllegalAccessError();
 	}
 
@@ -45,17 +45,17 @@ public class RssItemTransformer {
 		}
 	}
 
-	public static List<Earthquake> fromRss(final Rss rss) {
+	public static List<Earthquake> decode(final RssBulletin data) {
 		final List<Earthquake> earthquakes = new ArrayList<>();
-		if (rss != null && rss.getChannel() != null && rss.getChannel().getItem() != null) {
-			for (final Item item : rss.getChannel().getItem()) {
-				earthquakes.add(RssItemTransformer.fromRss(item));
+		if (data != null && data.getChannel() != null && data.getChannel().getItem() != null) {
+			for (final Item item : data.getChannel().getItem()) {
+				earthquakes.add(RssBulletinDecoder.decode(item));
 			}
 		}
 		return earthquakes;
 	}
 
-	private static Earthquake fromRss(final Item rssItem) {
+	private static Earthquake decode(final Item rssItem) {
 		// Title
 		final String title = rssItem.getTitle();
 		final float magnitudo = Float.parseFloat(title.substring(1, title.indexOf(',')).trim());

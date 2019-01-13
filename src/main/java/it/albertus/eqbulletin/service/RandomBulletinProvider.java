@@ -17,7 +17,7 @@ import it.albertus.eqbulletin.model.Status;
 public class RandomBulletinProvider implements BulletinProvider {
 
 	@Override
-	public List<Earthquake> getEarthquakes(final SearchJobVars jobVariables, final BooleanSupplier canceled) {
+	public List<Earthquake> getEarthquakes(final SearchRequest jobVariables, final BooleanSupplier canceled) {
 		final List<Earthquake> earthquakes = new ArrayList<>();
 		for (int i = 0; i < 20; i++) {
 			final Calendar date = Calendar.getInstance();

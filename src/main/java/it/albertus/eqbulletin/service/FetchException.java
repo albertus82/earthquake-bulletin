@@ -1,8 +1,10 @@
 package it.albertus.eqbulletin.service;
 
-public class FetchException extends Exception {
+import java.io.IOException;
 
-	private static final long serialVersionUID = 2894064583637097322L;
+public class FetchException extends IOException {
+
+	private static final long serialVersionUID = -3521045419884684567L;
 
 	public FetchException(String message, Throwable cause) {
 		super(message, cause);

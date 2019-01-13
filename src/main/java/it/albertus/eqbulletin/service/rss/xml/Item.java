@@ -1,4 +1,4 @@
-package it.albertus.eqbulletin.service.geofon.rss.xml;
+package it.albertus.eqbulletin.service.rss.xml;
 
 public class Item {
 
