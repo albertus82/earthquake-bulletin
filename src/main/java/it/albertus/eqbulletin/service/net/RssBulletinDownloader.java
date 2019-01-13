@@ -55,11 +55,11 @@ public class RssBulletinDownloader implements BulletinDownloader {
 		final String responseContentEncoding = connection.getContentEncoding();
 		final boolean gzip = responseContentEncoding != null && responseContentEncoding.toLowerCase().contains("gzip");
 		try (final InputStream raw = connection.getInputStream(); final InputStream in = gzip ? new GZIPInputStream(raw) : raw; final ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+			connectionInputStream = raw;
 			if (canceled.getAsBoolean()) {
 				logger.fine("Download canceled after connection.");
 				throw new CancelException();
 			}
-			connectionInputStream = raw;
 			final Charset charset = ConnectionUtils.detectCharset(connection);
 			final RssBulletin fetched = fetch(in, charset);
 			return decode(fetched);
@@ -108,7 +108,6 @@ public class RssBulletinDownloader implements BulletinDownloader {
 		if (connectionInputStream != null) {
 			try {
 				connectionInputStream.close();
-				logger.fine("Download canceled.");
 			}
 			catch (final Exception e) {
 				logger.log(Level.FINE, e.toString(), e);
