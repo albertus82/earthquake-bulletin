@@ -6,23 +6,21 @@ import java.util.function.BooleanSupplier;
 
 import it.albertus.eqbulletin.model.Earthquake;
 import it.albertus.eqbulletin.service.decode.DecodeException;
-import it.albertus.eqbulletin.service.net.FetchException;
 
 public interface BulletinProvider {
 
 	/**
-	 * Returns a list of earthquakes based on the provided job variables.
+	 * Returns a list of earthquakes based on the provided request parameters.
 	 * 
-	 * @param jobVariables job variables, including search filters
+	 * @param request search filters and other job parameters
 	 * @return a list of earthquakes
-	 * @throws FetchException if an error occurs while fetching informations
-	 *         from data source
+	 * @throws IOException if an error occurs while fetching informations from
+	 *         data source
 	 * @throws DecodeException if an error occurs while decoding earthquake
 	 *         informations fetched from data source
-	 * @throws CancelException 
-	 * @throws IOException 
+	 * @throws CancelException if the operation is canceled by the user
 	 */
-	Collection<Earthquake> getEarthquakes(SearchRequest jobVariables, BooleanSupplier canceled) throws FetchException, DecodeException, IOException, CancelException;
+	Collection<Earthquake> getEarthquakes(SearchRequest request, BooleanSupplier canceled) throws IOException, DecodeException, CancelException;
 
 	/** Requests the cancellation of the operation. */
 	void cancel();

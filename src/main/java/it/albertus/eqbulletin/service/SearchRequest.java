@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
+import it.albertus.eqbulletin.gui.SearchForm;
 import it.albertus.eqbulletin.model.Format;
 import it.albertus.jface.preference.PreferencesConfiguration;
 
@@ -16,7 +17,7 @@ public class SearchRequest {
 
 	private boolean formValid;
 	private long waitTimeInMillis;
-	private Format format = Format.HTML;
+	private Format format = SearchForm.Defaults.FORMAT;
 	private final Map<String, String> params = new LinkedHashMap<>();
 
 	public boolean isFormValid() {
