@@ -6,6 +6,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.dmurph.URIEncoder;
+
 import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
 import it.albertus.eqbulletin.gui.SearchForm;
 import it.albertus.eqbulletin.model.Format;
@@ -52,7 +54,7 @@ public class SearchRequest {
 		final StringBuilder url = new StringBuilder(configuration.getString("url.base", GeofonUtils.DEFAULT_BASE_URL)).append("/eqinfo/list.php?fmt=").append(params.get("fmt"));
 		for (final Entry<String, String> param : params.entrySet()) {
 			if (param.getValue() != null && !param.getValue().isEmpty() && !"fmt".equals(param.getKey())) {
-				url.append('&').append(param.getKey()).append('=').append(param.getValue());
+				url.append('&').append(param.getKey()).append('=').append(URIEncoder.encodeURI(param.getValue()));
 			}
 		}
 		return new URL(url.toString());

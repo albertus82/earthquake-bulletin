@@ -13,8 +13,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.widgets.Button;
 
-import com.dmurph.URIEncoder;
-
 import it.albertus.eqbulletin.gui.EarthquakeBulletinGui;
 import it.albertus.eqbulletin.gui.Images;
 import it.albertus.eqbulletin.gui.SearchForm;
@@ -51,17 +49,14 @@ public class SearchJob extends Job {
 
 		final SearchRequest request = new SearchRequest();
 
-		new DisplayThreadExecutor(gui.getShell()).execute(() -> request.setFormValid(gui.getSearchForm().isValid()));
+		final SearchForm form = gui.getSearchForm();
+
+		new DisplayThreadExecutor(gui.getShell()).execute(() -> request.setFormValid(form.isValid()));
 
 		if (request.isFormValid()) {
-			request.setFormat(SearchForm.Defaults.FORMAT);
-
 			new DisplayThreadExecutor(gui.getShell()).execute(() -> {
 				gui.getSearchForm().getSearchButton().setText(Messages.get("lbl.form.button.stop"));
 				AsyncOperation.setAppStartingCursor(gui.getShell());
-
-				// Search parameters
-				final SearchForm form = gui.getSearchForm();
 
 				for (final Entry<Format, Button> entry : form.getFormatRadios().entrySet()) {
 					if (entry.getValue().getSelection()) {
@@ -73,17 +68,17 @@ public class SearchJob extends Job {
 				params.put("fmt", request.getFormat().getValue());
 				params.put("mode", form.getRestrictButton().getSelection() ? "mt" : "");
 				if (form.getPeriodFromDateTime().isEnabled() && form.getPeriodFromDateTime().getSelection() != null) {
-					params.put("datemin", URIEncoder.encodeURI(form.getPeriodFromDateTime().getText()));
+					params.put("datemin", form.getPeriodFromDateTime().getText());
 				}
 				if (form.getPeriodToDateTime().isEnabled() && form.getPeriodToDateTime().getSelection() != null) {
-					params.put("datemax", URIEncoder.encodeURI(form.getPeriodToDateTime().getText()));
+					params.put("datemax", form.getPeriodToDateTime().getText());
 				}
-				params.put("latmin", URIEncoder.encodeURI(form.getLatitudeFromText().getText()));
-				params.put("latmax", URIEncoder.encodeURI(form.getLatitudeToText().getText()));
-				params.put("lonmin", URIEncoder.encodeURI(form.getLongitudeFromText().getText()));
-				params.put("lonmax", URIEncoder.encodeURI(form.getLongitudeToText().getText()));
-				params.put("magmin", URIEncoder.encodeURI(form.getMinimumMagnitudeText().getText()));
-				params.put("nmax", URIEncoder.encodeURI(form.getResultsText().getText()));
+				params.put("latmin", form.getLatitudeFromText().getText());
+				params.put("latmax", form.getLatitudeToText().getText());
+				params.put("lonmin", form.getLongitudeFromText().getText());
+				params.put("lonmax", form.getLongitudeToText().getText());
+				params.put("magmin", form.getMinimumMagnitudeText().getText());
+				params.put("nmax", form.getResultsText().getText());
 
 				if (gui.getSearchForm().getAutoRefreshButton().getSelection()) {
 					final String time = gui.getSearchForm().getAutoRefreshText().getText().trim();
