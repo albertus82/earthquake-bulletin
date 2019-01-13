@@ -48,7 +48,7 @@ public class SearchRequest {
 	}
 
 	public URL getUrl() throws MalformedURLException {
-		final StringBuilder url = new StringBuilder(configuration.getString("url.base", GeofonBulletinProvider.DEFAULT_BASE_URL)).append("/eqinfo/list.php?fmt=").append(params.get("fmt"));
+		final StringBuilder url = new StringBuilder(configuration.getString("url.base", GeofonUtils.DEFAULT_BASE_URL)).append("/eqinfo/list.php?fmt=").append(params.get("fmt"));
 		for (final Entry<String, String> param : params.entrySet()) {
 			if (param.getValue() != null && !param.getValue().isEmpty() && !"fmt".equals(param.getKey())) {
 				url.append('&').append(param.getKey()).append('=').append(param.getValue());

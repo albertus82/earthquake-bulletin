@@ -33,27 +33,26 @@ public class SearchJob extends Job {
 	private static final Logger logger = LoggerFactory.getLogger(SearchJob.class);
 
 	private final EarthquakeBulletinGui gui;
-	private final BulletinProvider provider = new GeofonBulletinProvider();
 
-	private boolean shouldRun = true;
-	private boolean shouldSchedule = true;
+	private BulletinProvider provider;
+	private boolean canceled;
 
 	public SearchJob(final EarthquakeBulletinGui gui) {
-		super("Search");
+		super(SearchJob.class.getSimpleName());
 		this.gui = gui;
 		this.setUser(true);
 	}
 
 	@Override
 	protected IStatus run(final IProgressMonitor monitor) {
-		monitor.beginTask("Search", IProgressMonitor.UNKNOWN);
+		monitor.beginTask(getName(), IProgressMonitor.UNKNOWN);
 
-		final SearchRequest jobVariables = new SearchRequest();
+		final SearchRequest request = new SearchRequest();
 
-		new DisplayThreadExecutor(gui.getShell()).execute(() -> jobVariables.setFormValid(gui.getSearchForm().isValid()));
+		new DisplayThreadExecutor(gui.getShell()).execute(() -> request.setFormValid(gui.getSearchForm().isValid()));
 
-		if (jobVariables.isFormValid()) {
-			jobVariables.setFormat(SearchForm.Defaults.FORMAT);
+		if (request.isFormValid()) {
+			request.setFormat(SearchForm.Defaults.FORMAT);
 
 			new DisplayThreadExecutor(gui.getShell()).execute(() -> {
 				gui.getSearchForm().getSearchButton().setText(Messages.get("lbl.form.button.stop"));
@@ -64,12 +63,12 @@ public class SearchJob extends Job {
 
 				for (final Entry<Format, Button> entry : form.getFormatRadios().entrySet()) {
 					if (entry.getValue().getSelection()) {
-						jobVariables.setFormat(entry.getKey());
+						request.setFormat(entry.getKey());
 						break;
 					}
 				}
-				final Map<String, String> params = jobVariables.getParams();
-				params.put("fmt", jobVariables.getFormat().getValue());
+				final Map<String, String> params = request.getParams();
+				params.put("fmt", request.getFormat().getValue());
 				params.put("mode", form.getRestrictButton().getSelection() ? "mt" : "");
 				if (form.getPeriodFromDateTime().isEnabled() && form.getPeriodFromDateTime().getSelection() != null) {
 					params.put("datemin", URIEncoder.encodeURI(form.getPeriodFromDateTime().getText()));
@@ -90,7 +89,7 @@ public class SearchJob extends Job {
 						try {
 							short waitTimeInMinutes = Short.parseShort(time);
 							if (waitTimeInMinutes > 0) {
-								jobVariables.setWaitTimeInMillis(waitTimeInMinutes * 1000L * 60);
+								request.setWaitTimeInMillis(waitTimeInMinutes * 1000L * 60);
 							}
 						}
 						catch (final RuntimeException e) {
@@ -100,9 +99,10 @@ public class SearchJob extends Job {
 				}
 			});
 
+			provider = new GeofonBulletinProvider();
 			try {
-				final Collection<Earthquake> newDataColl = provider.getEarthquakes(jobVariables, monitor::isCanceled);
-				final Earthquake[] newDataArray = newDataColl.toArray(new Earthquake[0]);
+				final Collection<Earthquake> newDataColl = provider.getEarthquakes(request, monitor::isCanceled);
+				final Earthquake[] newDataArray = newDataColl.toArray(new Earthquake[newDataColl.size()]);
 
 				new DisplayThreadExecutor(gui.getShell()).execute(() -> {
 					final Earthquake[] oldDataArray = (Earthquake[]) gui.getResultsTable().getTableViewer().getInput();
@@ -132,7 +132,7 @@ public class SearchJob extends Job {
 			}
 
 			new DisplayThreadExecutor(gui.getShell()).execute(() -> {
-				final long waitTimeInMillis = jobVariables.getWaitTimeInMillis();
+				final long waitTimeInMillis = request.getWaitTimeInMillis();
 				if (waitTimeInMillis > 0) {
 					schedule(waitTimeInMillis);
 					gui.getSearchForm().getSearchButton().setText(Messages.get("lbl.form.button.submit"));
@@ -157,25 +157,23 @@ public class SearchJob extends Job {
 
 	@Override
 	protected void canceling() {
-		provider.cancel();
+		if (provider != null) {
+			provider.cancel();
+		}
 	}
 
 	@Override
 	public boolean shouldSchedule() {
-		return shouldSchedule;
+		return !canceled;
 	}
 
 	@Override
 	public boolean shouldRun() {
-		return shouldRun;
+		return !canceled;
 	}
 
-	public void setShouldRun(final boolean shouldRun) {
-		this.shouldRun = shouldRun;
-	}
-
-	public void setShouldSchedule(final boolean shouldSchedule) {
-		this.shouldSchedule = shouldSchedule;
+	public void setCanceled(final boolean canceled) {
+		this.canceled = canceled;
 	}
 
 }

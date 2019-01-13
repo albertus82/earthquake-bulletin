@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.function.BooleanSupplier;
 
 import it.albertus.eqbulletin.model.Earthquake;
+import it.albertus.eqbulletin.service.decode.DecodeException;
+import it.albertus.eqbulletin.service.net.FetchException;
 
 public interface BulletinProvider {
 

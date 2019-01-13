@@ -1,4 +1,4 @@
-package it.albertus.eqbulletin.service.html;
+package it.albertus.eqbulletin.service.decode.html;
 
 import java.net.URL;
 import java.text.DateFormat;
@@ -10,19 +10,15 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
-import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
 import it.albertus.eqbulletin.model.Depth;
 import it.albertus.eqbulletin.model.Earthquake;
 import it.albertus.eqbulletin.model.Latitude;
 import it.albertus.eqbulletin.model.Longitude;
 import it.albertus.eqbulletin.model.Status;
-import it.albertus.eqbulletin.service.GeofonBulletinProvider;
+import it.albertus.eqbulletin.service.GeofonUtils;
 import it.albertus.util.NewLine;
-import it.albertus.util.config.IConfiguration;
 
 public class HtmlBulletinDecoder {
-
-	private static final String MOMENT_TENSOR_FILENAME = "mt.txt";
 
 	private static final String guidPrefix = "id=";
 	private static final String guidSuffix = "'>";
@@ -49,12 +45,6 @@ public class HtmlBulletinDecoder {
 		dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 		return dateFormat;
 	});
-
-	private static final IConfiguration configuration = EarthquakeBulletinConfig.getInstance();
-
-	private HtmlBulletinDecoder() {
-		throw new IllegalAccessError();
-	}
 
 	private static Date parseHtmlDate(final String source) {
 		try {
@@ -101,15 +91,13 @@ public class HtmlBulletinDecoder {
 			final Status status = Status.valueOf(lines[5].substring(lines[5].lastIndexOf(statusPrefix) + statusPrefix.length(), lines[5].indexOf(statusSuffix)).trim());
 			final String region = lines[6].substring(lines[6].lastIndexOf(regionPrefix) + regionPrefix.length(), lines[6].lastIndexOf(regionSuffix)).trim();
 
-			final String baseUrl = configuration.getString("url.base", GeofonBulletinProvider.DEFAULT_BASE_URL);
-			final URL link = new URL(baseUrl + "/eqinfo/event.php?id=" + guid);
-			final String eventBaseUrl = baseUrl + "/data/alerts/" + time.get(Calendar.YEAR) + "/" + guid + "/";
-			final URL enclosure = new URL(eventBaseUrl + guid + ".jpg");
+			final URL link = GeofonUtils.getEventPageUrl(guid);
+			final URL enclosure = GeofonUtils.getEventMapUrl(guid, time.get(Calendar.YEAR));
 
 			final Earthquake earthquake = new Earthquake(guid, time.getTime(), magnitude, new Latitude(latitude), new Longitude(longitude), new Depth(depth), status, region, link, enclosure);
 
-			if (lines[6].contains(MOMENT_TENSOR_FILENAME) || lines.length > 7 && lines[7].contains(MOMENT_TENSOR_FILENAME)) {
-				earthquake.setMomentTensorUrl(new URL(eventBaseUrl + MOMENT_TENSOR_FILENAME));
+			if (lines[6].contains(GeofonUtils.MOMENT_TENSOR_FILENAME) || lines.length > 7 && lines[7].contains(GeofonUtils.MOMENT_TENSOR_FILENAME)) {
+				earthquake.setMomentTensorUrl(GeofonUtils.getEventMomentTensorUrl(guid, time.get(Calendar.YEAR)));
 			}
 
 			return earthquake;
@@ -117,6 +105,10 @@ public class HtmlBulletinDecoder {
 		catch (final Exception e) {
 			throw new IllegalArgumentException(td, e);
 		}
+	}
+
+	private HtmlBulletinDecoder() {
+		throw new IllegalAccessError();
 	}
 
 }

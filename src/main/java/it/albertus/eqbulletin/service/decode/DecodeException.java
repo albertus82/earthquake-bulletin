@@ -1,4 +1,4 @@
-package it.albertus.eqbulletin.service;
+package it.albertus.eqbulletin.service.decode;
 
 public class DecodeException extends Exception {
 

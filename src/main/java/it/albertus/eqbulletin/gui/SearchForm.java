@@ -390,8 +390,7 @@ public class SearchForm {
 	public void cancelJob() {
 		final SearchJob job = getSearchJob();
 		if (job != null) {
-			job.setShouldRun(false);
-			job.setShouldSchedule(false);
+			job.setCanceled(true);
 			job.cancel();
 			setSearchJob(null);
 			searchButton.setText(Messages.get("lbl.form.button.submit"));

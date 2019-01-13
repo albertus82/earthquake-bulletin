@@ -1,10 +1,11 @@
 package it.albertus.eqbulletin.service.net;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
@@ -22,16 +23,18 @@ import com.sun.net.httpserver.Headers;
 import it.albertus.eqbulletin.model.Earthquake;
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.eqbulletin.service.CancelException;
-import it.albertus.eqbulletin.service.DecodeException;
-import it.albertus.eqbulletin.service.FetchException;
 import it.albertus.eqbulletin.service.SearchRequest;
-import it.albertus.eqbulletin.service.rss.RssBulletinDecoder;
-import it.albertus.eqbulletin.service.rss.xml.RssBulletin;
+import it.albertus.eqbulletin.service.decode.DecodeException;
+import it.albertus.eqbulletin.service.decode.rss.RssBulletinDecoder;
+import it.albertus.eqbulletin.service.decode.rss.xml.RssBulletin;
+import it.albertus.util.IOUtils;
 import it.albertus.util.logging.LoggerFactory;
 
 public class RssBulletinDownloader implements BulletinDownloader {
 
 	private static final Logger logger = LoggerFactory.getLogger(RssBulletinDownloader.class);
+
+	private static final short BUFFER_SIZE = 4096;
 
 	private InputStream connectionInputStream;
 
@@ -70,10 +73,16 @@ public class RssBulletinDownloader implements BulletinDownloader {
 
 	private static RssBulletin fetch(final InputStream in, final Charset charset) throws IOException {
 		try {
+			final String body;
+			try (final InputStreamReader isr = new InputStreamReader(in, charset); final StringWriter sw = new StringWriter()) {
+				IOUtils.copy(isr, sw, BUFFER_SIZE);
+				body = sw.toString().replace("geofon:mt", "geofon_mt");
+			}
+
 			final JAXBContext jaxbContext = JAXBContext.newInstance(RssBulletin.class);
 			final Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-			try (final InputStreamReader isr = new InputStreamReader(in, charset); final BufferedReader br = new BufferedReader(isr)) {
-				return (RssBulletin) jaxbUnmarshaller.unmarshal(br);
+			try (final StringReader sr = new StringReader(body)) {
+				return (RssBulletin) jaxbUnmarshaller.unmarshal(sr);
 			}
 		}
 		catch (final Exception e) {

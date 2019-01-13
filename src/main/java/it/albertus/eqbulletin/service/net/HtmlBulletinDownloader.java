@@ -19,11 +19,10 @@ import com.sun.net.httpserver.Headers;
 import it.albertus.eqbulletin.model.Earthquake;
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.eqbulletin.service.CancelException;
-import it.albertus.eqbulletin.service.DecodeException;
-import it.albertus.eqbulletin.service.FetchException;
 import it.albertus.eqbulletin.service.SearchRequest;
-import it.albertus.eqbulletin.service.html.HtmlBulletin;
-import it.albertus.eqbulletin.service.html.HtmlBulletinDecoder;
+import it.albertus.eqbulletin.service.decode.DecodeException;
+import it.albertus.eqbulletin.service.decode.html.HtmlBulletin;
+import it.albertus.eqbulletin.service.decode.html.HtmlBulletinDecoder;
 import it.albertus.util.NewLine;
 import it.albertus.util.logging.LoggerFactory;
 

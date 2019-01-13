@@ -1,4 +1,4 @@
-package it.albertus.eqbulletin.service.html;
+package it.albertus.eqbulletin.service.decode.html;
 
 import java.util.ArrayList;
 import java.util.List;

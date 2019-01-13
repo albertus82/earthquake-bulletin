@@ -1,4 +1,6 @@
-package it.albertus.eqbulletin.service.rss.xml;
+package it.albertus.eqbulletin.service.decode.rss.xml;
+
+import javax.xml.bind.annotation.XmlElement;
 
 public class Item {
 
@@ -11,6 +13,8 @@ public class Item {
 	private String description;
 
 	private String link;
+
+	private String mt;
 
 	public Guid getGuid() {
 		return guid;
@@ -50,6 +54,15 @@ public class Item {
 
 	public void setLink(String link) {
 		this.link = link;
+	}
+
+	@XmlElement(name = "geofon_mt")
+	public String getMt() {
+		return mt;
+	}
+
+	public void setMt(String mt) {
+		this.mt = mt;
 	}
 
 	@Override

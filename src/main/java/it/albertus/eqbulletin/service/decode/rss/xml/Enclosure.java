@@ -1,4 +1,4 @@
-package it.albertus.eqbulletin.service.rss.xml;
+package it.albertus.eqbulletin.service.decode.rss.xml;
 
 import javax.xml.bind.annotation.XmlAttribute;
 
