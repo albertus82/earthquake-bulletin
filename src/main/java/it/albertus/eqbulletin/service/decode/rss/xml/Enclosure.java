@@ -5,9 +5,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 public class Enclosure {
 
 	private String length;
-
 	private String type;
-
 	private String url;
 
 	@XmlAttribute
@@ -39,7 +37,7 @@ public class Enclosure {
 
 	@Override
 	public String toString() {
-		return "Enclosure [" + (length != null ? "length=" + length + ", " : "") + (type != null ? "type=" + type + ", " : "") + (url != null ? "url=" + url : "") + "]";
+		return "Enclosure [length=" + length + ", type=" + type + ", url=" + url + "]";
 	}
 
 }

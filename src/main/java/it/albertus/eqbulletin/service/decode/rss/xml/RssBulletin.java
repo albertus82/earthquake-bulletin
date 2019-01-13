@@ -7,7 +7,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class RssBulletin {
 
 	private Channel channel;
-
 	private String version;
 
 	public Channel getChannel() {
@@ -29,7 +28,7 @@ public class RssBulletin {
 
 	@Override
 	public String toString() {
-		return "RssBulletin [" + (channel != null ? "channel=" + channel + ", " : "") + (version != null ? "version=" + version : "") + "]";
+		return "RssBulletin [channel=" + channel + ", version=" + version + "]";
 	}
 
 }

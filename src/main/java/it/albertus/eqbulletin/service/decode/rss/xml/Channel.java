@@ -2,17 +2,15 @@ package it.albertus.eqbulletin.service.decode.rss.xml;
 
 import java.util.Arrays;
 
+import javax.xml.bind.annotation.XmlElement;
+
 public class Channel {
 
 	private String title;
-
 	private String description;
-
 	private String link;
-
-	private Item[] item;
-
-	private String ttl;
+	private Item[] items;
+	private Integer ttl;
 
 	public String getTitle() {
 		return title;
@@ -38,25 +36,26 @@ public class Channel {
 		this.link = link;
 	}
 
-	public Item[] getItem() {
-		return item;
+	@XmlElement(name = "item")
+	public Item[] getItems() {
+		return items;
 	}
 
-	public void setItem(Item[] item) {
-		this.item = item;
+	public void setItems(Item[] items) {
+		this.items = items;
 	}
 
-	public String getTtl() {
+	public Integer getTtl() {
 		return ttl;
 	}
 
-	public void setTtl(String ttl) {
+	public void setTtl(Integer ttl) {
 		this.ttl = ttl;
 	}
 
 	@Override
 	public String toString() {
-		return "Channel [" + (title != null ? "title=" + title + ", " : "") + (description != null ? "description=" + description + ", " : "") + (link != null ? "link=" + link + ", " : "") + (item != null ? "item=" + Arrays.toString(item) + ", " : "") + (ttl != null ? "ttl=" + ttl : "") + "]";
+		return "Channel [title=" + title + ", description=" + description + ", link=" + link + ", item=" + Arrays.toString(items) + ", ttl=" + ttl + "]";
 	}
 
 }

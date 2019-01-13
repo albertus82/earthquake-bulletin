@@ -6,7 +6,6 @@ import javax.xml.bind.annotation.XmlValue;
 public class Guid {
 
 	private String content;
-
 	private boolean permaLink;
 
 	@XmlValue
@@ -29,7 +28,7 @@ public class Guid {
 
 	@Override
 	public String toString() {
-		return "Guid [" + (content != null ? "content=" + content + ", " : "") + "permaLink=" + permaLink + "]";
+		return "Guid [content=" + content + ", permaLink=" + permaLink + "]";
 	}
 
 }

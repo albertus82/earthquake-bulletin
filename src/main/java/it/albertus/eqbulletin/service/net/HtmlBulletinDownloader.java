@@ -38,7 +38,7 @@ public class HtmlBulletinDownloader implements BulletinDownloader {
 		headers.set("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
 		headers.set("Accept-Encoding", "gzip");
 		if (canceled.getAsBoolean()) {
-			logger.fine("Download canceled.");
+			logger.fine("Download canceled before connection.");
 			throw new CancelException();
 		}
 		final HttpURLConnection connection = ConnectionFactory.makeGetRequest(request.getUrl(), headers);
@@ -49,6 +49,10 @@ public class HtmlBulletinDownloader implements BulletinDownloader {
 		final String responseContentEncoding = connection.getContentEncoding();
 		final boolean gzip = responseContentEncoding != null && responseContentEncoding.toLowerCase().contains("gzip");
 		try (final InputStream raw = connection.getInputStream(); final InputStream in = gzip ? new GZIPInputStream(raw) : raw; final ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+			if (canceled.getAsBoolean()) {
+				logger.fine("Download canceled after connection.");
+				throw new CancelException();
+			}
 			connectionInputStream = raw;
 			final Charset charset = ConnectionUtils.detectCharset(connection);
 			final HtmlBulletin fetched = fetch(in, charset);
@@ -56,7 +60,7 @@ public class HtmlBulletinDownloader implements BulletinDownloader {
 		}
 		catch (final IOException e) {
 			if (canceled.getAsBoolean()) {
-				logger.log(Level.FINE, "Download canceled:", e);
+				logger.log(Level.FINE, "Download canceled during download:", e);
 				throw new CancelException();
 			}
 			else {

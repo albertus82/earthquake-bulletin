@@ -45,8 +45,8 @@ public class RssBulletinDecoder {
 
 	public static List<Earthquake> decode(final RssBulletin data) {
 		final List<Earthquake> earthquakes = new ArrayList<>();
-		if (data != null && data.getChannel() != null && data.getChannel().getItem() != null) {
-			for (final Item item : data.getChannel().getItem()) {
+		if (data != null && data.getChannel() != null && data.getChannel().getItems() != null) {
+			for (final Item item : data.getChannel().getItems()) {
 				earthquakes.add(RssBulletinDecoder.decode(item));
 			}
 		}

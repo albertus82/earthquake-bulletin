@@ -5,15 +5,10 @@ import javax.xml.bind.annotation.XmlElement;
 public class Item {
 
 	private Guid guid;
-
 	private String title;
-
 	private Enclosure enclosure;
-
 	private String description;
-
 	private String link;
-
 	private String mt;
 
 	public Guid getGuid() {
@@ -67,7 +62,7 @@ public class Item {
 
 	@Override
 	public String toString() {
-		return "Item [" + (guid != null ? "guid=" + guid + ", " : "") + (title != null ? "title=" + title + ", " : "") + (enclosure != null ? "enclosure=" + enclosure + ", " : "") + (description != null ? "description=" + description + ", " : "") + (link != null ? "link=" + link : "") + "]";
+		return "Item [guid=" + guid + ", title=" + title + ", enclosure=" + enclosure + ", description=" + description + ", link=" + link + ", mt=" + mt + "]";
 	}
 
 }
