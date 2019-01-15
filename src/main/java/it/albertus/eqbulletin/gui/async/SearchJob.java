@@ -40,12 +40,14 @@ public class SearchJob extends Job {
 	private static SearchJob currentJob;
 
 	private final EarthquakeBulletinGui gui;
+	private final SearchRequest request;
 
 	private BulletinProvider provider;
 	private boolean canceled;
 
-	private SearchJob(final EarthquakeBulletinGui gui) {
+	private SearchJob(final SearchRequest request, final EarthquakeBulletinGui gui) {
 		super(SearchJob.class.getSimpleName());
+		this.request = request;
 		this.gui = gui;
 		this.setUser(true);
 	}
@@ -56,10 +58,12 @@ public class SearchJob extends Job {
 
 		final SearchForm form = gui.getSearchForm();
 
-		final SearchRequest request = evaluateForm(form);
-
 		try {
 			if (request.isValid()) {
+				new DisplayThreadExecutor(gui.getShell()).execute(() -> {
+					form.getSearchButton().setText(Messages.get("lbl.form.button.stop"));
+					AsyncOperation.setAppStartingCursor(form.getShell());
+				});
 				provider = new GeofonBulletinProvider();
 				final Collection<Earthquake> earthquakes = provider.getEarthquakes(request, monitor::isCanceled);
 				updateGui(earthquakes, gui);
@@ -116,30 +120,25 @@ public class SearchJob extends Job {
 
 	private static SearchRequest evaluateForm(final SearchForm form) {
 		final SearchRequest request = new SearchRequest();
-		new DisplayThreadExecutor(form.getShell()).execute(() -> {
-			request.setValid(form.isValid());
-			request.setDelay(getDelay(form));
-			if (request.isValid()) {
-				form.getSearchButton().setText(Messages.get("lbl.form.button.stop"));
-				AsyncOperation.setAppStartingCursor(form.getShell());
-
-				final Map<String, String> params = request.getParameterMap();
-				params.put(Format.KEY, getFormatValue(form));
-				params.put("mode", form.getRestrictButton().getSelection() ? "mt" : "");
-				if (form.getPeriodFromDateTime().isEnabled() && form.getPeriodFromDateTime().getSelection() != null) {
-					params.put("datemin", form.getPeriodFromDateTime().getText());
-				}
-				if (form.getPeriodToDateTime().isEnabled() && form.getPeriodToDateTime().getSelection() != null) {
-					params.put("datemax", form.getPeriodToDateTime().getText());
-				}
-				params.put("latmin", form.getLatitudeFromText().getText());
-				params.put("latmax", form.getLatitudeToText().getText());
-				params.put("lonmin", form.getLongitudeFromText().getText());
-				params.put("lonmax", form.getLongitudeToText().getText());
-				params.put("magmin", form.getMinimumMagnitudeText().getText());
-				params.put("nmax", form.getResultsText().getText());
+		request.setValid(form.isValid());
+		request.setDelay(getDelay(form));
+		if (request.isValid()) {
+			final Map<String, String> params = request.getParameterMap();
+			params.put(Format.KEY, getFormatValue(form));
+			params.put("mode", form.getRestrictButton().getSelection() ? "mt" : "");
+			if (form.getPeriodFromDateTime().isEnabled() && form.getPeriodFromDateTime().getSelection() != null) {
+				params.put("datemin", form.getPeriodFromDateTime().getText());
 			}
-		});
+			if (form.getPeriodToDateTime().isEnabled() && form.getPeriodToDateTime().getSelection() != null) {
+				params.put("datemax", form.getPeriodToDateTime().getText());
+			}
+			params.put("latmin", form.getLatitudeFromText().getText());
+			params.put("latmax", form.getLatitudeToText().getText());
+			params.put("lonmin", form.getLongitudeFromText().getText());
+			params.put("lonmax", form.getLongitudeToText().getText());
+			params.put("magmin", form.getMinimumMagnitudeText().getText());
+			params.put("nmax", form.getResultsText().getText());
+		}
 		return request;
 	}
 
@@ -220,7 +219,7 @@ public class SearchJob extends Job {
 
 	public static synchronized void scheduleNewJob(final EarthquakeBulletinGui gui) {
 		cancelCurrentJob();
-		currentJob = new SearchJob(gui);
+		currentJob = new SearchJob(evaluateForm(gui.getSearchForm()), gui);
 		currentJob.schedule();
 	}
 
