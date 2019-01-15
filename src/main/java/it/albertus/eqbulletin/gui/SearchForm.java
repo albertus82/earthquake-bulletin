@@ -459,10 +459,6 @@ public class SearchForm {
 		return value;
 	}
 
-	public Composite getFormComposite() {
-		return formComposite;
-	}
-
 	public Label getPeriodLabel() {
 		return periodLabel;
 	}
@@ -491,64 +487,20 @@ public class SearchForm {
 		return periodToNote;
 	}
 
-	public Label getLatitudeLabel() {
-		return latitudeLabel;
-	}
-
-	public Label getLatitudeFromLabel() {
-		return latitudeFromLabel;
-	}
-
 	public Text getLatitudeFromText() {
 		return latitudeFromText;
-	}
-
-	public Label getLatitudeFromNote() {
-		return latitudeFromNote;
-	}
-
-	public Label getLatitudeToLabel() {
-		return latitudeToLabel;
 	}
 
 	public Text getLatitudeToText() {
 		return latitudeToText;
 	}
 
-	public Label getLatitudeToNote() {
-		return latitudeToNote;
-	}
-
-	public Label getLongitudeLabel() {
-		return longitudeLabel;
-	}
-
-	public Label getLongitudeFromLabel() {
-		return longitudeFromLabel;
-	}
-
 	public Text getLongitudeFromText() {
 		return longitudeFromText;
 	}
 
-	public Label getLongitudeFromNote() {
-		return longitudeFromNote;
-	}
-
-	public Label getLongitudeToLabel() {
-		return longitudeToLabel;
-	}
-
 	public Text getLongitudeToText() {
 		return longitudeToText;
-	}
-
-	public Label getLongitudeToNote() {
-		return longitudeToNote;
-	}
-
-	public Label getMinimumMagnitudeLabel() {
-		return minimumMagnitudeLabel;
 	}
 
 	public Text getMinimumMagnitudeText() {
@@ -557,14 +509,6 @@ public class SearchForm {
 
 	public Button getRestrictButton() {
 		return restrictButton;
-	}
-
-	public Label getOutputFormatLabel() {
-		return outputFormatLabel;
-	}
-
-	public Composite getRadioComposite() {
-		return radioComposite;
 	}
 
 	public Map<Format, Button> getFormatRadios() {
@@ -579,20 +523,8 @@ public class SearchForm {
 		return resultsText;
 	}
 
-	public Group getCriteriaGroup() {
-		return criteriaGroup;
-	}
-
-	public Composite getButtonsComposite() {
-		return buttonsComposite;
-	}
-
 	public Button getSearchButton() {
 		return searchButton;
-	}
-
-	public Label getResultsNote() {
-		return resultsNote;
 	}
 
 	public Button getAutoRefreshButton() {
@@ -601,14 +533,6 @@ public class SearchForm {
 
 	public Text getAutoRefreshText() {
 		return autoRefreshText;
-	}
-
-	public Button getClearButton() {
-		return clearButton;
-	}
-
-	public Button getOpenMap() {
-		return openMap;
 	}
 
 	public LeafletMapBoundsDialog getMapBoundsDialog() {
