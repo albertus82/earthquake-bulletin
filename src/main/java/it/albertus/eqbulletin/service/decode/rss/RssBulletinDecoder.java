@@ -47,13 +47,13 @@ public class RssBulletinDecoder {
 		final List<Earthquake> earthquakes = new ArrayList<>();
 		if (data != null && data.getChannel() != null && data.getChannel().getItems() != null) {
 			for (final Item item : data.getChannel().getItems()) {
-				earthquakes.add(RssBulletinDecoder.decode(item));
+				earthquakes.add(RssBulletinDecoder.decodeItem(item));
 			}
 		}
 		return earthquakes;
 	}
 
-	private static Earthquake decode(final Item item) {
+	private static Earthquake decodeItem(final Item item) {
 		final String guid = item.getGuid().getContent().trim();
 
 		// Title

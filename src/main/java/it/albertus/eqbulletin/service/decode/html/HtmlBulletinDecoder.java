@@ -60,14 +60,14 @@ public class HtmlBulletinDecoder {
 		if (data != null && data.getItems().size() > 1) {
 			// Discards first and last <td>
 			for (int index = 1; index < data.getItems().size() - 1; index++) {
-				final Earthquake converted = decode(data.getItems().get(index));
+				final Earthquake converted = decodeItem(data.getItems().get(index));
 				earthquakes.add(converted);
 			}
 		}
 		return earthquakes;
 	}
 
-	private static Earthquake decode(final String td) {
+	private static Earthquake decodeItem(final String td) {
 		try {
 			final String[] lines = td.split(NewLine.SYSTEM_LINE_SEPARATOR);
 
