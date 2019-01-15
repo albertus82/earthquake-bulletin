@@ -16,6 +16,7 @@ import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
 import com.sun.net.httpserver.Headers;
@@ -27,6 +28,7 @@ import it.albertus.eqbulletin.service.SearchRequest;
 import it.albertus.eqbulletin.service.decode.DecodeException;
 import it.albertus.eqbulletin.service.decode.rss.RssBulletinDecoder;
 import it.albertus.eqbulletin.service.decode.rss.xml.RssBulletin;
+import it.albertus.eqbulletin.util.InitializationException;
 import it.albertus.util.IOUtils;
 import it.albertus.util.logging.LoggerFactory;
 
@@ -35,6 +37,18 @@ public class RssBulletinDownloader implements BulletinDownloader {
 	private static final Logger logger = LoggerFactory.getLogger(RssBulletinDownloader.class);
 
 	private static final short BUFFER_SIZE = 4096;
+
+	private static final JAXBContext jaxbContext;
+
+	static {
+		try {
+			jaxbContext = JAXBContext.newInstance(RssBulletin.class);
+		}
+		catch (final JAXBException e) {
+			logger.log(Level.SEVERE, e.toString(), e);
+			throw new InitializationException(e.toString(), e);
+		}
+	}
 
 	private InputStream connectionInputStream;
 
@@ -83,7 +97,6 @@ public class RssBulletinDownloader implements BulletinDownloader {
 				body = sw.toString().replace("geofon:mt", "geofon_mt");
 			}
 
-			final JAXBContext jaxbContext = JAXBContext.newInstance(RssBulletin.class);
 			final Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 			try (final StringReader sr = new StringReader(body)) {
 				return (RssBulletin) jaxbUnmarshaller.unmarshal(sr);
