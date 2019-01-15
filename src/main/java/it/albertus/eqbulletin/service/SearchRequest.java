@@ -8,25 +8,19 @@ import java.util.Map.Entry;
 
 import com.dmurph.URIEncoder;
 
-import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
-import it.albertus.eqbulletin.gui.SearchForm;
 import it.albertus.eqbulletin.model.Format;
-import it.albertus.jface.preference.PreferencesConfiguration;
 
 public class SearchRequest {
 
-	private static final PreferencesConfiguration configuration = EarthquakeBulletinConfig.getInstance();
-
 	private boolean formValid;
 	private long waitTimeInMillis;
-	private Format format = SearchForm.Defaults.FORMAT;
 	private final Map<String, String> parameterMap = new LinkedHashMap<>();
 
 	public boolean isFormValid() {
 		return formValid;
 	}
 
-	public void setFormValid(boolean formValid) {
+	public void setFormValid(final boolean formValid) {
 		this.formValid = formValid;
 	}
 
@@ -34,26 +28,22 @@ public class SearchRequest {
 		return waitTimeInMillis;
 	}
 
-	public void setWaitTimeInMillis(long waitTimeInMillis) {
+	public void setWaitTimeInMillis(final long waitTimeInMillis) {
 		this.waitTimeInMillis = waitTimeInMillis;
 	}
 
 	public Format getFormat() {
-		return format;
-	}
-
-	public void setFormat(Format format) {
-		this.format = format;
+		return Format.forValue(parameterMap.get(Format.KEY));
 	}
 
 	public Map<String, String> getParameterMap() {
 		return parameterMap;
 	}
 
-	public URL generateUrl() throws MalformedURLException {
-		final StringBuilder url = new StringBuilder(configuration.getString("url.base", GeofonUtils.DEFAULT_BASE_URL)).append("/eqinfo/list.php?fmt=").append(parameterMap.get("fmt"));
+	public URL toURL() throws MalformedURLException {
+		final StringBuilder url = new StringBuilder(GeofonUtils.getBaseUrl()).append("/eqinfo/list.php?").append(Format.KEY).append('=').append(getFormat().getValue());
 		for (final Entry<String, String> param : parameterMap.entrySet()) {
-			if (param.getValue() != null && !param.getValue().isEmpty() && !"fmt".equals(param.getKey())) {
+			if (param.getValue() != null && !param.getValue().isEmpty() && !Format.KEY.equals(param.getKey())) {
 				url.append('&').append(param.getKey()).append('=').append(URIEncoder.encodeURI(param.getValue()));
 			}
 		}

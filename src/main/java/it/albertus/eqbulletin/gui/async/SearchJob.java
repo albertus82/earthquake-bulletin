@@ -12,6 +12,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Shell;
 
 import it.albertus.eqbulletin.gui.EarthquakeBulletinGui;
 import it.albertus.eqbulletin.gui.Images;
@@ -50,22 +51,22 @@ public class SearchJob extends Job {
 		final SearchRequest request = new SearchRequest();
 
 		final SearchForm form = gui.getSearchForm();
+		final Shell shell = gui.getShell();
 
-		new DisplayThreadExecutor(gui.getShell()).execute(() -> request.setFormValid(form.isValid()));
+		new DisplayThreadExecutor(shell).execute(() -> request.setFormValid(form.isValid()));
 
 		if (request.isFormValid()) {
-			new DisplayThreadExecutor(gui.getShell()).execute(() -> {
+			new DisplayThreadExecutor(shell).execute(() -> {
 				gui.getSearchForm().getSearchButton().setText(Messages.get("lbl.form.button.stop"));
-				AsyncOperation.setAppStartingCursor(gui.getShell());
+				AsyncOperation.setAppStartingCursor(shell);
 
+				final Map<String, String> params = request.getParameterMap();
 				for (final Entry<Format, Button> entry : form.getFormatRadios().entrySet()) {
 					if (entry.getValue().getSelection()) {
-						request.setFormat(entry.getKey());
+						params.put(Format.KEY, entry.getKey().getValue());
 						break;
 					}
 				}
-				final Map<String, String> params = request.getParameterMap();
-				params.put("fmt", request.getFormat().getValue());
 				params.put("mode", form.getRestrictButton().getSelection() ? "mt" : "");
 				if (form.getPeriodFromDateTime().isEnabled() && form.getPeriodFromDateTime().getSelection() != null) {
 					params.put("datemin", form.getPeriodFromDateTime().getText());
@@ -80,8 +81,8 @@ public class SearchJob extends Job {
 				params.put("magmin", form.getMinimumMagnitudeText().getText());
 				params.put("nmax", form.getResultsText().getText());
 
-				if (gui.getSearchForm().getAutoRefreshButton().getSelection()) {
-					final String time = gui.getSearchForm().getAutoRefreshText().getText().trim();
+				if (form.getAutoRefreshButton().getSelection()) {
+					final String time = form.getAutoRefreshText().getText().trim();
 					if (!time.isEmpty()) {
 						try {
 							short waitTimeInMinutes = Short.parseShort(time);
@@ -101,7 +102,7 @@ public class SearchJob extends Job {
 				final Collection<Earthquake> newDataColl = provider.getEarthquakes(request, monitor::isCanceled);
 				final Earthquake[] newDataArray = newDataColl.toArray(new Earthquake[newDataColl.size()]);
 
-				new DisplayThreadExecutor(gui.getShell()).execute(() -> {
+				new DisplayThreadExecutor(shell).execute(() -> {
 					final Earthquake[] oldDataArray = (Earthquake[]) gui.getResultsTable().getTableViewer().getInput();
 					gui.getResultsTable().getTableViewer().setInput(newDataArray);
 					gui.getTrayIcon().updateToolTipText(newDataArray.length > 0 ? newDataArray[0] : null);
@@ -128,7 +129,7 @@ public class SearchJob extends Job {
 				handleError(e, e.toString(), IStatus.ERROR);
 			}
 
-			new DisplayThreadExecutor(gui.getShell()).execute(() -> {
+			new DisplayThreadExecutor(shell).execute(() -> {
 				final long waitTimeInMillis = request.getWaitTimeInMillis();
 				if (waitTimeInMillis > 0) {
 					schedule(waitTimeInMillis);
@@ -137,7 +138,7 @@ public class SearchJob extends Job {
 				else {
 					cancelCurrentJob();
 				}
-				AsyncOperation.setDefaultCursor(gui.getShell());
+				AsyncOperation.setDefaultCursor(shell);
 			});
 		}
 		monitor.done();

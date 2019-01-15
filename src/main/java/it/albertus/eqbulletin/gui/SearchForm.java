@@ -92,7 +92,7 @@ public class SearchForm {
 	public static class Defaults {
 		public static final boolean AUTOREFRESH_ENABLED = false;
 		public static final boolean CRITERIA_RESTRICT = false;
-		public static final Format FORMAT = Format.HTML;
+		public static final Format FORMAT = Format.DEFAULT;
 
 		private Defaults() {
 			throw new IllegalAccessError("Constants class");

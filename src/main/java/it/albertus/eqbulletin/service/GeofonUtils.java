@@ -12,8 +12,9 @@ import it.albertus.util.logging.LoggerFactory;
 
 public class GeofonUtils {
 
-	public static final String DEFAULT_BASE_URL = "https://geofon.gfz-potsdam.de";
 	public static final String MOMENT_TENSOR_FILENAME = "mt.txt";
+
+	private static final String DEFAULT_BASE_URL = "https://geofon.gfz-potsdam.de";
 
 	private static final String MSG_KEY_ERR_URL_MALFORMED = "err.url.malformed";
 
@@ -22,7 +23,7 @@ public class GeofonUtils {
 	private static final PreferencesConfiguration configuration = EarthquakeBulletinConfig.getInstance();
 
 	public static URL getEventPageUrl(final String guid) {
-		final String spec = getGeofonBaseUrl() + "/eqinfo/event.php?id=" + guid;
+		final String spec = getBaseUrl() + "/eqinfo/event.php?id=" + guid;
 		try {
 			return new URL(spec);
 		}
@@ -54,12 +55,12 @@ public class GeofonUtils {
 		}
 	}
 
-	private static String getGeofonBaseUrl() {
-		return configuration.getString("url.base", GeofonUtils.DEFAULT_BASE_URL);
+	public static String getBaseUrl() {
+		return configuration.getString("base.url", GeofonUtils.DEFAULT_BASE_URL);
 	}
 
 	private static String getEventBaseUrl(final String guid, final int year) {
-		return getGeofonBaseUrl() + "/data/alerts/" + year + "/" + guid + "/";
+		return getBaseUrl() + "/data/alerts/" + year + "/" + guid + "/";
 	}
 
 	private GeofonUtils() {
