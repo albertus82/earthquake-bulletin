@@ -47,7 +47,7 @@ public class RssBulletinDownloader implements BulletinDownloader {
 			logger.fine("Download canceled before connection.");
 			throw new CancelException();
 		}
-		final HttpURLConnection connection = ConnectionFactory.makeGetRequest(request.getUrl(), headers);
+		final HttpURLConnection connection = ConnectionFactory.makeGetRequest(request.generateUrl(), headers);
 		return parseResponseContent(connection, canceled);
 	}
 

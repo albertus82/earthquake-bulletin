@@ -20,7 +20,7 @@ public class SearchRequest {
 	private boolean formValid;
 	private long waitTimeInMillis;
 	private Format format = SearchForm.Defaults.FORMAT;
-	private final Map<String, String> params = new LinkedHashMap<>();
+	private final Map<String, String> parameterMap = new LinkedHashMap<>();
 
 	public boolean isFormValid() {
 		return formValid;
@@ -46,13 +46,13 @@ public class SearchRequest {
 		this.format = format;
 	}
 
-	public Map<String, String> getParams() {
-		return params;
+	public Map<String, String> getParameterMap() {
+		return parameterMap;
 	}
 
-	public URL getUrl() throws MalformedURLException {
-		final StringBuilder url = new StringBuilder(configuration.getString("url.base", GeofonUtils.DEFAULT_BASE_URL)).append("/eqinfo/list.php?fmt=").append(params.get("fmt"));
-		for (final Entry<String, String> param : params.entrySet()) {
+	public URL generateUrl() throws MalformedURLException {
+		final StringBuilder url = new StringBuilder(configuration.getString("url.base", GeofonUtils.DEFAULT_BASE_URL)).append("/eqinfo/list.php?fmt=").append(parameterMap.get("fmt"));
+		for (final Entry<String, String> param : parameterMap.entrySet()) {
 			if (param.getValue() != null && !param.getValue().isEmpty() && !"fmt".equals(param.getKey())) {
 				url.append('&').append(param.getKey()).append('=').append(URIEncoder.encodeURI(param.getValue()));
 			}

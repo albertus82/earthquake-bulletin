@@ -64,7 +64,7 @@ public class SearchJob extends Job {
 						break;
 					}
 				}
-				final Map<String, String> params = request.getParams();
+				final Map<String, String> params = request.getParameterMap();
 				params.put("fmt", request.getFormat().getValue());
 				params.put("mode", form.getRestrictButton().getSelection() ? "mt" : "");
 				if (form.getPeriodFromDateTime().isEnabled() && form.getPeriodFromDateTime().getSelection() != null) {
