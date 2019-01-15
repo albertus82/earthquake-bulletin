@@ -75,7 +75,7 @@ public class RssBulletinDownloader implements BulletinDownloader {
 		}
 	}
 
-	private static RssBulletin fetch(final InputStream in, final Charset charset) throws IOException {
+	private static RssBulletin fetch(final InputStream in, final Charset charset) throws FetchException {
 		try {
 			final String body;
 			try (final InputStreamReader isr = new InputStreamReader(in, charset); final StringWriter sw = new StringWriter()) {

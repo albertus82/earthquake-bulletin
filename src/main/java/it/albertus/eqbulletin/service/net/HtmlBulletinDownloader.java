@@ -69,7 +69,7 @@ public class HtmlBulletinDownloader implements BulletinDownloader {
 		}
 	}
 
-	private static HtmlBulletin fetch(final InputStream in, final Charset charset) throws IOException {
+	private static HtmlBulletin fetch(final InputStream in, final Charset charset) throws FetchException {
 		try {
 			final HtmlBulletin td = new HtmlBulletin();
 			try (final InputStreamReader isr = new InputStreamReader(in, charset); final BufferedReader br = new BufferedReader(isr)) {
