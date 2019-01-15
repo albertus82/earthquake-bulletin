@@ -138,6 +138,7 @@ public class MomentTensorDialog extends Dialog {
 	}
 
 	public static synchronized void updateMomentTensorText(final MomentTensor momentTensor, final Earthquake earthquake) {
+		int count = 0;
 		for (final MomentTensorDialog instance : instances) {
 			if (earthquake.equals(instance.earthquake)) {
 				logger.log(Level.FINE, "Updating moment tensor dialog instance {0}...", instance);
@@ -150,10 +151,12 @@ public class MomentTensorDialog extends Dialog {
 					}
 				}
 				logger.log(Level.FINE, "Moment tensor dialog instance {0} updated.", instance);
-				return;
+				count++;
 			}
 		}
-		logger.log(Level.WARNING, "No moment tensor dialog instance found to update for {0}.", earthquake);
+		if (count == 0) {
+			logger.log(Level.WARNING, "No moment tensor dialog instance found to update for {0}.", earthquake);
+		}
 	}
 
 }
