@@ -100,8 +100,4 @@ public class MomentTensorAsyncOperation extends AsyncOperation {
 		}
 	}
 
-	private MomentTensorAsyncOperation() {
-		throw new IllegalAccessError();
-	}
-
 }

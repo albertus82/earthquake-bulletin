@@ -117,8 +117,4 @@ public class MapImageAsyncOperation extends AsyncOperation {
 		}
 	}
 
-	private MapImageAsyncOperation() {
-		throw new IllegalAccessError();
-	}
-
 }
