@@ -50,4 +50,9 @@ public class SearchRequest {
 		return new URL(url.toString());
 	}
 
+	@Override
+	public String toString() {
+		return "SearchRequest [valid=" + valid + ", delay=" + delay + ", parameterMap=" + parameterMap + "]";
+	}
+
 }

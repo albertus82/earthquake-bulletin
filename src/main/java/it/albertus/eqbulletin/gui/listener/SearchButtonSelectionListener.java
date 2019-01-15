@@ -5,7 +5,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 
 import it.albertus.eqbulletin.gui.EarthquakeBulletinGui;
-import it.albertus.eqbulletin.gui.async.SearchJob;
+import it.albertus.eqbulletin.gui.async.SearchAsyncOperation;
 import it.albertus.eqbulletin.resources.Messages;
 
 public class SearchButtonSelectionListener extends SelectionAdapter {
@@ -18,13 +18,12 @@ public class SearchButtonSelectionListener extends SelectionAdapter {
 
 	@Override
 	public void widgetSelected(final SelectionEvent se) {
-		if (SearchJob.getCurrentJob() == null || SearchJob.getCurrentJob().getState() != Job.RUNNING) { // Submit
-			if (gui.getSearchForm().isValid()) {
-				SearchJob.scheduleNewJob(gui);
-			}
+		final Job currentJob = SearchAsyncOperation.getCurrentJob();
+		if (currentJob == null || currentJob.getState() != Job.RUNNING) { // Submit
+			SearchAsyncOperation.execute(gui);
 		}
 		else {
-			SearchJob.cancelCurrentJob(); // Cancel
+			SearchAsyncOperation.cancelCurrentJob(); // Cancel
 			gui.getSearchForm().getSearchButton().setText(Messages.get("lbl.form.button.submit"));
 		}
 	}

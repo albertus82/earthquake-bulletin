@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.net.HttpURLConnection;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.util.Collection;
@@ -53,35 +52,19 @@ public class RssBulletinDownloader implements BulletinDownloader {
 	private InputStream connectionInputStream;
 
 	@Override
-	public Collection<Earthquake> download(final SearchRequest request, final BooleanSupplier canceled) throws IOException, DecodeException, CancelException {
+	public Collection<Earthquake> download(final SearchRequest request, final BooleanSupplier canceled) throws FetchException, DecodeException, CancelException {
 		final Headers headers = new Headers();
 		headers.set("Accept", "text/xml,*/xml;q=0.9,*/*;q=0.8");
 		headers.set("Accept-Encoding", "gzip");
 		if (canceled.getAsBoolean()) {
-			logger.fine("Download canceled before connection.");
-			throw new CancelException();
+			throw new CancelException("Download canceled before connection.");
 		}
-		final HttpURLConnection connection = ConnectionFactory.makeGetRequest(request.toURL(), headers);
-		return parseResponseContent(connection, canceled);
-	}
-
-	private Collection<Earthquake> parseResponseContent(final URLConnection connection, final BooleanSupplier canceled) throws IOException, DecodeException, CancelException {
-		final String responseContentEncoding = connection.getContentEncoding();
-		final boolean gzip = responseContentEncoding != null && responseContentEncoding.toLowerCase().contains("gzip");
-		try (final InputStream raw = connection.getInputStream(); final InputStream in = gzip ? new GZIPInputStream(raw) : raw; final ByteArrayOutputStream out = new ByteArrayOutputStream()) {
-			connectionInputStream = raw;
-			if (canceled.getAsBoolean()) {
-				logger.fine("Download canceled after connection.");
-				throw new CancelException();
-			}
-			final Charset charset = ConnectionUtils.detectCharset(connection);
-			final RssBulletin fetched = fetch(in, charset);
-			return decode(fetched);
+		try {
+			return download(request, headers, canceled);
 		}
-		catch (final IOException e) {
+		catch (final Exception e) {
 			if (canceled.getAsBoolean()) {
-				logger.log(Level.FINE, "Download canceled:", e);
-				throw new CancelException();
+				throw new CancelException("Download canceled after connection.", e);
 			}
 			else {
 				throw e;
@@ -89,30 +72,46 @@ public class RssBulletinDownloader implements BulletinDownloader {
 		}
 	}
 
-	private static RssBulletin fetch(final InputStream in, final Charset charset) throws FetchException {
+	private Collection<Earthquake> download(final SearchRequest request, final Headers headers, final BooleanSupplier canceled) throws FetchException, DecodeException, CancelException {
+		final String body;
 		try {
-			final String body;
-			try (final InputStreamReader isr = new InputStreamReader(in, charset); final StringWriter sw = new StringWriter()) {
-				IOUtils.copy(isr, sw, BUFFER_SIZE);
-				body = sw.toString().replace("geofon:mt", "geofon_mt");
-			}
-
-			final Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-			try (final StringReader sr = new StringReader(body)) {
-				return (RssBulletin) jaxbUnmarshaller.unmarshal(sr);
+			final URLConnection connection = ConnectionFactory.makeGetRequest(request.toURL(), headers);
+			final String responseContentEncoding = connection.getContentEncoding();
+			final boolean gzip = responseContentEncoding != null && responseContentEncoding.toLowerCase().contains("gzip");
+			try (final InputStream raw = connection.getInputStream(); final InputStream in = gzip ? new GZIPInputStream(raw) : raw; final ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+				connectionInputStream = raw;
+				if (canceled.getAsBoolean()) {
+					throw new CancelException("Download canceled after connection.");
+				}
+				final Charset charset = ConnectionUtils.detectCharset(connection);
+				body = fetch(in, charset);
 			}
 		}
 		catch (final Exception e) {
 			throw new FetchException(Messages.get("err.job.fetch"), e);
 		}
-	}
-
-	private static Collection<Earthquake> decode(final RssBulletin rss) throws DecodeException {
 		try {
-			return RssBulletinDecoder.decode(rss);
+			if (canceled.getAsBoolean()) {
+				throw new CancelException("Download canceled after connection.");
+			}
+			return decode(body);
 		}
 		catch (final Exception e) {
 			throw new DecodeException(Messages.get("err.job.decode"), e);
+		}
+	}
+
+	private static String fetch(final InputStream in, final Charset charset) throws IOException {
+		try (final InputStreamReader isr = new InputStreamReader(in, charset); final StringWriter sw = new StringWriter()) {
+			IOUtils.copy(isr, sw, BUFFER_SIZE);
+			return sw.toString().replace("geofon:mt", "geofon_mt");
+		}
+	}
+
+	private static Collection<Earthquake> decode(final String body) throws JAXBException {
+		final Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+		try (final StringReader sr = new StringReader(body)) {
+			return RssBulletinDecoder.decode((RssBulletin) jaxbUnmarshaller.unmarshal(sr));
 		}
 	}
 

@@ -4,7 +4,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 
 import it.albertus.eqbulletin.gui.SearchForm;
-import it.albertus.eqbulletin.gui.async.SearchJob;
+import it.albertus.eqbulletin.gui.async.SearchAsyncOperation;
 
 public class AutoRefreshButtonSelectionListener extends SelectionAdapter {
 
@@ -19,7 +19,7 @@ public class AutoRefreshButtonSelectionListener extends SelectionAdapter {
 		final boolean checked = form.getAutoRefreshButton().getSelection();
 		form.getAutoRefreshText().setEnabled(checked);
 		if (!checked) {
-			SearchJob.cancelCurrentJob();
+			SearchAsyncOperation.cancelCurrentJob();
 		}
 	}
 

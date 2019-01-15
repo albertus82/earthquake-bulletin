@@ -6,7 +6,7 @@ import org.eclipse.swt.events.TraverseEvent;
 import org.eclipse.swt.events.TraverseListener;
 
 import it.albertus.eqbulletin.gui.EarthquakeBulletinGui;
-import it.albertus.eqbulletin.gui.async.SearchJob;
+import it.albertus.eqbulletin.gui.async.SearchAsyncOperation;
 
 public class FormFieldTraverseListener implements TraverseListener {
 
@@ -18,8 +18,9 @@ public class FormFieldTraverseListener implements TraverseListener {
 
 	@Override
 	public void keyTraversed(final TraverseEvent e) {
-		if (e.detail == SWT.TRAVERSE_RETURN && (SearchJob.getCurrentJob() == null || SearchJob.getCurrentJob().getState() != Job.RUNNING) && gui.getSearchForm().isValid()) {
-			SearchJob.scheduleNewJob(gui);
+		final Job currentJob = SearchAsyncOperation.getCurrentJob();
+		if (e.detail == SWT.TRAVERSE_RETURN && (currentJob == null || currentJob.getState() != Job.RUNNING)) {
+			SearchAsyncOperation.execute(gui);
 		}
 	}
 
