@@ -117,12 +117,12 @@ public class SearchJob extends Job {
 	private static SearchRequest evaluateForm(final SearchForm form) {
 		final SearchRequest request = new SearchRequest();
 		new DisplayThreadExecutor(form.getShell()).execute(() -> {
-			if (form.isValid()) {
+			request.setValid(form.isValid());
+			request.setDelay(getDelay(form));
+			if (request.isValid()) {
 				form.getSearchButton().setText(Messages.get("lbl.form.button.stop"));
 				AsyncOperation.setAppStartingCursor(form.getShell());
 
-				request.setValid(true);
-				request.setDelay(getDelay(form));
 				final Map<String, String> params = request.getParameterMap();
 				params.put(Format.KEY, getFormatValue(form));
 				params.put("mode", form.getRestrictButton().getSelection() ? "mt" : "");
