@@ -17,6 +17,7 @@ import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.jface.viewers.ViewerComparator;
+import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
@@ -29,6 +30,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
@@ -51,7 +53,7 @@ import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.jface.SwtUtils;
 import it.albertus.jface.preference.IPreferencesConfiguration;
 
-public class ResultsTable {
+public class ResultsTable implements IShellProvider {
 
 	public static class Defaults {
 		public static final float MAGNITUDE_BIG = 5.0f;
@@ -149,6 +151,8 @@ public class ResultsTable {
 		}
 	}
 
+	private final Shell shell;
+
 	private final TableViewer tableViewer;
 	private final EarthquakeViewerComparator comparator;
 	private final HashMap<Integer, Supplier<String>> labelsMap = new HashMap<>();
@@ -158,6 +162,7 @@ public class ResultsTable {
 	private boolean initialized = false;
 
 	public ResultsTable(final Composite parent, final Object layoutData, final EarthquakeBulletinGui gui) {
+		shell = parent.getShell();
 		tableViewer = new TableViewer(parent, SWT.BORDER | SWT.FULL_SELECTION) {
 			// Auto resize columns on content change
 			@Override
@@ -187,6 +192,11 @@ public class ResultsTable {
 		tableViewer.setComparator(comparator);
 
 		contextMenu = new ContextMenu(gui);
+	}
+
+	@Override
+	public Shell getShell() {
+		return shell;
 	}
 
 	private void createColumns(final Table table) {

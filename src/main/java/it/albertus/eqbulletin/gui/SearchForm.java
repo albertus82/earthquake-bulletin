@@ -14,6 +14,7 @@ import java.util.logging.Logger;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
+import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.nebula.widgets.cdatetime.CDT;
 import org.eclipse.nebula.widgets.cdatetime.CDateTime;
 import org.eclipse.swt.SWT;
@@ -25,6 +26,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
@@ -55,7 +57,7 @@ import it.albertus.jface.validation.IntegerTextValidator;
 import it.albertus.jface.validation.Validator;
 import it.albertus.util.logging.LoggerFactory;
 
-public class SearchForm {
+public class SearchForm implements IShellProvider {
 
 	private static final Logger logger = LoggerFactory.getLogger(SearchForm.class);
 
@@ -63,7 +65,7 @@ public class SearchForm {
 	public static final int MAGNITUDE_TEXT_LIMIT = 4;
 	public static final int PERIOD_TEXT_LIMIT = 10;
 	public static final int RESULTS_TEXT_LIMIT = 4;
-	public static final int AUTOREFRESH_TEXT_LIMIT = 4;
+	public static final int AUTOREFRESH_TEXT_LIMIT = 9;
 
 	public static final float LATITUDE_MIN_VALUE = -90;
 	public static final float LATITUDE_MAX_VALUE = 90;
@@ -100,6 +102,8 @@ public class SearchForm {
 	}
 
 	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getInstance();
+
+	private final Shell shell;
 
 	private final Composite formComposite;
 
@@ -154,11 +158,13 @@ public class SearchForm {
 	private final Collection<ControlValidator<Text>> validators = new ArrayList<>();
 
 	public SearchForm(final EarthquakeBulletinGui gui) {
+		shell = gui.getShell();
+
 		final TraverseListener formFieldTraverseListener = new FormFieldTraverseListener(gui);
 		final ModifyListener formTextModifyListener = new FormTextModifyListener(this);
 		final VerifyListener coordinatesVerifyListener = new FloatVerifyListener(true);
 
-		formComposite = new Composite(gui.getShell(), SWT.NONE);
+		formComposite = new Composite(shell, SWT.NONE);
 		GridLayoutFactory.swtDefaults().margins(0, 0).numColumns(2).applyTo(formComposite);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.TOP).grab(true, false).applyTo(formComposite);
 
@@ -364,7 +370,7 @@ public class SearchForm {
 		autoRefreshText.setText(getConfiguredIntegerString(Preference.AUTOREFRESH_MINS));
 
 		// Map
-		mapBoundsDialog = new LeafletMapBoundsDialog(gui.getShell());
+		mapBoundsDialog = new LeafletMapBoundsDialog(shell);
 		mapBoundsDialog.setText(Messages.get("lbl.map.bounds.title"));
 		mapBoundsDialog.setImages(Images.getMainIconArray());
 		mapBoundsDialog.getOptions().getControls().put(LeafletMapControl.ZOOM, "");
@@ -457,6 +463,11 @@ public class SearchForm {
 			}
 		}
 		return value;
+	}
+
+	@Override
+	public Shell getShell() {
+		return shell;
 	}
 
 	public Label getPeriodLabel() {

@@ -12,24 +12,24 @@ import it.albertus.eqbulletin.model.Format;
 
 public class SearchRequest {
 
-	private boolean formValid;
-	private long waitTimeInMillis;
+	private boolean valid;
+	private long delay = -1;
 	private final Map<String, String> parameterMap = new LinkedHashMap<>();
 
-	public boolean isFormValid() {
-		return formValid;
+	public boolean isValid() {
+		return valid;
 	}
 
-	public void setFormValid(final boolean formValid) {
-		this.formValid = formValid;
+	public void setValid(final boolean valid) {
+		this.valid = valid;
 	}
 
-	public long getWaitTimeInMillis() {
-		return waitTimeInMillis;
+	public long getDelay() {
+		return delay;
 	}
 
-	public void setWaitTimeInMillis(final long waitTimeInMillis) {
-		this.waitTimeInMillis = waitTimeInMillis;
+	public void setDelay(final long delay) {
+		this.delay = delay;
 	}
 
 	public Format getFormat() {
