@@ -52,15 +52,13 @@ public class SearchJob extends Job {
 		final SearchForm form = gui.getSearchForm();
 
 		try {
-			if (request.isValid()) {
-				new DisplayThreadExecutor(gui.getShell()).execute(() -> {
-					form.getSearchButton().setText(Messages.get("lbl.form.button.stop"));
-					AsyncOperation.setAppStartingCursor(form.getShell());
-				});
-				provider = new GeofonBulletinProvider();
-				final Collection<Earthquake> earthquakes = provider.getEarthquakes(request, monitor::isCanceled);
-				updateGui(earthquakes, gui);
-			}
+			new DisplayThreadExecutor(gui.getShell()).execute(() -> {
+				form.getSearchButton().setText(Messages.get("lbl.form.button.stop"));
+				AsyncOperation.setAppStartingCursor(form.getShell());
+			});
+			provider = new GeofonBulletinProvider();
+			final Collection<Earthquake> earthquakes = provider.getEarthquakes(request, monitor::isCanceled);
+			updateGui(earthquakes, gui);
 		}
 		catch (final CancelException e) {
 			logger.log(Level.FINE, "Job was canceled:", e);
@@ -119,10 +117,8 @@ public class SearchJob extends Job {
 			else {
 				SearchAsyncOperation.cancelCurrentJob();
 			}
-			if (request.isValid()) {
-				AsyncOperation.setDefaultCursor(form.getShell());
-				form.getSearchButton().setText(Messages.get("lbl.form.button.submit"));
-			}
+			AsyncOperation.setDefaultCursor(form.getShell());
+			form.getSearchButton().setText(Messages.get("lbl.form.button.submit"));
 		});
 	}
 
