@@ -16,6 +16,7 @@ import it.albertus.eqbulletin.gui.SearchForm;
 import it.albertus.eqbulletin.model.Format;
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.eqbulletin.service.SearchRequest;
+import it.albertus.eqbulletin.service.job.SearchJob;
 import it.albertus.jface.DisplayThreadExecutor;
 import it.albertus.util.logging.LoggerFactory;
 

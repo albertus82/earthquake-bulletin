@@ -1,4 +1,4 @@
-package it.albertus.eqbulletin.gui.async;
+package it.albertus.eqbulletin.service.job;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -16,6 +16,7 @@ import it.albertus.eqbulletin.gui.MapCanvas;
 import it.albertus.eqbulletin.gui.ResultsTable;
 import it.albertus.eqbulletin.gui.SearchForm;
 import it.albertus.eqbulletin.gui.TrayIcon;
+import it.albertus.eqbulletin.gui.async.SearchAsyncOperation;
 import it.albertus.eqbulletin.model.Earthquake;
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.eqbulletin.service.BulletinProvider;
