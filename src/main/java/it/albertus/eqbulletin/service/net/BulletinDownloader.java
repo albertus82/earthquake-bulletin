@@ -12,4 +12,5 @@ public interface BulletinDownloader {
 	Collection<Earthquake> download(SearchRequest request, BooleanSupplier canceled) throws FetchException, DecodeException, InterruptedException;
 
 	void cancel();
+
 }

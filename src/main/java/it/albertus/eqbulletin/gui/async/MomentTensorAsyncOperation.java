@@ -9,15 +9,12 @@ import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.swt.widgets.Shell;
 
 import it.albertus.eqbulletin.cache.MomentTensorCache;
-import it.albertus.eqbulletin.gui.Images;
 import it.albertus.eqbulletin.gui.MomentTensorDialog;
 import it.albertus.eqbulletin.model.Earthquake;
 import it.albertus.eqbulletin.model.MomentTensor;
-import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.eqbulletin.service.job.MomentTensorDownloadJob;
 import it.albertus.eqbulletin.service.net.MomentTensorDownloader;
 import it.albertus.jface.DisplayThreadExecutor;
-import it.albertus.jface.EnhancedErrorDialog;
 import it.albertus.util.logging.LoggerFactory;
 
 public class MomentTensorAsyncOperation extends AsyncOperation {
@@ -63,10 +60,7 @@ public class MomentTensorAsyncOperation extends AsyncOperation {
 					}
 				}
 				catch (final AsyncOperationException e) {
-					logger.log(e.getLoggingLevel(), e.getMessage(), e);
-					if (!shell.isDisposed()) {
-						new DisplayThreadExecutor(shell, true).execute(() -> EnhancedErrorDialog.openError(shell, Messages.get("lbl.window.title"), e.getMessage(), e.getSeverity(), e.getCause() != null ? e.getCause() : e, Images.getMainIconArray()));
-					}
+					showErrorDialog(e, shell);
 				}
 				finally {
 					new DisplayThreadExecutor(shell).execute(() -> setDefaultCursor(shell));

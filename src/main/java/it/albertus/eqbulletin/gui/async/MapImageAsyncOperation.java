@@ -11,15 +11,12 @@ import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.swt.widgets.Shell;
 
 import it.albertus.eqbulletin.cache.MapImageCache;
-import it.albertus.eqbulletin.gui.Images;
 import it.albertus.eqbulletin.gui.MapCanvas;
 import it.albertus.eqbulletin.model.Earthquake;
 import it.albertus.eqbulletin.model.MapImage;
-import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.eqbulletin.service.job.MapImageDownloadJob;
 import it.albertus.eqbulletin.service.net.MapImageDownloader;
 import it.albertus.jface.DisplayThreadExecutor;
-import it.albertus.jface.EnhancedErrorDialog;
 import it.albertus.util.logging.LoggerFactory;
 
 public class MapImageAsyncOperation extends AsyncOperation {
@@ -69,10 +66,7 @@ public class MapImageAsyncOperation extends AsyncOperation {
 					}
 				}
 				catch (final AsyncOperationException e) {
-					logger.log(e.getLoggingLevel(), e.getMessage(), e);
-					if (!shell.isDisposed()) {
-						new DisplayThreadExecutor(shell, true).execute(() -> EnhancedErrorDialog.openError(shell, Messages.get("lbl.window.title"), e.getMessage(), e.getSeverity(), e.getCause() != null ? e.getCause() : e, Images.getMainIconArray()));
-					}
+					showErrorDialog(e, shell);
 				}
 				finally {
 					new DisplayThreadExecutor(shell).execute(() -> setDefaultCursor(shell));

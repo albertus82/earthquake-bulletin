@@ -24,7 +24,7 @@ public class GeofonBulletinProvider implements BulletinProvider {
 			downloader = new RssBulletinDownloader();
 			return downloader.download(request, canceled);
 		default:
-			throw new UnsupportedOperationException(String.valueOf(request.getFormat()));
+			throw new UnsupportedOperationException(request.toString());
 		}
 	}
 

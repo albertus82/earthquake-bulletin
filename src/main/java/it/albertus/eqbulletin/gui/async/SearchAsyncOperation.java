@@ -1,5 +1,7 @@
 package it.albertus.eqbulletin.gui.async;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
@@ -12,7 +14,11 @@ import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.swt.widgets.Button;
 
 import it.albertus.eqbulletin.gui.EarthquakeBulletinGui;
+import it.albertus.eqbulletin.gui.MapCanvas;
+import it.albertus.eqbulletin.gui.ResultsTable;
 import it.albertus.eqbulletin.gui.SearchForm;
+import it.albertus.eqbulletin.gui.TrayIcon;
+import it.albertus.eqbulletin.model.Earthquake;
 import it.albertus.eqbulletin.model.Format;
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.eqbulletin.service.SearchRequest;
@@ -31,7 +37,7 @@ public class SearchAsyncOperation extends AsyncOperation {
 		logger.log(Level.FINE, "{0}", request);
 		if (request.isValid()) {
 			cancelCurrentJob();
-			final SearchJob job = new SearchJob(request, gui);
+			final SearchJob job = new SearchJob(request);
 			job.addJobChangeListener(new JobChangeAdapter() {
 				@Override
 				public void aboutToRun(final IJobChangeEvent event) {
@@ -45,11 +51,31 @@ public class SearchAsyncOperation extends AsyncOperation {
 				@Override
 				public void done(final IJobChangeEvent event) {
 					logger.log(Level.FINE, "Done {0}: {1}.", new Object[] { event.getJob(), event.getResult() });
-					if (event.getResult().getSeverity() != IStatus.CANCEL) {
-						new DisplayThreadExecutor(gui.getShell()).execute(() -> {
-							AsyncOperation.setDefaultCursor(gui.getShell());
-							gui.getSearchForm().getSearchButton().setText(Messages.get("lbl.form.button.submit"));
-						});
+					try {
+						if (event.getResult().matches(IStatus.ERROR | IStatus.WARNING)) {
+							throw new AsyncOperationException(job.getResult());
+						}
+						if (event.getResult().isOK()) {
+							updateGui(job.getEarthquakes(), gui);
+							final long delay = request.getDelay();
+							if (delay > 0) {
+								job.schedule(delay);
+							}
+							else {
+								SearchAsyncOperation.cancelCurrentJob();
+							}
+						}
+					}
+					catch (final AsyncOperationException e) {
+						showErrorDialog(e, gui.getShell());
+					}
+					finally {
+						if (event.getResult().getSeverity() != IStatus.CANCEL) {
+							new DisplayThreadExecutor(gui.getShell()).execute(() -> {
+								AsyncOperation.setDefaultCursor(gui.getShell());
+								gui.getSearchForm().getSearchButton().setText(Messages.get("lbl.form.button.submit"));
+							});
+						}
 					}
 				}
 			});
@@ -123,6 +149,26 @@ public class SearchAsyncOperation extends AsyncOperation {
 			}
 		}
 		return -1;
+	}
+
+	private static void updateGui(final Collection<Earthquake> earthquakes, final EarthquakeBulletinGui gui) {
+		final Earthquake[] newDataArray = earthquakes.toArray(new Earthquake[earthquakes.size()]);
+
+		final ResultsTable table = gui.getResultsTable();
+		final TrayIcon icon = gui.getTrayIcon();
+		final MapCanvas map = gui.getMapCanvas();
+
+		new DisplayThreadExecutor(table.getShell()).execute(() -> {
+			final Earthquake[] oldDataArray = (Earthquake[]) table.getTableViewer().getInput();
+			table.getTableViewer().setInput(newDataArray);
+			icon.updateToolTipText(newDataArray.length > 0 ? newDataArray[0] : null);
+			if (map.getEarthquake() != null && !earthquakes.contains(map.getEarthquake())) {
+				map.clear();
+			}
+			if (oldDataArray != null && !Arrays.equals(newDataArray, oldDataArray) && newDataArray.length > 0 && newDataArray[0] != null && oldDataArray.length > 0 && !newDataArray[0].equals(oldDataArray[0]) && icon.getTrayItem() != null && icon.getTrayItem().getVisible()) {
+				icon.showBalloonToolTip(newDataArray[0]);
+			}
+		});
 	}
 
 }
