@@ -55,7 +55,11 @@ public class GeofonUtils {
 		}
 	}
 
-	public static String getBaseUrl() {
+	public static String getBulletinBaseUrl() {
+		return getBaseUrl() + "/eqinfo/list.php";
+	}
+
+	private static String getBaseUrl() {
 		return configuration.getString("base.url", GeofonUtils.DEFAULT_BASE_URL);
 	}
 

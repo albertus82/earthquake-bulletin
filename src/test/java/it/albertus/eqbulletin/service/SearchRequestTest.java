@@ -30,17 +30,15 @@ public class SearchRequestTest {
 	}
 
 	public void testGenerateUrl() throws MalformedURLException {
-		final String a = GeofonUtils.getBaseUrl();
-		final String b = "/eqinfo/list.php?";
+		final String baseUrl = GeofonUtils.getBulletinBaseUrl();
 
 		final SearchRequest r = new SearchRequest();
-		Assert.assertEquals(a + b + "fmt=html", r.toURL());
+		Assert.assertEquals(baseUrl + "fmt=html", r.toURL());
 
 		r.getParameterMap().put("fmt", "rss");
-		Assert.assertEquals(a + b + "fmt=rss", r.toURL());
+		Assert.assertEquals(baseUrl + "fmt=rss", r.toURL());
 
 		r.getParameterMap().put("fmt", "html");
-		Assert.assertEquals(a + b + "fmt=html", r.toURL());
-
+		Assert.assertEquals(baseUrl + "fmt=html", r.toURL());
 	}
 }
