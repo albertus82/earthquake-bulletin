@@ -47,7 +47,7 @@ public class SearchAsyncOperation extends AsyncOperation {
 					logger.log(Level.FINE, "Done {0}: {1}.", new Object[] { event.getJob(), event.getResult() });
 					if (event.getResult().getSeverity() != IStatus.CANCEL) {
 						new DisplayThreadExecutor(gui.getShell()).execute(() -> {
-							AsyncOperation.setDefaultCursor(gui.getSearchForm().getShell());
+							AsyncOperation.setDefaultCursor(gui.getShell());
 							gui.getSearchForm().getSearchButton().setText(Messages.get("lbl.form.button.submit"));
 						});
 					}
