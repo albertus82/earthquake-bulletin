@@ -19,7 +19,7 @@ public class SearchJob extends Job {
 	private final SearchRequest request;
 
 	private BulletinProvider provider;
-	private boolean canceled;
+	private volatile boolean canceled;
 
 	private Collection<Earthquake> earthquakes;
 
