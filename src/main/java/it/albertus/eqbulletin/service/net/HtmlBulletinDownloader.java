@@ -17,7 +17,6 @@ import com.sun.net.httpserver.Headers;
 
 import it.albertus.eqbulletin.model.Earthquake;
 import it.albertus.eqbulletin.resources.Messages;
-import it.albertus.eqbulletin.service.CancelException;
 import it.albertus.eqbulletin.service.SearchRequest;
 import it.albertus.eqbulletin.service.decode.DecodeException;
 import it.albertus.eqbulletin.service.decode.html.HtmlBulletin;
@@ -32,19 +31,21 @@ public class HtmlBulletinDownloader implements BulletinDownloader {
 	private InputStream connectionInputStream;
 
 	@Override
-	public Collection<Earthquake> download(final SearchRequest request, final BooleanSupplier canceled) throws FetchException, DecodeException, CancelException {
+	public Collection<Earthquake> download(final SearchRequest request, final BooleanSupplier canceled) throws FetchException, DecodeException, InterruptedException {
 		final Headers headers = new Headers();
 		headers.set("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
 		headers.set("Accept-Encoding", "gzip");
 		if (canceled.getAsBoolean()) {
-			throw new CancelException("Download canceled before connection.");
+			throw new InterruptedException("Download canceled before connection.");
 		}
 		try {
 			return download(request, headers, canceled);
 		}
 		catch (final Exception e) {
 			if (canceled.getAsBoolean()) {
-				throw new CancelException("Download canceled after connection.", e);
+				final String message = "Download canceled after connection.";
+				logger.log(Level.FINE, message, e);
+				throw new InterruptedException(message);
 			}
 			else {
 				throw e;
@@ -52,7 +53,7 @@ public class HtmlBulletinDownloader implements BulletinDownloader {
 		}
 	}
 
-	private Collection<Earthquake> download(final SearchRequest request, final Headers headers, final BooleanSupplier canceled) throws FetchException, DecodeException, CancelException {
+	private Collection<Earthquake> download(final SearchRequest request, final Headers headers, final BooleanSupplier canceled) throws FetchException, DecodeException, InterruptedException {
 		final HtmlBulletin body;
 		try {
 			final URLConnection connection = ConnectionFactory.makeGetRequest(request.toURL(), headers);
@@ -61,7 +62,7 @@ public class HtmlBulletinDownloader implements BulletinDownloader {
 			try (final InputStream raw = connection.getInputStream(); final InputStream in = gzip ? new GZIPInputStream(raw) : raw; final ByteArrayOutputStream out = new ByteArrayOutputStream()) {
 				connectionInputStream = raw;
 				if (canceled.getAsBoolean()) {
-					throw new CancelException("Download canceled after connection.");
+					throw new InterruptedException();
 				}
 				final Charset charset = ConnectionUtils.detectCharset(connection);
 				body = fetch(in, charset);
@@ -72,7 +73,7 @@ public class HtmlBulletinDownloader implements BulletinDownloader {
 		}
 		try {
 			if (canceled.getAsBoolean()) {
-				throw new CancelException("Download canceled after connection.");
+				throw new InterruptedException();
 			}
 			return decode(body);
 		}

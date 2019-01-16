@@ -15,7 +15,7 @@ public class GeofonBulletinProvider implements BulletinProvider {
 	private BulletinDownloader downloader;
 
 	@Override
-	public Collection<Earthquake> getEarthquakes(final SearchRequest request, final BooleanSupplier canceled) throws FetchException, DecodeException, CancelException {
+	public Collection<Earthquake> getEarthquakes(final SearchRequest request, final BooleanSupplier canceled) throws FetchException, DecodeException, InterruptedException {
 		switch (request.getFormat()) {
 		case HTML:
 			downloader = new HtmlBulletinDownloader();

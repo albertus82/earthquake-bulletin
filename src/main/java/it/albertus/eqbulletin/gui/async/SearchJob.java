@@ -19,7 +19,6 @@ import it.albertus.eqbulletin.gui.TrayIcon;
 import it.albertus.eqbulletin.model.Earthquake;
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.eqbulletin.service.BulletinProvider;
-import it.albertus.eqbulletin.service.CancelException;
 import it.albertus.eqbulletin.service.GeofonBulletinProvider;
 import it.albertus.eqbulletin.service.SearchRequest;
 import it.albertus.eqbulletin.service.decode.DecodeException;
@@ -52,15 +51,11 @@ public class SearchJob extends Job {
 		final SearchForm form = gui.getSearchForm();
 
 		try {
-			new DisplayThreadExecutor(gui.getShell()).execute(() -> {
-				form.getSearchButton().setText(Messages.get("lbl.form.button.stop"));
-				AsyncOperation.setAppStartingCursor(form.getShell());
-			});
 			provider = new GeofonBulletinProvider();
 			final Collection<Earthquake> earthquakes = provider.getEarthquakes(request, monitor::isCanceled);
 			updateGui(earthquakes, gui);
 		}
-		catch (final CancelException e) {
+		catch (final InterruptedException e) { // NOSONAR
 			logger.log(Level.FINE, "Job was canceled:", e);
 		}
 		catch (final FetchException | DecodeException e) {
@@ -109,17 +104,13 @@ public class SearchJob extends Job {
 	}
 
 	private static void finish(final SearchRequest request, final SearchForm form, final Job job) {
-		new DisplayThreadExecutor(form.getShell()).execute(() -> {
-			final long delay = request.getDelay();
-			if (delay > 0) {
-				job.schedule(delay);
-			}
-			else {
-				SearchAsyncOperation.cancelCurrentJob();
-			}
-			AsyncOperation.setDefaultCursor(form.getShell());
-			form.getSearchButton().setText(Messages.get("lbl.form.button.submit"));
-		});
+		final long delay = request.getDelay();
+		if (delay > 0) {
+			job.schedule(delay);
+		}
+		else {
+			SearchAsyncOperation.cancelCurrentJob();
+		}
 	}
 
 	@Override

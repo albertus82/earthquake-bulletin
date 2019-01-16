@@ -5,6 +5,7 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
@@ -13,7 +14,9 @@ import org.eclipse.swt.widgets.Button;
 import it.albertus.eqbulletin.gui.EarthquakeBulletinGui;
 import it.albertus.eqbulletin.gui.SearchForm;
 import it.albertus.eqbulletin.model.Format;
+import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.eqbulletin.service.SearchRequest;
+import it.albertus.jface.DisplayThreadExecutor;
 import it.albertus.util.logging.LoggerFactory;
 
 public class SearchAsyncOperation extends AsyncOperation {
@@ -31,12 +34,22 @@ public class SearchAsyncOperation extends AsyncOperation {
 			job.addJobChangeListener(new JobChangeAdapter() {
 				@Override
 				public void aboutToRun(final IJobChangeEvent event) {
-					logger.log(Level.FINE, "About to run {0}: {1}", new Object[] { event.getJob(), request });
+					logger.log(Level.FINE, "About to run {0}: {1}...", new Object[] { event.getJob(), request });
+					new DisplayThreadExecutor(gui.getShell()).execute(() -> {
+						gui.getSearchForm().getSearchButton().setText(Messages.get("lbl.form.button.stop"));
+						AsyncOperation.setAppStartingCursor(gui.getShell());
+					});
 				}
 
 				@Override
 				public void done(final IJobChangeEvent event) {
-					logger.log(Level.FINE, "Done {0}: {1}", new Object[] { event.getJob(), event.getResult() });
+					logger.log(Level.FINE, "Done {0}: {1}.", new Object[] { event.getJob(), event.getResult() });
+					if (event.getResult().getSeverity() != IStatus.CANCEL) {
+						new DisplayThreadExecutor(gui.getShell()).execute(() -> {
+							AsyncOperation.setDefaultCursor(gui.getSearchForm().getShell());
+							gui.getSearchForm().getSearchButton().setText(Messages.get("lbl.form.button.submit"));
+						});
+					}
 				}
 			});
 			job.schedule();

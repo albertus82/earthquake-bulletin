@@ -18,9 +18,9 @@ public interface BulletinProvider {
 	 *         from data source
 	 * @throws DecodeException if an error occurs while decoding earthquake
 	 *         informations fetched from data source
-	 * @throws CancelException if the operation is canceled by the user
+	 * @throws InterruptedException if the operation is interrupted by the user
 	 */
-	Collection<Earthquake> getEarthquakes(SearchRequest request, BooleanSupplier canceled) throws FetchException, DecodeException, CancelException;
+	Collection<Earthquake> getEarthquakes(SearchRequest request, BooleanSupplier canceled) throws FetchException, DecodeException, InterruptedException;
 
 	/** Requests the cancellation of the operation. */
 	void cancel();
