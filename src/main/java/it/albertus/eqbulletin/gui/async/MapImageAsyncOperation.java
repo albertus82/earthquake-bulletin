@@ -108,6 +108,7 @@ public class MapImageAsyncOperation extends AsyncOperation {
 	private static synchronized void cancelCurrentJob() {
 		if (currentJob != null) {
 			currentJob.cancel();
+			currentJob = null;
 		}
 	}
 
