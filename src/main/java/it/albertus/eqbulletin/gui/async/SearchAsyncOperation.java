@@ -40,8 +40,8 @@ public class SearchAsyncOperation extends AsyncOperation {
 			final SearchJob job = new SearchJob(request);
 			job.addJobChangeListener(new JobChangeAdapter() {
 				@Override
-				public void aboutToRun(final IJobChangeEvent event) {
-					logger.log(Level.FINE, "About to run {0}: {1}", new Object[] { event.getJob(), request });
+				public void running(final IJobChangeEvent event) {
+					logger.log(Level.FINE, "Running {0}: {1}", new Object[] { event.getJob(), request });
 					new DisplayThreadExecutor(gui.getShell()).execute(() -> {
 						gui.getSearchForm().getSearchButton().setText(Messages.get("lbl.form.button.stop"));
 						AsyncOperation.setAppStartingCursor(gui.getShell());
