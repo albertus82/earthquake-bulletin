@@ -3,3 +3,5 @@
 /target/
 /.settings/
 /sonar-project.properties
+/nbproject/private/
+/nbbuild/
