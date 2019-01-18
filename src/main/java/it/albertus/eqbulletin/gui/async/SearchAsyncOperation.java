@@ -90,7 +90,7 @@ public class SearchAsyncOperation extends AsyncOperation {
 	private static void showErrorDialog(final AsyncOperationException e, final TrayIcon trayIcon) {
 		logger.log(e.getLoggingLevel(), e.getMessage(), e);
 		if (trayIcon != null && !trayIcon.getShell().isDisposed()) {
-			new DisplayThreadExecutor(trayIcon.getShell(), false).execute(() -> {
+			new DisplayThreadExecutor(trayIcon.getShell()).execute(() -> {
 				if (trayIcon.getTrayItem() == null || !trayIcon.getTrayItem().getVisible()) { // Show error dialog only if not minimized in the tray.
 					final MultiStatus status = EnhancedErrorDialog.createMultiStatus(e.getSeverity(), e.getCause() != null ? e.getCause() : e);
 					final EnhancedErrorDialog dialog = new EnhancedErrorDialog(trayIcon.getShell(), Messages.get("lbl.window.title"), e.getMessage(), status, IStatus.INFO | IStatus.WARNING | IStatus.ERROR, Images.getMainIconArray());
