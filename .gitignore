@@ -2,6 +2,7 @@
 /bin/
 /nbproject/private/
 /nbbuild/
+/dist/
 /build/
 /target/
 /sonar-project.properties
