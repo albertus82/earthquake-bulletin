@@ -28,6 +28,8 @@ public class HtmlBulletinDownloader implements BulletinDownloader {
 
 	private static final Logger logger = LoggerFactory.getLogger(HtmlBulletinDownloader.class);
 
+	private static final String CANCELED_MESSAGE = "Operation canceled";
+
 	private InputStream connectionInputStream;
 
 	@Override
@@ -41,11 +43,10 @@ public class HtmlBulletinDownloader implements BulletinDownloader {
 		try {
 			return download(request, headers, canceled);
 		}
-		catch (final Exception e) {
+		catch (final FetchException | DecodeException | RuntimeException e) {
 			if (canceled.getAsBoolean()) {
-				final String message = "Download canceled after connection.";
-				logger.log(Level.FINE, message, e);
-				throw new InterruptedException(message);
+				logger.log(Level.FINE, CANCELED_MESSAGE + ':', e);
+				throw new InterruptedException(CANCELED_MESSAGE + '.');
 			}
 			else {
 				throw e;
@@ -62,22 +63,22 @@ public class HtmlBulletinDownloader implements BulletinDownloader {
 			try (final InputStream raw = connection.getInputStream(); final InputStream in = gzip ? new GZIPInputStream(raw) : raw; final ByteArrayOutputStream out = new ByteArrayOutputStream()) {
 				connectionInputStream = raw;
 				if (canceled.getAsBoolean()) {
-					throw new InterruptedException();
+					throw new InterruptedException(CANCELED_MESSAGE + '.');
 				}
 				final Charset charset = ConnectionUtils.detectCharset(connection);
 				body = fetch(in, charset);
 			}
 		}
-		catch (final Exception e) {
+		catch (final IOException | RuntimeException e) {
 			throw new FetchException(Messages.get("err.job.fetch"), e);
 		}
 		try {
 			if (canceled.getAsBoolean()) {
-				throw new InterruptedException();
+				throw new InterruptedException(CANCELED_MESSAGE + '.');
 			}
-			return decode(body);
+			return HtmlBulletinDecoder.decode(body);
 		}
-		catch (final Exception e) {
+		catch (final RuntimeException e) {
 			throw new DecodeException(Messages.get("err.job.decode"), e);
 		}
 	}
@@ -97,15 +98,6 @@ public class HtmlBulletinDownloader implements BulletinDownloader {
 			}
 		}
 		return td;
-	}
-
-	private static Collection<Earthquake> decode(final HtmlBulletin tableData) throws DecodeException {
-		try {
-			return HtmlBulletinDecoder.decode(tableData);
-		}
-		catch (final Exception e) {
-			throw new DecodeException(Messages.get("err.job.decode"), e);
-		}
 	}
 
 	@Override

@@ -8,12 +8,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.swt.widgets.Button;
 
 import it.albertus.eqbulletin.gui.EarthquakeBulletinGui;
+import it.albertus.eqbulletin.gui.Images;
 import it.albertus.eqbulletin.gui.MapCanvas;
 import it.albertus.eqbulletin.gui.ResultsTable;
 import it.albertus.eqbulletin.gui.SearchForm;
@@ -24,6 +26,7 @@ import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.eqbulletin.service.SearchRequest;
 import it.albertus.eqbulletin.service.job.SearchJob;
 import it.albertus.jface.DisplayThreadExecutor;
+import it.albertus.jface.EnhancedErrorDialog;
 import it.albertus.util.logging.LoggerFactory;
 
 public class SearchAsyncOperation extends AsyncOperation {
@@ -57,6 +60,13 @@ public class SearchAsyncOperation extends AsyncOperation {
 						}
 						if (event.getResult().isOK()) {
 							updateGui(job.getEarthquakes(), gui);
+						}
+					}
+					catch (final AsyncOperationException e) {
+						showErrorDialog(e, gui);
+					}
+					finally {
+						if (event.getResult().getSeverity() != IStatus.CANCEL) {
 							final long delay = request.getDelay();
 							if (delay > 0) {
 								job.schedule(delay);
@@ -64,13 +74,6 @@ public class SearchAsyncOperation extends AsyncOperation {
 							else {
 								SearchAsyncOperation.cancelCurrentJob();
 							}
-						}
-					}
-					catch (final AsyncOperationException e) {
-						showErrorDialog(e, gui.getShell());
-					}
-					finally {
-						if (event.getResult().getSeverity() != IStatus.CANCEL) {
 							new DisplayThreadExecutor(gui.getShell()).execute(() -> {
 								AsyncOperation.setDefaultCursor(gui.getShell());
 								gui.getSearchForm().getSearchButton().setText(Messages.get("lbl.form.button.submit"));
@@ -81,6 +84,20 @@ public class SearchAsyncOperation extends AsyncOperation {
 			});
 			job.schedule();
 			setCurrentJob(job);
+		}
+	}
+
+	private static void showErrorDialog(final AsyncOperationException e, final EarthquakeBulletinGui gui) {
+		logger.log(e.getLoggingLevel(), e.getMessage(), e);
+		if (!gui.getShell().isDisposed()) {
+			new DisplayThreadExecutor(gui.getShell(), false).execute(() -> {
+				if (gui.getTrayIcon() == null || gui.getTrayIcon().getTrayItem() == null || !gui.getTrayIcon().getTrayItem().getVisible()) {
+					final MultiStatus status = EnhancedErrorDialog.createMultiStatus(e.getSeverity(), e.getCause() != null ? e.getCause() : e);
+					final EnhancedErrorDialog dialog = new EnhancedErrorDialog(gui.getShell(), Messages.get("lbl.window.title"), e.getMessage(), status, IStatus.OK | IStatus.INFO | IStatus.WARNING | IStatus.ERROR, Images.getMainIconArray());
+					dialog.setBlockOnOpen(true);
+					dialog.open();
+				}
+			});
 		}
 	}
 
