@@ -8,6 +8,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.eclipse.jface.util.Util;
+import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ShellAdapter;
 import org.eclipse.swt.events.ShellEvent;
@@ -17,6 +18,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.ToolTip;
 import org.eclipse.swt.widgets.Tray;
 import org.eclipse.swt.widgets.TrayItem;
@@ -34,7 +36,7 @@ import it.albertus.util.MapUtils;
 import it.albertus.util.NewLine;
 import it.albertus.util.logging.LoggerFactory;
 
-public class TrayIcon {
+public class TrayIcon implements IShellProvider {
 
 	private static final Logger logger = LoggerFactory.getLogger(TrayIcon.class);
 
@@ -50,7 +52,7 @@ public class TrayIcon {
 
 	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getInstance();
 
-	private final EarthquakeBulletinGui gui;
+	private final Shell shell;
 
 	private Tray tray;
 	private TrayItem trayItem;
@@ -65,13 +67,13 @@ public class TrayIcon {
 	private String toolTipText = Messages.get("lbl.tray.tooltip");
 
 	public TrayIcon(final EarthquakeBulletinGui gui) {
-		this.gui = gui;
-		gui.getShell().addShellListener(new ShellAdapter() {
+		shell = gui.getShell();
+		shell.addShellListener(new ShellAdapter() {
 			@Override
 			public void shellIconified(final ShellEvent se) {
 				if (configuration.getBoolean(Preference.MINIMIZE_TRAY, Defaults.MINIMIZE_TRAY)) {
 					if (SystemTray.isSupported()) {
-						iconify();
+						iconify(gui);
 					}
 					else {
 						logger.log(Level.INFO, "The system tray is not supported on the current platform.");
@@ -90,28 +92,28 @@ public class TrayIcon {
 		}
 	}
 
-	private void iconify() {
+	private void iconify(final EarthquakeBulletinGui gui) {
 		if (tray == null || trayItem == null || trayItem.isDisposed()) {
 			/* Inizializzazione */
 			try {
-				tray = gui.getShell().getDisplay().getSystemTray();
+				tray = shell.getDisplay().getSystemTray();
 
 				if (tray != null) {
 					trayItem = new TrayItem(tray, SWT.NONE);
 					image = getImage();
 					trayItem.setImage(image);
 					trayItem.setToolTipText(toolTipText);
-					final TrayRestoreListener trayRestoreListener = new EnhancedTrayRestoreListener(gui.getShell(), trayItem);
+					final TrayRestoreListener trayRestoreListener = new EnhancedTrayRestoreListener(shell, trayItem);
 
 					for (final int icon : icons) {
-						final ToolTip toolTip = new ToolTip(gui.getShell(), SWT.BALLOON | icon);
+						final ToolTip toolTip = new ToolTip(shell, SWT.BALLOON | icon);
 						toolTip.setVisible(false);
 						toolTip.setAutoHide(true);
 						toolTip.addSelectionListener(trayRestoreListener);
 						toolTips.put(icon, toolTip);
 					}
 
-					trayMenu = new Menu(gui.getShell(), SWT.POP_UP);
+					trayMenu = new Menu(shell, SWT.POP_UP);
 					showMenuItem = new MenuItem(trayMenu, SWT.PUSH);
 					showMenuItem.setText(Messages.get("lbl.tray.show"));
 					showMenuItem.addSelectionListener(trayRestoreListener);
@@ -126,7 +128,7 @@ public class TrayIcon {
 
 					trayItem.addSelectionListener(trayRestoreListener);
 					if (!Util.isLinux()) {
-						gui.getShell().addShellListener(trayRestoreListener);
+						shell.addShellListener(trayRestoreListener);
 					}
 				}
 			}
@@ -136,10 +138,10 @@ public class TrayIcon {
 		}
 
 		if (tray != null && !tray.isDisposed() && trayItem != null && !trayItem.isDisposed()) {
-			gui.getShell().setVisible(false);
+			shell.setVisible(false);
 			trayItem.setVisible(true);
 			trayItem.setImage(image); // Update icon
-			gui.getShell().setMinimized(false);
+			shell.setMinimized(false);
 		}
 	}
 
@@ -221,6 +223,11 @@ public class TrayIcon {
 
 	public TrayItem getTrayItem() {
 		return trayItem;
+	}
+
+	@Override
+	public Shell getShell() {
+		return shell;
 	}
 
 }

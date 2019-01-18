@@ -63,7 +63,7 @@ public class SearchAsyncOperation extends AsyncOperation {
 						}
 					}
 					catch (final AsyncOperationException e) {
-						showErrorDialog(e, gui);
+						showErrorDialog(e, gui.getTrayIcon());
 					}
 					finally {
 						if (event.getResult().getSeverity() != IStatus.CANCEL) {
@@ -87,14 +87,14 @@ public class SearchAsyncOperation extends AsyncOperation {
 		}
 	}
 
-	private static void showErrorDialog(final AsyncOperationException e, final EarthquakeBulletinGui gui) {
+	private static void showErrorDialog(final AsyncOperationException e, final TrayIcon trayIcon) {
 		logger.log(e.getLoggingLevel(), e.getMessage(), e);
-		if (!gui.getShell().isDisposed()) {
-			new DisplayThreadExecutor(gui.getShell(), false).execute(() -> {
-				if (gui.getTrayIcon() == null || gui.getTrayIcon().getTrayItem() == null || !gui.getTrayIcon().getTrayItem().getVisible()) {
+		if (!trayIcon.getShell().isDisposed()) {
+			new DisplayThreadExecutor(trayIcon.getShell(), false).execute(() -> {
+				if (trayIcon == null || trayIcon.getTrayItem() == null || !trayIcon.getTrayItem().getVisible()) {
 					final MultiStatus status = EnhancedErrorDialog.createMultiStatus(e.getSeverity(), e.getCause() != null ? e.getCause() : e);
-					final EnhancedErrorDialog dialog = new EnhancedErrorDialog(gui.getShell(), Messages.get("lbl.window.title"), e.getMessage(), status, IStatus.OK | IStatus.INFO | IStatus.WARNING | IStatus.ERROR, Images.getMainIconArray());
-					dialog.setBlockOnOpen(true);
+					final EnhancedErrorDialog dialog = new EnhancedErrorDialog(trayIcon.getShell(), Messages.get("lbl.window.title"), e.getMessage(), status, IStatus.INFO | IStatus.WARNING | IStatus.ERROR, Images.getMainIconArray());
+					dialog.setBlockOnOpen(true); // Avoid stacking of error dialogs when auto refresh is enabled.
 					dialog.open();
 				}
 			});
