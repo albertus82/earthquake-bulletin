@@ -1,5 +1,8 @@
 package it.albertus.eqbulletin.gui.async;
 
+import static it.albertus.jface.DisplayThreadExecutor.Mode.ASYNC;
+import static it.albertus.jface.DisplayThreadExecutor.Mode.SYNC;
+
 import java.io.Serializable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -60,7 +63,7 @@ public class MapImageAsyncOperation extends AsyncOperation {
 					final MapImage downloadedObject = job.getDownloadedObject();
 					if (downloadedObject != null) {
 						if (event.getResult().getSeverity() != IStatus.CANCEL) {
-							new DisplayThreadExecutor(shell, true).execute(() -> MapCanvas.setMapImage(downloadedObject, earthquake));
+							new DisplayThreadExecutor(shell, ASYNC).execute(() -> MapCanvas.setMapImage(downloadedObject, earthquake));
 						}
 						MapImageCache.getInstance().put(earthquake.getGuid(), downloadedObject);
 					}
@@ -69,7 +72,7 @@ public class MapImageAsyncOperation extends AsyncOperation {
 					showErrorDialog(e, shell);
 				}
 				finally {
-					new DisplayThreadExecutor(shell).execute(() -> setDefaultCursor(shell));
+					new DisplayThreadExecutor(shell, SYNC).execute(() -> setDefaultCursor(shell));
 				}
 			}
 		});
@@ -83,7 +86,7 @@ public class MapImageAsyncOperation extends AsyncOperation {
 				try {
 					final MapImage downloadedObject = new MapImageDownloader().download(earthquake, cachedObject, () -> false);
 					if (downloadedObject != null && !downloadedObject.equals(cachedObject)) {
-						new DisplayThreadExecutor(shell, true).execute(() -> MapCanvas.updateMapImage(downloadedObject, earthquake)); // Update UI on-the-fly.
+						new DisplayThreadExecutor(shell, ASYNC).execute(() -> MapCanvas.updateMapImage(downloadedObject, earthquake)); // Update UI on-the-fly.
 						MapImageCache.getInstance().put(earthquake.getGuid(), downloadedObject);
 					}
 				}
@@ -91,7 +94,7 @@ public class MapImageAsyncOperation extends AsyncOperation {
 					logger.log(Level.WARNING, e.toString(), e);
 				}
 				finally {
-					new DisplayThreadExecutor(shell).execute(() -> setDefaultCursor(shell));
+					new DisplayThreadExecutor(shell, SYNC).execute(() -> setDefaultCursor(shell));
 				}
 			};
 			threadFactory.newThread(checkForUpdate).start();

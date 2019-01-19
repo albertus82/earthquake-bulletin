@@ -1,5 +1,7 @@
 package it.albertus.eqbulletin.gui.async;
 
+import static it.albertus.jface.DisplayThreadExecutor.Mode.SYNC;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
@@ -8,10 +10,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Button;
 
 import it.albertus.eqbulletin.gui.EarthquakeBulletinGui;
@@ -45,7 +47,7 @@ public class SearchAsyncOperation extends AsyncOperation {
 				@Override
 				public void running(final IJobChangeEvent event) {
 					logger.log(Level.FINE, "Running {0}: {1}", new Object[] { event.getJob(), request });
-					new DisplayThreadExecutor(gui.getShell()).execute(() -> {
+					new DisplayThreadExecutor(gui.getShell(), SYNC).execute(() -> {
 						gui.getSearchForm().getSearchButton().setText(Messages.get("lbl.form.button.stop"));
 						AsyncOperation.setAppStartingCursor(gui.getShell());
 					});
@@ -74,7 +76,7 @@ public class SearchAsyncOperation extends AsyncOperation {
 							else {
 								SearchAsyncOperation.cancelCurrentJob();
 							}
-							new DisplayThreadExecutor(gui.getShell()).execute(() -> {
+							new DisplayThreadExecutor(gui.getShell(), SYNC).execute(() -> {
 								AsyncOperation.setDefaultCursor(gui.getShell());
 								gui.getSearchForm().getSearchButton().setText(Messages.get("lbl.form.button.submit"));
 							});
@@ -90,10 +92,9 @@ public class SearchAsyncOperation extends AsyncOperation {
 	private static void showErrorDialog(final AsyncOperationException e, final TrayIcon trayIcon) {
 		logger.log(e.getLoggingLevel(), e.getMessage(), e);
 		if (trayIcon != null && !trayIcon.getShell().isDisposed()) {
-			new DisplayThreadExecutor(trayIcon.getShell()).execute(() -> {
+			new DisplayThreadExecutor(trayIcon.getShell(), SYNC).execute(() -> {
 				if (trayIcon.getTrayItem() == null || !trayIcon.getTrayItem().getVisible()) { // Show error dialog only if not minimized in the tray.
-					final MultiStatus status = EnhancedErrorDialog.createMultiStatus(e.getSeverity(), e.getCause() != null ? e.getCause() : e);
-					final EnhancedErrorDialog dialog = new EnhancedErrorDialog(trayIcon.getShell(), Messages.get("lbl.window.title"), e.getMessage(), status, IStatus.INFO | IStatus.WARNING | IStatus.ERROR, Images.getMainIconArray());
+					final Window dialog = new EnhancedErrorDialog(trayIcon.getShell(), Messages.get("lbl.window.title"), e.getMessage(), e.getSeverity(), e.getCause() != null ? e.getCause() : e, Images.getMainIconArray());
 					dialog.setBlockOnOpen(true); // Avoid stacking of error dialogs when auto refresh is enabled.
 					dialog.open();
 				}
@@ -175,7 +176,7 @@ public class SearchAsyncOperation extends AsyncOperation {
 		final TrayIcon icon = gui.getTrayIcon();
 		final MapCanvas map = gui.getMapCanvas();
 
-		new DisplayThreadExecutor(table.getShell()).execute(() -> {
+		new DisplayThreadExecutor(table.getShell(), SYNC).execute(() -> {
 			final Earthquake[] oldDataArray = (Earthquake[]) table.getTableViewer().getInput();
 			table.getTableViewer().setInput(newDataArray);
 			icon.updateToolTipText(newDataArray.length > 0 ? newDataArray[0] : null);

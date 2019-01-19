@@ -1,5 +1,7 @@
 package it.albertus.eqbulletin.gui.async;
 
+import static it.albertus.jface.DisplayThreadExecutor.Mode.ASYNC;
+
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
@@ -53,7 +55,7 @@ public abstract class AsyncOperation {
 	protected static void showErrorDialog(final AsyncOperationException e, final Shell shell) {
 		logger.log(e.getLoggingLevel(), e.getMessage(), e);
 		if (!shell.isDisposed()) {
-			new DisplayThreadExecutor(shell, true).execute(() -> EnhancedErrorDialog.openError(shell, Messages.get("lbl.window.title"), e.getMessage(), e.getSeverity(), e.getCause() != null ? e.getCause() : e, Images.getMainIconArray()));
+			new DisplayThreadExecutor(shell, ASYNC).execute(() -> EnhancedErrorDialog.openError(shell, Messages.get("lbl.window.title"), e.getMessage(), e.getSeverity(), e.getCause() != null ? e.getCause() : e, Images.getMainIconArray()));
 		}
 	}
 

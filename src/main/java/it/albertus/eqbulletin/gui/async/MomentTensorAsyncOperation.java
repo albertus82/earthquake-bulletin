@@ -1,5 +1,8 @@
 package it.albertus.eqbulletin.gui.async;
 
+import static it.albertus.jface.DisplayThreadExecutor.Mode.ASYNC;
+import static it.albertus.jface.DisplayThreadExecutor.Mode.SYNC;
+
 import java.io.Serializable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -55,7 +58,7 @@ public class MomentTensorAsyncOperation extends AsyncOperation {
 					}
 					final MomentTensor downloadedObject = job.getDownloadedObject();
 					if (downloadedObject != null) {
-						new DisplayThreadExecutor(shell, true).execute(() -> new MomentTensorDialog(shell, downloadedObject, earthquake).open()); // Async
+						new DisplayThreadExecutor(shell, ASYNC).execute(() -> new MomentTensorDialog(shell, downloadedObject, earthquake).open()); // Async
 						MomentTensorCache.getInstance().put(earthquake.getGuid(), downloadedObject);
 					}
 				}
@@ -63,7 +66,7 @@ public class MomentTensorAsyncOperation extends AsyncOperation {
 					showErrorDialog(e, shell);
 				}
 				finally {
-					new DisplayThreadExecutor(shell).execute(() -> setDefaultCursor(shell));
+					new DisplayThreadExecutor(shell, SYNC).execute(() -> setDefaultCursor(shell));
 				}
 			}
 		});
@@ -76,7 +79,7 @@ public class MomentTensorAsyncOperation extends AsyncOperation {
 				try {
 					final MomentTensor downloadedObject = MomentTensorDownloader.download(earthquake, cachedObject);
 					if (downloadedObject != null && !downloadedObject.equals(cachedObject)) {
-						new DisplayThreadExecutor(shell, true).execute(() -> MomentTensorDialog.updateMomentTensorText(downloadedObject, earthquake)); // Update UI on-the-fly.
+						new DisplayThreadExecutor(shell, ASYNC).execute(() -> MomentTensorDialog.updateMomentTensorText(downloadedObject, earthquake)); // Update UI on-the-fly.
 						MomentTensorCache.getInstance().put(earthquake.getGuid(), downloadedObject);
 					}
 				}
@@ -84,7 +87,7 @@ public class MomentTensorAsyncOperation extends AsyncOperation {
 					logger.log(Level.WARNING, e.toString(), e);
 				}
 				finally {
-					new DisplayThreadExecutor(shell).execute(() -> setDefaultCursor(shell));
+					new DisplayThreadExecutor(shell, SYNC).execute(() -> setDefaultCursor(shell));
 				}
 			};
 			threadFactory.newThread(checkForUpdate).start();
