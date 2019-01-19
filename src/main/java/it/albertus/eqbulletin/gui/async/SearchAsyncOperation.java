@@ -1,5 +1,6 @@
 package it.albertus.eqbulletin.gui.async;
 
+import static it.albertus.jface.DisplayThreadExecutor.Mode.ASYNC;
 import static it.albertus.jface.DisplayThreadExecutor.Mode.SYNC;
 
 import java.util.Arrays;
@@ -47,7 +48,7 @@ public class SearchAsyncOperation extends AsyncOperation {
 				@Override
 				public void running(final IJobChangeEvent event) {
 					logger.log(Level.FINE, "Running {0}: {1}", new Object[] { event.getJob(), request });
-					new DisplayThreadExecutor(gui.getShell(), SYNC).execute(() -> {
+					new DisplayThreadExecutor(gui.getShell(), ASYNC).execute(() -> {
 						gui.getSearchForm().getSearchButton().setText(Messages.get("lbl.form.button.stop"));
 						AsyncOperation.setAppStartingCursor(gui.getShell());
 					});
@@ -76,7 +77,7 @@ public class SearchAsyncOperation extends AsyncOperation {
 							else {
 								SearchAsyncOperation.cancelCurrentJob();
 							}
-							new DisplayThreadExecutor(gui.getShell(), SYNC).execute(() -> {
+							new DisplayThreadExecutor(gui.getShell(), ASYNC).execute(() -> {
 								AsyncOperation.setDefaultCursor(gui.getShell());
 								gui.getSearchForm().getSearchButton().setText(Messages.get("lbl.form.button.submit"));
 							});
@@ -176,7 +177,7 @@ public class SearchAsyncOperation extends AsyncOperation {
 		final TrayIcon icon = gui.getTrayIcon();
 		final MapCanvas map = gui.getMapCanvas();
 
-		new DisplayThreadExecutor(table.getShell(), SYNC).execute(() -> {
+		new DisplayThreadExecutor(table.getShell(), ASYNC).execute(() -> {
 			final Earthquake[] oldDataArray = (Earthquake[]) table.getTableViewer().getInput();
 			table.getTableViewer().setInput(newDataArray);
 			icon.updateToolTipText(newDataArray.length > 0 ? newDataArray[0] : null);
