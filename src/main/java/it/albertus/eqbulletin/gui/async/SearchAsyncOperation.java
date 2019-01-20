@@ -42,6 +42,8 @@ public class SearchAsyncOperation extends AsyncOperation {
 		final SearchRequest request = evaluateForm(gui.getSearchForm());
 		logger.log(Level.FINE, "{0}", request);
 		if (request.isValid()) {
+			final Button searchButton = gui.getSearchForm().getSearchButton();
+			searchButton.setEnabled(false);
 			cancelCurrentJob();
 			final SearchJob job = new SearchJob(request);
 			job.addJobChangeListener(new JobChangeAdapter() {
@@ -49,8 +51,9 @@ public class SearchAsyncOperation extends AsyncOperation {
 				public void running(final IJobChangeEvent event) {
 					logger.log(Level.FINE, "Running {0}: {1}", new Object[] { event.getJob(), request });
 					new DisplayThreadExecutor(gui.getShell(), ASYNC).execute(() -> {
-						gui.getSearchForm().getSearchButton().setText(Messages.get("lbl.form.button.stop"));
 						AsyncOperation.setAppStartingCursor(gui.getShell());
+						searchButton.setText(Messages.get("lbl.form.button.stop"));
+						searchButton.setEnabled(true);
 					});
 				}
 
@@ -79,7 +82,7 @@ public class SearchAsyncOperation extends AsyncOperation {
 							}
 							new DisplayThreadExecutor(gui.getShell(), ASYNC).execute(() -> {
 								AsyncOperation.setDefaultCursor(gui.getShell());
-								gui.getSearchForm().getSearchButton().setText(Messages.get("lbl.form.button.submit"));
+								searchButton.setText(Messages.get("lbl.form.button.submit"));
 							});
 						}
 					}

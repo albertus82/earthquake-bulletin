@@ -3,6 +3,7 @@ package it.albertus.eqbulletin.gui.listener;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.widgets.Button;
 
 import it.albertus.eqbulletin.gui.EarthquakeBulletinGui;
 import it.albertus.eqbulletin.gui.async.SearchAsyncOperation;
@@ -24,7 +25,9 @@ public class SearchButtonSelectionListener extends SelectionAdapter {
 		}
 		else {
 			SearchAsyncOperation.cancelCurrentJob(); // Cancel
-			gui.getSearchForm().getSearchButton().setText(Messages.get("lbl.form.button.submit"));
+			final Button searchButton = gui.getSearchForm().getSearchButton();
+			searchButton.setText(Messages.get("lbl.form.button.submit"));
+			searchButton.setEnabled(true);
 		}
 	}
 
