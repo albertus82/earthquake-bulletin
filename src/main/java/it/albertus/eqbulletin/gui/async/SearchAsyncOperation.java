@@ -38,7 +38,7 @@ public class SearchAsyncOperation extends AsyncOperation {
 
 	private static SearchJob currentJob;
 
-	public static void execute(final EarthquakeBulletinGui gui) {
+	public static synchronized void execute(final EarthquakeBulletinGui gui) {
 		final SearchRequest request = evaluateForm(gui.getSearchForm());
 		logger.log(Level.FINE, "{0}", request);
 		if (request.isValid()) {

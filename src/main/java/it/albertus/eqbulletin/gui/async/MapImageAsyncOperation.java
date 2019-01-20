@@ -28,7 +28,7 @@ public class MapImageAsyncOperation extends AsyncOperation {
 
 	private static Job currentJob;
 
-	public static void execute(final Earthquake earthquake, final Shell shell) {
+	public static synchronized void execute(final Earthquake earthquake, final Shell shell) {
 		if (earthquake != null && earthquake.getEnclosureUrl() != null && shell != null && !shell.isDisposed()) {
 			setAppStartingCursor(shell);
 			cancelCurrentJob();
@@ -104,11 +104,11 @@ public class MapImageAsyncOperation extends AsyncOperation {
 		}
 	}
 
-	private static synchronized void setCurrentJob(final Job job) {
+	private static void setCurrentJob(final Job job) {
 		currentJob = job;
 	}
 
-	private static synchronized void cancelCurrentJob() {
+	private static void cancelCurrentJob() {
 		if (currentJob != null) {
 			currentJob.cancel();
 			currentJob = null;
