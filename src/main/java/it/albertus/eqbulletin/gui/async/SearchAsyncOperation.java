@@ -141,7 +141,9 @@ public class SearchAsyncOperation extends AsyncOperation {
 			params.put("lonmin", form.getLongitudeFromText().getText());
 			params.put("lonmax", form.getLongitudeToText().getText());
 			params.put("magmin", form.getMinimumMagnitudeText().getText());
-			params.put("nmax", form.getResultsText().getText());
+			if (form.getResultsText().isEnabled()) {
+				params.put("nmax", form.getResultsText().getText());
+			}
 		}
 		return request;
 	}
