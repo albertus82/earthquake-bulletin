@@ -47,6 +47,7 @@ import it.albertus.jface.SwtUtils;
 import it.albertus.jface.decoration.ControlValidatorDecoration;
 import it.albertus.jface.listener.FloatVerifyListener;
 import it.albertus.jface.listener.IntegerVerifyListener;
+import it.albertus.jface.maps.MapBoundsDialog;
 import it.albertus.jface.maps.leaflet.LeafletMapBoundsDialog;
 import it.albertus.jface.maps.leaflet.LeafletMapControl;
 import it.albertus.jface.preference.IPreference;
@@ -546,7 +547,7 @@ public class SearchForm implements IShellProvider {
 		return autoRefreshText;
 	}
 
-	public LeafletMapBoundsDialog getMapBoundsDialog() {
+	public MapBoundsDialog getMapBoundsDialog() {
 		return mapBoundsDialog;
 	}
 

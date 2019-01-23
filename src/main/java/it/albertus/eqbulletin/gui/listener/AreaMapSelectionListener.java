@@ -9,7 +9,7 @@ import org.eclipse.swt.events.SelectionEvent;
 
 import it.albertus.eqbulletin.gui.SearchForm;
 import it.albertus.jface.maps.MapBounds;
-import it.albertus.jface.maps.leaflet.LeafletMapBoundsDialog;
+import it.albertus.jface.maps.MapBoundsDialog;
 
 public class AreaMapSelectionListener extends SelectionAdapter {
 
@@ -32,7 +32,7 @@ public class AreaMapSelectionListener extends SelectionAdapter {
 
 	@Override
 	public void widgetSelected(final SelectionEvent se) {
-		final LeafletMapBoundsDialog mapBoundsDialog = form.getMapBoundsDialog();
+		final MapBoundsDialog mapBoundsDialog = form.getMapBoundsDialog();
 		if (mapBoundsDialog.open() == Window.OK) {
 			final MapBounds bounds = mapBoundsDialog.getBounds();
 			if (bounds.getSouthWestLat() != null) {
