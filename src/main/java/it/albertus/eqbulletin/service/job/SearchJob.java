@@ -9,7 +9,6 @@ import org.eclipse.core.runtime.jobs.Job;
 
 import it.albertus.eqbulletin.model.Earthquake;
 import it.albertus.eqbulletin.service.BulletinProvider;
-import it.albertus.eqbulletin.service.GeofonBulletinProvider;
 import it.albertus.eqbulletin.service.SearchRequest;
 import it.albertus.eqbulletin.service.decode.DecodeException;
 import it.albertus.eqbulletin.service.net.FetchException;
@@ -17,25 +16,26 @@ import it.albertus.eqbulletin.service.net.FetchException;
 public class SearchJob extends Job {
 
 	private final SearchRequest request;
+	private final BulletinProvider provider;
 
-	private BulletinProvider provider;
 	private volatile boolean canceled;
 
 	private Collection<Earthquake> earthquakes;
 
-	public SearchJob(final SearchRequest request) {
+	public SearchJob(final SearchRequest request, final BulletinProvider provider) {
 		super(SearchJob.class.getSimpleName());
 		this.request = request;
+		this.provider = provider;
 		this.setUser(true);
 	}
 
 	@Override
 	protected IStatus run(final IProgressMonitor monitor) {
 		monitor.beginTask(getName(), IProgressMonitor.UNKNOWN);
-
 		try {
-			provider = new GeofonBulletinProvider();
 			earthquakes = provider.getEarthquakes(request, monitor::isCanceled);
+			monitor.done();
+			return Status.OK_STATUS;
 		}
 		catch (final InterruptedException e) { // NOSONAR
 			return new Status(IStatus.INFO, getClass().getName(), "Job was canceled.", e);
@@ -46,9 +46,6 @@ public class SearchJob extends Job {
 		catch (final Exception | LinkageError e) {
 			return new Status(IStatus.ERROR, getClass().getName(), e.toString(), e);
 		}
-
-		monitor.done();
-		return Status.OK_STATUS;
 	}
 
 	public Collection<Earthquake> getEarthquakes() {

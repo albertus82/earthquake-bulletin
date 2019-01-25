@@ -12,6 +12,7 @@ import org.eclipse.swt.widgets.Button;
 import it.albertus.eqbulletin.gui.EarthquakeBulletinGui;
 import it.albertus.eqbulletin.gui.SearchForm;
 import it.albertus.eqbulletin.model.Format;
+import it.albertus.eqbulletin.service.GeofonBulletinProvider;
 import it.albertus.eqbulletin.service.SearchRequest;
 import it.albertus.eqbulletin.service.job.SearchJob;
 import it.albertus.util.logging.LoggerFactory;
@@ -29,7 +30,7 @@ public class SearchAsyncOperation extends AsyncOperation {
 			final Button searchButton = gui.getSearchForm().getSearchButton();
 			searchButton.setEnabled(false);
 			cancelCurrentJob();
-			final SearchJob job = new SearchJob(request);
+			final SearchJob job = new SearchJob(request, new GeofonBulletinProvider());
 			job.addJobChangeListener(new SearchJobChangeListener(request, gui));
 			job.schedule();
 			setCurrentJob(job);
