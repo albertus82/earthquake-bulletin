@@ -50,10 +50,11 @@ import it.albertus.eqbulletin.gui.preference.Preference;
 import it.albertus.eqbulletin.model.Earthquake;
 import it.albertus.eqbulletin.model.Status;
 import it.albertus.eqbulletin.resources.Messages;
+import it.albertus.jface.Multilanguage;
 import it.albertus.jface.SwtUtils;
 import it.albertus.jface.preference.IPreferencesConfiguration;
 
-public class ResultsTable implements IShellProvider {
+public class ResultsTable implements IShellProvider, Multilanguage {
 
 	public static class Defaults {
 		public static final float MAGNITUDE_BIG = 5.0f;
@@ -161,7 +162,7 @@ public class ResultsTable implements IShellProvider {
 
 	private boolean initialized = false;
 
-	public ResultsTable(final Composite parent, final Object layoutData, final EarthquakeBulletinGui gui) {
+	ResultsTable(final Composite parent, final Object layoutData, final EarthquakeBulletinGui gui) {
 		shell = parent.getShell();
 		tableViewer = new TableViewer(parent, SWT.BORDER | SWT.FULL_SELECTION) {
 			// Auto resize columns on content change
@@ -413,7 +414,8 @@ public class ResultsTable implements IShellProvider {
 		}
 	}
 
-	public void updateTexts() {
+	@Override
+	public void updateLanguage() {
 		if (tableViewer != null) {
 			final Table table = tableViewer.getTable();
 			for (final Entry<Integer, Supplier<String>> e : labelsMap.entrySet()) {
@@ -421,7 +423,7 @@ public class ResultsTable implements IShellProvider {
 			}
 		}
 		if (contextMenu != null) {
-			contextMenu.updateTexts();
+			contextMenu.updateLanguage();
 		}
 	}
 

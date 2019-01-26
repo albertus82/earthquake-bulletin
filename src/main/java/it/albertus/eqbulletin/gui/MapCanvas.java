@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
@@ -32,6 +33,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.Shell;
 
 import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
 import it.albertus.eqbulletin.gui.preference.Preference;
@@ -40,10 +42,11 @@ import it.albertus.eqbulletin.model.MapImage;
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.jface.EnhancedErrorDialog;
 import it.albertus.jface.HqImageResizer;
+import it.albertus.jface.Multilanguage;
 import it.albertus.jface.preference.IPreferencesConfiguration;
 import it.albertus.util.logging.LoggerFactory;
 
-public class MapCanvas {
+public class MapCanvas implements IShellProvider, Multilanguage {
 
 	public static class Defaults {
 		public static final boolean MAP_RESIZE_HQ = true;
@@ -63,6 +66,8 @@ public class MapCanvas {
 
 	private final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getInstance();
 
+	private final Shell shell;
+
 	private final Canvas canvas;
 
 	private Earthquake earthquake;
@@ -80,7 +85,9 @@ public class MapCanvas {
 
 	private static MapCanvas instance;
 
-	public MapCanvas(final Composite parent) {
+	MapCanvas(final Composite parent) {
+		shell = parent.getShell();
+
 		canvas = new Canvas(parent, SWT.BORDER);
 		canvas.setBackground(getBackgroundColor());
 		canvas.addPaintListener(e -> paintImage(zoomLevel));
@@ -330,7 +337,8 @@ public class MapCanvas {
 		}
 	}
 
-	public void updateTexts() {
+	@Override
+	public void updateLanguage() {
 		downloadMenuItem.setText(Messages.get(downloadMenuItem.getData().toString()));
 		zoomMenuItem.setText(Messages.get(zoomMenuItem.getData().toString()));
 		for (final Entry<Integer, MenuItem> entry : zoomSubMenuItems.entrySet()) {
@@ -383,6 +391,11 @@ public class MapCanvas {
 				}
 			}
 		}
+	}
+
+	@Override
+	public Shell getShell() {
+		return shell;
 	}
 
 }

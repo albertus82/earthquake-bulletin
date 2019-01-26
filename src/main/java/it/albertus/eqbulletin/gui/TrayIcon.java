@@ -30,13 +30,14 @@ import it.albertus.eqbulletin.gui.listener.EnhancedTrayRestoreListener;
 import it.albertus.eqbulletin.gui.preference.Preference;
 import it.albertus.eqbulletin.model.Earthquake;
 import it.albertus.eqbulletin.resources.Messages;
+import it.albertus.jface.Multilanguage;
 import it.albertus.jface.listener.TrayRestoreListener;
 import it.albertus.jface.preference.IPreferencesConfiguration;
 import it.albertus.util.MapUtils;
 import it.albertus.util.NewLine;
 import it.albertus.util.logging.LoggerFactory;
 
-public class TrayIcon implements IShellProvider {
+public class TrayIcon implements IShellProvider, Multilanguage {
 
 	private static final Logger logger = LoggerFactory.getLogger(TrayIcon.class);
 
@@ -66,7 +67,7 @@ public class TrayIcon implements IShellProvider {
 	private Image image;
 	private String toolTipText = Messages.get("lbl.tray.tooltip");
 
-	public TrayIcon(final EarthquakeBulletinGui gui) {
+	TrayIcon(final EarthquakeBulletinGui gui) {
 		shell = gui.getShell();
 		shell.addShellListener(new ShellAdapter() {
 			@Override
@@ -214,7 +215,8 @@ public class TrayIcon implements IShellProvider {
 		}
 	}
 
-	public void updateTexts() {
+	@Override
+	public void updateLanguage() {
 		if (trayMenu != null) {
 			showMenuItem.setText(Messages.get("lbl.tray.show"));
 			exitMenuItem.setText(Messages.get("lbl.tray.close"));

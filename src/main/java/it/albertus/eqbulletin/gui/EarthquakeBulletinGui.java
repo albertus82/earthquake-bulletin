@@ -3,6 +3,7 @@ package it.albertus.eqbulletin.gui;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -34,12 +35,13 @@ import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.eqbulletin.util.InitializationException;
 import it.albertus.jface.EnhancedErrorDialog;
 import it.albertus.jface.Events;
+import it.albertus.jface.Multilanguage;
 import it.albertus.jface.SwtUtils;
 import it.albertus.jface.preference.IPreferencesConfiguration;
 import it.albertus.util.Version;
 import it.albertus.util.logging.LoggerFactory;
 
-public class EarthquakeBulletinGui extends ApplicationWindow {
+public class EarthquakeBulletinGui extends ApplicationWindow implements Multilanguage {
 
 	public static final String SHELL_MAXIMIZED = "shell.maximized";
 	private static final String SHELL_SASH_WEIGHT = "shell.sash.weight";
@@ -66,13 +68,16 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 
 	private final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getInstance();
 
+	private final Collection<Multilanguage> multilanguages = new ArrayList<>();
+
+	private TrayIcon trayIcon;
+	private MenuBar menuBar;
 	private SearchForm searchForm;
 	private ResultsTable resultsTable;
 	private MapCanvas mapCanvas;
-	private SashForm sashForm;
-	private TrayIcon trayIcon;
-	private MenuBar menuBar;
 	private StatusBar statusBar;
+
+	private SashForm sashForm;
 
 	/** Shell maximized status. May be null in some circumstances. */
 	private Boolean shellMaximized;
@@ -83,7 +88,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 	/** Shell location. May be null in some circumstances. */
 	private Point shellLocation;
 
-	public EarthquakeBulletinGui() {
+	private EarthquakeBulletinGui() {
 		super(null);
 		logger.log(Level.CONFIG, "{0}", configuration);
 		addStatusLine();
@@ -133,22 +138,29 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 	@Override
 	protected Control createContents(final Composite parent) {
 		trayIcon = new TrayIcon(this);
+		multilanguages.add(trayIcon);
 
 		menuBar = new MenuBar(this);
+		multilanguages.add(menuBar);
 
 		searchForm = new SearchForm(this);
+		multilanguages.add(searchForm);
 
 		sashForm = new SashForm(parent, SWT.HORIZONTAL);
-		sashForm.setSashWidth((int) (sashForm.getSashWidth() * SASH_MAGNIFICATION_FACTOR));
+		sashForm.setSashWidth(Math.round(sashForm.getSashWidth() * SASH_MAGNIFICATION_FACTOR));
 		GridLayoutFactory.swtDefaults().applyTo(sashForm);
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(sashForm);
 
 		resultsTable = new ResultsTable(sashForm, GridDataFactory.fillDefaults().grab(true, true).create(), this);
+		multilanguages.add(resultsTable);
 
 		mapCanvas = new MapCanvas(sashForm);
+		multilanguages.add(mapCanvas);
+
 		sashForm.setWeights(new int[] { configuration.getInt(SHELL_SASH_WEIGHT + ".0", Defaults.SASH_WEIGHTS[0]), configuration.getInt(SHELL_SASH_WEIGHT + ".1", Defaults.SASH_WEIGHTS[1]) });
 
 		statusBar = new StatusBar(this);
+		multilanguages.add(statusBar);
 
 		return parent;
 	}
@@ -241,15 +253,14 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 		statusBar.refreshMessage();
 	}
 
+	@Override
 	public void updateLanguage() {
 		final Shell shell = getShell();
 		shell.setRedraw(false);
-		menuBar.updateTexts();
-		resultsTable.updateTexts();
-		searchForm.updateTexts();
-		mapCanvas.updateTexts();
-		trayIcon.updateTexts();
-		statusBar.updateTexts();
+
+		for (final Multilanguage element : multilanguages) {
+			element.updateLanguage();
+		}
 
 		final TableColumn[] columns = resultsTable.getTableViewer().getTable().getColumns();
 		final int[] widths = new int[columns.length];
@@ -268,6 +279,14 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 		shell.setRedraw(true);
 	}
 
+	public TrayIcon getTrayIcon() {
+		return trayIcon;
+	}
+
+	public MenuBar getMenuBar() {
+		return menuBar;
+	}
+
 	public SearchForm getSearchForm() {
 		return searchForm;
 	}
@@ -280,29 +299,17 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 		return mapCanvas;
 	}
 
-	public TrayIcon getTrayIcon() {
-		return trayIcon;
-	}
-
-	public SashForm getSashForm() {
-		return sashForm;
-	}
-
-	public MenuBar getMenuBar() {
-		return menuBar;
-	}
-
 	public StatusBar getStatusBar() {
 		return statusBar;
 	}
 
 	@Override
-	protected StatusLineManager getStatusLineManager() { // NOSONAR Must be visible in this package
+	protected StatusLineManager getStatusLineManager() { // NOSONAR This method must be visible in this package
 		return super.getStatusLineManager();
 	}
 
 	@Override
-	protected void createStatusLine(final Shell shell) { // NOSONAR Must be visible in this package
+	protected void createStatusLine(final Shell shell) { // NOSONAR This method must be visible in this package
 		super.createStatusLine(shell);
 	}
 

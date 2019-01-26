@@ -4,11 +4,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.eclipse.jface.util.Util;
+import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.Shell;
 
 import it.albertus.eqbulletin.gui.listener.AboutListener;
 import it.albertus.eqbulletin.gui.listener.ArmMenuListener;
@@ -37,7 +39,7 @@ import it.albertus.util.logging.LoggerFactory;
  * combinazioni di tasti, gli acceleratori non funzioneranno e le relative
  * combinazioni di tasti saranno ignorate.
  */
-public class MenuBar extends AbstractMenu {
+public class MenuBar extends AbstractMenu implements IShellProvider {
 
 	private static final String LBL_MENU_HEADER_FILE = "lbl.menu.header.file";
 	private static final String LBL_MENU_ITEM_EXIT = "lbl.menu.item.exit";
@@ -50,6 +52,8 @@ public class MenuBar extends AbstractMenu {
 	private static final String LBL_MENU_ITEM_ABOUT = "lbl.menu.item.about";
 
 	private static final Logger logger = LoggerFactory.getLogger(MenuBar.class);
+
+	private final Shell shell;
 
 	private final MenuItem fileMenuHeader;
 	private MenuItem fileExitItem;
@@ -64,6 +68,8 @@ public class MenuBar extends AbstractMenu {
 	private MenuItem helpAboutItem;
 
 	MenuBar(final EarthquakeBulletinGui gui) {
+		this.shell = gui.getShell();
+
 		final CloseListener closeListener = new CloseListener(gui);
 		final AboutListener aboutListener = new AboutListener(gui);
 		final PreferencesListener preferencesListener = new PreferencesListener(gui);
@@ -72,7 +78,7 @@ public class MenuBar extends AbstractMenu {
 
 		if (Util.isCocoa()) {
 			try {
-				new CocoaUIEnhancer(gui.getShell().getDisplay()).hookApplicationMenu(closeListener, aboutListener, preferencesListener);
+				new CocoaUIEnhancer(shell.getDisplay()).hookApplicationMenu(closeListener, aboutListener, preferencesListener);
 				cocoaMenuCreated = true;
 			}
 			catch (final CocoaEnhancerException cee) {
@@ -80,10 +86,10 @@ public class MenuBar extends AbstractMenu {
 			}
 		}
 
-		final Menu bar = new Menu(gui.getShell(), SWT.BAR); // Bar
+		final Menu bar = new Menu(shell, SWT.BAR); // Bar
 
 		// File
-		final Menu fileMenu = new Menu(gui.getShell(), SWT.DROP_DOWN);
+		final Menu fileMenu = new Menu(shell, SWT.DROP_DOWN);
 		fileMenuHeader = new MenuItem(bar, SWT.CASCADE);
 		fileMenuHeader.setText(Messages.get(LBL_MENU_HEADER_FILE));
 		fileMenuHeader.setMenu(fileMenu);
@@ -106,7 +112,7 @@ public class MenuBar extends AbstractMenu {
 		fileMenuHeader.addArmListener(fileMenuListener);
 
 		// Event
-		final Menu eventMenu = new Menu(gui.getShell(), SWT.DROP_DOWN);
+		final Menu eventMenu = new Menu(shell, SWT.DROP_DOWN);
 		eventMenuHeader = new MenuItem(bar, SWT.CASCADE);
 		eventMenuHeader.setText(Messages.get(LBL_MENU_HEADER_EVENT));
 		eventMenuHeader.setMenu(eventMenu);
@@ -150,7 +156,7 @@ public class MenuBar extends AbstractMenu {
 
 		if (!cocoaMenuCreated) {
 			// Tools
-			final Menu toolsMenu = new Menu(gui.getShell(), SWT.DROP_DOWN);
+			final Menu toolsMenu = new Menu(shell, SWT.DROP_DOWN);
 			toolsMenuHeader = new MenuItem(bar, SWT.CASCADE);
 			toolsMenuHeader.setText(Messages.get(LBL_MENU_HEADER_TOOLS));
 			toolsMenuHeader.setMenu(toolsMenu);
@@ -161,7 +167,7 @@ public class MenuBar extends AbstractMenu {
 		}
 
 		// Help
-		final Menu helpMenu = new Menu(gui.getShell(), SWT.DROP_DOWN);
+		final Menu helpMenu = new Menu(shell, SWT.DROP_DOWN);
 		helpMenuHeader = new MenuItem(bar, SWT.CASCADE);
 		helpMenuHeader.setText(Messages.get(Util.isWindows() ? LBL_MENU_HEADER_HELP_WINDOWS : LBL_MENU_HEADER_HELP));
 		helpMenuHeader.setMenu(helpMenu);
@@ -171,7 +177,7 @@ public class MenuBar extends AbstractMenu {
 		helpSystemInfoItem.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
-				SystemInformationDialog.open(gui.getShell());
+				SystemInformationDialog.open(shell);
 			}
 		});
 
@@ -187,12 +193,12 @@ public class MenuBar extends AbstractMenu {
 		helpMenu.addMenuListener(helpMenuListener);
 		helpMenuHeader.addArmListener(helpMenuListener);
 
-		gui.getShell().setMenuBar(bar);
+		shell.setMenuBar(bar);
 	}
 
 	@Override
-	public void updateTexts() {
-		super.updateTexts();
+	public void updateLanguage() {
+		super.updateLanguage();
 		fileMenuHeader.setText(Messages.get(LBL_MENU_HEADER_FILE));
 		if (fileExitItem != null && !fileExitItem.isDisposed()) {
 			fileExitItem.setText(Messages.get(LBL_MENU_ITEM_EXIT));
@@ -209,6 +215,11 @@ public class MenuBar extends AbstractMenu {
 		if (helpAboutItem != null && !helpAboutItem.isDisposed()) {
 			helpAboutItem.setText(Messages.get(LBL_MENU_ITEM_ABOUT));
 		}
+	}
+
+	@Override
+	public Shell getShell() {
+		return shell;
 	}
 
 }

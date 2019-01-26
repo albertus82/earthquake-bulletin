@@ -18,7 +18,7 @@
 	<classpathentry kind="lib" path="lib/compile/common/org.eclipse.nebula.widgets.cdatetime_1.3.0.201804281520.jar" sourcepath="lib/compile/common/src/org.eclipse.nebula.widgets.cdatetime.source_1.3.0.201804281520.jar"/>
 	<classpathentry kind="lib" path="lib/compile/common/org.eclipse.nebula.cwt_1.1.0.201804281520.jar" sourcepath="lib/compile/common/src/org.eclipse.nebula.cwt.source_1.1.0.201804281520.jar"/>
 	<classpathentry kind="lib" path="lib/compile/platform-dependent/win32-win32-x86_64/org.eclipse.swt-4.7.3a-win32-win32-x86_64.jar" sourcepath="lib/compile/platform-dependent/win32-win32-x86_64/src/org.eclipse.swt-4.7.3a-win32-win32-x86_64-src.zip"/>
-	<classpathentry kind="lib" path="lib/compile/common/jface-utils-14.1.0.jar" sourcepath="lib/compile/common/src/jface-utils-14.1.0-sources.jar"/>
+	<classpathentry kind="lib" path="lib/compile/common/jface-utils-15.0.0.jar" sourcepath="lib/compile/common/src/jface-utils-15.0.0-sources.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
 		<accessrules>
 			<accessrule kind="accessible" pattern="com/sun/net/httpserver/Headers"/>

@@ -3,8 +3,9 @@ package it.albertus.eqbulletin.gui;
 import org.eclipse.swt.widgets.MenuItem;
 
 import it.albertus.eqbulletin.resources.Messages;
+import it.albertus.jface.Multilanguage;
 
-abstract class AbstractMenu {
+abstract class AbstractMenu implements Multilanguage {
 
 	protected static final String LBL_MENU_ITEM_COPY_LINK = "lbl.menu.item.copy.link";
 	protected static final String LBL_MENU_ITEM_EXPORT_CSV = "lbl.menu.item.export.csv";
@@ -22,7 +23,8 @@ abstract class AbstractMenu {
 	protected MenuItem showMapMenuItem;
 	protected MenuItem showMomentTensorMenuItem;
 
-	public void updateTexts() {
+	@Override
+	public void updateLanguage() {
 		copyLinkMenuItem.setText(Messages.get(LBL_MENU_ITEM_COPY_LINK));
 		exportCsvMenuItem.setText(Messages.get(LBL_MENU_ITEM_EXPORT_CSV));
 		googleMapsBrowserMenuItem.setText(Messages.get(LBL_MENU_ITEM_GOOGLE_MAPS_BROWSER));

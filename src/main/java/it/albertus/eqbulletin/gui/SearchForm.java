@@ -43,6 +43,7 @@ import it.albertus.eqbulletin.model.Format;
 import it.albertus.eqbulletin.resources.Leaflet;
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.jface.JFaceMessages;
+import it.albertus.jface.Multilanguage;
 import it.albertus.jface.SwtUtils;
 import it.albertus.jface.decoration.ControlValidatorDecoration;
 import it.albertus.jface.listener.FloatVerifyListener;
@@ -58,7 +59,7 @@ import it.albertus.jface.validation.IntegerTextValidator;
 import it.albertus.jface.validation.Validator;
 import it.albertus.util.logging.LoggerFactory;
 
-public class SearchForm implements IShellProvider {
+public class SearchForm implements IShellProvider, Multilanguage {
 
 	private static final Logger logger = LoggerFactory.getLogger(SearchForm.class);
 
@@ -158,7 +159,7 @@ public class SearchForm implements IShellProvider {
 
 	private final Collection<ControlValidator<Text>> validators = new ArrayList<>();
 
-	public SearchForm(final EarthquakeBulletinGui gui) {
+	SearchForm(final EarthquakeBulletinGui gui) {
 		shell = gui.getShell();
 
 		final TraverseListener formFieldTraverseListener = new FormFieldTraverseListener(gui);
@@ -391,7 +392,8 @@ public class SearchForm implements IShellProvider {
 		return true;
 	}
 
-	public void updateTexts() {
+	@Override
+	public void updateLanguage() {
 		periodFromDateTime.setLocale(Messages.Language.ENGLISH.equals(Messages.getLanguage()) ? Locale.US : Messages.getLanguage().getLocale());
 		periodToDateTime.setLocale(Messages.Language.ENGLISH.equals(Messages.getLanguage()) ? Locale.US : Messages.getLanguage().getLocale());
 		criteriaGroup.setText(Messages.get("lbl.form.criteria.group"));
