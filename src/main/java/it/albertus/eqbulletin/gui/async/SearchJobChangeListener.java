@@ -3,6 +3,7 @@ package it.albertus.eqbulletin.gui.async;
 import static it.albertus.jface.DisplayThreadExecutor.Mode.ASYNC;
 import static it.albertus.jface.DisplayThreadExecutor.Mode.SYNC;
 
+import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.logging.Level;
@@ -18,6 +19,7 @@ import it.albertus.eqbulletin.gui.EarthquakeBulletinGui;
 import it.albertus.eqbulletin.gui.Images;
 import it.albertus.eqbulletin.gui.MapCanvas;
 import it.albertus.eqbulletin.gui.ResultsTable;
+import it.albertus.eqbulletin.gui.StatusBar;
 import it.albertus.eqbulletin.gui.TrayIcon;
 import it.albertus.eqbulletin.model.Earthquake;
 import it.albertus.eqbulletin.resources.Messages;
@@ -87,6 +89,7 @@ class SearchJobChangeListener extends JobChangeAdapter {
 		final ResultsTable table = gui.getResultsTable();
 		final TrayIcon icon = gui.getTrayIcon();
 		final MapCanvas map = gui.getMapCanvas();
+		final StatusBar bar = gui.getStatusBar();
 
 		new DisplayThreadExecutor(table.getShell(), ASYNC).execute(() -> {
 			final Earthquake[] oldDataArray = (Earthquake[]) table.getTableViewer().getInput();
@@ -98,6 +101,7 @@ class SearchJobChangeListener extends JobChangeAdapter {
 			if (oldDataArray != null && !Arrays.equals(newDataArray, oldDataArray) && newDataArray.length > 0 && newDataArray[0] != null && oldDataArray.length > 0 && !newDataArray[0].equals(oldDataArray[0]) && icon.getTrayItem() != null && icon.getTrayItem().getVisible()) {
 				icon.showBalloonToolTip(newDataArray[0]);
 			}
+			bar.setLastUpdateTime(ZonedDateTime.now());
 		});
 	}
 

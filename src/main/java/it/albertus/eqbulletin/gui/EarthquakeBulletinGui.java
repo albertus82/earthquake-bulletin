@@ -9,6 +9,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.jface.action.StatusLineManager;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.window.ApplicationWindow;
@@ -71,6 +72,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 	private SashForm sashForm;
 	private TrayIcon trayIcon;
 	private MenuBar menuBar;
+	private StatusBar statusBar;
 
 	/** Shell maximized status. May be null in some circumstances. */
 	private Boolean shellMaximized;
@@ -84,6 +86,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 	public EarthquakeBulletinGui() {
 		super(null);
 		logger.log(Level.CONFIG, "{0}", configuration);
+		addStatusLine();
 	}
 
 	public static void run(final InitializationException ie) {
@@ -144,6 +147,8 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 
 		mapCanvas = new MapCanvas(sashForm);
 		sashForm.setWeights(new int[] { configuration.getInt(SHELL_SASH_WEIGHT + ".0", Defaults.SASH_WEIGHTS[0]), configuration.getInt(SHELL_SASH_WEIGHT + ".1", Defaults.SASH_WEIGHTS[1]) });
+
+		statusBar = new StatusBar(this);
 
 		return parent;
 	}
@@ -231,6 +236,11 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 		return GridLayoutFactory.swtDefaults().create();
 	}
 
+	public void updateTimeZone() {
+		resultsTable.getTableViewer().refresh();
+		statusBar.refreshMessage();
+	}
+
 	public void updateLanguage() {
 		final Shell shell = getShell();
 		shell.setRedraw(false);
@@ -239,6 +249,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 		searchForm.updateTexts();
 		mapCanvas.updateTexts();
 		trayIcon.updateTexts();
+		statusBar.updateTexts();
 
 		final TableColumn[] columns = resultsTable.getTableViewer().getTable().getColumns();
 		final int[] widths = new int[columns.length];
@@ -279,6 +290,20 @@ public class EarthquakeBulletinGui extends ApplicationWindow {
 
 	public MenuBar getMenuBar() {
 		return menuBar;
+	}
+
+	public StatusBar getStatusBar() {
+		return statusBar;
+	}
+
+	@Override
+	protected StatusLineManager getStatusLineManager() { // NOSONAR Must be visible in this package
+		return super.getStatusLineManager();
+	}
+
+	@Override
+	protected void createStatusLine(final Shell shell) { // NOSONAR Must be visible in this package
+		super.createStatusLine(shell);
 	}
 
 	private class UpdateShellStatusListener implements Listener {

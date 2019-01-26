@@ -67,7 +67,7 @@ public class PreferencesListener extends SelectionAdapter implements Listener {
 
 		// Check if time zone has changed...
 		if (magnitudeBig != configuration.getFloat(Preference.MAGNITUDE_BIG, ResultsTable.Defaults.MAGNITUDE_BIG) || magnitudeXxl != configuration.getFloat(Preference.MAGNITUDE_XXL, ResultsTable.Defaults.MAGNITUDE_XXL) || !timezone.equals(configuration.getString(Preference.TIMEZONE, EarthquakeBulletin.Defaults.TIME_ZONE_ID))) {
-			gui.getResultsTable().getTableViewer().refresh();
+			gui.updateTimeZone();
 		}
 
 		// Refresh map if needed...
