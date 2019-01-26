@@ -40,13 +40,12 @@ import it.albertus.util.logging.LoggerFactory;
 
 public class EarthquakeBulletinGui extends ApplicationWindow {
 
-	public static final String SHELL_SASH_WEIGHT = "shell.sash.weight";
-	public static final String SHELL_SIZE_X = "shell.size.x";
-	public static final String SHELL_SIZE_Y = "shell.size.y";
-	public static final String SHELL_LOCATION_X = "shell.location.x";
-	public static final String SHELL_LOCATION_Y = "shell.location.y";
 	public static final String SHELL_MAXIMIZED = "shell.maximized";
-
+	private static final String SHELL_SASH_WEIGHT = "shell.sash.weight";
+	private static final String SHELL_SIZE_X = "shell.size.x";
+	private static final String SHELL_SIZE_Y = "shell.size.y";
+	private static final String SHELL_LOCATION_X = "shell.location.x";
+	private static final String SHELL_LOCATION_Y = "shell.location.y";
 	private static final Point POINT_ZERO = new Point(0, 0);
 
 	public static class Defaults {
