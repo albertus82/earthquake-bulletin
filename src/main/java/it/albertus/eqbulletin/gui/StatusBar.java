@@ -85,7 +85,7 @@ public class StatusBar implements IShellProvider, Multilanguage {
 					f1.setAccessible(true);
 					final Composite statusLine = (Composite) f1.get(manager);
 					for (final Field f2 : statusLine.getClass().getDeclaredFields()) {
-						if ("copyMenuItem".equalsIgnoreCase(f2.getName()) && f2.getType().isAssignableFrom(MenuItem.class)) {
+						if (f2.getName().toLowerCase().contains("copy") && f2.getType().isAssignableFrom(MenuItem.class)) {
 							f2.setAccessible(true);
 							final MenuItem copyMenuItem = (MenuItem) f2.get(statusLine);
 							copyMenuItem.setText(Messages.get("lbl.menu.item.copy"));
