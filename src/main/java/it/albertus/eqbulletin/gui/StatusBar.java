@@ -27,6 +27,8 @@ import it.albertus.util.logging.LoggerFactory;
 
 public class StatusBar implements IShellProvider, Multilanguage {
 
+	private static final String SPACER = "      ";
+
 	private static final Logger logger = LoggerFactory.getLogger(StatusBar.class);
 
 	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getInstance();
@@ -34,7 +36,8 @@ public class StatusBar implements IShellProvider, Multilanguage {
 	private final StatusLineManager manager;
 	private final Shell shell;
 
-	private TemporalAccessor lastUpdatedTime;
+	private TemporalAccessor lastUpdateTime;
+	private int itemCount;
 
 	StatusBar(final EarthquakeBulletinGui gui) {
 		shell = gui.getShell();
@@ -42,6 +45,7 @@ public class StatusBar implements IShellProvider, Multilanguage {
 		manager = gui.getStatusLineManager();
 		localizeContextMenu(manager);
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(manager.getControl());
+		refresh();
 	}
 
 	@Override
@@ -51,17 +55,25 @@ public class StatusBar implements IShellProvider, Multilanguage {
 
 	@Override
 	public void updateLanguage() {
-		refreshMessage();
+		refresh();
 		localizeContextMenu(manager);
 	}
 
-	public void setLastUpdateTime(final TemporalAccessor dateTime) {
-		this.lastUpdatedTime = dateTime;
-		refreshMessage();
+	public void setLastUpdateTime(final TemporalAccessor lastUpdateTime) {
+		this.lastUpdateTime = lastUpdateTime;
 	}
 
-	void refreshMessage() {
-		manager.setMessage(Messages.get("lbl.status.bar.last.updated", DateTimeFormatter.ofLocalizedDateTime(FormatStyle.FULL).withLocale(getLocale()).withZone(getZoneId()).format(lastUpdatedTime)));
+	public void setItemCount(final int itemCount) {
+		this.itemCount = itemCount;
+	}
+
+	public void refresh() {
+		final StringBuilder message = new StringBuilder(Messages.get(itemCount == 1 ? "lbl.status.bar.item.count" : "lbl.status.bar.items.count", itemCount));
+		message.append(SPACER);
+		if (lastUpdateTime != null) {
+			message.append(Messages.get("lbl.status.bar.last.updated", DateTimeFormatter.ofLocalizedDateTime(FormatStyle.FULL).withLocale(getLocale()).withZone(getZoneId()).format(lastUpdateTime)));
+		}
+		manager.setMessage(message.toString());
 	}
 
 	private static ZoneId getZoneId() {

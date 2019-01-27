@@ -250,7 +250,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow implements Multilan
 
 	public void updateTimeZone() {
 		resultsTable.getTableViewer().refresh();
-		statusBar.refreshMessage();
+		statusBar.refresh();
 	}
 
 	@Override

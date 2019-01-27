@@ -102,6 +102,8 @@ class SearchJobChangeListener extends JobChangeAdapter {
 				icon.showBalloonToolTip(newDataArray[0]);
 			}
 			bar.setLastUpdateTime(ZonedDateTime.now());
+			bar.setItemCount(earthquakes.size());
+			bar.refresh();
 		});
 	}
 
