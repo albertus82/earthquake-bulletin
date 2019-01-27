@@ -93,11 +93,11 @@ public class StatusBar implements IShellProvider, Multilanguage {
 	private static void localizeContextMenu(final StatusLineManager manager) {
 		try {
 			for (final Field f1 : manager.getClass().getDeclaredFields()) {
-				if (f1.getType().isAssignableFrom(Composite.class)) {
+				if (Composite.class.isAssignableFrom(f1.getType())) {
 					f1.setAccessible(true);
 					final Composite statusLine = (Composite) f1.get(manager);
 					for (final Field f2 : statusLine.getClass().getDeclaredFields()) {
-						if (f2.getName().toLowerCase().contains("copy") && f2.getType().isAssignableFrom(MenuItem.class)) {
+						if (f2.getName().toLowerCase().contains("copy") && MenuItem.class.isAssignableFrom(f2.getType())) {
 							f2.setAccessible(true);
 							final MenuItem copyMenuItem = (MenuItem) f2.get(statusLine);
 							copyMenuItem.setText(Messages.get("lbl.menu.item.copy"));
