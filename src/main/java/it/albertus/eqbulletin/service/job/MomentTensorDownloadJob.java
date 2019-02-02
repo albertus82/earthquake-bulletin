@@ -18,7 +18,7 @@ public class MomentTensorDownloadJob extends Job implements DownloadJob<MomentTe
 
 	private final Earthquake earthquake;
 
-	private Optional<MomentTensor> downloadedObject;
+	private Optional<MomentTensor> downloadedObject = Optional.empty();
 
 	public MomentTensorDownloadJob(final Earthquake earthquake) {
 		super(MomentTensorDownloadJob.class.getSimpleName());

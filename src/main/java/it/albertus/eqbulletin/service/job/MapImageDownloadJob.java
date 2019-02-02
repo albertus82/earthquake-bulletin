@@ -18,7 +18,7 @@ public class MapImageDownloadJob extends Job implements DownloadJob<MapImage> {
 
 	private final Earthquake earthquake;
 
-	private Optional<MapImage> downloadedObject;
+	private Optional<MapImage> downloadedObject = Optional.empty();
 
 	private MapImageDownloader downloader;
 
