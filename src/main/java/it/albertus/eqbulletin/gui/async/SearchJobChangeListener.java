@@ -6,6 +6,7 @@ import static it.albertus.jface.DisplayThreadExecutor.Mode.SYNC;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -56,11 +57,12 @@ class SearchJobChangeListener extends JobChangeAdapter {
 	public void done(final IJobChangeEvent event) {
 		logger.log(Level.FINE, "Done {0}: {1}", new Object[] { event.getJob(), event.getResult() });
 		try {
-			if (event.getResult().matches(IStatus.ERROR | IStatus.WARNING)) {
+			if (!event.getResult().isOK() && event.getResult().getSeverity() != IStatus.CANCEL) {
 				throw new AsyncOperationException(event.getJob().getResult());
 			}
-			if (event.getResult().isOK()) {
-				updateGui(((SearchJob) event.getJob()).getEarthquakes(), gui);
+			final Optional<Collection<Earthquake>> earthquakes = ((SearchJob) event.getJob()).getEarthquakes();
+			if (earthquakes.isPresent()) {
+				updateGui(earthquakes.get(), gui);
 			}
 		}
 		catch (final AsyncOperationException e) {

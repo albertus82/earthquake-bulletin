@@ -1,6 +1,7 @@
 package it.albertus.eqbulletin.service.job;
 
 import java.util.Collection;
+import java.util.Optional;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -20,7 +21,7 @@ public class SearchJob extends Job {
 
 	private volatile boolean canceled;
 
-	private Collection<Earthquake> earthquakes;
+	private Optional<Collection<Earthquake>> earthquakes = Optional.empty();
 
 	public SearchJob(final SearchRequest request, final BulletinProvider provider) {
 		super(SearchJob.class.getSimpleName());
@@ -37,9 +38,6 @@ public class SearchJob extends Job {
 			monitor.done();
 			return Status.OK_STATUS;
 		}
-		catch (final InterruptedException e) { // NOSONAR
-			return new Status(IStatus.INFO, getClass().getName(), "Job was canceled.", e);
-		}
 		catch (final FetchException | DecodeException e) {
 			return new Status(IStatus.WARNING, getClass().getName(), e.getMessage(), e.getCause() != null ? e.getCause() : e);
 		}
@@ -48,7 +46,7 @@ public class SearchJob extends Job {
 		}
 	}
 
-	public Collection<Earthquake> getEarthquakes() {
+	public Optional<Collection<Earthquake>> getEarthquakes() {
 		return earthquakes;
 	}
 

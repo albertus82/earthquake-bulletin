@@ -54,9 +54,7 @@ public class EarthquakeBulletinConfig extends LoggingConfig implements LanguageC
 				}
 			}
 			catch (final IOException e) {
-				final String message = Messages.get("err.open.cfg", CFG_FILE_NAME);
-				logger.log(Level.SEVERE, message, e);
-				throw new InitializationException(message, e);
+				throw new InitializationException(Messages.get("err.open.cfg", CFG_FILE_NAME), e);
 			}
 		}
 		return instance;

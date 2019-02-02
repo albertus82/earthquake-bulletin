@@ -9,6 +9,7 @@ import java.io.StringWriter;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.function.BooleanSupplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -36,8 +37,6 @@ public class RssBulletinDownloader implements BulletinDownloader {
 
 	private static final short BUFFER_SIZE = 4096;
 
-	private static final String CANCELED_MESSAGE = "Operation canceled";
-
 	private static final JAXBContext jaxbContext;
 
 	static {
@@ -45,28 +44,36 @@ public class RssBulletinDownloader implements BulletinDownloader {
 			jaxbContext = JAXBContext.newInstance(RssBulletin.class);
 		}
 		catch (final JAXBException e) {
-			logger.log(Level.SEVERE, e.toString(), e);
-			throw new InitializationException(e.toString(), e);
+			throw new InitializationException("Cannot create instance of " + JAXBContext.class.getName() + " for " + RssBulletin.class.getName() + ':', e);
 		}
 	}
 
 	private InputStream connectionInputStream;
 
 	@Override
-	public Collection<Earthquake> download(final SearchRequest request, final BooleanSupplier canceled) throws FetchException, DecodeException, InterruptedException {
+	public Optional<Collection<Earthquake>> download(final SearchRequest request, final BooleanSupplier canceled) throws FetchException, DecodeException {
+		try {
+			return Optional.of(doDownload(request, canceled));
+		}
+		catch (final CancelException e) {
+			logger.log(Level.FINE, "Operation canceled:", e);
+			return Optional.empty();
+		}
+	}
+
+	private Collection<Earthquake> doDownload(final SearchRequest request, final BooleanSupplier canceled) throws FetchException, DecodeException, CancelException {
 		final Headers headers = new Headers();
 		headers.set("Accept", "text/xml,*/xml;q=0.9,*/*;q=0.8");
 		headers.set("Accept-Encoding", "gzip");
 		if (canceled.getAsBoolean()) {
-			throw new InterruptedException("Download canceled before connection.");
+			throw new CancelException("Download canceled before connection.");
 		}
 		try {
 			return download(request, headers, canceled);
 		}
 		catch (final FetchException | DecodeException | RuntimeException e) {
 			if (canceled.getAsBoolean()) {
-				logger.log(Level.FINE, CANCELED_MESSAGE + ':', e);
-				throw new InterruptedException(CANCELED_MESSAGE + '.');
+				throw new CancelException(e);
 			}
 			else {
 				throw e;
@@ -74,7 +81,7 @@ public class RssBulletinDownloader implements BulletinDownloader {
 		}
 	}
 
-	private Collection<Earthquake> download(final SearchRequest request, final Headers headers, final BooleanSupplier canceled) throws FetchException, DecodeException, InterruptedException {
+	private Collection<Earthquake> download(final SearchRequest request, final Headers headers, final BooleanSupplier canceled) throws FetchException, DecodeException, CancelException {
 		final String body;
 		try {
 			final URLConnection connection = ConnectionFactory.makeGetRequest(request.toURL(), headers);
@@ -83,7 +90,7 @@ public class RssBulletinDownloader implements BulletinDownloader {
 			try (final InputStream raw = connection.getInputStream(); final InputStream in = gzip ? new GZIPInputStream(raw) : raw; final ByteArrayOutputStream out = new ByteArrayOutputStream()) {
 				connectionInputStream = raw;
 				if (canceled.getAsBoolean()) {
-					throw new InterruptedException(CANCELED_MESSAGE + '.');
+					throw new CancelException();
 				}
 				final Charset charset = ConnectionUtils.detectCharset(connection);
 				body = fetch(in, charset);
@@ -94,7 +101,7 @@ public class RssBulletinDownloader implements BulletinDownloader {
 		}
 		try {
 			if (canceled.getAsBoolean()) {
-				throw new InterruptedException(CANCELED_MESSAGE + '.');
+				throw new CancelException();
 			}
 			return decode(body);
 		}

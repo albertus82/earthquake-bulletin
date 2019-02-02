@@ -2,8 +2,10 @@ package it.albertus.eqbulletin.service;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
 import java.util.function.BooleanSupplier;
@@ -17,7 +19,7 @@ import it.albertus.eqbulletin.model.Status;
 public class RandomBulletinProvider implements BulletinProvider {
 
 	@Override
-	public List<Earthquake> getEarthquakes(final SearchRequest jobVariables, final BooleanSupplier canceled) {
+	public Optional<Collection<Earthquake>> getEarthquakes(final SearchRequest jobVariables, final BooleanSupplier canceled) {
 		final List<Earthquake> earthquakes = new ArrayList<>();
 		for (int i = 0; i < 20; i++) {
 			final Calendar date = Calendar.getInstance();
@@ -34,7 +36,7 @@ public class RandomBulletinProvider implements BulletinProvider {
 			earthquakes.add(new Earthquake(uuid, date.getTime(), magnitude, new Latitude(latitude), new Longitude(longitude), new Depth(depth), status, uuid, null, null));
 		}
 		Collections.sort(earthquakes);
-		return earthquakes;
+		return Optional.of(earthquakes);
 	}
 
 	@Override
