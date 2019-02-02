@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URLConnection;
+import java.util.Optional;
 import java.util.function.BooleanSupplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -25,11 +26,19 @@ public class MapImageDownloader {
 
 	private InputStream connectionInputStream;
 
-	public MapImage download(final Earthquake earthquake, final BooleanSupplier canceled) throws IOException {
-		return download(earthquake, null, canceled);
+	public Optional<MapImage> download(final Earthquake earthquake, final BooleanSupplier canceled) throws IOException {
+		return Optional.ofNullable(doDownload(earthquake, canceled));
 	}
 
-	public MapImage download(final Earthquake earthquake, final MapImage cached, final BooleanSupplier canceled) throws IOException {
+	public Optional<MapImage> download(final Earthquake earthquake, final MapImage cached, final BooleanSupplier canceled) throws IOException {
+		return Optional.ofNullable(doDownload(earthquake, cached, canceled));
+	}
+
+	private MapImage doDownload(final Earthquake earthquake, final BooleanSupplier canceled) throws IOException {
+		return doDownload(earthquake, null, canceled);
+	}
+
+	private MapImage doDownload(final Earthquake earthquake, final MapImage cached, final BooleanSupplier canceled) throws IOException {
 		final Headers headers = new Headers();
 		headers.set("Accept", "image/jpeg,image/*;q=0.9,*/*;q=0.8");
 		headers.set("Accept-Encoding", "gzip");

@@ -1,7 +1,9 @@
 package it.albertus.eqbulletin.service.job;
 
+import java.util.Optional;
+
 public interface DownloadJob<T> {
 
-	T getDownloadedObject();
+	Optional<T> getDownloadedObject();
 
 }

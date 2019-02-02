@@ -4,6 +4,7 @@ import static it.albertus.jface.DisplayThreadExecutor.Mode.ASYNC;
 import static it.albertus.jface.DisplayThreadExecutor.Mode.SYNC;
 
 import java.io.Serializable;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -56,10 +57,10 @@ public class MomentTensorAsyncOperation extends AsyncOperation {
 					if (!event.getResult().isOK()) {
 						throw new AsyncOperationException(job.getResult());
 					}
-					final MomentTensor downloadedObject = job.getDownloadedObject();
-					if (downloadedObject != null) {
-						new DisplayThreadExecutor(shell, ASYNC).execute(() -> new MomentTensorDialog(shell, downloadedObject, earthquake).open()); // Async
-						MomentTensorCache.getInstance().put(earthquake.getGuid(), downloadedObject);
+					final Optional<MomentTensor> downloadedObject = job.getDownloadedObject();
+					if (downloadedObject.isPresent()) {
+						new DisplayThreadExecutor(shell, ASYNC).execute(() -> new MomentTensorDialog(shell, downloadedObject.get(), earthquake).open());
+						MomentTensorCache.getInstance().put(earthquake.getGuid(), downloadedObject.get());
 					}
 				}
 				catch (final AsyncOperationException e) {
@@ -77,10 +78,10 @@ public class MomentTensorAsyncOperation extends AsyncOperation {
 		if (cachedObject.getEtag() != null && !cachedObject.getEtag().trim().isEmpty()) {
 			final Runnable checkForUpdate = () -> {
 				try {
-					final MomentTensor downloadedObject = MomentTensorDownloader.download(earthquake, cachedObject);
-					if (downloadedObject != null && !downloadedObject.equals(cachedObject)) {
-						new DisplayThreadExecutor(shell, ASYNC).execute(() -> MomentTensorDialog.updateMomentTensorText(downloadedObject, earthquake)); // Update UI on-the-fly.
-						MomentTensorCache.getInstance().put(earthquake.getGuid(), downloadedObject);
+					final Optional<MomentTensor> downloadedObject = MomentTensorDownloader.download(earthquake, cachedObject);
+					if (downloadedObject.isPresent() && !downloadedObject.get().equals(cachedObject)) {
+						new DisplayThreadExecutor(shell, ASYNC).execute(() -> MomentTensorDialog.updateMomentTensorText(downloadedObject.get(), earthquake)); // Update UI on-the-fly.
+						MomentTensorCache.getInstance().put(earthquake.getGuid(), downloadedObject.get());
 					}
 				}
 				catch (final Exception e) {

@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
+import java.util.Optional;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 
@@ -22,11 +23,19 @@ public class MomentTensorDownloader {
 
 	private static final Logger logger = LoggerFactory.getLogger(MomentTensorDownloader.class);
 
-	public static MomentTensor download(final Earthquake earthquake) throws IOException {
-		return download(earthquake, null);
+	public static Optional<MomentTensor> download(final Earthquake earthquake) throws IOException {
+		return Optional.ofNullable(doDownload(earthquake));
 	}
 
-	public static MomentTensor download(final Earthquake earthquake, final MomentTensor cached) throws IOException {
+	public static Optional<MomentTensor> download(final Earthquake earthquake, final MomentTensor cached) throws IOException {
+		return Optional.ofNullable(doDownload(earthquake, cached));
+	}
+
+	private static MomentTensor doDownload(final Earthquake earthquake) throws IOException {
+		return doDownload(earthquake, null);
+	}
+
+	private static MomentTensor doDownload(final Earthquake earthquake, final MomentTensor cached) throws IOException {
 		final Headers headers = new Headers();
 		headers.set("Accept", "text/plain,text/*;q=0.9,*/*;q=0.8");
 		headers.set("Accept-Encoding", "gzip");

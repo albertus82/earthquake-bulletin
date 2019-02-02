@@ -2,6 +2,7 @@ package it.albertus.eqbulletin.service.job;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Optional;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -17,7 +18,7 @@ public class MomentTensorDownloadJob extends Job implements DownloadJob<MomentTe
 
 	private final Earthquake earthquake;
 
-	private MomentTensor downloadedObject;
+	private Optional<MomentTensor> downloadedObject;
 
 	public MomentTensorDownloadJob(final Earthquake earthquake) {
 		super(MomentTensorDownloadJob.class.getSimpleName());
@@ -45,7 +46,7 @@ public class MomentTensorDownloadJob extends Job implements DownloadJob<MomentTe
 	}
 
 	@Override
-	public MomentTensor getDownloadedObject() {
+	public Optional<MomentTensor> getDownloadedObject() {
 		return downloadedObject;
 	}
 

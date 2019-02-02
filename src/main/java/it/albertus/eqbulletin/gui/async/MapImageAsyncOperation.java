@@ -4,6 +4,7 @@ import static it.albertus.jface.DisplayThreadExecutor.Mode.ASYNC;
 import static it.albertus.jface.DisplayThreadExecutor.Mode.SYNC;
 
 import java.io.Serializable;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -60,12 +61,12 @@ public class MapImageAsyncOperation extends AsyncOperation {
 					if (!event.getResult().isOK() && event.getResult().getSeverity() != IStatus.CANCEL) {
 						throw new AsyncOperationException(job.getResult());
 					}
-					final MapImage downloadedObject = job.getDownloadedObject();
-					if (downloadedObject != null) {
+					final Optional<MapImage> downloadedObject = job.getDownloadedObject();
+					if (downloadedObject.isPresent()) {
 						if (event.getResult().getSeverity() != IStatus.CANCEL) {
-							new DisplayThreadExecutor(shell, ASYNC).execute(() -> MapCanvas.setMapImage(downloadedObject, earthquake));
+							new DisplayThreadExecutor(shell, ASYNC).execute(() -> MapCanvas.setMapImage(downloadedObject.get(), earthquake));
 						}
-						MapImageCache.getInstance().put(earthquake.getGuid(), downloadedObject);
+						MapImageCache.getInstance().put(earthquake.getGuid(), downloadedObject.get());
 					}
 				}
 				catch (final AsyncOperationException e) {
@@ -84,10 +85,10 @@ public class MapImageAsyncOperation extends AsyncOperation {
 		if (cachedObject.getEtag() != null && !cachedObject.getEtag().trim().isEmpty()) {
 			final Runnable checkForUpdate = () -> {
 				try {
-					final MapImage downloadedObject = new MapImageDownloader().download(earthquake, cachedObject, () -> false);
-					if (downloadedObject != null && !downloadedObject.equals(cachedObject)) {
-						new DisplayThreadExecutor(shell, ASYNC).execute(() -> MapCanvas.updateMapImage(downloadedObject, earthquake)); // Update UI on-the-fly.
-						MapImageCache.getInstance().put(earthquake.getGuid(), downloadedObject);
+					final Optional<MapImage> downloadedObject = new MapImageDownloader().download(earthquake, cachedObject, () -> false);
+					if (downloadedObject.isPresent() && !downloadedObject.get().equals(cachedObject)) {
+						new DisplayThreadExecutor(shell, ASYNC).execute(() -> MapCanvas.updateMapImage(downloadedObject.get(), earthquake)); // Update UI on-the-fly.
+						MapImageCache.getInstance().put(earthquake.getGuid(), downloadedObject.get());
 					}
 				}
 				catch (final Exception e) {

@@ -2,6 +2,7 @@ package it.albertus.eqbulletin.service.job;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Optional;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -17,7 +18,7 @@ public class MapImageDownloadJob extends Job implements DownloadJob<MapImage> {
 
 	private final Earthquake earthquake;
 
-	private MapImage downloadedObject;
+	private Optional<MapImage> downloadedObject;
 
 	private MapImageDownloader downloader;
 
@@ -48,7 +49,7 @@ public class MapImageDownloadJob extends Job implements DownloadJob<MapImage> {
 	}
 
 	@Override
-	public MapImage getDownloadedObject() {
+	public Optional<MapImage> getDownloadedObject() {
 		return downloadedObject;
 	}
 
