@@ -20,25 +20,25 @@ import it.albertus.util.NewLine;
 
 public class HtmlBulletinDecoder {
 
-	private static final String guidPrefix = "id=";
-	private static final String guidSuffix = "'>";
-	private static final String timePrefix = guidSuffix;
-	private static final String timeSuffix = "</a";
-	private static final String magnitudePrefix = ">";
-	private static final String magnitudeSuffix = "</";
-	private static final String latitudePrefix = magnitudePrefix;
-	private static final String latitudeSuffix = "&deg;";
-	private static final String latitudeSignPrefix = latitudeSuffix;
-	private static final String latitudeSignSuffix = magnitudeSuffix;
-	private static final String longitudePrefix = latitudePrefix;
-	private static final String longitudeSuffix = latitudeSuffix;
-	private static final String longitudeSignPrefix = latitudeSuffix;
-	private static final String longitudeSignSuffix = magnitudeSuffix;
-	private static final String depthSuffix = magnitudeSuffix;
-	private static final String statusPrefix = guidSuffix;
-	private static final String statusSuffix = magnitudeSuffix;
-	private static final String regionPrefix = statusPrefix;
-	private static final String regionSuffix = magnitudeSuffix;
+	private static final String GUID_PREFIX = "id=";
+	private static final String GUID_SUFFIX = "'>";
+	private static final String TIME_PREFIX = GUID_SUFFIX;
+	private static final String TIME_SUFFIX = "</a";
+	private static final String MAGNITUDE_PREFIX = ">";
+	private static final String MAGNITUDE_SUFFIX = "</";
+	private static final String LATITUDE_PREFIX = MAGNITUDE_PREFIX;
+	private static final String LATITUDE_SUFFIX = "&deg;";
+	private static final String LATITUDE_SIGN_PREFIX = LATITUDE_SUFFIX;
+	private static final String LATITUDE_SIGN_SUFFIX = MAGNITUDE_SUFFIX;
+	private static final String LONGITUDE_PREFIX = LATITUDE_PREFIX;
+	private static final String LONGITUDE_SUFFIX = LATITUDE_SUFFIX;
+	private static final String LONGITUDE_SIGN_PREFIX = LATITUDE_SUFFIX;
+	private static final String LONGITUDE_SIGN_SUFFIX = MAGNITUDE_SUFFIX;
+	private static final String DEPTH_SUFFIX = MAGNITUDE_SUFFIX;
+	private static final String STATUS_PREFIX = GUID_SUFFIX;
+	private static final String STATUS_SUFFIX = MAGNITUDE_SUFFIX;
+	private static final String REGION_PREFIX = STATUS_PREFIX;
+	private static final String REGION_SUFFIX = MAGNITUDE_SUFFIX;
 
 	private static final ThreadLocal<DateFormat> htmlDateFormat = ThreadLocal.withInitial(() -> {
 		final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -72,24 +72,24 @@ public class HtmlBulletinDecoder {
 			final String[] lines = td.split(NewLine.SYSTEM_LINE_SEPARATOR);
 
 			final Calendar time = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-			time.setTime(parseHtmlDate(lines[0].substring(lines[0].lastIndexOf(timePrefix) + timePrefix.length(), lines[0].indexOf(timeSuffix)).trim()));
+			time.setTime(parseHtmlDate(lines[0].substring(lines[0].lastIndexOf(TIME_PREFIX) + TIME_PREFIX.length(), lines[0].indexOf(TIME_SUFFIX)).trim()));
 
-			final String guid = lines[0].substring(lines[0].indexOf(guidPrefix) + guidPrefix.length(), lines[0].lastIndexOf(guidSuffix)).trim();
+			final String guid = lines[0].substring(lines[0].indexOf(GUID_PREFIX) + GUID_PREFIX.length(), lines[0].lastIndexOf(GUID_SUFFIX)).trim();
 
-			final float magnitude = Float.parseFloat(lines[1].substring(lines[1].indexOf(magnitudePrefix) + magnitudePrefix.length(), lines[1].indexOf(magnitudeSuffix)).trim());
+			final float magnitude = Float.parseFloat(lines[1].substring(lines[1].indexOf(MAGNITUDE_PREFIX) + MAGNITUDE_PREFIX.length(), lines[1].indexOf(MAGNITUDE_SUFFIX)).trim());
 
-			float latitude = Float.parseFloat(lines[2].substring(lines[2].indexOf(latitudePrefix) + latitudePrefix.length(), lines[2].indexOf(latitudeSuffix)).trim());
-			if ("S".equalsIgnoreCase(lines[2].substring(lines[2].indexOf(latitudeSignPrefix) + latitudeSignPrefix.length(), lines[2].indexOf(latitudeSignSuffix)).trim())) {
+			float latitude = Float.parseFloat(lines[2].substring(lines[2].indexOf(LATITUDE_PREFIX) + LATITUDE_PREFIX.length(), lines[2].indexOf(LATITUDE_SUFFIX)).trim());
+			if ("S".equalsIgnoreCase(lines[2].substring(lines[2].indexOf(LATITUDE_SIGN_PREFIX) + LATITUDE_SIGN_PREFIX.length(), lines[2].indexOf(LATITUDE_SIGN_SUFFIX)).trim())) {
 				latitude *= -1;
 			}
-			float longitude = Float.parseFloat(lines[3].substring(lines[3].indexOf(longitudePrefix) + longitudePrefix.length(), lines[3].indexOf(longitudeSuffix)).trim());
-			if ("W".equalsIgnoreCase(lines[3].substring(lines[3].indexOf(longitudeSignPrefix) + longitudeSignPrefix.length(), lines[3].indexOf(longitudeSignSuffix)).trim())) {
+			float longitude = Float.parseFloat(lines[3].substring(lines[3].indexOf(LONGITUDE_PREFIX) + LONGITUDE_PREFIX.length(), lines[3].indexOf(LONGITUDE_SUFFIX)).trim());
+			if ("W".equalsIgnoreCase(lines[3].substring(lines[3].indexOf(LONGITUDE_SIGN_PREFIX) + LONGITUDE_SIGN_PREFIX.length(), lines[3].indexOf(LONGITUDE_SIGN_SUFFIX)).trim())) {
 				longitude *= -1;
 			}
 
-			final short depth = Short.parseShort(lines[4].substring(lines[4].indexOf(magnitudePrefix) + magnitudePrefix.length(), lines[4].indexOf(depthSuffix)).trim());
-			final Status status = Status.valueOf(lines[5].substring(lines[5].lastIndexOf(statusPrefix) + statusPrefix.length(), lines[5].indexOf(statusSuffix)).trim());
-			final String region = lines[6].substring(lines[6].lastIndexOf(regionPrefix) + regionPrefix.length(), lines[6].lastIndexOf(regionSuffix)).trim();
+			final short depth = Short.parseShort(lines[4].substring(lines[4].indexOf(MAGNITUDE_PREFIX) + MAGNITUDE_PREFIX.length(), lines[4].indexOf(DEPTH_SUFFIX)).trim());
+			final Status status = Status.valueOf(lines[5].substring(lines[5].lastIndexOf(STATUS_PREFIX) + STATUS_PREFIX.length(), lines[5].indexOf(STATUS_SUFFIX)).trim());
+			final String region = lines[6].substring(lines[6].lastIndexOf(REGION_PREFIX) + REGION_PREFIX.length(), lines[6].lastIndexOf(REGION_SUFFIX)).trim();
 
 			final URL link = GeofonUtils.getEventPageUrl(guid);
 			final URL enclosure = GeofonUtils.getEventMapUrl(guid, time.get(Calendar.YEAR));
