@@ -87,7 +87,7 @@ class SearchJobChangeListener extends JobChangeAdapter {
 
 	private static void updateGui(final Bulletin bulletin, final EarthquakeBulletinGui gui) {
 		final Collection<Earthquake> events = bulletin.getEvents();
-		final Earthquake[] newDataArray = events.toArray(new Earthquake[events.size()]);
+		final Earthquake[] newDataArray = events.toArray(new Earthquake[0]);
 
 		final ResultsTable table = gui.getResultsTable();
 		final TrayIcon icon = gui.getTrayIcon();
@@ -95,14 +95,18 @@ class SearchJobChangeListener extends JobChangeAdapter {
 		final StatusBar bar = gui.getStatusBar();
 
 		final Earthquake[] oldDataArray = (Earthquake[]) table.getTableViewer().getInput();
-		if (!Arrays.equals(oldDataArray, newDataArray)) {
+		if (Arrays.equals(oldDataArray, newDataArray)) {
+			logger.fine("Data has not changed, skipping table update.");
+		}
+		else {
+			logger.fine("Data has changed, performing table update.");
 			new DisplayThreadExecutor(table.getShell(), ASYNC).execute(() -> {
 				table.getTableViewer().setInput(newDataArray);
 				icon.updateToolTipText(newDataArray.length > 0 ? newDataArray[0] : null);
 				if (map.getEarthquake() != null && !events.contains(map.getEarthquake())) {
 					map.clear();
 				}
-				if (oldDataArray != null && !Arrays.equals(newDataArray, oldDataArray) && newDataArray.length > 0 && newDataArray[0] != null && oldDataArray.length > 0 && !newDataArray[0].getGuid().equals(oldDataArray[0].getGuid()) && icon.getTrayItem() != null && icon.getTrayItem().getVisible()) {
+				if (oldDataArray != null && newDataArray.length > 0 && newDataArray[0] != null && oldDataArray.length > 0 && !newDataArray[0].getGuid().equals(oldDataArray[0].getGuid()) && icon.getTrayItem() != null && icon.getTrayItem().getVisible()) {
 					icon.showBalloonToolTip(newDataArray[0]);
 				}
 				bar.setLastUpdateTime(bulletin.getInstant());

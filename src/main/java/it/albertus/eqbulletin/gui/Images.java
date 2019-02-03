@@ -51,7 +51,7 @@ public class Images {
 	}
 
 	public static Image[] getMainIconArray() {
-		return getMainIconMap().values().toArray(new Image[mainIconMap.size()]);
+		return getMainIconMap().values().toArray(new Image[0]);
 	}
 
 	public static Map<Rectangle, Image> getMainIconMap() {
