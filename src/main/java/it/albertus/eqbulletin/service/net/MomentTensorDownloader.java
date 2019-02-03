@@ -42,7 +42,7 @@ public class MomentTensorDownloader {
 		if (cached != null && cached.getEtag() != null && !cached.getEtag().trim().isEmpty()) {
 			headers.set("If-None-Match", cached.getEtag());
 		}
-		final HttpURLConnection connection = ConnectionFactory.makeGetRequest(earthquake.getMomentTensorUri().toURL(), headers);
+		final HttpURLConnection connection = ConnectionFactory.makeGetRequest(earthquake.getMomentTensorUri().orElseThrow(IllegalStateException::new).toURL(), headers);
 		if (connection.getResponseCode() == HttpURLConnection.HTTP_NOT_MODIFIED) {
 			return cached; // Not modified.
 		}

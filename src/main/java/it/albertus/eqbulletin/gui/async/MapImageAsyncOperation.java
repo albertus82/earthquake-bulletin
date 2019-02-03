@@ -30,7 +30,7 @@ public class MapImageAsyncOperation extends AsyncOperation {
 	private static Job currentJob;
 
 	public static synchronized void execute(final Earthquake earthquake, final Shell shell) {
-		if (earthquake != null && earthquake.getEnclosureUri() != null && shell != null && !shell.isDisposed()) {
+		if (earthquake != null && earthquake.getEnclosureUri().isPresent() && shell != null && !shell.isDisposed()) {
 			setAppStartingCursor(shell);
 			cancelCurrentJob();
 			final MapImageCache cache = MapImageCache.getInstance();

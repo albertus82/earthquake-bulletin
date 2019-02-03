@@ -131,11 +131,11 @@ public class ResultsTable implements IShellProvider, Multilanguage {
 				rc = eq1.getStatus().compareTo(eq2.getStatus());
 				break;
 			case COL_IDX_MT:
-				if (eq1.getMomentTensorUri() == null && eq2.getMomentTensorUri() == null || eq1.getMomentTensorUri() != null && eq2.getMomentTensorUri() != null) {
+				if (!eq1.getMomentTensorUri().isPresent() && !eq2.getMomentTensorUri().isPresent() || eq1.getMomentTensorUri().isPresent() && eq2.getMomentTensorUri().isPresent()) {
 					rc = 0;
 				}
 				else {
-					rc = eq1.getMomentTensorUri() != null ? -1 : 1;
+					rc = eq1.getMomentTensorUri().isPresent() ? -1 : 1;
 				}
 				break;
 			case COL_IDX_REGION:
@@ -340,7 +340,7 @@ public class ResultsTable implements IShellProvider, Multilanguage {
 		col.setLabelProvider(new EarthquakeColumnLabelProvider() {
 			@Override
 			protected String getText(final Earthquake element) {
-				return element.getMomentTensorUri() != null ? MT : "";
+				return element.getMomentTensorUri().isPresent() ? MT : "";
 			}
 
 			@Override
@@ -350,7 +350,7 @@ public class ResultsTable implements IShellProvider, Multilanguage {
 
 			@Override
 			protected String getToolTipText(final Earthquake element) {
-				return element.getMomentTensorUri() != null ? Messages.get("lbl.table.mt.tooltip") : null;
+				return element.getMomentTensorUri().isPresent() ? Messages.get("lbl.table.mt.tooltip") : null;
 			}
 
 			@Override

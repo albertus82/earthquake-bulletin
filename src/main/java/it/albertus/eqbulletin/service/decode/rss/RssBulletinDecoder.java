@@ -55,7 +55,7 @@ public class RssBulletinDecoder {
 		final short depth = Short.parseShort(descriptionTokens[4].trim());
 		final Status status = Status.valueOf(descriptionTokens[6].trim());
 
-		// Links
+		// URIs
 		URI link = null;
 		final String pageUrl = item.getLink();
 		if (pageUrl != null) {
@@ -67,24 +67,23 @@ public class RssBulletinDecoder {
 			}
 		}
 
-		URI enclosure = null;
+		URI enclosureUri = null;
 		final String imageUrl = item.getEnclosure() != null ? item.getEnclosure().getUrl() : null;
 		if (imageUrl != null) {
 			try {
-				enclosure = new URI(imageUrl.trim());
+				enclosureUri = new URI(imageUrl.trim());
 			}
 			catch (final URISyntaxException e) {
 				logger.log(Level.WARNING, Messages.get("err.url.malformed", imageUrl), e);
 			}
 		}
 
-		final Earthquake earthquake = new Earthquake(guid, time, magnitudo, new Latitude(latitude), new Longitude(longitude), new Depth(depth), status, region, link, enclosure);
-
+		URI momentTensorUri = null;
 		if (item.getMt() != null && "yes".equalsIgnoreCase(item.getMt().trim())) {
-			earthquake.setMomentTensorUri(GeofonUtils.getEventMomentTensorUri(guid, time.get(ChronoField.YEAR)));
+			momentTensorUri = GeofonUtils.getEventMomentTensorUri(guid, time.get(ChronoField.YEAR));
 		}
 
-		return earthquake;
+		return new Earthquake(guid, time, magnitudo, new Latitude(latitude), new Longitude(longitude), new Depth(depth), status, region, link, enclosureUri, momentTensorUri);
 	}
 
 	private RssBulletinDecoder() {

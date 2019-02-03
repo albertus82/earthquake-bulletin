@@ -7,12 +7,11 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
+import java.util.Optional;
 
 public class Earthquake implements Serializable, Comparable<Earthquake> {
 
 	private static final long serialVersionUID = -6959335170582499256L;
-
-	private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z");
 
 	private final String guid;
 	private final ZonedDateTime time;
@@ -24,9 +23,17 @@ public class Earthquake implements Serializable, Comparable<Earthquake> {
 	private final String region;
 	private final URI link;
 	private final URI enclosureUri;
-	private URI momentTensorUri;
+	private final URI momentTensorUri;
 
-	public Earthquake(final String guid, final ZonedDateTime time, final float magnitude, final Latitude latitude, final Longitude longitude, final Depth depth, final Status status, final String region, final URI link, final URI enclosureUri) {
+	public Earthquake(final String guid, final ZonedDateTime time, final float magnitude, final Latitude latitude, final Longitude longitude, final Depth depth, final Status status, final String region, final URI link, final URI enclosureUri, final URI momentTensorUri) {
+		Objects.requireNonNull(guid);
+		Objects.requireNonNull(time);
+		Objects.requireNonNull(magnitude);
+		Objects.requireNonNull(latitude);
+		Objects.requireNonNull(longitude);
+		Objects.requireNonNull(depth);
+		Objects.requireNonNull(status);
+		Objects.requireNonNull(region);
 		this.guid = guid;
 		this.time = time;
 		this.magnitude = magnitude;
@@ -37,13 +44,6 @@ public class Earthquake implements Serializable, Comparable<Earthquake> {
 		this.region = region;
 		this.link = link;
 		this.enclosureUri = enclosureUri;
-	}
-
-	public URI getMomentTensorUri() {
-		return momentTensorUri;
-	}
-
-	public void setMomentTensorUri(final URI momentTensorUri) {
 		this.momentTensorUri = momentTensorUri;
 	}
 
@@ -79,12 +79,16 @@ public class Earthquake implements Serializable, Comparable<Earthquake> {
 		return region;
 	}
 
-	public URI getLink() {
-		return link;
+	public Optional<URI> getLink() {
+		return Optional.ofNullable(link);
 	}
 
-	public URI getEnclosureUri() {
-		return enclosureUri;
+	public Optional<URI> getEnclosureUri() {
+		return Optional.ofNullable(enclosureUri);
+	}
+
+	public Optional<URI> getMomentTensorUri() {
+		return Optional.ofNullable(momentTensorUri);
 	}
 
 	@Override
@@ -128,7 +132,8 @@ public class Earthquake implements Serializable, Comparable<Earthquake> {
 	}
 
 	public String getDetails(final ZoneId timeZone) {
-		return String.format("%s %s %s %s %s", dateTimeFormatter.withZone(timeZone).format(time), latitude, longitude, depth, status).trim();
+		final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z").withZone(timeZone);
+		return String.format("%s %s %s %s %s", dateTimeFormatter.format(time), latitude, longitude, depth, status).trim();
 	}
 
 	private String getDetails() {

@@ -35,7 +35,7 @@ public class RandomBulletinProvider implements BulletinProvider {
 			final float magnitude = (random.nextInt(70) + 20) / 10f;
 			final short depth = (short) random.nextInt(700);
 			final Status status = Status.values()[random.nextInt(Status.values().length)];
-			earthquakes.add(new Earthquake(uuid, date.getTime().toInstant().atZone(ZoneId.of("UTC")), magnitude, new Latitude(latitude), new Longitude(longitude), new Depth(depth), status, uuid, null, null));
+			earthquakes.add(new Earthquake(uuid, date.getTime().toInstant().atZone(ZoneId.of("UTC")), magnitude, new Latitude(latitude), new Longitude(longitude), new Depth(depth), status, uuid, null, null, null));
 		}
 		Collections.sort(earthquakes);
 		return Optional.of(new Bulletin(earthquakes));

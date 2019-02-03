@@ -33,7 +33,7 @@ public class FERegionTest {
 	public void testCoordinates() {
 		final Coordinates c1 = new Coordinates(12, -34);
 		logger.info(c1.toString());
-		Assert.assertFalse(c1.equals(null));
+		Assert.assertFalse(c1 == null);
 		Assert.assertFalse(c1.equals(new Object()));
 		final Coordinates c2 = new Coordinates(-156, 78);
 		logger.info(c2.toString());
@@ -48,7 +48,7 @@ public class FERegionTest {
 	public void testRegion() {
 		final Region r1 = instance.getGeographicRegion(new Coordinates(12.5, 42.5));
 		logger.info(r1.toString());
-		Assert.assertFalse(r1.equals(null));
+		Assert.assertFalse(r1 == null);
 		Assert.assertFalse(r1.equals(new Object()));
 		final Region r2 = instance.getGeographicRegion(new Coordinates(-12.5, -42.5));
 		logger.info(r2.toString());

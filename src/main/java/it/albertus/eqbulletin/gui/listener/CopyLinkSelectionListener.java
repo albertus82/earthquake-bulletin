@@ -1,5 +1,8 @@
 package it.albertus.eqbulletin.gui.listener;
 
+import java.net.URI;
+import java.util.Optional;
+
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
@@ -24,10 +27,13 @@ public class CopyLinkSelectionListener extends SelectionAdapter {
 		final TableViewer tableViewer = gui.getResultsTable().getTableViewer();
 		final Earthquake selection = (Earthquake) tableViewer.getStructuredSelection().getFirstElement();
 		final Table table = tableViewer.getTable();
-		if (selection != null && selection.getLink() != null && table != null && !table.isDisposed()) {
-			final Clipboard clipboard = new Clipboard(table.getDisplay());
-			clipboard.setContents(new String[] { selection.getLink().toString() }, new Transfer[] { TextTransfer.getInstance() });
-			clipboard.dispose();
+		if (selection != null && table != null && !table.isDisposed()) {
+			final Optional<URI> link = selection.getLink();
+			if (link.isPresent()) {
+				final Clipboard clipboard = new Clipboard(table.getDisplay());
+				clipboard.setContents(new String[] { link.get().toString() }, new Transfer[] { TextTransfer.getInstance() });
+				clipboard.dispose();
+			}
 		}
 	}
 

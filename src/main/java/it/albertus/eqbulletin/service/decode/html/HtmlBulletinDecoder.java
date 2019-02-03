@@ -77,15 +77,14 @@ public class HtmlBulletinDecoder {
 			final String region = lines[6].substring(lines[6].lastIndexOf(REGION_PREFIX) + REGION_PREFIX.length(), lines[6].lastIndexOf(REGION_SUFFIX)).trim();
 
 			final URI link = GeofonUtils.getEventPageUri(guid);
-			final URI enclosure = GeofonUtils.getEventMapUri(guid, time.get(ChronoField.YEAR));
+			final URI enclosureUri = GeofonUtils.getEventMapUri(guid, time.get(ChronoField.YEAR));
 
-			final Earthquake earthquake = new Earthquake(guid, time, magnitude, new Latitude(latitude), new Longitude(longitude), new Depth(depth), status, region, link, enclosure);
-
+			URI momentTensorUri = null;
 			if (lines[6].contains(GeofonUtils.MOMENT_TENSOR_FILENAME) || lines.length > 7 && lines[7].contains(GeofonUtils.MOMENT_TENSOR_FILENAME)) {
-				earthquake.setMomentTensorUri(GeofonUtils.getEventMomentTensorUri(guid, time.get(ChronoField.YEAR)));
+				momentTensorUri = GeofonUtils.getEventMomentTensorUri(guid, time.get(ChronoField.YEAR));
 			}
 
-			return earthquake;
+			return new Earthquake(guid, time, magnitude, new Latitude(latitude), new Longitude(longitude), new Depth(depth), status, region, link, enclosureUri, momentTensorUri);
 		}
 		catch (final Exception e) {
 			throw new IllegalArgumentException(td, e);

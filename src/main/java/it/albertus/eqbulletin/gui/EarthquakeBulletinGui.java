@@ -304,12 +304,12 @@ public class EarthquakeBulletinGui extends ApplicationWindow implements Multilan
 	}
 
 	@Override
-	protected StatusLineManager getStatusLineManager() { // NOSONAR This method must be visible in this package
+	protected final StatusLineManager getStatusLineManager() { // This method must be visible in this package
 		return super.getStatusLineManager();
 	}
 
 	@Override
-	protected void createStatusLine(final Shell shell) { // NOSONAR This method must be visible in this package
+	protected final void createStatusLine(final Shell shell) { // This method must be visible in this package
 		super.createStatusLine(shell);
 	}
 

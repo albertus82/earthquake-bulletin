@@ -44,7 +44,7 @@ class Database {
 
 	private final List<Integer> seisreg = new ArrayList<>(757);
 
-	Database() throws IOException { // NOSONAR Retain comparability with Perl source.
+	Database() throws IOException { // NOSONAR Preserve comparability with Perl source.
 		// Read the file of region names...
 		try (final InputStream is = getClass().getResourceAsStream("names.asc"); final InputStreamReader isr = new InputStreamReader(is, StandardCharsets.US_ASCII); final BufferedReader br = new BufferedReader(isr)) {
 			String line;
