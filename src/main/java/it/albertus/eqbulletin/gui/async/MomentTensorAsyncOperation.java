@@ -26,7 +26,7 @@ public class MomentTensorAsyncOperation extends AsyncOperation {
 	private static final Logger logger = LoggerFactory.getLogger(MomentTensorAsyncOperation.class);
 
 	public static void execute(final Earthquake earthquake, final Shell shell) {
-		if (earthquake != null && earthquake.getMomentTensorUrl() != null && shell != null && !shell.isDisposed()) {
+		if (earthquake != null && earthquake.getMomentTensorUri() != null && shell != null && !shell.isDisposed()) {
 			setAppStartingCursor(shell);
 			final MomentTensorCache cache = MomentTensorCache.getInstance();
 			final String guid = earthquake.getGuid();

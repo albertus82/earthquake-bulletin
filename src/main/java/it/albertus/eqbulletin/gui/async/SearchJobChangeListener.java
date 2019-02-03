@@ -3,7 +3,6 @@ package it.albertus.eqbulletin.gui.async;
 import static it.albertus.jface.DisplayThreadExecutor.Mode.ASYNC;
 import static it.albertus.jface.DisplayThreadExecutor.Mode.SYNC;
 
-import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
@@ -22,6 +21,7 @@ import it.albertus.eqbulletin.gui.MapCanvas;
 import it.albertus.eqbulletin.gui.ResultsTable;
 import it.albertus.eqbulletin.gui.StatusBar;
 import it.albertus.eqbulletin.gui.TrayIcon;
+import it.albertus.eqbulletin.model.Bulletin;
 import it.albertus.eqbulletin.model.Earthquake;
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.eqbulletin.service.SearchRequest;
@@ -56,20 +56,20 @@ class SearchJobChangeListener extends JobChangeAdapter {
 	@Override
 	public void done(final IJobChangeEvent event) {
 		logger.log(Level.FINE, "Done {0}: {1}", new Object[] { event.getJob(), event.getResult() });
-		try {
-			if (!event.getResult().isOK() && event.getResult().getSeverity() != IStatus.CANCEL) {
-				throw new AsyncOperationException(event.getJob().getResult());
+		if (event.getResult().getSeverity() != IStatus.CANCEL) {
+			try {
+				if (!event.getResult().isOK()) {
+					throw new AsyncOperationException(event.getJob().getResult());
+				}
+				final Optional<Bulletin> bulletin = ((SearchJob) event.getJob()).getBulletin();
+				if (bulletin.isPresent()) {
+					updateGui(bulletin.get(), gui);
+				}
 			}
-			final Optional<Collection<Earthquake>> earthquakes = ((SearchJob) event.getJob()).getEarthquakes();
-			if (earthquakes.isPresent()) {
-				updateGui(earthquakes.get(), gui);
+			catch (final AsyncOperationException e) {
+				showErrorDialog(e, gui.getTrayIcon());
 			}
-		}
-		catch (final AsyncOperationException e) {
-			showErrorDialog(e, gui.getTrayIcon());
-		}
-		finally {
-			if (event.getResult().getSeverity() != IStatus.CANCEL) {
+			finally {
 				final long delay = request.getDelay();
 				if (delay > 0) {
 					event.getJob().schedule(delay);
@@ -85,28 +85,31 @@ class SearchJobChangeListener extends JobChangeAdapter {
 		}
 	}
 
-	private static void updateGui(final Collection<Earthquake> earthquakes, final EarthquakeBulletinGui gui) {
-		final Earthquake[] newDataArray = earthquakes.toArray(new Earthquake[earthquakes.size()]);
+	private static void updateGui(final Bulletin bulletin, final EarthquakeBulletinGui gui) {
+		final Collection<Earthquake> events = bulletin.getEvents();
+		final Earthquake[] newDataArray = events.toArray(new Earthquake[events.size()]);
 
 		final ResultsTable table = gui.getResultsTable();
 		final TrayIcon icon = gui.getTrayIcon();
 		final MapCanvas map = gui.getMapCanvas();
 		final StatusBar bar = gui.getStatusBar();
 
-		new DisplayThreadExecutor(table.getShell(), ASYNC).execute(() -> {
-			final Earthquake[] oldDataArray = (Earthquake[]) table.getTableViewer().getInput();
-			table.getTableViewer().setInput(newDataArray);
-			icon.updateToolTipText(newDataArray.length > 0 ? newDataArray[0] : null);
-			if (map.getEarthquake() != null && !earthquakes.contains(map.getEarthquake())) {
-				map.clear();
-			}
-			if (oldDataArray != null && !Arrays.equals(newDataArray, oldDataArray) && newDataArray.length > 0 && newDataArray[0] != null && oldDataArray.length > 0 && !newDataArray[0].equals(oldDataArray[0]) && icon.getTrayItem() != null && icon.getTrayItem().getVisible()) {
-				icon.showBalloonToolTip(newDataArray[0]);
-			}
-			bar.setLastUpdateTime(ZonedDateTime.now());
-			bar.setItemCount(earthquakes.size());
-			bar.refresh();
-		});
+		final Earthquake[] oldDataArray = (Earthquake[]) table.getTableViewer().getInput();
+		if (!Arrays.equals(oldDataArray, newDataArray)) {
+			new DisplayThreadExecutor(table.getShell(), ASYNC).execute(() -> {
+				table.getTableViewer().setInput(newDataArray);
+				icon.updateToolTipText(newDataArray.length > 0 ? newDataArray[0] : null);
+				if (map.getEarthquake() != null && !events.contains(map.getEarthquake())) {
+					map.clear();
+				}
+				if (oldDataArray != null && !Arrays.equals(newDataArray, oldDataArray) && newDataArray.length > 0 && newDataArray[0] != null && oldDataArray.length > 0 && !newDataArray[0].getGuid().equals(oldDataArray[0].getGuid()) && icon.getTrayItem() != null && icon.getTrayItem().getVisible()) {
+					icon.showBalloonToolTip(newDataArray[0]);
+				}
+				bar.setLastUpdateTime(bulletin.getInstant());
+				bar.setItemCount(events.size());
+				bar.refresh();
+			});
+		}
 	}
 
 	private static void showErrorDialog(final AsyncOperationException e, final TrayIcon trayIcon) {

@@ -1,10 +1,8 @@
 package it.albertus.eqbulletin.gui;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map.Entry;
-import java.util.TimeZone;
 import java.util.function.Supplier;
 
 import org.eclipse.jface.resource.FontRegistry;
@@ -34,8 +32,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
-import it.albertus.eqbulletin.EarthquakeBulletin;
 import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
+import it.albertus.eqbulletin.config.TimeZoneConfig;
 import it.albertus.eqbulletin.gui.async.BulletinExporter;
 import it.albertus.eqbulletin.gui.async.MomentTensorAsyncOperation;
 import it.albertus.eqbulletin.gui.listener.CopyLinkSelectionListener;
@@ -82,28 +80,29 @@ public class ResultsTable implements IShellProvider, Multilanguage {
 
 	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getInstance();
 
-	public static final ThreadLocal<DateFormat> dateFormats = ThreadLocal.withInitial(() -> new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z"));
+	private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z");
 
-	private class EarthquakeViewerComparator extends ViewerComparator {
+	private static class EarthquakeViewerComparator extends ViewerComparator {
 
-		@SuppressWarnings("unused")
-		private static final byte ASCENDING = 0; // NOSONAR
-		private static final byte DESCENDING = 1;
+		private enum Direction {
+			ASCENDING,
+			DESCENDING
+		}
 
 		private int propertyIndex = 0;
-		private int direction = DESCENDING;
+		private Direction direction = Direction.DESCENDING;
 
 		private int getDirection() {
-			return direction == DESCENDING ? SWT.DOWN : SWT.UP;
+			return Direction.DESCENDING.equals(direction) ? SWT.DOWN : SWT.UP;
 		}
 
 		private void setColumn(final int columnIndex) {
 			if (columnIndex == propertyIndex) {
-				direction = 1 - direction;
+				direction = Direction.ASCENDING.equals(direction) ? Direction.DESCENDING : Direction.ASCENDING;
 			}
 			else {
 				propertyIndex = columnIndex;
-				direction = DESCENDING;
+				direction = Direction.DESCENDING;
 			}
 		}
 
@@ -132,11 +131,11 @@ public class ResultsTable implements IShellProvider, Multilanguage {
 				rc = eq1.getStatus().compareTo(eq2.getStatus());
 				break;
 			case COL_IDX_MT:
-				if (eq1.getMomentTensorUrl() == null && eq2.getMomentTensorUrl() == null || eq1.getMomentTensorUrl() != null && eq2.getMomentTensorUrl() != null) {
+				if (eq1.getMomentTensorUri() == null && eq2.getMomentTensorUri() == null || eq1.getMomentTensorUri() != null && eq2.getMomentTensorUri() != null) {
 					rc = 0;
 				}
 				else {
-					rc = eq1.getMomentTensorUrl() != null ? -1 : 1;
+					rc = eq1.getMomentTensorUri() != null ? -1 : 1;
 				}
 				break;
 			case COL_IDX_REGION:
@@ -145,7 +144,7 @@ public class ResultsTable implements IShellProvider, Multilanguage {
 			default:
 				rc = 0;
 			}
-			if (direction == DESCENDING) {
+			if (direction == Direction.DESCENDING) {
 				rc = -rc;
 			}
 			return rc;
@@ -238,9 +237,7 @@ public class ResultsTable implements IShellProvider, Multilanguage {
 		col.setLabelProvider(new EarthquakeColumnLabelProvider() {
 			@Override
 			protected String getText(final Earthquake element) {
-				final DateFormat df = dateFormats.get();
-				df.setTimeZone(TimeZone.getTimeZone(configuration.getString(Preference.TIMEZONE, EarthquakeBulletin.Defaults.TIME_ZONE_ID)));
-				return df.format(element.getTime());
+				return dateTimeFormatter.withZone(TimeZoneConfig.getZoneId()).format(element.getTime());
 			}
 		});
 	}
@@ -343,7 +340,7 @@ public class ResultsTable implements IShellProvider, Multilanguage {
 		col.setLabelProvider(new EarthquakeColumnLabelProvider() {
 			@Override
 			protected String getText(final Earthquake element) {
-				return element.getMomentTensorUrl() != null ? MT : "";
+				return element.getMomentTensorUri() != null ? MT : "";
 			}
 
 			@Override
@@ -353,7 +350,7 @@ public class ResultsTable implements IShellProvider, Multilanguage {
 
 			@Override
 			protected String getToolTipText(final Earthquake element) {
-				return element.getMomentTensorUrl() != null ? Messages.get("lbl.table.mt.tooltip") : null;
+				return element.getMomentTensorUri() != null ? Messages.get("lbl.table.mt.tooltip") : null;
 			}
 
 			@Override

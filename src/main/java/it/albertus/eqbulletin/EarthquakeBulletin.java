@@ -9,14 +9,6 @@ public class EarthquakeBulletin {
 
 	public static final String ARTIFACT_ID = "earthquake-bulletin";
 
-	public static class Defaults {
-		public static final String TIME_ZONE_ID = "UTC";
-
-		private Defaults() {
-			throw new IllegalAccessError("Constants class");
-		}
-	}
-
 	public static final String LOG_FORMAT = "%1$td/%1$tm/%1$tY %1$tH:%1$tM:%1$tS.%tL %4$s %3$s - %5$s%6$s%n";
 
 	private static InitializationException initializationException;

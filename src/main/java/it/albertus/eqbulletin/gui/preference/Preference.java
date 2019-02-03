@@ -7,22 +7,22 @@ import static it.albertus.eqbulletin.gui.preference.PageDefinition.GENERAL;
 import static it.albertus.eqbulletin.gui.preference.PageDefinition.LOGGING;
 
 import java.net.Proxy;
-import java.util.Arrays;
+import java.time.ZoneId;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.TimeZone;
+import java.util.TreeSet;
 import java.util.logging.Level;
 
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.swt.widgets.Composite;
 
-import it.albertus.eqbulletin.EarthquakeBulletin;
 import it.albertus.eqbulletin.cache.MapImageCache;
 import it.albertus.eqbulletin.cache.MomentTensorCache;
 import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
+import it.albertus.eqbulletin.config.TimeZoneConfig;
 import it.albertus.eqbulletin.gui.CloseDialog;
 import it.albertus.eqbulletin.gui.EarthquakeBulletinGui;
 import it.albertus.eqbulletin.gui.MapCanvas;
@@ -60,7 +60,7 @@ import it.albertus.util.logging.LoggingSupport;
 public enum Preference implements IPreference {
 
 	LANGUAGE(new PreferenceDetailsBuilder(GENERAL).defaultValue(Messages.DEFAULT_LANGUAGE).build(), new FieldEditorDetailsBuilder(DefaultComboFieldEditor.class).labelsAndValues(Preference.getLanguageComboOptions()).build()),
-	TIMEZONE(new PreferenceDetailsBuilder(GENERAL).defaultValue(EarthquakeBulletin.Defaults.TIME_ZONE_ID).build(), new FieldEditorDetailsBuilder(SwtUtils.isGtk3() ? ListFieldEditor.class : DefaultComboFieldEditor.class).labelsAndValues(getTimeZoneComboOptions()).height(3).build()), // GTK3 combo rendering is slow when item count is high
+	TIMEZONE(new PreferenceDetailsBuilder(GENERAL).defaultValue(TimeZoneConfig.DEFAULT_ZONE_ID).build(), new FieldEditorDetailsBuilder(SwtUtils.isGtk3() ? ListFieldEditor.class : DefaultComboFieldEditor.class).labelsAndValues(getTimeZoneComboOptions()).height(3).build()), // GTK3 combo rendering is slow when item count is high
 
 	START_MINIMIZED(new PreferenceDetailsBuilder(GENERAL).defaultValue(EarthquakeBulletinGui.Defaults.START_MINIMIZED).separate().build(), new FieldEditorDetailsBuilder(DefaultBooleanFieldEditor.class).build()),
 	MINIMIZE_TRAY(new PreferenceDetailsBuilder(GENERAL).defaultValue(TrayIcon.Defaults.MINIMIZE_TRAY).build(), new FieldEditorDetailsBuilder(DefaultBooleanFieldEditor.class).build()),
@@ -219,9 +219,8 @@ public enum Preference implements IPreference {
 	}
 
 	public static StaticLabelsAndValues getTimeZoneComboOptions() {
-		final String[] zones = TimeZone.getAvailableIDs();
-		Arrays.sort(zones);
-		final StaticLabelsAndValues options = new StaticLabelsAndValues(zones.length);
+		final Collection<String> zones = new TreeSet<>(ZoneId.getAvailableZoneIds());
+		final StaticLabelsAndValues options = new StaticLabelsAndValues(zones.size());
 		for (final String zone : zones) {
 			options.put(zone, zone);
 		}

@@ -49,7 +49,7 @@ public class MapImageDownloader {
 			logger.fine("Download canceled before connection.");
 			return null;
 		}
-		final HttpURLConnection connection = ConnectionFactory.makeGetRequest(earthquake.getEnclosureUrl(), headers);
+		final HttpURLConnection connection = ConnectionFactory.makeGetRequest(earthquake.getEnclosureUri().toURL(), headers);
 		if (connection.getResponseCode() == HttpURLConnection.HTTP_NOT_MODIFIED) {
 			return cached; // Not modified.
 		}

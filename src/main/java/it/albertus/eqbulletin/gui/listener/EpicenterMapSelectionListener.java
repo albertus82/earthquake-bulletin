@@ -1,32 +1,22 @@
 package it.albertus.eqbulletin.gui.listener;
 
-import java.text.DateFormat;
-import java.util.TimeZone;
-
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 
-import it.albertus.eqbulletin.EarthquakeBulletin;
-import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
+import it.albertus.eqbulletin.config.TimeZoneConfig;
 import it.albertus.eqbulletin.gui.EarthquakeBulletinGui;
 import it.albertus.eqbulletin.gui.Images;
-import it.albertus.eqbulletin.gui.ResultsTable;
-import it.albertus.eqbulletin.gui.preference.Preference;
 import it.albertus.eqbulletin.model.Earthquake;
 import it.albertus.eqbulletin.resources.Leaflet;
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.jface.maps.MapMarker;
 import it.albertus.jface.maps.leaflet.LeafletMapControl;
 import it.albertus.jface.maps.leaflet.LeafletMapDialog;
-import it.albertus.jface.preference.IPreferencesConfiguration;
-import it.albertus.util.NewLine;
 
 public class EpicenterMapSelectionListener extends SelectionAdapter {
 
 	private static final int DEFAULT_ZOOM_LEVEL = 6;
-
-	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getInstance();
 
 	private final EarthquakeBulletinGui gui;
 
@@ -54,16 +44,10 @@ public class EpicenterMapSelectionListener extends SelectionAdapter {
 			epicenterMapDialog.getOptions().setCenterLat(latitude);
 			epicenterMapDialog.getOptions().setCenterLng(longitude);
 
-			final StringBuilder title = new StringBuilder("M ");
-			title.append(selection.getMagnitude()).append(", ").append(selection.getRegion());
-			title.append(NewLine.SYSTEM_LINE_SEPARATOR);
-			final DateFormat df = ResultsTable.dateFormats.get();
-			df.setTimeZone(TimeZone.getTimeZone(configuration.getString(Preference.TIMEZONE, EarthquakeBulletin.Defaults.TIME_ZONE_ID)));
-			title.append(df.format(selection.getTime())).append(' ');
-			title.append(selection.getLatitude()).append(' ');
-			title.append(selection.getLongitude()).append(' ');
-			title.append(selection.getDepth()).append(' ');
-			title.append(selection.getStatus());
+			final StringBuilder title = new StringBuilder();
+			title.append(selection.getSummary());
+			title.append(System.lineSeparator());
+			title.append(selection.getDetails(TimeZoneConfig.getZoneId()));
 
 			epicenterMapDialog.getMarkers().add(new MapMarker(latitude, longitude, title.toString()));
 			epicenterMapDialog.open();

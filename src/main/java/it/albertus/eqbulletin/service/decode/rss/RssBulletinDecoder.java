@@ -1,15 +1,14 @@
 package it.albertus.eqbulletin.service.decode.rss;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.temporal.ChronoField;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -28,20 +27,7 @@ public class RssBulletinDecoder {
 
 	private static final Logger logger = LoggerFactory.getLogger(RssBulletinDecoder.class);
 
-	private static final ThreadLocal<DateFormat> rssDateFormat = ThreadLocal.withInitial(() -> {
-		final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-		return dateFormat;
-	});
-
-	private static Date parseRssDate(final String source) {
-		try {
-			return rssDateFormat.get().parse(source);
-		}
-		catch (final ParseException pe) {
-			throw new IllegalArgumentException(pe);
-		}
-	}
+	private static final DateTimeFormatter dateTimeFormatter = new DateTimeFormatterBuilder().appendPattern("yyyy-MM-dd HH:mm:ss").parseDefaulting(ChronoField.MILLI_OF_SECOND, 0).toFormatter().withZone(ZoneOffset.UTC);
 
 	public static List<Earthquake> decode(final RssBulletin data) {
 		final List<Earthquake> earthquakes = new ArrayList<>();
@@ -63,40 +49,39 @@ public class RssBulletinDecoder {
 
 		// Description
 		final String[] descriptionTokens = item.getDescription().split("\\s+");
-		final Calendar time = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-		time.setTime(parseRssDate(descriptionTokens[0].trim() + ' ' + descriptionTokens[1].trim()));
+		final ZonedDateTime time = dateTimeFormatter.parse(descriptionTokens[0].trim() + ' ' + descriptionTokens[1].trim(), ZonedDateTime::from);
 		final float latitude = Float.parseFloat(descriptionTokens[2].trim());
 		final float longitude = Float.parseFloat(descriptionTokens[3].trim());
 		final short depth = Short.parseShort(descriptionTokens[4].trim());
 		final Status status = Status.valueOf(descriptionTokens[6].trim());
 
 		// Links
-		URL link = null;
+		URI link = null;
 		final String pageUrl = item.getLink();
 		if (pageUrl != null) {
 			try {
-				link = new URL(pageUrl.trim());
+				link = new URI(pageUrl.trim());
 			}
-			catch (final MalformedURLException e) {
+			catch (final URISyntaxException e) {
 				logger.log(Level.WARNING, Messages.get("err.url.malformed", pageUrl), e);
 			}
 		}
 
-		URL enclosure = null;
+		URI enclosure = null;
 		final String imageUrl = item.getEnclosure() != null ? item.getEnclosure().getUrl() : null;
 		if (imageUrl != null) {
 			try {
-				enclosure = new URL(imageUrl.trim());
+				enclosure = new URI(imageUrl.trim());
 			}
-			catch (final MalformedURLException e) {
+			catch (final URISyntaxException e) {
 				logger.log(Level.WARNING, Messages.get("err.url.malformed", imageUrl), e);
 			}
 		}
 
-		final Earthquake earthquake = new Earthquake(guid, time.getTime(), magnitudo, new Latitude(latitude), new Longitude(longitude), new Depth(depth), status, region, link, enclosure);
+		final Earthquake earthquake = new Earthquake(guid, time, magnitudo, new Latitude(latitude), new Longitude(longitude), new Depth(depth), status, region, link, enclosure);
 
 		if (item.getMt() != null && "yes".equalsIgnoreCase(item.getMt().trim())) {
-			earthquake.setMomentTensorUrl(GeofonUtils.getEventMomentTensorUrl(guid, time.get(Calendar.YEAR)));
+			earthquake.setMomentTensorUri(GeofonUtils.getEventMomentTensorUri(guid, time.get(ChronoField.YEAR)));
 		}
 
 		return earthquake;

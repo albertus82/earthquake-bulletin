@@ -16,6 +16,7 @@ import java.util.zip.GZIPInputStream;
 
 import com.sun.net.httpserver.Headers;
 
+import it.albertus.eqbulletin.model.Bulletin;
 import it.albertus.eqbulletin.model.Earthquake;
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.eqbulletin.service.SearchRequest;
@@ -31,9 +32,9 @@ public class HtmlBulletinDownloader implements BulletinDownloader {
 	private InputStream connectionInputStream;
 
 	@Override
-	public Optional<Collection<Earthquake>> download(final SearchRequest request, final BooleanSupplier canceled) throws FetchException, DecodeException {
+	public Optional<Bulletin> download(final SearchRequest request, final BooleanSupplier canceled) throws FetchException, DecodeException {
 		try {
-			return Optional.of(doDownload(request, canceled));
+			return Optional.of(new Bulletin(doDownload(request, canceled)));
 		}
 		catch (final CancelException e) {
 			logger.log(Level.FINE, "Operation canceled:", e);

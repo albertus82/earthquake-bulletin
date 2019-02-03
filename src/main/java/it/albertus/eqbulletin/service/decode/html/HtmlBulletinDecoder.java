@@ -1,14 +1,13 @@
 package it.albertus.eqbulletin.service.decode.html;
 
-import java.net.URL;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.net.URI;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.temporal.ChronoField;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 
 import it.albertus.eqbulletin.model.Depth;
 import it.albertus.eqbulletin.model.Earthquake;
@@ -40,20 +39,7 @@ public class HtmlBulletinDecoder {
 	private static final String REGION_PREFIX = STATUS_PREFIX;
 	private static final String REGION_SUFFIX = MAGNITUDE_SUFFIX;
 
-	private static final ThreadLocal<DateFormat> htmlDateFormat = ThreadLocal.withInitial(() -> {
-		final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-		return dateFormat;
-	});
-
-	private static Date parseHtmlDate(final String source) {
-		try {
-			return htmlDateFormat.get().parse(source);
-		}
-		catch (final ParseException pe) {
-			throw new IllegalArgumentException(pe);
-		}
-	}
+	private static final DateTimeFormatter dateTimeFormatter = new DateTimeFormatterBuilder().appendPattern("yyyy-MM-dd HH:mm:ss").parseDefaulting(ChronoField.MILLI_OF_SECOND, 0).toFormatter().withZone(ZoneOffset.UTC);
 
 	public static List<Earthquake> decode(final HtmlBulletin data) {
 		final List<Earthquake> earthquakes = new ArrayList<>();
@@ -69,10 +55,9 @@ public class HtmlBulletinDecoder {
 
 	private static Earthquake decodeItem(final String td) {
 		try {
-			final String[] lines = td.split(NewLine.SYSTEM_LINE_SEPARATOR);
+			final String[] lines = td.split("[" + NewLine.CRLF + "]+");
 
-			final Calendar time = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-			time.setTime(parseHtmlDate(lines[0].substring(lines[0].lastIndexOf(TIME_PREFIX) + TIME_PREFIX.length(), lines[0].indexOf(TIME_SUFFIX)).trim()));
+			final ZonedDateTime time = dateTimeFormatter.parse(lines[0].substring(lines[0].lastIndexOf(TIME_PREFIX) + TIME_PREFIX.length(), lines[0].indexOf(TIME_SUFFIX)).trim(), ZonedDateTime::from);
 
 			final String guid = lines[0].substring(lines[0].indexOf(GUID_PREFIX) + GUID_PREFIX.length(), lines[0].lastIndexOf(GUID_SUFFIX)).trim();
 
@@ -91,13 +76,13 @@ public class HtmlBulletinDecoder {
 			final Status status = Status.valueOf(lines[5].substring(lines[5].lastIndexOf(STATUS_PREFIX) + STATUS_PREFIX.length(), lines[5].indexOf(STATUS_SUFFIX)).trim());
 			final String region = lines[6].substring(lines[6].lastIndexOf(REGION_PREFIX) + REGION_PREFIX.length(), lines[6].lastIndexOf(REGION_SUFFIX)).trim();
 
-			final URL link = GeofonUtils.getEventPageUrl(guid);
-			final URL enclosure = GeofonUtils.getEventMapUrl(guid, time.get(Calendar.YEAR));
+			final URI link = GeofonUtils.getEventPageUri(guid);
+			final URI enclosure = GeofonUtils.getEventMapUri(guid, time.get(ChronoField.YEAR));
 
-			final Earthquake earthquake = new Earthquake(guid, time.getTime(), magnitude, new Latitude(latitude), new Longitude(longitude), new Depth(depth), status, region, link, enclosure);
+			final Earthquake earthquake = new Earthquake(guid, time, magnitude, new Latitude(latitude), new Longitude(longitude), new Depth(depth), status, region, link, enclosure);
 
 			if (lines[6].contains(GeofonUtils.MOMENT_TENSOR_FILENAME) || lines.length > 7 && lines[7].contains(GeofonUtils.MOMENT_TENSOR_FILENAME)) {
-				earthquake.setMomentTensorUrl(GeofonUtils.getEventMomentTensorUrl(guid, time.get(Calendar.YEAR)));
+				earthquake.setMomentTensorUri(GeofonUtils.getEventMomentTensorUri(guid, time.get(ChronoField.YEAR)));
 			}
 
 			return earthquake;

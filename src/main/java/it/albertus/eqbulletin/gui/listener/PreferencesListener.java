@@ -13,8 +13,8 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 
-import it.albertus.eqbulletin.EarthquakeBulletin;
 import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
+import it.albertus.eqbulletin.config.TimeZoneConfig;
 import it.albertus.eqbulletin.gui.EarthquakeBulletinGui;
 import it.albertus.eqbulletin.gui.Images;
 import it.albertus.eqbulletin.gui.MapCanvas;
@@ -43,7 +43,7 @@ public class PreferencesListener extends SelectionAdapter implements Listener {
 	@Override
 	public void widgetSelected(final SelectionEvent event) {
 		final Language language = Messages.getLanguage();
-		final String timezone = configuration.getString(Preference.TIMEZONE, EarthquakeBulletin.Defaults.TIME_ZONE_ID);
+		final String timezone = configuration.getString(Preference.TIMEZONE, TimeZoneConfig.DEFAULT_ZONE_ID);
 		final float magnitudeBig = configuration.getFloat(Preference.MAGNITUDE_BIG, ResultsTable.Defaults.MAGNITUDE_BIG);
 		final float magnitudeXxl = configuration.getFloat(Preference.MAGNITUDE_XXL, ResultsTable.Defaults.MAGNITUDE_XXL);
 		final short mapZoomLevel = configuration.getShort(Preference.MAP_ZOOM_LEVEL, MapCanvas.Defaults.MAP_ZOOM_LEVEL);
@@ -66,7 +66,7 @@ public class PreferencesListener extends SelectionAdapter implements Listener {
 		}
 
 		// Check if time zone has changed...
-		if (magnitudeBig != configuration.getFloat(Preference.MAGNITUDE_BIG, ResultsTable.Defaults.MAGNITUDE_BIG) || magnitudeXxl != configuration.getFloat(Preference.MAGNITUDE_XXL, ResultsTable.Defaults.MAGNITUDE_XXL) || !timezone.equals(configuration.getString(Preference.TIMEZONE, EarthquakeBulletin.Defaults.TIME_ZONE_ID))) {
+		if (magnitudeBig != configuration.getFloat(Preference.MAGNITUDE_BIG, ResultsTable.Defaults.MAGNITUDE_BIG) || magnitudeXxl != configuration.getFloat(Preference.MAGNITUDE_XXL, ResultsTable.Defaults.MAGNITUDE_XXL) || !timezone.equals(configuration.getString(Preference.TIMEZONE, TimeZoneConfig.DEFAULT_ZONE_ID))) {
 			gui.updateTimeZone();
 		}
 

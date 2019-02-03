@@ -18,8 +18,8 @@ public class EventMenuListener implements ArmMenuListener {
 	public void menuArmed(final TypedEvent e) {
 		final Earthquake selection = (Earthquake) gui.getResultsTable().getTableViewer().getStructuredSelection().getFirstElement();
 		final MenuBar menuBar = gui.getMenuBar();
-		menuBar.getShowMapMenuItem().setEnabled(selection != null && selection.getEnclosureUrl() != null);
-		menuBar.getShowMomentTensorMenuItem().setEnabled(selection != null && selection.getMomentTensorUrl() != null);
+		menuBar.getShowMapMenuItem().setEnabled(selection != null && selection.getEnclosureUri() != null);
+		menuBar.getShowMomentTensorMenuItem().setEnabled(selection != null && selection.getMomentTensorUri() != null);
 		menuBar.getCopyLinkMenuItem().setEnabled(selection != null && selection.getLink() != null);
 		menuBar.getOpenBrowserMenuItem().setEnabled(selection != null && selection.getLink() != null);
 		menuBar.getGoogleMapsBrowserMenuItem().setEnabled(selection != null);

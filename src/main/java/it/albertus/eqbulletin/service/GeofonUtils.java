@@ -1,7 +1,7 @@
 package it.albertus.eqbulletin.service;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,34 +22,34 @@ public class GeofonUtils {
 
 	private static final PreferencesConfiguration configuration = EarthquakeBulletinConfig.getInstance();
 
-	public static URL getEventPageUrl(final String guid) {
+	public static URI getEventPageUri(final String guid) {
 		final String spec = getBaseUrl() + "/eqinfo/event.php?id=" + guid;
 		try {
-			return new URL(spec);
+			return new URI(spec);
 		}
-		catch (final MalformedURLException e) {
+		catch (final URISyntaxException e) {
 			logger.log(Level.WARNING, Messages.get(MSG_KEY_ERR_URL_MALFORMED, spec), e);
 			return null;
 		}
 	}
 
-	public static URL getEventMapUrl(final String guid, final int year) {
+	public static URI getEventMapUri(final String guid, final int year) {
 		final String spec = getEventBaseUrl(guid, year) + guid + ".jpg";
 		try {
-			return new URL(spec);
+			return new URI(spec);
 		}
-		catch (final MalformedURLException e) {
+		catch (final URISyntaxException e) {
 			logger.log(Level.WARNING, Messages.get(MSG_KEY_ERR_URL_MALFORMED, spec), e);
 			return null;
 		}
 	}
 
-	public static URL getEventMomentTensorUrl(final String guid, final int year) {
+	public static URI getEventMomentTensorUri(final String guid, final int year) {
 		final String spec = getEventBaseUrl(guid, year) + MOMENT_TENSOR_FILENAME;
 		try {
-			return new URL(spec);
+			return new URI(spec);
 		}
-		catch (final MalformedURLException e) {
+		catch (final URISyntaxException e) {
 			logger.log(Level.WARNING, Messages.get(MSG_KEY_ERR_URL_MALFORMED, spec), e);
 			return null;
 		}

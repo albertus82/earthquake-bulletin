@@ -1,7 +1,10 @@
 package it.albertus.eqbulletin.gui;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -86,12 +89,6 @@ public class SearchForm implements IShellProvider, Multilanguage {
 	private static final String MSG_KEY_ERR_INTEGER_MIN = "err.preferences.integer.min";
 	private static final String MSG_KEY_ERR_INTEGER_RANGE = "err.preferences.integer.range";
 	private static final String MSG_KEY_ERR_DECIMAL_RANGE = "err.preferences.decimal.range";
-
-	private static final ThreadLocal<DateFormat> dateFormat = ThreadLocal.withInitial(() -> {
-		final DateFormat df = new SimpleDateFormat(DATE_PATTERN);
-		df.setLenient(false);
-		return df;
-	});
 
 	public static class Defaults {
 		public static final boolean AUTOREFRESH_ENABLED = false;
@@ -458,10 +455,10 @@ public class SearchForm implements IShellProvider, Multilanguage {
 		final String dateStr = configuration.getString(preference);
 		if (dateStr != null && !dateStr.trim().isEmpty()) {
 			try {
-				final DateFormat df = dateFormat.get();
-				value = df.parse(dateStr);
+				final DateTimeFormatter dateTimeFormatter = new DateTimeFormatterBuilder().appendPattern(DATE_PATTERN).parseDefaulting(ChronoField.HOUR_OF_DAY, 0).toFormatter().withZone(ZoneOffset.UTC);
+				value = Date.from(dateTimeFormatter.parse(dateStr, Instant::from));
 			}
-			catch (final Exception e) {
+			catch (final RuntimeException e) {
 				logger.log(Level.WARNING, e.toString(), e);
 			}
 		}

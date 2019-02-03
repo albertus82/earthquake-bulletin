@@ -20,8 +20,8 @@ public class ResultsTableContextMenuDetectListener implements MenuDetectListener
 	public void menuDetected(final MenuDetectEvent mde) {
 		final Earthquake selection = (Earthquake) resultsTable.getTableViewer().getStructuredSelection().getFirstElement();
 		final ContextMenu contextMenu = resultsTable.getContextMenu();
-		contextMenu.getShowMapMenuItem().setEnabled(selection != null && selection.getEnclosureUrl() != null);
-		contextMenu.getShowMomentTensorMenuItem().setEnabled(selection != null && selection.getMomentTensorUrl() != null);
+		contextMenu.getShowMapMenuItem().setEnabled(selection != null && selection.getEnclosureUri() != null);
+		contextMenu.getShowMomentTensorMenuItem().setEnabled(selection != null && selection.getMomentTensorUri() != null);
 		contextMenu.getCopyLinkMenuItem().setEnabled(selection != null && selection.getLink() != null);
 		contextMenu.getOpenBrowserMenuItem().setEnabled(selection != null && selection.getLink() != null);
 		contextMenu.getGoogleMapsBrowserMenuItem().setEnabled(selection != null);

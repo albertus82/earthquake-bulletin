@@ -1,26 +1,32 @@
 package it.albertus.eqbulletin.model;
 
 import java.io.Serializable;
-import java.net.URL;
-import java.util.Date;
+import java.net.URI;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 public class Earthquake implements Serializable, Comparable<Earthquake> {
 
-	private static final long serialVersionUID = -8121452375652796685L;
+	private static final long serialVersionUID = -6959335170582499256L;
+
+	private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z");
 
 	private final String guid;
-	private final Date time;
+	private final ZonedDateTime time;
 	private final float magnitude;
 	private final Latitude latitude;
 	private final Longitude longitude;
 	private final Depth depth;
 	private final Status status;
-	private URL momentTensorUrl;
 	private final String region;
-	private final URL link;
-	private final URL enclosureUrl;
+	private final URI link;
+	private final URI enclosureUri;
+	private URI momentTensorUri;
 
-	public Earthquake(String guid, Date time, float magnitude, Latitude latitude, Longitude longitude, Depth depth, Status status, String region, URL link, URL enclosureUrl) {
+	public Earthquake(final String guid, final ZonedDateTime time, final float magnitude, final Latitude latitude, final Longitude longitude, final Depth depth, final Status status, final String region, final URI link, final URI enclosureUri) {
 		this.guid = guid;
 		this.time = time;
 		this.magnitude = magnitude;
@@ -30,14 +36,22 @@ public class Earthquake implements Serializable, Comparable<Earthquake> {
 		this.status = status;
 		this.region = region;
 		this.link = link;
-		this.enclosureUrl = enclosureUrl;
+		this.enclosureUri = enclosureUri;
+	}
+
+	public URI getMomentTensorUri() {
+		return momentTensorUri;
+	}
+
+	public void setMomentTensorUri(final URI momentTensorUri) {
+		this.momentTensorUri = momentTensorUri;
 	}
 
 	public String getGuid() {
 		return guid;
 	}
 
-	public Date getTime() {
+	public ZonedDateTime getTime() {
 		return time;
 	}
 
@@ -61,41 +75,21 @@ public class Earthquake implements Serializable, Comparable<Earthquake> {
 		return status;
 	}
 
-	public URL getMomentTensorUrl() {
-		return momentTensorUrl;
-	}
-
-	public void setMomentTensorUrl(final URL momentTensorUrl) {
-		this.momentTensorUrl = momentTensorUrl;
-	}
-
 	public String getRegion() {
 		return region;
 	}
 
-	public URL getLink() {
+	public URI getLink() {
 		return link;
 	}
 
-	public URL getEnclosureUrl() {
-		return enclosureUrl;
-	}
-
-	public String getGoogleMapsUrl() {
-		return "https://maps.google.com/maps?q=" + Float.toString(Math.abs(latitude.getValue())) + (latitude.getValue() < 0 ? 'S' : 'N') + "," + Float.toString(Math.abs(longitude.getValue())) + (longitude.getValue() < 0 ? 'W' : 'E');
-	}
-
-	@Override
-	public String toString() {
-		return "Earthquake [guid=" + guid + ", time=" + time + ", magnitude=" + magnitude + ", latitude=" + latitude + ", longitude=" + longitude + ", depth=" + depth + ", status=" + status + ", momentTensorUrl=" + momentTensorUrl + ", region=" + region + ", link=" + link + ", enclosureUrl=" + enclosureUrl + "]";
+	public URI getEnclosureUri() {
+		return enclosureUri;
 	}
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((guid == null) ? 0 : guid.hashCode());
-		return result;
+		return Objects.hash(depth, enclosureUri, guid, latitude, link, longitude, magnitude, momentTensorUri, region, status, time);
 	}
 
 	@Override
@@ -109,16 +103,8 @@ public class Earthquake implements Serializable, Comparable<Earthquake> {
 		if (!(obj instanceof Earthquake)) {
 			return false;
 		}
-		Earthquake other = (Earthquake) obj;
-		if (guid == null) {
-			if (other.guid != null) {
-				return false;
-			}
-		}
-		else if (!guid.equals(other.guid)) {
-			return false;
-		}
-		return true;
+		final Earthquake other = (Earthquake) obj;
+		return Objects.equals(depth, other.depth) && Objects.equals(enclosureUri, other.enclosureUri) && Objects.equals(guid, other.guid) && Objects.equals(latitude, other.latitude) && Objects.equals(link, other.link) && Objects.equals(longitude, other.longitude) && Float.floatToIntBits(magnitude) == Float.floatToIntBits(other.magnitude) && Objects.equals(momentTensorUri, other.momentTensorUri) && Objects.equals(region, other.region) && status == other.status && Objects.equals(time, other.time);
 	}
 
 	/** The natural order is by time descending */
@@ -130,6 +116,23 @@ public class Earthquake implements Serializable, Comparable<Earthquake> {
 		else {
 			return o.time.compareTo(this.time);
 		}
+	}
+
+	@Override
+	public String toString() {
+		return "Earthquake [guid=" + guid + ", summary=" + getSummary() + ", details=" + getDetails() + "]";
+	}
+
+	public String getSummary() {
+		return String.format("M %s, %s", magnitude, region).trim();
+	}
+
+	public String getDetails(final ZoneId timeZone) {
+		return String.format("%s %s %s %s %s", dateTimeFormatter.withZone(timeZone).format(time), latitude, longitude, depth, status).trim();
+	}
+
+	private String getDetails() {
+		return getDetails(ZoneOffset.UTC);
 	}
 
 }

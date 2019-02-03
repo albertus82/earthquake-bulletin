@@ -33,11 +33,8 @@ abstract class FloatValue extends Number implements Comparable<FloatValue> {
 		if (!(obj instanceof FloatValue)) {
 			return false;
 		}
-		FloatValue other = (FloatValue) obj;
-		if (Float.floatToIntBits(value) != Float.floatToIntBits(other.value)) {
-			return false;
-		}
-		return true;
+		final FloatValue other = (FloatValue) obj;
+		return Float.floatToIntBits(value) == Float.floatToIntBits(other.value);
 	}
 
 	@Override

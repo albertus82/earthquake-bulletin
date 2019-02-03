@@ -1,10 +1,9 @@
 package it.albertus.eqbulletin.service;
 
-import java.util.Collection;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
 
-import it.albertus.eqbulletin.model.Earthquake;
+import it.albertus.eqbulletin.model.Bulletin;
 import it.albertus.eqbulletin.service.decode.DecodeException;
 import it.albertus.eqbulletin.service.net.BulletinDownloader;
 import it.albertus.eqbulletin.service.net.FetchException;
@@ -16,7 +15,7 @@ public class GeofonBulletinProvider implements BulletinProvider {
 	private BulletinDownloader downloader;
 
 	@Override
-	public Optional<Collection<Earthquake>> getEarthquakes(final SearchRequest request, final BooleanSupplier canceled) throws FetchException, DecodeException {
+	public Optional<Bulletin> getBulletin(final SearchRequest request, final BooleanSupplier canceled) throws FetchException, DecodeException {
 		switch (request.getFormat()) {
 		case HTML:
 			downloader = new HtmlBulletinDownloader();

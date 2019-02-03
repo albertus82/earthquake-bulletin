@@ -140,7 +140,7 @@ public class MomentTensorDialog extends Dialog {
 	public static synchronized void updateMomentTensorText(final MomentTensor momentTensor, final Earthquake earthquake) {
 		int count = 0;
 		for (final MomentTensorDialog instance : instances) {
-			if (earthquake.equals(instance.earthquake)) {
+			if (instance.earthquake != null && earthquake.getGuid().equals(instance.earthquake.getGuid())) {
 				logger.log(Level.FINE, "Updating moment tensor dialog instance {0}...", instance);
 				instance.momentTensor = momentTensor; // Useful when the Text field is not initialized.
 				if (instance.text != null && !instance.text.isDisposed()) {

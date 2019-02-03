@@ -1,6 +1,5 @@
 package it.albertus.eqbulletin.service.job;
 
-import java.util.Collection;
 import java.util.Optional;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -8,7 +7,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 
-import it.albertus.eqbulletin.model.Earthquake;
+import it.albertus.eqbulletin.model.Bulletin;
 import it.albertus.eqbulletin.service.BulletinProvider;
 import it.albertus.eqbulletin.service.SearchRequest;
 import it.albertus.eqbulletin.service.decode.DecodeException;
@@ -21,7 +20,7 @@ public class SearchJob extends Job {
 
 	private volatile boolean canceled;
 
-	private Optional<Collection<Earthquake>> earthquakes = Optional.empty();
+	private Optional<Bulletin> bulletin = Optional.empty();
 
 	public SearchJob(final SearchRequest request, final BulletinProvider provider) {
 		super(SearchJob.class.getSimpleName());
@@ -34,7 +33,7 @@ public class SearchJob extends Job {
 	protected IStatus run(final IProgressMonitor monitor) {
 		monitor.beginTask(getName(), IProgressMonitor.UNKNOWN);
 		try {
-			earthquakes = provider.getEarthquakes(request, monitor::isCanceled);
+			bulletin = provider.getBulletin(request, monitor::isCanceled);
 			monitor.done();
 			return Status.OK_STATUS;
 		}
@@ -46,8 +45,8 @@ public class SearchJob extends Job {
 		}
 	}
 
-	public Optional<Collection<Earthquake>> getEarthquakes() {
-		return earthquakes;
+	public Optional<Bulletin> getBulletin() {
+		return bulletin;
 	}
 
 	@Override

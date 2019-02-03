@@ -362,7 +362,7 @@ public class MapCanvas implements IShellProvider, Multilanguage {
 	}
 
 	public static synchronized void updateMapImage(final MapImage mapImage, final Earthquake earthquake) {
-		if (instance != null && earthquake.equals(instance.earthquake)) { // Only if the provided image belongs to the current earthquake.
+		if (instance != null && instance.earthquake != null && earthquake.getGuid().equals(instance.earthquake.getGuid())) { // Only if the provided image belongs to the current earthquake.
 			logger.log(Level.FINE, "Updating map image canvas for {0}...", earthquake);
 			update(mapImage, earthquake);
 		}
