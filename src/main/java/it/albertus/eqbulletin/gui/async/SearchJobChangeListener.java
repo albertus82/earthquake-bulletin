@@ -94,13 +94,10 @@ class SearchJobChangeListener extends JobChangeAdapter {
 		final MapCanvas map = gui.getMapCanvas();
 		final StatusBar bar = gui.getStatusBar();
 
-		final Earthquake[] oldDataArray = (Earthquake[]) table.getTableViewer().getInput();
-		if (Arrays.equals(oldDataArray, newDataArray)) {
-			logger.fine("Data has not changed, skipping table update.");
-		}
-		else {
-			logger.fine("Data has changed, performing table update.");
-			new DisplayThreadExecutor(table.getShell(), ASYNC).execute(() -> {
+		new DisplayThreadExecutor(table.getShell(), ASYNC).execute(() -> {
+			final Earthquake[] oldDataArray = (Earthquake[]) table.getTableViewer().getInput();
+			if (!Arrays.equals(oldDataArray, newDataArray)) {
+				logger.fine("Data has changed, performing table update.");
 				table.getTableViewer().setInput(newDataArray);
 				icon.updateToolTipText(newDataArray.length > 0 ? newDataArray[0] : null);
 				if (map.getEarthquake() != null && !events.contains(map.getEarthquake())) {
@@ -109,11 +106,11 @@ class SearchJobChangeListener extends JobChangeAdapter {
 				if (oldDataArray != null && newDataArray.length > 0 && newDataArray[0] != null && oldDataArray.length > 0 && !newDataArray[0].getGuid().equals(oldDataArray[0].getGuid()) && icon.getTrayItem() != null && icon.getTrayItem().getVisible()) {
 					icon.showBalloonToolTip(newDataArray[0]);
 				}
-				bar.setLastUpdateTime(bulletin.getInstant());
-				bar.setItemCount(events.size());
-				bar.refresh();
-			});
-		}
+			}
+			bar.setLastUpdateTime(bulletin.getInstant());
+			bar.setItemCount(events.size());
+			bar.refresh();
+		});
 	}
 
 	private static void showErrorDialog(final AsyncOperationException e, final TrayIcon trayIcon) {
