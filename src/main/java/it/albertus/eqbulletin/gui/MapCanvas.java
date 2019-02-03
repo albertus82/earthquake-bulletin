@@ -115,7 +115,6 @@ public class MapCanvas implements IShellProvider, Multilanguage {
 		}
 
 		zoomSubMenu.addMenuListener(new MenuAdapter() {
-
 			@Override
 			public void menuShown(final MenuEvent e) {
 				for (final Entry<Integer, MenuItem> entry : zoomSubMenuItems.entrySet()) {

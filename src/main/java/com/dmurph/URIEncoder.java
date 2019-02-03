@@ -9,7 +9,7 @@ package com.dmurph;
  */
 public class URIEncoder {
 
-	private static final String mark = "-_.!~*'()\"";
+	private static final String MARK = "-_.!~*'()\"";
 	private static final char[] hex = "0123456789ABCDEF".toCharArray();
 
 	private URIEncoder() {
@@ -22,7 +22,7 @@ public class URIEncoder {
 		char[] chars = argString.toCharArray();
 		for (int i = 0; i < chars.length; i++) {
 			char c = chars[i];
-			if ((c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || mark.indexOf(c) != -1) {
+			if ((c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || MARK.indexOf(c) != -1) {
 				uri.append(c);
 			}
 			else {
