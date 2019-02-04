@@ -16,6 +16,8 @@ import it.albertus.util.logging.LoggerFactory;
 
 public class GoogleMapsBrowserSelectionListener extends SelectionAdapter {
 
+	private static final byte ZOOM_LEVEL = 6;
+
 	private static final Logger logger = LoggerFactory.getLogger(GoogleMapsBrowserSelectionListener.class);
 
 	private final EarthquakeBulletinGui gui;
@@ -38,7 +40,7 @@ public class GoogleMapsBrowserSelectionListener extends SelectionAdapter {
 	}
 
 	private static URI getGoogleMapsUri(final Earthquake event) throws URISyntaxException {
-		return new URI(String.format("https://maps.google.com/maps?q=%s,%s&ll=%s,%s&z=6", event.getLatitude().getValue(), event.getLongitude().getValue(), event.getLatitude().getValue(), event.getLongitude().getValue()));
+		return new URI(String.format("https://maps.google.com/maps?q=%s,%s&ll=%s,%s&z=%d", event.getLatitude().getValue(), event.getLongitude().getValue(), event.getLatitude().getValue(), event.getLongitude().getValue(), ZOOM_LEVEL));
 	}
 
 }
