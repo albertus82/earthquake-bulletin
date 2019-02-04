@@ -128,12 +128,12 @@ public class Earthquake implements Serializable, Comparable<Earthquake> {
 	}
 
 	public String getSummary() {
-		return String.format("M %s, %s", magnitude, region).trim();
+		return new StringBuilder("M ").append(magnitude).append(", ").append(region).toString().trim();
 	}
 
 	public String getDetails(final ZoneId timeZone) {
 		final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z").withZone(timeZone);
-		return String.format("%s %s %s %s %s", dateTimeFormatter.format(time), latitude, longitude, depth, status).trim();
+		return new StringBuilder(dateTimeFormatter.format(time)).append(' ').append(latitude).append(' ').append(longitude).append(' ').append(depth).append(' ').append(status).toString();
 	}
 
 	private String getDetails() {
