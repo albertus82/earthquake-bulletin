@@ -90,6 +90,7 @@ public class CacheManager<T extends Cache<?, ?>> {
 		protected Class<?> resolveClass(final ObjectStreamClass desc) throws IOException, ClassNotFoundException {
 			if (first) {
 				if (clazz.getName().equals(desc.getName())) {
+					logger.log(Level.FINE, "Deserialization allowed: {0}", desc);
 					first = false;
 				}
 				else {
