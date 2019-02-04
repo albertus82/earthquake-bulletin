@@ -4,12 +4,16 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InvalidClassException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.ObjectStreamClass;
 import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -40,7 +44,7 @@ public class CacheManager<T extends Cache<?, ?>> {
 	T deserialize(final String pathname, final Class<T> clazz) {
 		final File file = new File(pathname);
 		if (file.isFile()) {
-			try (final FileInputStream fis = new FileInputStream(file); final ObjectInputStream ois = new ObjectInputStream(fis)) {
+			try (final FileInputStream fis = new FileInputStream(file); final ObjectInputStream ois = new LookAheadObjectInputStream(fis, clazz)) {
 				logger.log(Level.CONFIG, "Deserializing cache object from \"{0}\"...", file);
 				@SuppressWarnings("unchecked")
 				final T deserialized = (T) ois.readObject();
@@ -68,6 +72,31 @@ public class CacheManager<T extends Cache<?, ?>> {
 		}
 		catch (final IOException e) {
 			logger.log(Level.WARNING, "Cannot delete cache file \"" + path + "\":", e);
+		}
+	}
+
+	private class LookAheadObjectInputStream extends ObjectInputStream {
+
+		private final Class<T> clazz;
+		private boolean first = true;
+
+		private LookAheadObjectInputStream(final InputStream in, final Class<T> clazz) throws IOException {
+			super(in);
+			Objects.requireNonNull(clazz);
+			this.clazz = clazz;
+		}
+
+		@Override
+		protected Class<?> resolveClass(final ObjectStreamClass desc) throws IOException, ClassNotFoundException {
+			if (first) {
+				if (clazz.getName().equals(desc.getName())) {
+					first = false;
+				}
+				else {
+					throw new InvalidClassException(desc.getName());
+				}
+			}
+			return super.resolveClass(desc);
 		}
 	}
 
