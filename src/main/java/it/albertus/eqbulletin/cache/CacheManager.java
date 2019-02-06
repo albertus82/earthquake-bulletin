@@ -1,14 +1,19 @@
 package it.albertus.eqbulletin.cache;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InvalidClassException;
+import java.io.ObjectInput;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.ObjectStreamClass;
+import java.io.OutputStream;
 import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -30,9 +35,9 @@ public class CacheManager<T extends Cache<?, ?>> {
 		if (instance != null) {
 			final File file = new File(pathname);
 			file.getParentFile().mkdirs();
-			try (final FileOutputStream fos = new FileOutputStream(file); final ObjectOutputStream oos = new ObjectOutputStream(fos)) {
+			try (final OutputStream fos = new FileOutputStream(file); final OutputStream bos = new BufferedOutputStream(fos); final ObjectOutput oo = new ObjectOutputStream(bos)) {
 				logger.log(Level.CONFIG, "Serializing {0} to \"{1}\"...", new Serializable[] { instance, file });
-				oos.writeObject(instance);
+				oo.writeObject(instance);
 				logger.log(Level.CONFIG, "{0} serialized successfully.", instance);
 			}
 			catch (final IOException e) {
@@ -44,10 +49,10 @@ public class CacheManager<T extends Cache<?, ?>> {
 	T deserialize(final String pathname, final Class<T> clazz) {
 		final File file = new File(pathname);
 		if (file.isFile()) {
-			try (final FileInputStream fis = new FileInputStream(file); final ObjectInputStream ois = new LookAheadObjectInputStream(fis, clazz)) {
+			try (final InputStream fis = new FileInputStream(file); final InputStream bis = new BufferedInputStream(fis); final ObjectInput oi = new LookAheadObjectInputStream(bis, clazz)) {
 				logger.log(Level.CONFIG, "Deserializing cache object from \"{0}\"...", file);
 				@SuppressWarnings("unchecked")
-				final T deserialized = (T) ois.readObject();
+				final T deserialized = (T) oi.readObject();
 				if (clazz.isInstance(deserialized)) {
 					logger.log(Level.CONFIG, "{0} deserialized successfully.", deserialized);
 					return deserialized;
