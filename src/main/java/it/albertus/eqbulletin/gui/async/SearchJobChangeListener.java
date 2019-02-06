@@ -100,7 +100,7 @@ class SearchJobChangeListener extends JobChangeAdapter {
 				logger.fine("Data has changed, performing table update.");
 				table.getTableViewer().setInput(newDataArray);
 				icon.updateToolTipText(newDataArray.length > 0 ? newDataArray[0] : null);
-				if (map.getEarthquake() != null && !events.contains(map.getEarthquake())) {
+				if (!eventsContainsMapEvent(events, map)) {
 					map.clear();
 				}
 				if (oldDataArray != null && newDataArray.length > 0 && newDataArray[0] != null && oldDataArray.length > 0 && !newDataArray[0].getGuid().equals(oldDataArray[0].getGuid()) && icon.getTrayItem() != null && icon.getTrayItem().getVisible()) {
@@ -111,6 +111,20 @@ class SearchJobChangeListener extends JobChangeAdapter {
 			bar.setItemCount(events.size());
 			bar.refresh();
 		});
+	}
+
+	private static boolean eventsContainsMapEvent(final Iterable<Earthquake> events, final MapCanvas mapCanvas) {
+		if (mapCanvas != null) {
+			final Earthquake mapEvent = mapCanvas.getEarthquake();
+			if (mapEvent != null) {
+				for (final Earthquake event : events) {
+					if (mapEvent.getGuid().equals(event.getGuid())) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
 	}
 
 	private static void showErrorDialog(final AsyncOperationException e, final TrayIcon trayIcon) {
