@@ -28,7 +28,6 @@ public class Earthquake implements Serializable, Comparable<Earthquake> {
 	public Earthquake(final String guid, final ZonedDateTime time, final float magnitude, final Latitude latitude, final Longitude longitude, final Depth depth, final Status status, final String region, final URI link, final URI enclosureUri, final URI momentTensorUri) {
 		Objects.requireNonNull(guid);
 		Objects.requireNonNull(time);
-		Objects.requireNonNull(magnitude);
 		Objects.requireNonNull(latitude);
 		Objects.requireNonNull(longitude);
 		Objects.requireNonNull(depth);
