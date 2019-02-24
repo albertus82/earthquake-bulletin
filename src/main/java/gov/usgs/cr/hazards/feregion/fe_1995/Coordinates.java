@@ -60,6 +60,9 @@ public class Coordinates implements Serializable {
 	 * @throws IllegalCoordinateException if the provided arguments are invalid
 	 */
 	public static Coordinates parse(String longitude, String latitude) {
+		longitude = longitude.toUpperCase();
+		latitude = latitude.toUpperCase();
+
 		// Allow for NSEW and switching of arguments.
 		if (longitude.endsWith("N") || longitude.endsWith("S")) {
 			final String tmp = longitude;
