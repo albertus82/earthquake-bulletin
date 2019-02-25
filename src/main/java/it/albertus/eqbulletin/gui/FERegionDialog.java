@@ -39,6 +39,12 @@ import it.albertus.jface.validation.Validator;
 
 public class FERegionDialog extends Dialog {
 
+	private static final short LATITUDE_MIN_VALUE = 0;
+	private static final short LATITUDE_MAX_VALUE = 90;
+	private static final short LONGITUDE_MIN_VALUE = 0;
+	private static final short LONGITUDE_MAX_VALUE = 180;
+	private static final short REGION_TEXT_HEIGHT = 5;
+
 	private final FERegion feregion;
 	private final FEPlusNames feplusnames;
 
@@ -59,14 +65,14 @@ public class FERegionDialog extends Dialog {
 
 		final Collection<Validator> validators = new ArrayList<>();
 
-		final Shell shell = new Shell(getParent(), SWT.CLOSE);
+		final Shell shell = new Shell(getParent(), SWT.CLOSE | SWT.RESIZE);
 		shell.setText(getText());
 		shell.setImages(Images.getMainIconArray());
 		GridLayoutFactory.swtDefaults().applyTo(shell);
 
 		final Composite dialogArea = new Composite(shell, SWT.NONE);
-		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.FILL).applyTo(dialogArea);
-		GridLayoutFactory.swtDefaults().numColumns(3).applyTo(dialogArea);
+		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(dialogArea);
+		GridLayoutFactory.swtDefaults().numColumns(6).applyTo(dialogArea);
 
 		final Label latitudeLabel = new Label(dialogArea, SWT.NONE);
 		GridDataFactory.swtDefaults().applyTo(latitudeLabel);
@@ -74,9 +80,9 @@ public class FERegionDialog extends Dialog {
 		final Text latitudeText = new Text(dialogArea, SWT.BORDER);
 		latitudeText.setTextLimit(2);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(latitudeText);
-		final ShortTextValidator latitudeValidator = new ShortTextValidator(latitudeText, false, (short) 0, (short) 90);
+		final ShortTextValidator latitudeValidator = new ShortTextValidator(latitudeText, false, LATITUDE_MIN_VALUE, LATITUDE_MAX_VALUE);
 		validators.add(latitudeValidator);
-		new FormControlValidatorDecoration(latitudeValidator, JFaceMessages.get("err.preferences.integer.range", 0, 90));
+		new FormControlValidatorDecoration(latitudeValidator, JFaceMessages.get("err.preferences.integer.range", LATITUDE_MIN_VALUE, LATITUDE_MAX_VALUE));
 		latitudeText.addVerifyListener(coordinatesVerifyListener);
 		final Combo latitudeCombo = new Combo(dialogArea, SWT.DROP_DOWN | SWT.READ_ONLY);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(false, false).applyTo(latitudeCombo);
@@ -92,9 +98,9 @@ public class FERegionDialog extends Dialog {
 		final Text longitudeText = new Text(dialogArea, SWT.BORDER);
 		longitudeText.setTextLimit(3);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(longitudeText);
-		final ShortTextValidator longitudeValidator = new ShortTextValidator(longitudeText, false, (short) 0, (short) 180);
+		final ShortTextValidator longitudeValidator = new ShortTextValidator(longitudeText, false, LONGITUDE_MIN_VALUE, LONGITUDE_MAX_VALUE);
 		validators.add(longitudeValidator);
-		new FormControlValidatorDecoration(longitudeValidator, JFaceMessages.get("err.preferences.integer.range", 0, 180));
+		new FormControlValidatorDecoration(longitudeValidator, JFaceMessages.get("err.preferences.integer.range", LONGITUDE_MIN_VALUE, LONGITUDE_MAX_VALUE));
 		longitudeText.addVerifyListener(coordinatesVerifyListener);
 		final Combo longitudeCombo = new Combo(dialogArea, SWT.DROP_DOWN | SWT.READ_ONLY);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(false, false).applyTo(longitudeCombo);
@@ -109,7 +115,7 @@ public class FERegionDialog extends Dialog {
 		regionLabel.setText(Messages.get("lbl.feregion.dialog.region"));
 		final Text regionText = new Text(dialogArea, SWT.READ_ONLY | SWT.BORDER | SWT.MULTI | SWT.H_SCROLL);
 		final int horizontalIndent = ((GridData) longitudeText.getLayoutData()).horizontalIndent;
-		GridDataFactory.swtDefaults().span(2, 1).align(SWT.FILL, SWT.CENTER).grab(true, false).indent(horizontalIndent, SWT.DEFAULT).hint(SwtUtils.convertHorizontalDLUsToPixels(regionText, 200), regionText.getLineHeight() * 5 + 1).applyTo(regionText);
+		GridDataFactory.swtDefaults().span(5, 1).align(SWT.FILL, SWT.FILL).grab(true, true).indent(horizontalIndent, SWT.DEFAULT).hint(SWT.DEFAULT, regionText.getLineHeight() * REGION_TEXT_HEIGHT + 1).applyTo(regionText);
 		regionText.setEditable(false);
 		regionText.setFont(JFaceResources.getTextFont());
 
@@ -144,6 +150,7 @@ public class FERegionDialog extends Dialog {
 		longitudeCombo.addModifyListener(modifyListener);
 
 		shell.pack();
+		shell.setMinimumSize(shell.getSize());
 		shell.open();
 	}
 
