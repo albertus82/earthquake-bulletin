@@ -45,7 +45,7 @@ public class FERegionDialog extends Dialog {
 	private static final short LONGITUDE_MAX_VALUE = 180;
 	private static final short REGION_TEXT_HEIGHT = 5;
 
-	private static final char DEGREE_SIGN = '\u00B0';
+	private static final String DEGREE_SIGN = "\u00B0";
 
 	private final FERegion feregion;
 	private final FEPlusNames feplusnames;
@@ -74,7 +74,7 @@ public class FERegionDialog extends Dialog {
 
 		final Composite dialogArea = new Composite(shell, SWT.NONE);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(dialogArea);
-		GridLayoutFactory.swtDefaults().numColumns(6).applyTo(dialogArea);
+		GridLayoutFactory.swtDefaults().numColumns(8).applyTo(dialogArea);
 
 		final Label latitudeLabel = new Label(dialogArea, SWT.NONE);
 		GridDataFactory.swtDefaults().applyTo(latitudeLabel);
@@ -86,12 +86,13 @@ public class FERegionDialog extends Dialog {
 		validators.add(latitudeValidator);
 		new FormControlValidatorDecoration(latitudeValidator, JFaceMessages.get("err.preferences.integer.range", LATITUDE_MIN_VALUE, LATITUDE_MAX_VALUE));
 		latitudeText.addVerifyListener(coordinatesVerifyListener);
+		final Label latitudeDegreeLabel = new Label(dialogArea, SWT.NONE);
+		GridDataFactory.swtDefaults().applyTo(latitudeDegreeLabel);
+		latitudeDegreeLabel.setText(DEGREE_SIGN);
 		final Combo latitudeCombo = new Combo(dialogArea, SWT.DROP_DOWN | SWT.READ_ONLY);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(false, false).applyTo(latitudeCombo);
-		latitudeCombo.setData(Integer.toString(0), 'N');
-		latitudeCombo.setData(Integer.toString(1), 'S');
-		latitudeCombo.add(DEGREE_SIGN + "N", 0);
-		latitudeCombo.add(DEGREE_SIGN + "S", 1);
+		latitudeCombo.add("N", 0);
+		latitudeCombo.add("S", 1);
 		latitudeCombo.select(0);
 
 		final Label longitudeLabel = new Label(dialogArea, SWT.NONE);
@@ -104,12 +105,13 @@ public class FERegionDialog extends Dialog {
 		validators.add(longitudeValidator);
 		new FormControlValidatorDecoration(longitudeValidator, JFaceMessages.get("err.preferences.integer.range", LONGITUDE_MIN_VALUE, LONGITUDE_MAX_VALUE));
 		longitudeText.addVerifyListener(coordinatesVerifyListener);
+		final Label longitudeDegreeLabel = new Label(dialogArea, SWT.NONE);
+		GridDataFactory.swtDefaults().applyTo(longitudeDegreeLabel);
+		longitudeDegreeLabel.setText(DEGREE_SIGN);
 		final Combo longitudeCombo = new Combo(dialogArea, SWT.DROP_DOWN | SWT.READ_ONLY);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(false, false).applyTo(longitudeCombo);
-		longitudeCombo.setData(Integer.toString(0), 'E');
-		longitudeCombo.setData(Integer.toString(1), 'W');
-		longitudeCombo.add(DEGREE_SIGN + "E", 0);
-		longitudeCombo.add(DEGREE_SIGN + "W", 1);
+		longitudeCombo.add("E", 0);
+		longitudeCombo.add("W", 1);
 		longitudeCombo.select(0);
 
 		final Label regionLabel = new Label(dialogArea, SWT.NONE);
@@ -117,9 +119,10 @@ public class FERegionDialog extends Dialog {
 		regionLabel.setText(Messages.get("lbl.feregion.dialog.region"));
 		final Text regionText = new Text(dialogArea, SWT.READ_ONLY | SWT.BORDER | SWT.MULTI | SWT.H_SCROLL);
 		final int horizontalIndent = ((GridData) longitudeText.getLayoutData()).horizontalIndent;
-		GridDataFactory.swtDefaults().span(5, 1).align(SWT.FILL, SWT.FILL).grab(true, true).indent(horizontalIndent, SWT.DEFAULT).hint(SWT.DEFAULT, regionText.getLineHeight() * REGION_TEXT_HEIGHT + 1).applyTo(regionText);
+		GridDataFactory.swtDefaults().span(7, 1).align(SWT.FILL, SWT.FILL).grab(true, true).indent(horizontalIndent, SWT.DEFAULT).hint(SWT.DEFAULT, regionText.getLineHeight() * REGION_TEXT_HEIGHT + 1).applyTo(regionText);
 		regionText.setEditable(false);
 		regionText.setFont(JFaceResources.getTextFont());
+		regionText.setText("-- " + Messages.get("msg.feregion.dialog.coordinates") + " --");
 
 		final Composite buttonBar = new Composite(shell, SWT.NONE);
 		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.CENTER).grab(true, false).applyTo(buttonBar);
@@ -139,11 +142,12 @@ public class FERegionDialog extends Dialog {
 		final ModifyListener modifyListener = e -> {
 			for (final Validator validator : validators) {
 				if (!validator.isValid()) {
+					regionText.setText("-- " + Messages.get("msg.feregion.dialog.coordinates") + " --");
 					return;
 				}
 			}
-			final String longitude = longitudeText.getText() + longitudeCombo.getData(Integer.toString(longitudeCombo.getSelectionIndex()));
-			final String latitude = latitudeText.getText() + latitudeCombo.getData(Integer.toString(latitudeCombo.getSelectionIndex()));
+			final String longitude = longitudeText.getText() + longitudeCombo.getText();
+			final String latitude = latitudeText.getText() + latitudeCombo.getText();
 			regionText.setText(buildRegionText(longitude, latitude));
 		};
 		latitudeText.addModifyListener(modifyListener);
