@@ -45,6 +45,8 @@ public class FERegionDialog extends Dialog {
 	private static final short LONGITUDE_MAX_VALUE = 180;
 	private static final short REGION_TEXT_HEIGHT = 5;
 
+	private static final char DEGREE_SIGN = '\u00B0';
+
 	private final FERegion feregion;
 	private final FEPlusNames feplusnames;
 
@@ -88,8 +90,8 @@ public class FERegionDialog extends Dialog {
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(false, false).applyTo(latitudeCombo);
 		latitudeCombo.setData(Integer.toString(0), 'N');
 		latitudeCombo.setData(Integer.toString(1), 'S');
-		latitudeCombo.add("\u00B0N", 0);
-		latitudeCombo.add("\u00B0S", 1);
+		latitudeCombo.add(DEGREE_SIGN + "N", 0);
+		latitudeCombo.add(DEGREE_SIGN + "S", 1);
 		latitudeCombo.select(0);
 
 		final Label longitudeLabel = new Label(dialogArea, SWT.NONE);
@@ -106,8 +108,8 @@ public class FERegionDialog extends Dialog {
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(false, false).applyTo(longitudeCombo);
 		longitudeCombo.setData(Integer.toString(0), 'E');
 		longitudeCombo.setData(Integer.toString(1), 'W');
-		longitudeCombo.add("\u00B0E", 0);
-		longitudeCombo.add("\u00B0W", 1);
+		longitudeCombo.add(DEGREE_SIGN + "E", 0);
+		longitudeCombo.add(DEGREE_SIGN + "W", 1);
 		longitudeCombo.select(0);
 
 		final Label regionLabel = new Label(dialogArea, SWT.NONE);
