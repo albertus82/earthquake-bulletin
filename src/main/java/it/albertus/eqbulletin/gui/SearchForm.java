@@ -33,7 +33,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
-import it.albertus.eqbulletin.gui.decoration.SearchFormControlValidatorDecoration;
+import it.albertus.eqbulletin.gui.decoration.FormControlValidatorDecoration;
 import it.albertus.eqbulletin.gui.listener.AreaMapSelectionListener;
 import it.albertus.eqbulletin.gui.listener.AutoRefreshButtonSelectionListener;
 import it.albertus.eqbulletin.gui.listener.ClearButtonSelectionListener;
@@ -321,27 +321,27 @@ public class SearchForm implements IShellProvider, Multilanguage {
 
 		// Decorators
 		ControlValidator<Text> validator = new FloatTextValidator(latitudeFromText, true, LATITUDE_MIN_VALUE, LATITUDE_MAX_VALUE);
-		new SearchFormControlValidatorDecoration(validator, () -> JFaceMessages.get(MSG_KEY_ERR_DECIMAL_RANGE, LATITUDE_MIN_VALUE, LATITUDE_MAX_VALUE));
+		new FormControlValidatorDecoration(validator, () -> JFaceMessages.get(MSG_KEY_ERR_DECIMAL_RANGE, LATITUDE_MIN_VALUE, LATITUDE_MAX_VALUE));
 		validators.add(validator);
 
 		validator = new FloatTextValidator(latitudeToText, true, LATITUDE_MIN_VALUE, LATITUDE_MAX_VALUE);
-		new SearchFormControlValidatorDecoration(validator, () -> JFaceMessages.get(MSG_KEY_ERR_DECIMAL_RANGE, LATITUDE_MIN_VALUE, LATITUDE_MAX_VALUE));
+		new FormControlValidatorDecoration(validator, () -> JFaceMessages.get(MSG_KEY_ERR_DECIMAL_RANGE, LATITUDE_MIN_VALUE, LATITUDE_MAX_VALUE));
 		validators.add(validator);
 
 		validator = new FloatTextValidator(longitudeFromText, true, LONGITUDE_MIN_VALUE, LONGITUDE_MAX_VALUE);
-		new SearchFormControlValidatorDecoration(validator, () -> JFaceMessages.get(MSG_KEY_ERR_DECIMAL_RANGE, LONGITUDE_MIN_VALUE, LONGITUDE_MAX_VALUE));
+		new FormControlValidatorDecoration(validator, () -> JFaceMessages.get(MSG_KEY_ERR_DECIMAL_RANGE, LONGITUDE_MIN_VALUE, LONGITUDE_MAX_VALUE));
 		validators.add(validator);
 
 		validator = new FloatTextValidator(longitudeToText, true, LONGITUDE_MIN_VALUE, LONGITUDE_MAX_VALUE);
-		new SearchFormControlValidatorDecoration(validator, () -> JFaceMessages.get(MSG_KEY_ERR_DECIMAL_RANGE, LONGITUDE_MIN_VALUE, LONGITUDE_MAX_VALUE));
+		new FormControlValidatorDecoration(validator, () -> JFaceMessages.get(MSG_KEY_ERR_DECIMAL_RANGE, LONGITUDE_MIN_VALUE, LONGITUDE_MAX_VALUE));
 		validators.add(validator);
 
 		validator = new FloatTextValidator(minimumMagnitudeText, true, MAGNITUDE_MIN_VALUE, MAGNITUDE_MAX_VALUE);
-		new SearchFormControlValidatorDecoration(validator, () -> JFaceMessages.get(MSG_KEY_ERR_DECIMAL_RANGE, MAGNITUDE_MIN_VALUE, MAGNITUDE_MAX_VALUE));
+		new FormControlValidatorDecoration(validator, () -> JFaceMessages.get(MSG_KEY_ERR_DECIMAL_RANGE, MAGNITUDE_MIN_VALUE, MAGNITUDE_MAX_VALUE));
 		validators.add(validator);
 
 		validator = new IntegerTextValidator(resultsText, true, RESULTS_MIN_VALUE, RESULTS_MAX_VALUE);
-		new SearchFormControlValidatorDecoration(validator, () -> JFaceMessages.get(MSG_KEY_ERR_INTEGER_RANGE, RESULTS_MIN_VALUE, RESULTS_MAX_VALUE));
+		new FormControlValidatorDecoration(validator, () -> JFaceMessages.get(MSG_KEY_ERR_INTEGER_RANGE, RESULTS_MIN_VALUE, RESULTS_MAX_VALUE));
 		validators.add(validator);
 
 		validator = new IntegerTextValidator(autoRefreshText, true, AUTOREFRESH_MIN_VALUE, null);

@@ -45,6 +45,7 @@ public class MenuBar extends AbstractMenu implements IShellProvider {
 	private static final String LBL_MENU_ITEM_EXIT = "lbl.menu.item.exit";
 	private static final String LBL_MENU_HEADER_EVENT = "lbl.menu.header.event";
 	private static final String LBL_MENU_HEADER_TOOLS = "lbl.menu.header.tools";
+	private static final String LBL_MENU_ITEM_FEREGION = "lbl.menu.item.feregion";
 	private static final String LBL_MENU_ITEM_PREFERENCES = "lbl.menu.item.preferences";
 	private static final String LBL_MENU_HEADER_HELP = "lbl.menu.header.help";
 	private static final String LBL_MENU_HEADER_HELP_WINDOWS = "lbl.menu.header.help.windows";
@@ -60,7 +61,8 @@ public class MenuBar extends AbstractMenu implements IShellProvider {
 
 	private final MenuItem eventMenuHeader;
 
-	private MenuItem toolsMenuHeader;
+	private final MenuItem toolsMenuHeader;
+	private final MenuItem toolsFERegionMenuItem;
 	private MenuItem toolsPreferencesMenuItem;
 
 	private final MenuItem helpMenuHeader;
@@ -154,12 +156,23 @@ public class MenuBar extends AbstractMenu implements IShellProvider {
 		googleMapsBrowserMenuItem.setText(Messages.get(LBL_MENU_ITEM_GOOGLE_MAPS_BROWSER));
 		googleMapsBrowserMenuItem.addSelectionListener(new GoogleMapsBrowserSelectionListener(gui));
 
+		// Tools
+		final Menu toolsMenu = new Menu(shell, SWT.DROP_DOWN);
+		toolsMenuHeader = new MenuItem(bar, SWT.CASCADE);
+		toolsMenuHeader.setText(Messages.get(LBL_MENU_HEADER_TOOLS));
+		toolsMenuHeader.setMenu(toolsMenu);
+
+		toolsFERegionMenuItem = new MenuItem(toolsMenu, SWT.PUSH);
+		toolsFERegionMenuItem.setText(Messages.get(LBL_MENU_ITEM_FEREGION));
+		toolsFERegionMenuItem.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(final SelectionEvent e) {
+				new FERegionDialog(shell).open();
+			}
+		});
+
 		if (!cocoaMenuCreated) {
-			// Tools
-			final Menu toolsMenu = new Menu(shell, SWT.DROP_DOWN);
-			toolsMenuHeader = new MenuItem(bar, SWT.CASCADE);
-			toolsMenuHeader.setText(Messages.get(LBL_MENU_HEADER_TOOLS));
-			toolsMenuHeader.setMenu(toolsMenu);
+			new MenuItem(toolsMenu, SWT.SEPARATOR);
 
 			toolsPreferencesMenuItem = new MenuItem(toolsMenu, SWT.PUSH);
 			toolsPreferencesMenuItem.setText(Messages.get(LBL_MENU_ITEM_PREFERENCES));
@@ -206,6 +219,9 @@ public class MenuBar extends AbstractMenu implements IShellProvider {
 		eventMenuHeader.setText(Messages.get(LBL_MENU_HEADER_EVENT));
 		if (toolsMenuHeader != null && !toolsMenuHeader.isDisposed()) {
 			toolsMenuHeader.setText(Messages.get(LBL_MENU_HEADER_TOOLS));
+		}
+		if (toolsFERegionMenuItem != null && !toolsFERegionMenuItem.isDisposed()) {
+			toolsFERegionMenuItem.setText(Messages.get(LBL_MENU_ITEM_FEREGION));
 		}
 		if (toolsPreferencesMenuItem != null && !toolsPreferencesMenuItem.isDisposed()) {
 			toolsPreferencesMenuItem.setText(Messages.get(LBL_MENU_ITEM_PREFERENCES));

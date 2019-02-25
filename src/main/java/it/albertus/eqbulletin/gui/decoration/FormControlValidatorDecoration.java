@@ -1,5 +1,7 @@
 package it.albertus.eqbulletin.gui.decoration;
 
+import java.util.function.Supplier;
+
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -7,11 +9,14 @@ import org.eclipse.swt.widgets.Control;
 
 import it.albertus.jface.decoration.ControlValidatorDecoration;
 import it.albertus.jface.validation.ControlValidator;
-import it.albertus.util.ISupplier;
 
-public class SearchFormControlValidatorDecoration extends ControlValidatorDecoration {
+public class FormControlValidatorDecoration extends ControlValidatorDecoration {
 
-	public SearchFormControlValidatorDecoration(final ControlValidator<?> validator, final ISupplier<String> message) {
+	public FormControlValidatorDecoration(final ControlValidator<?> validator, final Supplier<String> message) {
+		super(validator, message::get);
+	}
+
+	public FormControlValidatorDecoration(final ControlValidator<?> validator, final String message) {
 		super(validator, message);
 	}
 
