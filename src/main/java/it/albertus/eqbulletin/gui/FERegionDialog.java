@@ -43,7 +43,7 @@ public class FERegionDialog extends Dialog {
 	private static final short LATITUDE_MAX_VALUE = 90;
 	private static final short LONGITUDE_MIN_VALUE = 0;
 	private static final short LONGITUDE_MAX_VALUE = 180;
-	private static final short REGION_TEXT_HEIGHT = 5;
+	private static final byte REGION_TEXT_HEIGHT = 5;
 
 	private static final String DEGREE_SIGN = "\u00B0";
 
