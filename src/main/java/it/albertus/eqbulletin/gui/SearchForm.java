@@ -17,6 +17,7 @@ import java.util.logging.Logger;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
+import org.eclipse.jface.util.Util;
 import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.nebula.widgets.cdatetime.CDT;
 import org.eclipse.nebula.widgets.cdatetime.CDateTime;
@@ -28,6 +29,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
@@ -221,8 +223,13 @@ public class SearchForm implements IShellProvider, Multilanguage {
 		latitudeToNote.setText(Messages.get("lbl.form.criteria.latitude.to.note"));
 
 		openMap = new Button(areaGroup, SWT.NONE);
-		openMap.setImage(Images.getOpenStreetMapIconMap().get(new Rectangle(0, 0, 48, 48)));
-		openMap.setToolTipText(Messages.get("lbl.form.button.map"));
+		if (!Util.isLinux()) {
+			openMap.setImage(Images.getOpenStreetMapIconMap().get(Display.getDefault().getDPI().x > 96 ? new Rectangle(0, 0, 48, 48) : new Rectangle(0, 0, 32, 32)));
+			openMap.setToolTipText(Messages.get("lbl.form.button.map"));
+		}
+		else {
+			openMap.setText(Messages.get("lbl.form.button.map"));
+		}
 		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.FILL).span(1, 2).applyTo(openMap);
 		openMap.addSelectionListener(new AreaMapSelectionListener(this));
 
@@ -420,7 +427,12 @@ public class SearchForm implements IShellProvider, Multilanguage {
 		autoRefreshButton.setText(Messages.get("lbl.form.button.autorefresh"));
 		searchButton.setText(Messages.get("lbl.form.button.submit"));
 		clearButton.setText(Messages.get("lbl.form.button.clear"));
-		openMap.setToolTipText(Messages.get("lbl.form.button.map"));
+		if (!Util.isLinux()) {
+			openMap.setToolTipText(Messages.get("lbl.form.button.map"));
+		}
+		else {
+			openMap.setText(Messages.get("lbl.form.button.map"));
+		}
 		mapBoundsDialog.setText(Messages.get("lbl.map.bounds.title"));
 	}
 
