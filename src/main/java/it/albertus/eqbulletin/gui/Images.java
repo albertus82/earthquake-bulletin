@@ -3,6 +3,7 @@ package it.albertus.eqbulletin.gui;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Level;
@@ -20,8 +21,7 @@ public class Images {
 
 	private static final Logger logger = LoggerFactory.getLogger(Images.class);
 
-	// Main application icon in various formats, sorted by size (area) descending.
-	private static final Map<Rectangle, Image> mainIconMap = new TreeMap<>((r1, r2) -> {
+	private static final Comparator<Rectangle> comparator = (r1, r2) -> {
 		final int a1 = r1.width * r1.height;
 		final int a2 = r2.width * r2.height;
 		if (a1 > a2) {
@@ -31,7 +31,12 @@ public class Images {
 			return 1;
 		}
 		return 0;
-	});
+	};
+
+	// Main application icon in various formats, sorted by size (area) descending.
+	private static final Map<Rectangle, Image> mainIconMap = new TreeMap<>(comparator);
+
+	private static final Map<Rectangle, Image> openStreetMapIconMap = new TreeMap<>(comparator);
 
 	private Images() {
 		throw new IllegalAccessError();
@@ -48,6 +53,17 @@ public class Images {
 			logger.log(Level.WARNING, e.toString(), e);
 		}
 		logger.log(Level.CONFIG, "Main icons: {0}", mainIconMap);
+
+		try (final InputStream stream = Images.class.getResourceAsStream("osm.ico")) {
+			for (final ImageData data : new ImageLoader().load(stream)) {
+				final Image image = new Image(Display.getCurrent(), data);
+				openStreetMapIconMap.put(image.getBounds(), image);
+			}
+		}
+		catch (final IOException e) {
+			logger.log(Level.WARNING, e.toString(), e);
+		}
+		logger.log(Level.CONFIG, "OpenStreetMap icons: {0}", openStreetMapIconMap);
 	}
 
 	public static Image[] getMainIconArray() {
@@ -56,6 +72,14 @@ public class Images {
 
 	public static Map<Rectangle, Image> getMainIconMap() {
 		return Collections.unmodifiableMap(mainIconMap);
+	}
+
+	public static Image[] getOpenStreetMapIconArray() {
+		return getOpenStreetMapIconMap().values().toArray(new Image[0]);
+	}
+
+	public static Map<Rectangle, Image> getOpenStreetMapIconMap() {
+		return Collections.unmodifiableMap(openStreetMapIconMap);
 	}
 
 }

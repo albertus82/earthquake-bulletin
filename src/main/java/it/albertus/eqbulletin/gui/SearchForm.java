@@ -24,6 +24,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.events.VerifyListener;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -220,7 +221,8 @@ public class SearchForm implements IShellProvider, Multilanguage {
 		latitudeToNote.setText(Messages.get("lbl.form.criteria.latitude.to.note"));
 
 		openMap = new Button(areaGroup, SWT.NONE);
-		openMap.setText(Messages.get("lbl.form.button.map"));
+		openMap.setImage(Images.getOpenStreetMapIconMap().get(new Rectangle(0, 0, 48, 48)));
+		openMap.setToolTipText(Messages.get("lbl.form.button.map"));
 		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.FILL).span(1, 2).applyTo(openMap);
 		openMap.addSelectionListener(new AreaMapSelectionListener(this));
 
