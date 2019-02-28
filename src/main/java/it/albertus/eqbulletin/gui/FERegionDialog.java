@@ -54,8 +54,9 @@ public class FERegionDialog extends Dialog {
 
 	private Coordinates coordinates;
 
-	public FERegionDialog(final Shell parent) {
+	public FERegionDialog(final Shell parent, final Coordinates coordinates) {
 		super(parent);
+		this.coordinates = coordinates;
 		try {
 			feregion = new FERegion();
 			feplusnames = new FEPlusNames();
@@ -64,6 +65,10 @@ public class FERegionDialog extends Dialog {
 			throw new IOError(e);
 		}
 		setText(Messages.get("lbl.feregion.dialog.title"));
+	}
+
+	public FERegionDialog(final Shell parent) {
+		this(parent, null);
 	}
 
 	public void open() {
@@ -90,6 +95,9 @@ public class FERegionDialog extends Dialog {
 		latitudeSpinner.setMaximum(LATITUDE_MAX_VALUE * FACTOR);
 		latitudeSpinner.setIncrement(FACTOR);
 		latitudeSpinner.setTextLimit(Integer.toString(latitudeSpinner.getMaximum()).length() + 1);
+		if (coordinates != null) {
+			latitudeSpinner.setSelection((int) coordinates.getLatitude() * FACTOR);
+		}
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(latitudeSpinner);
 		final Label latitudeDegreeLabel = new Label(coordinatesGroup, SWT.NONE);
 		GridDataFactory.swtDefaults().applyTo(latitudeDegreeLabel);
@@ -108,6 +116,9 @@ public class FERegionDialog extends Dialog {
 		longitudeSpinner.setMaximum(LONGITUDE_MAX_VALUE * FACTOR);
 		longitudeSpinner.setIncrement(FACTOR);
 		longitudeSpinner.setTextLimit(Integer.toString(longitudeSpinner.getMaximum()).length() + 1);
+		if (coordinates != null) {
+			longitudeSpinner.setSelection((int) coordinates.getLongitude() * FACTOR);
+		}
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(longitudeSpinner);
 		final Label longitudeDegreeLabel = new Label(coordinatesGroup, SWT.NONE);
 		GridDataFactory.swtDefaults().applyTo(longitudeDegreeLabel);
@@ -138,8 +149,8 @@ public class FERegionDialog extends Dialog {
 		});
 
 		final ModifyListener modifyListener = e -> {
-			final String longitude = longitudeSpinner.getSelection() / (float) FACTOR + longitudeCombo.getText();
-			final String latitude = latitudeSpinner.getSelection() / (float) FACTOR + latitudeCombo.getText();
+			final String longitude = longitudeSpinner.getSelection() / (double) FACTOR + longitudeCombo.getText();
+			final String latitude = latitudeSpinner.getSelection() / (double) FACTOR + latitudeCombo.getText();
 			final Coordinates currentCoordinates = Coordinates.parse(longitude, latitude);
 			if (!currentCoordinates.equals(coordinates)) {
 				this.coordinates = currentCoordinates;
@@ -151,7 +162,12 @@ public class FERegionDialog extends Dialog {
 		longitudeSpinner.addModifyListener(modifyListener);
 		longitudeCombo.addModifyListener(modifyListener);
 
-		modifyListener.modifyText(null);
+		if (coordinates != null) {
+			regionText.setText(buildRegionText());
+		}
+		else {
+			modifyListener.modifyText(null);
+		}
 
 		shell.pack();
 		shell.setMinimumSize(shell.getSize());
