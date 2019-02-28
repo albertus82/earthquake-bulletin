@@ -420,7 +420,7 @@ public class SearchForm implements IShellProvider, Multilanguage {
 		autoRefreshButton.setText(Messages.get("lbl.form.button.autorefresh"));
 		searchButton.setText(Messages.get("lbl.form.button.submit"));
 		clearButton.setText(Messages.get("lbl.form.button.clear"));
-		openMap.setText(Messages.get("lbl.form.button.map"));
+		openMap.setToolTipText(Messages.get("lbl.form.button.map"));
 		mapBoundsDialog.setText(Messages.get("lbl.map.bounds.title"));
 	}
 
