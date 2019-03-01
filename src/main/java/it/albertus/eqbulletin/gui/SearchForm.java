@@ -25,6 +25,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.events.VerifyListener;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
@@ -223,8 +224,23 @@ public class SearchForm implements IShellProvider, Multilanguage {
 		latitudeToNote.setText(Messages.get("lbl.form.criteria.latitude.to.note"));
 
 		openMap = new Button(areaGroup, SWT.NONE);
-		if (!Util.isLinux()) {
-			openMap.setImage(Images.getOpenStreetMapIconMap().get(Display.getDefault().getDPI().x > 96 ? new Rectangle(0, 0, 48, 48) : new Rectangle(0, 0, 32, 32)));
+		if (Util.isWindows()) { // Linux & macOS have transpacency issues
+			final Point point = Display.getDefault().getDPI();
+			final int dpi = (point.x + point.y) / 2;
+			final Rectangle size;
+			if (dpi <= 72) {
+				size = new Rectangle(0, 0, 16, 16);
+			}
+			else if (dpi <= 96) {
+				size = new Rectangle(0, 0, 32, 32);
+			}
+			else if (dpi <= 120) {
+				size = new Rectangle(0, 0, 48, 48);
+			}
+			else {
+				size = new Rectangle(0, 0, 64, 64);
+			}
+			openMap.setImage(Images.getOpenStreetMapIconMap().get(size));
 			openMap.setToolTipText(Messages.get("lbl.form.button.map"));
 		}
 		else {
@@ -427,10 +443,10 @@ public class SearchForm implements IShellProvider, Multilanguage {
 		autoRefreshButton.setText(Messages.get("lbl.form.button.autorefresh"));
 		searchButton.setText(Messages.get("lbl.form.button.submit"));
 		clearButton.setText(Messages.get("lbl.form.button.clear"));
-		if (!Util.isLinux()) {
+		if (openMap.getToolTipText() != null && !openMap.getToolTipText().isEmpty()) {
 			openMap.setToolTipText(Messages.get("lbl.form.button.map"));
 		}
-		else {
+		if (!openMap.getText().isEmpty()) {
 			openMap.setText(Messages.get("lbl.form.button.map"));
 		}
 		mapBoundsDialog.setText(Messages.get("lbl.map.bounds.title"));

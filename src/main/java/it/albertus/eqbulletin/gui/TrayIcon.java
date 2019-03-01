@@ -82,7 +82,9 @@ public class TrayIcon implements IShellProvider, Multilanguage {
 	}
 
 	private static Image getImage() {
-		if (Util.isWindows() && new Point(96, 96).equals(Display.getDefault().getDPI())) {
+		final Point point = Display.getDefault().getDPI();
+		final int dpi = (point.x + point.y) / 2;
+		if (Util.isWindows() && dpi <= 96) {
 			return Images.getMainIconMap().get(new Rectangle(0, 0, 16, 16)); // looks slightly better on Windows with no scaling
 		}
 		else {
