@@ -224,28 +224,6 @@ public class SearchForm implements IShellProvider, Multilanguage {
 		latitudeToNote.setText(Messages.get("lbl.form.criteria.latitude.to.note"));
 
 		openMap = new Button(areaGroup, SWT.NONE);
-		if (Util.isWindows()) { // Linux & macOS have transpacency issues
-			final Point point = Display.getDefault().getDPI();
-			final int dpi = (point.x + point.y) / 2;
-			final Rectangle size;
-			if (dpi <= 72) {
-				size = new Rectangle(0, 0, 16, 16);
-			}
-			else if (dpi <= 96) {
-				size = new Rectangle(0, 0, 32, 32);
-			}
-			else if (dpi <= 120) {
-				size = new Rectangle(0, 0, 48, 48);
-			}
-			else {
-				size = new Rectangle(0, 0, 64, 64);
-			}
-			openMap.setImage(Images.getOpenStreetMapIconMap().get(size));
-			openMap.setToolTipText(Messages.get("lbl.form.button.map"));
-		}
-		else {
-			openMap.setText(Messages.get("lbl.form.button.map"));
-		}
 		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.FILL).span(1, 2).applyTo(openMap);
 		openMap.addSelectionListener(new AreaMapSelectionListener(this));
 
@@ -337,6 +315,32 @@ public class SearchForm implements IShellProvider, Multilanguage {
 		clearButton = new Button(buttonsComposite, SWT.NONE);
 		clearButton.setText(Messages.get("lbl.form.button.clear"));
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(clearButton);
+
+		// Open map button image
+		logger.log(Level.FINE, "openMap.computeSize()={0}", openMap.computeSize(SWT.DEFAULT, SWT.DEFAULT, true));
+		if (Util.isWindows()) { // Linux & macOS have transpacency issues
+			final Point point = Display.getDefault().getDPI();
+			final int dpi = (point.x + point.y) / 2;
+			final Rectangle size;
+			if (dpi <= 72) {
+				size = new Rectangle(0, 0, 16, 16);
+			}
+			else if (dpi <= 96) {
+				size = new Rectangle(0, 0, 32, 32);
+			}
+			else if (dpi <= 120) {
+				size = new Rectangle(0, 0, 48, 48);
+			}
+			else {
+				size = new Rectangle(0, 0, 64, 64);
+			}
+			openMap.setImage(Images.getOpenStreetMapIconMap().get(size));
+			openMap.setToolTipText(Messages.get("lbl.form.button.map"));
+		}
+		else {
+			openMap.setText(Messages.get("lbl.form.button.map"));
+		}
+		logger.log(Level.FINE, "openMap.computeSize()={0}", openMap.computeSize(SWT.DEFAULT, SWT.DEFAULT, true));
 
 		// Listeners
 		searchButton.addSelectionListener(new SearchButtonSelectionListener(gui));
