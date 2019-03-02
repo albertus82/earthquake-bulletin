@@ -21,7 +21,7 @@ public class Images {
 
 	private static final Logger logger = LoggerFactory.getLogger(Images.class);
 
-	private static final Comparator<Rectangle> comparator = (r1, r2) -> {
+	private static final Comparator<Rectangle> areaComparator = (r1, r2) -> {
 		final int a1 = r1.width * r1.height;
 		final int a2 = r2.width * r2.height;
 		if (a1 > a2) {
@@ -34,9 +34,9 @@ public class Images {
 	};
 
 	// Main application icon in various formats, sorted by size (area) descending.
-	private static final Map<Rectangle, Image> mainIconMap = new TreeMap<>(comparator);
+	private static final Map<Rectangle, Image> mainIconMap = new TreeMap<>(areaComparator);
 
-	private static final Map<Rectangle, Image> openStreetMapIconMap = new TreeMap<>(comparator);
+	private static final Map<Rectangle, Image> openStreetMapIconMap = new TreeMap<>(areaComparator);
 
 	private Images() {
 		throw new IllegalAccessError();

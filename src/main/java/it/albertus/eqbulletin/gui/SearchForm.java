@@ -11,13 +11,13 @@ import java.util.Date;
 import java.util.EnumMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
-import org.eclipse.jface.util.Util;
 import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.nebula.widgets.cdatetime.CDT;
 import org.eclipse.nebula.widgets.cdatetime.CDateTime;
@@ -25,12 +25,12 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.events.VerifyListener;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
@@ -316,32 +316,6 @@ public class SearchForm implements IShellProvider, Multilanguage {
 		clearButton.setText(Messages.get("lbl.form.button.clear"));
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(clearButton);
 
-		// Open map button image
-		logger.log(Level.FINE, "openMap.computeSize()={0}", openMap.computeSize(SWT.DEFAULT, SWT.DEFAULT, true));
-		if (Util.isWindows()) { // Linux & macOS have transpacency issues
-			final Point point = Display.getDefault().getDPI();
-			final int dpi = (point.x + point.y) / 2;
-			final Rectangle size;
-			if (dpi <= 72) {
-				size = new Rectangle(0, 0, 16, 16);
-			}
-			else if (dpi <= 96) {
-				size = new Rectangle(0, 0, 32, 32);
-			}
-			else if (dpi <= 120) {
-				size = new Rectangle(0, 0, 48, 48);
-			}
-			else {
-				size = new Rectangle(0, 0, 64, 64);
-			}
-			openMap.setImage(Images.getOpenStreetMapIconMap().get(size));
-			openMap.setToolTipText(Messages.get("lbl.form.button.map"));
-		}
-		else {
-			openMap.setText(Messages.get("lbl.form.button.map"));
-		}
-		logger.log(Level.FINE, "openMap.computeSize()={0}", openMap.computeSize(SWT.DEFAULT, SWT.DEFAULT, true));
-
 		// Listeners
 		searchButton.addSelectionListener(new SearchButtonSelectionListener(gui));
 		clearButton.addSelectionListener(new ClearButtonSelectionListener(this));
@@ -407,6 +381,18 @@ public class SearchForm implements IShellProvider, Multilanguage {
 		if (Leaflet.LAYERS != null && !Leaflet.LAYERS.isEmpty()) {
 			mapBoundsDialog.getOptions().getControls().put(LeafletMapControl.LAYERS, Leaflet.LAYERS);
 		}
+	}
+
+	void setOpenMapButtonImage() {
+		final Point buttonSize = openMap.getSize();
+		for (final Entry<Rectangle, Image> e : Images.getOpenStreetMapIconMap().entrySet()) {
+			if (e.getKey().height < buttonSize.y) {
+				openMap.setImage(e.getValue());
+				break;
+			}
+		}
+		openMap.setToolTipText(Messages.get("lbl.form.button.map"));
+		areaGroup.layout(true);
 	}
 
 	public boolean isValid() {
