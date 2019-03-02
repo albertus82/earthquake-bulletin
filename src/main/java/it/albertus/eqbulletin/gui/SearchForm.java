@@ -392,7 +392,7 @@ public class SearchForm implements IShellProvider, Multilanguage {
 				break;
 			}
 		}
-		openMap.setToolTipText(Messages.get("lbl.form.button.map"));
+		openMap.setToolTipText(Messages.get("lbl.form.button.map.tooltip"));
 		areaGroup.layout(true);
 	}
 
@@ -435,7 +435,7 @@ public class SearchForm implements IShellProvider, Multilanguage {
 		searchButton.setText(Messages.get("lbl.form.button.submit"));
 		clearButton.setText(Messages.get("lbl.form.button.clear"));
 		if (openMap.getToolTipText() != null && !openMap.getToolTipText().isEmpty()) {
-			openMap.setToolTipText(Messages.get("lbl.form.button.map"));
+			openMap.setToolTipText(Messages.get("lbl.form.button.map.tooltip"));
 		}
 		if (!openMap.getText().isEmpty()) {
 			openMap.setText(Messages.get("lbl.form.button.map"));
