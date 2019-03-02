@@ -387,13 +387,14 @@ public class SearchForm implements IShellProvider, Multilanguage {
 	void setOpenMapButtonImage() {
 		final Point buttonSize = openMap.getSize();
 		for (final Entry<Rectangle, Image> entry : Images.getOpenStreetMapIconMap().entrySet()) {
-			if (entry.getKey().height < buttonSize.y) {
+			if (entry.getKey().height < buttonSize.y - SwtUtils.convertVerticalDLUsToPixels(openMap, 2)) {
 				logger.log(Level.FINE, "Setting OpenStreetMap icon: {0}", entry);
 				openMap.setImage(entry.getValue());
 				break;
 			}
 		}
-		areaGroup.layout();
+		openMap.setRedraw(true);
+		openMap.requestLayout();
 	}
 
 	public boolean isValid() {
