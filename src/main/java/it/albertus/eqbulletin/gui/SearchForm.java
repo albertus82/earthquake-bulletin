@@ -225,6 +225,7 @@ public class SearchForm implements IShellProvider, Multilanguage {
 
 		openMap = new Button(areaGroup, SWT.NONE);
 		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.FILL).span(1, 2).applyTo(openMap);
+		openMap.setToolTipText(Messages.get("lbl.form.button.map.tooltip"));
 		openMap.addSelectionListener(new AreaMapSelectionListener(this));
 
 		longitudeLabel = new Label(areaGroup, SWT.NONE);
@@ -392,8 +393,7 @@ public class SearchForm implements IShellProvider, Multilanguage {
 				break;
 			}
 		}
-		openMap.setToolTipText(Messages.get("lbl.form.button.map.tooltip"));
-		areaGroup.layout(true);
+		areaGroup.layout();
 	}
 
 	public boolean isValid() {
