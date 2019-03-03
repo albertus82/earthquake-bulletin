@@ -19,7 +19,7 @@ public class FEPlusNamesTest {
 
 	@Test
 	public void test() {
-		final Map<Integer, Map<FEPlusNameType, String>> names = fenames.getNames();
+		final Map<Integer, Map<FEPlusNameType, String>> names = fenames.getNameMap();
 		Assert.assertEquals(757, names.size());
 		for (final Entry<Integer, Map<FEPlusNameType, String>> entry : names.entrySet()) {
 			Assert.assertEquals(FEPlusNameType.values().length, entry.getValue().size());

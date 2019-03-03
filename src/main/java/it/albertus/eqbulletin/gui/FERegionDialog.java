@@ -176,7 +176,7 @@ public class FERegionDialog extends Dialog {
 
 	private String buildRegionText() {
 		logger.log(Level.FINE, "{0}", coordinates);
-		final Map<FEPlusNameType, String> map = feplusnames.getNames().get(feregion.getGeographicRegionNumber(coordinates));
+		final Map<FEPlusNameType, String> map = feplusnames.getNameMap().get(feregion.getGeographicRegionNumber(coordinates));
 		final StringBuilder sb = new StringBuilder();
 		for (final Entry<FEPlusNameType, String> entry : map.entrySet()) {
 			sb.append(entry.getKey()).append(" \u2192 ").append(entry.getValue()).append(System.lineSeparator());

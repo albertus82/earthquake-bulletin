@@ -11,7 +11,7 @@ import java.util.TreeMap;
 
 public class FEPlusNames {
 
-	private final Map<Integer, Map<FEPlusNameType, String>> names = new TreeMap<>();
+	private final Map<Integer, Map<FEPlusNameType, String>> nameMap = new TreeMap<>();
 
 	/**
 	 * Initializes the internal names database. Reuse the same instance whenever
@@ -36,18 +36,18 @@ public class FEPlusNames {
 						final Map<FEPlusNameType, String> value = new EnumMap<>(FEPlusNameType.class);
 						value.put(type, sb.substring(6).trim());
 						fenum = Integer.valueOf(sb.substring(2, 5).trim());
-						names.put(fenum, value);
+						nameMap.put(fenum, value);
 					}
 					else {
-						names.get(fenum).put(type, sb.substring(6).trim());
+						nameMap.get(fenum).put(type, sb.substring(6).trim());
 					}
 				}
 			}
 		}
 	}
 
-	public Map<Integer, Map<FEPlusNameType, String>> getNames() {
-		return names;
+	public Map<Integer, Map<FEPlusNameType, String>> getNameMap() {
+		return nameMap;
 	}
 
 }
