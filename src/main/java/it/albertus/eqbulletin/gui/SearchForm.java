@@ -154,7 +154,7 @@ public class SearchForm implements IShellProvider, Multilanguage {
 	private final Button autoRefreshButton;
 	private final Text autoRefreshText;
 	private final Button clearButton;
-	private final Button openMap;
+	private final Button openMapButton;
 
 	private final LeafletMapBoundsDialog mapBoundsDialog;
 
@@ -223,10 +223,10 @@ public class SearchForm implements IShellProvider, Multilanguage {
 		latitudeToNote = new Label(areaGroup, SWT.NONE);
 		latitudeToNote.setText(Messages.get("lbl.form.criteria.latitude.to.note"));
 
-		openMap = new Button(areaGroup, SWT.NONE);
-		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.FILL).span(1, 2).applyTo(openMap);
-		openMap.setToolTipText(Messages.get("lbl.form.button.map.tooltip"));
-		openMap.addSelectionListener(new AreaMapSelectionListener(this));
+		openMapButton = new Button(areaGroup, SWT.NONE);
+		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.FILL).span(1, 2).applyTo(openMapButton);
+		openMapButton.setToolTipText(Messages.get("lbl.form.button.map.tooltip"));
+		openMapButton.addSelectionListener(new AreaMapSelectionListener(this));
 
 		longitudeLabel = new Label(areaGroup, SWT.NONE);
 		longitudeLabel.setText(Messages.get("lbl.form.criteria.longitude"));
@@ -385,16 +385,16 @@ public class SearchForm implements IShellProvider, Multilanguage {
 	}
 
 	void setOpenMapButtonImage() {
-		final Point buttonSize = openMap.getSize();
+		final Point buttonSize = openMapButton.getSize();
 		for (final Entry<Rectangle, Image> entry : Images.getOpenStreetMapIconMap().entrySet()) {
 			if (entry.getKey().height < buttonSize.y - buttonSize.y / 6.8f) { // leaving some room around the image
 				logger.log(Level.FINE, "Open Map button size: {0}; setting OpenStreetMap icon: {1}.", new Object[] { buttonSize, entry });
-				openMap.setImage(entry.getValue());
+				openMapButton.setImage(entry.getValue());
 				break;
 			}
 		}
-		openMap.setRedraw(true);
-		openMap.requestLayout();
+		openMapButton.setRedraw(true);
+		openMapButton.requestLayout();
 	}
 
 	public boolean isValid() {
@@ -435,11 +435,11 @@ public class SearchForm implements IShellProvider, Multilanguage {
 		autoRefreshButton.setText(Messages.get("lbl.form.button.autorefresh"));
 		searchButton.setText(Messages.get("lbl.form.button.submit"));
 		clearButton.setText(Messages.get("lbl.form.button.clear"));
-		if (openMap.getToolTipText() != null && !openMap.getToolTipText().isEmpty()) {
-			openMap.setToolTipText(Messages.get("lbl.form.button.map.tooltip"));
+		if (openMapButton.getToolTipText() != null && !openMapButton.getToolTipText().isEmpty()) {
+			openMapButton.setToolTipText(Messages.get("lbl.form.button.map.tooltip"));
 		}
-		if (!openMap.getText().isEmpty()) {
-			openMap.setText(Messages.get("lbl.form.button.map"));
+		if (!openMapButton.getText().isEmpty()) {
+			openMapButton.setText(Messages.get("lbl.form.button.map"));
 		}
 		mapBoundsDialog.setText(Messages.get("lbl.map.bounds.title"));
 	}
