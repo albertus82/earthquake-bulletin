@@ -181,7 +181,7 @@ public class FERegionDialog extends Dialog {
 		for (final Entry<FEPlusNameType, String> entry : map.entrySet()) {
 			sb.append(entry.getKey()).append(" \u2192 ").append(entry.getValue()).append(System.lineSeparator());
 		}
-		return sb.toString().trim();
+		return sb.toString().trim().replace("\\~N", "\u00D1"); // Latin capital letter N with tilde
 	}
 
 }
