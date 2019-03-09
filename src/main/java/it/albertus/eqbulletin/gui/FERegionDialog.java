@@ -1,17 +1,9 @@
 package it.albertus.eqbulletin.gui;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOError;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URI;
-import java.util.HashSet;
-import java.util.Map.Entry;
-import java.util.Set;
+import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -27,12 +19,9 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Dialog;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
@@ -41,16 +30,9 @@ import gov.usgs.cr.hazards.feregion.fe_1995.Coordinates;
 import gov.usgs.cr.hazards.feregion.fe_1995.FERegion;
 import gov.usgs.cr.hazards.feregion.fe_1995.Region;
 import it.albertus.eqbulletin.resources.Messages;
-import it.albertus.jface.JFaceMessages;
 import it.albertus.jface.SwtUtils;
-import it.albertus.jface.maps.MapDialog;
-import it.albertus.jface.maps.MapMarker;
-import it.albertus.jface.maps.leaflet.LeafletMapControl;
 import it.albertus.jface.maps.leaflet.LeafletMapDialog;
 import it.albertus.jface.maps.leaflet.LeafletMapOptions;
-import it.albertus.net.httpserver.html.HtmlUtils;
-import it.albertus.util.IOUtils;
-import it.albertus.util.NewLine;
 import it.albertus.util.logging.LoggerFactory;
 
 public class FERegionDialog extends Dialog {
@@ -91,106 +73,8 @@ public class FERegionDialog extends Dialog {
 		this(parent, null);
 	}
 
-	protected static final String HTML_FILE_NAME = "map.html";
-
-	private final LeafletMapOptions options = new LeafletMapOptions();
-
-	public LeafletMapOptions getOptions() {
-		return options;
-	}
-
-	private final Set<MapMarker> markers = new HashSet<MapMarker>();
-
-	public Set<MapMarker> getMarkers() {
-		return markers;
-	}
-
-	protected URI getMapPage(final Control control, final InputStream is) {
-		URI pageUrl = null;
-		File tempFile = null;
-		InputStreamReader isr = null;
-		BufferedReader br = null;
-		FileWriter fw = null;
-		BufferedWriter bw = null;
-		try {
-			isr = new InputStreamReader(is, "UTF-8");
-			br = new BufferedReader(isr);
-			tempFile = File.createTempFile("map-", ".html");
-			fw = new FileWriter(tempFile);
-			bw = new BufferedWriter(fw);
-			String line;
-			while ((line = br.readLine()) != null) {
-				line = parseLine(line);
-				if (line != null) {
-					bw.write(line);
-					bw.newLine();
-				}
-			}
-			pageUrl = tempFile.toURI();
-		}
-		catch (final Exception e) {
-			logger.log(Level.SEVERE, JFaceMessages.get("err.map.open"), e);
-		}
-		finally {
-			IOUtils.closeQuietly(bw, fw, br, isr);
-		}
-
-		if (tempFile != null) {
-			final File fileToDelete = tempFile;
-			control.addListener(SWT.Close, new Listener() {
-				@Override
-				public void handleEvent(final Event event) {
-					try {
-						if (!fileToDelete.delete()) {
-							fileToDelete.deleteOnExit();
-						}
-					}
-					catch (final RuntimeException re) {
-						logger.log(Level.WARNING, JFaceMessages.get("err.delete.temp", fileToDelete), re);
-					}
-				}
-			});
-		}
-		return pageUrl;
-	}
-
-	protected String parseLine(final String line) {
-		// Options
-		if (line.contains(MapDialog.OPTIONS_PLACEHOLDER)) {
-			final StringBuilder optionsBlock = new StringBuilder();
-			optionsBlock.append(String.format("map.setView([%s, %s], %d);", getOptions().getCenterLat(), getOptions().getCenterLng(), getOptions().getZoom()));
-			if (!options.getControls().containsKey(LeafletMapControl.LAYERS)) {
-				optionsBlock.append(NewLine.SYSTEM_LINE_SEPARATOR);
-				optionsBlock.append(String.format("L.tileLayer('%s', { maxZoom: %d, attribution: '%s' }).addTo(map);", HtmlUtils.escapeEcmaScript("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"), 19, HtmlUtils.escapeEcmaScript("&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a>")));
-			}
-			for (final Entry<LeafletMapControl, String> control : options.getControls().entrySet()) {
-				optionsBlock.append(NewLine.SYSTEM_LINE_SEPARATOR);
-				optionsBlock.append(String.format("map.addControl(L.control.%s(%s));", control.getKey().getConstructor(), control.getValue() == null ? "" : control.getValue().trim()));
-			}
-			return optionsBlock.toString().trim();
-		}
-		// Markers
-		else if (line.contains(MapDialog.MARKERS_PLACEHOLDER)) {
-			if (getMarkers().isEmpty()) {
-				return null;
-			}
-			else {
-				final StringBuilder markersBlock = new StringBuilder();
-				for (final MapMarker marker : getMarkers()) {
-					markersBlock.append(String.format("L.marker([%s, %s]).addTo(map).bindPopup('%s');", marker.getLatitude(), marker.getLongitude(), marker.getTitle() == null ? "" : HtmlUtils.escapeEcmaScript(marker.getTitle().replace(NewLine.SYSTEM_LINE_SEPARATOR, "<br />").trim())));
-					markersBlock.append(NewLine.SYSTEM_LINE_SEPARATOR);
-				}
-				return markersBlock.toString().trim();
-			}
-		}
-		else {
-			return line;
-		}
-	}
-
 	public void open() {
 		final Shell shell = new Shell(getParent(), SWT.CLOSE | SWT.RESIZE | SWT.MAX);
-
 		shell.setText(getText());
 		shell.setImages(Images.getMainIconArray());
 		GridLayoutFactory.swtDefaults().applyTo(shell);
@@ -270,7 +154,13 @@ public class FERegionDialog extends Dialog {
 
 		browser = new Browser(regionGroup, SWT.NONE);
 		GridDataFactory.swtDefaults().span(4, 1).align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(browser);
- 		browser.setUrl(getMapPage(shell, LeafletMapDialog.class.getResourceAsStream(HTML_FILE_NAME)).toString());
+		try (final InputStream is = LeafletMapDialog.class.getResourceAsStream("map.html")) {
+			final String other = "window.rect = L.rectangle(([[0, 0], [1, 1]]), { color: '#ff7800', weight: 1 }); window.rect.addTo(map); map.flyTo(new L.LatLng(0.5, 0.5), 6);";
+			browser.setUrl(LeafletMapDialog.getMapPage(shell, is, line -> LeafletMapDialog.parseLine(line, new LeafletMapOptions(), Collections.emptySet(), other)).toString());
+		}
+		catch (final IOException e) {
+			throw new IOError(e);
+		}
 
 		final Composite buttonBar = new Composite(shell, SWT.NONE);
 		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.CENTER).grab(true, false).applyTo(buttonBar);
@@ -329,7 +219,7 @@ public class FERegionDialog extends Dialog {
 		final float e = a + (a < 0 ? -0.5f : 0.5f);
 		final float f = b + (b < 0 ? -0.5f : 0.5f);
 		logger.log(Level.FINE, "{0}, {1}, {2}, {3}, {4}, {5}", new Number[] { a, b, c, d, e, f });
-		browser.execute(String.format("if (window.rect) { window.rect.remove(); } window.rect = L.rectangle(([[%s, %s], [%s, %s]]), {color: '#ff7800', weight: 1}); window.rect.addTo(map); map.flyTo(new L.LatLng(%s, %s), 6);", a, b, c, d, e, f));
+		browser.execute(String.format("if (window.rect) { window.rect.remove(); } window.rect = L.rectangle(([[%s, %s], [%s, %s]]), { color: '#ff7800', weight: 1 }); window.rect.addTo(map); map.flyTo(new L.LatLng(%s, %s));", a, b, c, d, e, f));
 	}
 
 }
