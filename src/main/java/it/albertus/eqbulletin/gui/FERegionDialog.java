@@ -2,15 +2,12 @@ package it.albertus.eqbulletin.gui;
 
 import java.io.IOError;
 import java.io.IOException;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
-import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -27,8 +24,7 @@ import org.eclipse.swt.widgets.Text;
 
 import gov.usgs.cr.hazards.feregion.fe_1995.Coordinates;
 import gov.usgs.cr.hazards.feregion.fe_1995.FERegion;
-import gov.usgs.cr.hazards.feregion.feplus.source.FEPlusNameType;
-import gov.usgs.cr.hazards.feregion.feplus.source.FEPlusNames;
+import gov.usgs.cr.hazards.feregion.fe_1995.Region;
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.jface.SwtUtils;
 import it.albertus.util.logging.LoggerFactory;
@@ -45,21 +41,20 @@ public class FERegionDialog extends Dialog {
 	private static final short DIGITS = 2;
 	private static final short FACTOR = 100;
 
-	private static final byte REGION_TEXT_HEIGHT = 5;
-
 	private static final String DEGREE_SIGN = "\u00B0";
 
 	private final FERegion feregion;
-	private final FEPlusNames feplusnames;
 
 	private Coordinates coordinates;
+
+	private Text regionNumberText;
+	private Text regionNameText;
 
 	public FERegionDialog(final Shell parent, final Coordinates coordinates) {
 		super(parent);
 		this.coordinates = coordinates;
 		try {
 			feregion = new FERegion();
-			feplusnames = new FEPlusNames();
 		}
 		catch (final IOException e) {
 			throw new IOError(e);
@@ -128,10 +123,27 @@ public class FERegionDialog extends Dialog {
 		longitudeCombo.setItems("E", "W");
 		longitudeCombo.select(0);
 
-		final Text regionText = new Text(dialogArea, SWT.READ_ONLY | SWT.BORDER | SWT.MULTI | SWT.H_SCROLL);
-		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).hint(SWT.DEFAULT, regionText.getLineHeight() * REGION_TEXT_HEIGHT + 1).applyTo(regionText);
-		regionText.setEditable(false);
-		regionText.setFont(JFaceResources.getTextFont());
+		final Group regionGroup = new Group(dialogArea, SWT.NONE);
+		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(regionGroup);
+		GridLayoutFactory.swtDefaults().numColumns(4).applyTo(regionGroup);
+		regionGroup.setText(Messages.get("lbl.feregion.dialog.region"));
+
+		final Label regionNumberLabel = new Label(regionGroup, SWT.NONE);
+		GridDataFactory.swtDefaults().applyTo(regionNumberLabel);
+		regionNumberLabel.setText(Messages.get("lbl.feregion.dialog.region.number"));
+
+		regionNumberText = new Text(regionGroup, SWT.READ_ONLY | SWT.BORDER | SWT.RIGHT);
+		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.FILL).grab(false, false).applyTo(regionNumberText);
+		regionNumberText.setEditable(false);
+		regionNumberText.setText("000");
+
+		final Label regionNameLabel = new Label(regionGroup, SWT.NONE);
+		GridDataFactory.swtDefaults().applyTo(regionNameLabel);
+		regionNameLabel.setText(Messages.get("lbl.feregion.dialog.region.name"));
+
+		regionNameText = new Text(regionGroup, SWT.READ_ONLY | SWT.BORDER);
+		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.FILL).grab(true, false).applyTo(regionNameText);
+		regionNameText.setEditable(false);
 
 		final Composite buttonBar = new Composite(shell, SWT.NONE);
 		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.CENTER).grab(true, false).applyTo(buttonBar);
@@ -154,7 +166,7 @@ public class FERegionDialog extends Dialog {
 			final Coordinates currentCoordinates = Coordinates.parse(longitude, latitude);
 			if (!currentCoordinates.equals(coordinates)) {
 				this.coordinates = currentCoordinates;
-				regionText.setText(buildRegionText());
+				setResult();
 			}
 		};
 		latitudeSpinner.addModifyListener(modifyListener);
@@ -162,26 +174,24 @@ public class FERegionDialog extends Dialog {
 		longitudeSpinner.addModifyListener(modifyListener);
 		longitudeCombo.addModifyListener(modifyListener);
 
+		shell.pack();
+		shell.setMinimumSize(shell.getSize());
+
 		if (coordinates != null) {
-			regionText.setText(buildRegionText());
+			setResult();
 		}
 		else {
 			modifyListener.modifyText(null);
 		}
 
-		shell.pack();
-		shell.setMinimumSize(shell.getSize());
 		shell.open();
 	}
 
-	private String buildRegionText() {
+	private void setResult() {
 		logger.log(Level.FINE, "{0}", coordinates);
-		final Map<FEPlusNameType, String> map = feplusnames.getNameMap().get(feregion.getGeographicRegionNumber(coordinates));
-		final StringBuilder sb = new StringBuilder();
-		for (final Entry<FEPlusNameType, String> entry : map.entrySet()) {
-			sb.append(entry.getKey()).append(" \u2192 ").append(entry.getValue()).append(System.lineSeparator());
-		}
-		return sb.toString().trim().replace("\\~N", "\u00D1"); // Latin capital letter N with tilde
+		final Region region = feregion.getGeographicRegion(coordinates);
+		regionNumberText.setText(Integer.toString(region.getNumber()));
+		regionNameText.setText(region.getName());
 	}
 
 }
