@@ -33,7 +33,7 @@ public class RssBulletinDecoder {
 		final List<Earthquake> earthquakes = new ArrayList<>();
 		if (data != null && data.getChannel() != null && data.getChannel().getItems() != null) {
 			for (final Item item : data.getChannel().getItems()) {
-				earthquakes.add(RssBulletinDecoder.decodeItem(item));
+				earthquakes.add(decodeItem(item));
 			}
 		}
 		return earthquakes;
