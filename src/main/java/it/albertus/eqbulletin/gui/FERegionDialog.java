@@ -258,9 +258,10 @@ public class FERegionDialog extends Dialog {
 		final Collection<Rectangle> rects = new LinkedHashSet<>();
 		for (final Entry<Integer, Set<LongitudeRange>> e : latitudeLongitudeMap.entrySet()) {
 			for (final LongitudeRange range : e.getValue()) {
-				final int a = e.getKey() >= 0 ? e.getKey() - 1 : e.getKey();
+				final int latitude = e.getKey();
+				final int a = latitude >= 0 ? latitude - 1 : latitude;
 				final int b = range.getFrom();
-				final int c = e.getKey() < 0 ? e.getKey() + 1 : e.getKey();
+				final int c = latitude < 0 ? latitude + 1 : latitude;
 				final int d = range.getTo();
 				rects.add(new Rectangle(a, b, c, d));
 			}
