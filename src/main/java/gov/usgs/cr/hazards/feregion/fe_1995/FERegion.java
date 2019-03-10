@@ -85,7 +85,15 @@ public class FERegion {
 							result.put(lat, new HashSet<>());
 						}
 						final int from = mylons.get(i) * ('E' == Character.toUpperCase(entry.getKey().charAt(1)) ? 1 : -1);
-						final int to = (mylons.size() > i + 1 ? mylons.get(i + 1) : mylons.get(i)) * ('E' == Character.toUpperCase(entry.getKey().charAt(1)) ? 1 : -1);
+						final int lon;
+						if (mylons.size() > i + 1) {
+							final int x = mylons.get(i + 1);
+							lon = x == 0 ? 180 : x;
+						}
+						else {
+							lon = mylons.get(i);
+						}
+						final int to = lon * ('E' == Character.toUpperCase(entry.getKey().charAt(1)) ? 1 : -1);
 						result.get(lat).add(new LongitudeRange(from, to));
 						break;
 					}

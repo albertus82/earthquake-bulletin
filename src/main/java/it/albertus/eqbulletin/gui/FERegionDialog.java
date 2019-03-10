@@ -6,7 +6,7 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
@@ -19,6 +19,7 @@ import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
+import org.eclipse.swt.browser.BrowserFunction;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -166,7 +167,7 @@ public class FERegionDialog extends Dialog {
 		browser = new Browser(regionGroup, SWT.NONE);
 		GridDataFactory.swtDefaults().span(4, 1).align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(browser);
 		try (final InputStream is = LeafletMapDialog.class.getResourceAsStream("map.html")) {
-			final String other = "window.first = true;";
+			final String other = "map.on('click', function(e) { mapOnClick(e.latlng.lat, e.latlng.lng); });";
 			final LeafletMapOptions options = new LeafletMapOptions();
 			options.getControls().put(LeafletMapControl.ZOOM, "");
 			options.getControls().put(LeafletMapControl.ATTRIBUTION, "");
@@ -179,6 +180,32 @@ public class FERegionDialog extends Dialog {
 		catch (final IOException e) {
 			throw new IOError(e);
 		}
+		final BrowserFunction mapOnClickFunction = new BrowserFunction(browser, "mapOnClick") {
+			@Override
+			public Object function(final Object[] args) {
+				double lat = ((Number) args[0]).doubleValue();
+				double lon = ((Number) args[1]).doubleValue();
+				logger.log(Level.FINE, "lat={0}, lon={1}", new Double[] { lat, lon });
+				while (lat > 90) {
+					lat -= 180;
+				}
+				while (lat < -90) {
+					lat += 180;
+				}
+				while (lon > 180) {
+					lon -= 360;
+				}
+				while (lon < -180) {
+					lon += 360;
+				}
+				latitudeSpinner.setSelection((int) (Math.abs(lat) * FACTOR));
+				latitudeCombo.setText(lat < 0 ? "S" : "N");
+				longitudeSpinner.setSelection((int) (Math.abs(lon) * FACTOR));
+				longitudeCombo.setText(lon < 0 ? "W" : "E");
+				return null;
+			}
+		};
+		browser.addDisposeListener(e -> mapOnClickFunction.dispose());
 
 		final Composite buttonBar = new Composite(shell, SWT.NONE);
 		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.CENTER).grab(true, false).applyTo(buttonBar);
@@ -228,7 +255,7 @@ public class FERegionDialog extends Dialog {
 
 		final Map<Integer, Set<LongitudeRange>> latitudeLongitudeMap = feregion.getLatitudeLongitudeMap(region.getNumber());
 		logger.log(Level.FINE, "latitudeLongitudeMap={0}", latitudeLongitudeMap);
-		final Collection<Rectangle> rects = new HashSet<>();
+		final Collection<Rectangle> rects = new LinkedHashSet<>();
 		for (final Entry<Integer, Set<LongitudeRange>> e : latitudeLongitudeMap.entrySet()) {
 			for (final LongitudeRange range : e.getValue()) {
 				final int a = e.getKey();
