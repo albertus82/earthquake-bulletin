@@ -2,9 +2,8 @@ package gov.usgs.cr.hazards.feregion.fe_1995;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -58,7 +57,7 @@ public class FERegion {
 	public Map<Integer, Set<LongitudeRange>> getLatitudeLongitudeMap(final int fenum) {
 		final long startTime = System.nanoTime();
 
-		final Map<String, List<Integer>> indexMap = new HashMap<>();
+		final Map<String, List<Integer>> indexMap = new LinkedHashMap<>();
 		for (final Entry<String, List<Integer>> entry : database.getFenums().entrySet()) {
 			final String sect = entry.getKey();
 			final List<Integer> list = entry.getValue();
@@ -80,9 +79,9 @@ public class FERegion {
 			for (final int i : entry.getValue()) {
 				for (int j = 0; j < mylatbegins.size(); j++) {
 					if (mylatbegins.get(j) > i) {
-						final int lat = (j - 1) * ('N' == Character.toUpperCase(entry.getKey().charAt(0)) ? 1 : -1);
+						final int lat = 'N' == Character.toUpperCase(entry.getKey().charAt(0)) ? j - 1 : -j;
 						if (!result.containsKey(lat)) {
-							result.put(lat, new HashSet<>());
+							result.put(lat, new LinkedHashSet<>());
 						}
 						final int from = mylons.get(i) * ('E' == Character.toUpperCase(entry.getKey().charAt(1)) ? 1 : -1);
 						final int lon;

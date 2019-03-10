@@ -240,7 +240,7 @@ public class FERegionDialog extends Dialog {
 		final Point size = shell.getSize();
 		shell.setMinimumSize(size);
 		final int max = Math.max(size.x, size.y);
-		shell.setSize(max, (int) (max * 1.33));
+		shell.setSize(max, (int) (max * 1.33f));
 
 		regionNumberText.setText("");
 
