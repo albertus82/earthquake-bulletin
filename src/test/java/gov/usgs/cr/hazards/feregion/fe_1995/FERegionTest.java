@@ -8,6 +8,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
@@ -1245,6 +1246,16 @@ public class FERegionTest {
 		Assert.assertEquals(30, instance.getSeismicRegionNumber(360));
 		Assert.assertEquals(50, instance.getSeismicRegionNumber(727));
 		Assert.assertEquals(44, instance.getSeismicRegionNumber(757));
+	}
+
+	@Test
+	public void testGetLatitudeLongitudeMap() {
+		for (int i = 1; i <= 757; i++) {
+			final Map<Integer, Set<LongitudeRange>> map = instance.getLatitudeLongitudeMap(i);
+			logger.log(Level.FINE, "{0} -> {1}", new Object[] { i, map });
+//			System.out.println(i + " -> " + map);
+		}
+		Assert.assertTrue(true);
 	}
 
 	private void testGetName(final String arg0, final String arg1, final String expectedName) {

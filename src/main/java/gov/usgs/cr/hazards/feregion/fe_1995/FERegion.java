@@ -79,20 +79,17 @@ public class FERegion {
 			for (final int i : entry.getValue()) {
 				for (int j = 0; j < mylatbegins.size(); j++) {
 					if (mylatbegins.get(j) > i) {
+						// Latitude
 						final int lat = 'N' == Character.toUpperCase(entry.getKey().charAt(0)) ? j : -j;
 						if (!result.containsKey(lat)) {
 							result.put(lat, new LinkedHashSet<>());
 						}
-						final int from = mylons.get(i) * ('E' == Character.toUpperCase(entry.getKey().charAt(1)) ? 1 : -1);
-						final int lon;
-						if (mylons.size() > i + 1) {
-							final int x = mylons.get(i + 1);
-							lon = x == 0 ? 180 : x;
-						}
-						else {
-							lon = mylons.get(i);
-						}
-						final int to = lon * ('E' == Character.toUpperCase(entry.getKey().charAt(1)) ? 1 : -1);
+						// Longitude ranges
+						final boolean east = 'E' == Character.toUpperCase(entry.getKey().charAt(1));
+						final int from = east ? mylons.get(i) : -mylons.get(i);
+						final int k = mylons.get(i + 1);
+						final int l = k == 0 ? 180 : k;
+						final int to = east ? l : -l;
 						result.get(lat).add(new LongitudeRange(from, to));
 						break;
 					}
