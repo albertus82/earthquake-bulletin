@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 import it.albertus.util.logging.LoggerFactory;
 
@@ -46,6 +47,10 @@ class Database {
 	private final List<Integer> seisreg = new ArrayList<>(757);
 
 	Database() throws IOException { // NOSONAR Preserve comparability with Perl source.
+		final long startTime = System.nanoTime();
+
+		final Pattern pattern = Pattern.compile("\\s+");
+
 		// Read the file of region names...
 		try (final InputStream is = getClass().getResourceAsStream("names.asc"); final InputStreamReader isr = new InputStreamReader(is, US_ASCII); final BufferedReader br = new BufferedReader(isr)) {
 			String line;
@@ -59,7 +64,7 @@ class Database {
 		try (final InputStream is = getClass().getResourceAsStream("quadsidx.asc"); final InputStreamReader isr = new InputStreamReader(is, US_ASCII); final BufferedReader br = new BufferedReader(isr)) {
 			String line;
 			while ((line = br.readLine()) != null) {
-				for (final String index : line.trim().split("\\s+")) {
+				for (final String index : pattern.split(line.trim())) {
 					quadsindex.add(Integer.valueOf(index));
 				}
 			}
@@ -72,7 +77,7 @@ class Database {
 			try (final InputStream is = getClass().getResourceAsStream(sectfiles[i]); final InputStreamReader isr = new InputStreamReader(is, US_ASCII); final BufferedReader br = new BufferedReader(isr)) {
 				String line;
 				while ((line = br.readLine()) != null) {
-					for (final String s : line.trim().split("\\s+")) {
+					for (final String s : pattern.split(line.trim())) {
 						sect.add(Integer.valueOf(s));
 					}
 				}
@@ -125,7 +130,7 @@ class Database {
 		try (final InputStream is = getClass().getResourceAsStream("seisrdef.asc"); final InputStreamReader isr = new InputStreamReader(is, US_ASCII); final BufferedReader br = new BufferedReader(isr)) {
 			String line;
 			while ((line = br.readLine()) != null) {
-				final String[] row = line.trim().split("\\s+");
+				final String[] row = pattern.split(line.trim());
 				final Integer value = Integer.valueOf(row[0]);
 				final short from = Short.parseShort(row[1]);
 				final short to = row.length > 2 ? Short.parseShort(row[2]) : from;
@@ -134,6 +139,8 @@ class Database {
 				}
 			}
 		}
+
+		logger.log(Level.FINE, "{0} initialized in {1} ns.", new Object[] { this, System.nanoTime() - startTime });
 	}
 
 	List<String> getNames() {
