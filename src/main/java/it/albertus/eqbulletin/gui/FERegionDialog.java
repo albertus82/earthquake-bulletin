@@ -213,7 +213,7 @@ public class FERegionDialog extends Dialog {
 		final Point size = shell.getSize();
 		shell.setMinimumSize(size);
 		final int max = Math.max(size.x, size.y);
-		shell.setSize(max, max);
+		shell.setSize(max, (int) (max * 1.33));
 
 		regionNumberText.setText("");
 
@@ -240,11 +240,11 @@ public class FERegionDialog extends Dialog {
 		}
 		logger.log(Level.FINE, "rectangles={0} ", rects);
 
-		if (this.rectangles == null || !this.rectangles.equals(rects)) {
+		if (!rects.equals(this.rectangles)) {
 			this.rectangles = rects;
 			browser.execute("if (window.rectangles) { for (var i = 0; i < window.rectangles.length; i++) { window.rectangles[i].remove(); } }; window.rectangles = [];");
 			for (final Rectangle rectangle : rects) {
-				browser.execute(String.format("window.rectangle = L.rectangle(([[%s, %s], [%s, %s]]), { color: '#ff7800', weight: 0 }); window.rectangles.push(window.rectangle); window.rectangle.addTo(map);", rectangle.a, rectangle.b, rectangle.c, rectangle.d));
+				browser.execute(String.format("window.rectangle = L.rectangle(([[%s, %s], [%s, %s]]), { color: 'red', weight: 0 }); window.rectangles.push(window.rectangle); window.rectangle.addTo(map);", rectangle.a, rectangle.b, rectangle.c, rectangle.d));
 			}
 		}
 		browser.execute(String.format("map.flyTo(new L.LatLng(%s, %s));", coordinates.getLatitude(), coordinates.getLongitude()));
