@@ -3,12 +3,13 @@ package it.albertus.eqbulletin.gui;
 import java.io.IOError;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -61,6 +62,7 @@ public class FERegionDialog extends Dialog {
 	private final FERegion feregion;
 
 	private Coordinates coordinates;
+	private Collection<Rectangle> rectangles;
 
 	private Text regionNumberText;
 	private Text regionNameText;
@@ -226,35 +228,60 @@ public class FERegionDialog extends Dialog {
 
 		final Map<Integer, Set<LongitudeRange>> latitudeLongitudeMap = feregion.getLatitudeLongitudeMap(region.getNumber());
 		logger.log(Level.FINE, "latitudeLongitudeMap={0}", latitudeLongitudeMap);
-		List<RegionRectangle> rectangles = new ArrayList<>();
+		final Collection<Rectangle> rects = new HashSet<>();
 		for (final Entry<Integer, Set<LongitudeRange>> e : latitudeLongitudeMap.entrySet()) {
 			for (final LongitudeRange range : e.getValue()) {
-				final int a = e.getKey() - (e.getKey() < 0 ? 1 : 0);
+				final int a = e.getKey();
 				final int b = range.getFrom();
-				final int c = e.getKey() + (e.getKey() > 0 ? 1 : 0);
+				int c = e.getKey() + 1;
 				final int d = range.getTo();
-				rectangles.add(new RegionRectangle(a, b, c, d));
+				rects.add(new Rectangle(a, b, c, d));
 			}
 		}
-		logger.log(Level.FINE, "rects={0} ", rectangles);
-		browser.execute("if (window.rects) { for (var i = 0; i < window.rects.length; i++) { window.rects[i].remove(); } }; window.rects = [];");
-		for (final RegionRectangle rectangle : rectangles) {
-			browser.execute(String.format("window.rect = L.rectangle(([[%s, %s], [%s, %s]]), { color: '#ff7800', weight: 0 }); window.rects.push(window.rect); window.rect.addTo(map);", rectangle.a, rectangle.b, rectangle.c, rectangle.d));
+		logger.log(Level.FINE, "rectangles={0} ", rects);
+
+		if (this.rectangles == null || !this.rectangles.equals(rects)) {
+			this.rectangles = rects;
+			browser.execute("if (window.rectangles) { for (var i = 0; i < window.rectangles.length; i++) { window.rectangles[i].remove(); } }; window.rectangles = [];");
+			for (final Rectangle rectangle : rects) {
+				browser.execute(String.format("window.rectangle = L.rectangle(([[%s, %s], [%s, %s]]), { color: '#ff7800', weight: 0 }); window.rectangles.push(window.rectangle); window.rectangle.addTo(map);", rectangle.a, rectangle.b, rectangle.c, rectangle.d));
+			}
 		}
 		browser.execute(String.format("map.flyTo(new L.LatLng(%s, %s));", coordinates.getLatitude(), coordinates.getLongitude()));
 	}
 
-	private static class RegionRectangle {
+	private static class Rectangle {
+
 		private final int a;
 		private final int b;
 		private final int c;
 		private final int d;
 
-		public RegionRectangle(final int a, final int b, final int c, final int d) {
+		private Rectangle(final int a, final int b, final int c, final int d) {
 			this.a = a;
 			this.b = b;
 			this.c = c;
 			this.d = d;
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hash(a, b, c, d);
+		}
+
+		@Override
+		public boolean equals(final Object obj) {
+			if (this == obj) {
+				return true;
+			}
+			if (obj == null) {
+				return false;
+			}
+			if (!(obj instanceof Rectangle)) {
+				return false;
+			}
+			final Rectangle other = (Rectangle) obj;
+			return a == other.a && b == other.b && c == other.c && d == other.d;
 		}
 
 		@Override
