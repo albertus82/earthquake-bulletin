@@ -3,7 +3,13 @@ package it.albertus.eqbulletin.gui;
 import java.io.IOError;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -28,9 +34,12 @@ import org.eclipse.swt.widgets.Text;
 
 import gov.usgs.cr.hazards.feregion.fe_1995.Coordinates;
 import gov.usgs.cr.hazards.feregion.fe_1995.FERegion;
+import gov.usgs.cr.hazards.feregion.fe_1995.LongitudeRange;
 import gov.usgs.cr.hazards.feregion.fe_1995.Region;
+import it.albertus.eqbulletin.resources.Leaflet;
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.jface.SwtUtils;
+import it.albertus.jface.maps.leaflet.LeafletMapControl;
 import it.albertus.jface.maps.leaflet.LeafletMapDialog;
 import it.albertus.jface.maps.leaflet.LeafletMapOptions;
 import it.albertus.util.logging.LoggerFactory;
@@ -155,8 +164,15 @@ public class FERegionDialog extends Dialog {
 		browser = new Browser(regionGroup, SWT.NONE);
 		GridDataFactory.swtDefaults().span(4, 1).align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(browser);
 		try (final InputStream is = LeafletMapDialog.class.getResourceAsStream("map.html")) {
-			final String other = "window.rect = L.rectangle(([[0, 0], [1, 1]]), { color: '#ff7800', weight: 1 }); window.rect.addTo(map); map.flyTo(new L.LatLng(0.5, 0.5), 6);";
-			browser.setUrl(LeafletMapDialog.getMapPage(shell, is, line -> LeafletMapDialog.parseLine(line, new LeafletMapOptions(), Collections.emptySet(), other)).toString());
+			final String other = "window.first = true;";
+			final LeafletMapOptions options = new LeafletMapOptions();
+			options.getControls().put(LeafletMapControl.ZOOM, "");
+			options.getControls().put(LeafletMapControl.ATTRIBUTION, "");
+			options.getControls().put(LeafletMapControl.SCALE, "");
+			if (Leaflet.LAYERS != null && !Leaflet.LAYERS.isEmpty()) {
+				options.getControls().put(LeafletMapControl.LAYERS, Leaflet.LAYERS);
+			}
+			browser.setUrl(LeafletMapDialog.getMapPage(shell, is, line -> LeafletMapDialog.parseLine(line, options, Collections.emptySet(), other)).toString());
 		}
 		catch (final IOException e) {
 			throw new IOError(e);
@@ -197,12 +213,7 @@ public class FERegionDialog extends Dialog {
 		final int max = Math.max(size.x, size.y);
 		shell.setSize(max, max);
 
-		if (coordinates != null) {
-			setResult();
-		}
-		else {
-			modifyListener.modifyText(null);
-		}
+		regionNumberText.setText("");
 
 		shell.open();
 	}
@@ -212,14 +223,44 @@ public class FERegionDialog extends Dialog {
 		final Region region = feregion.getGeographicRegion(coordinates);
 		regionNumberText.setText(Integer.toString(region.getNumber()));
 		regionNameText.setText(region.getName());
-		final int a = (int) coordinates.getLatitude();
-		final int b = (int) coordinates.getLongitude();
-		final int c = a + (a < 0 ? -1 : 1);
-		final int d = b + (b < 0 ? -1 : 1);
-		final float e = a + (a < 0 ? -0.5f : 0.5f);
-		final float f = b + (b < 0 ? -0.5f : 0.5f);
-		logger.log(Level.FINE, "{0}, {1}, {2}, {3}, {4}, {5}", new Number[] { a, b, c, d, e, f });
-		browser.execute(String.format("if (window.rect) { window.rect.remove(); } window.rect = L.rectangle(([[%s, %s], [%s, %s]]), { color: '#ff7800', weight: 1 }); window.rect.addTo(map); map.flyTo(new L.LatLng(%s, %s));", a, b, c, d, e, f));
+
+		final Map<Integer, Set<LongitudeRange>> latitudeLongitudeMap = feregion.getLatitudeLongitudeMap(region.getNumber());
+		logger.log(Level.FINE, "latitudeLongitudeMap={0}", latitudeLongitudeMap);
+		List<RegionRectangle> rectangles = new ArrayList<>();
+		for (final Entry<Integer, Set<LongitudeRange>> e : latitudeLongitudeMap.entrySet()) {
+			for (final LongitudeRange range : e.getValue()) {
+				final int a = e.getKey() - (e.getKey() < 0 ? 1 : 0);
+				final int b = range.getFrom();
+				final int c = e.getKey() + (e.getKey() > 0 ? 1 : 0);
+				final int d = range.getTo();
+				rectangles.add(new RegionRectangle(a, b, c, d));
+			}
+		}
+		logger.log(Level.FINE, "rects={0} ", rectangles);
+		browser.execute("if (window.rects) { for (var i = 0; i < window.rects.length; i++) { window.rects[i].remove(); } }; window.rects = [];");
+		for (final RegionRectangle rectangle : rectangles) {
+			browser.execute(String.format("window.rect = L.rectangle(([[%s, %s], [%s, %s]]), { color: '#ff7800', weight: 0 }); window.rects.push(window.rect); window.rect.addTo(map);", rectangle.a, rectangle.b, rectangle.c, rectangle.d));
+		}
+		browser.execute(String.format("map.flyTo(new L.LatLng(%s, %s));", coordinates.getLatitude(), coordinates.getLongitude()));
+	}
+
+	private static class RegionRectangle {
+		private final int a;
+		private final int b;
+		private final int c;
+		private final int d;
+
+		public RegionRectangle(final int a, final int b, final int c, final int d) {
+			this.a = a;
+			this.b = b;
+			this.c = c;
+			this.d = d;
+		}
+
+		@Override
+		public String toString() {
+			return Arrays.asList(a, b, c, d).toString();
+		}
 	}
 
 }

@@ -1,8 +1,14 @@
 package gov.usgs.cr.hazards.feregion.fe_1995;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -47,6 +53,49 @@ public class FERegion {
 		logger.log(Level.FINE, "{0} {1}", new Object[] { region.getNumber(), region.getName() });
 
 		return region;
+	}
+
+	public Map<Integer, Set<LongitudeRange>> getLatitudeLongitudeMap(final int fenum) {
+		final long startTime = System.nanoTime();
+
+		final Map<String, List<Integer>> indexMap = new HashMap<>();
+		for (final Entry<String, List<Integer>> entry : database.getFenums().entrySet()) {
+			final String sect = entry.getKey();
+			final List<Integer> list = entry.getValue();
+			for (int i = 0; i < list.size(); i++) {
+				if (list.get(i).intValue() == fenum) {
+					if (!indexMap.containsKey(sect)) {
+						indexMap.put(sect, new ArrayList<>());
+					}
+					indexMap.get(sect).add(i);
+				}
+			}
+		}
+
+		final Map<Integer, Set<LongitudeRange>> result = new LinkedHashMap<>();
+		for (final Entry<String, List<Integer>> entry : indexMap.entrySet()) {
+			final List<Integer> mylons = database.getLons().get(entry.getKey());
+			final List<Integer> mylatbegins = database.getLatbegins().get(entry.getKey());
+
+			for (final int i : entry.getValue()) {
+				for (int j = 0; j < mylatbegins.size(); j++) {
+					if (mylatbegins.get(j) > i) {
+						final int lat = (j - 1) * ('N' == Character.toUpperCase(entry.getKey().charAt(0)) ? 1 : -1);
+						if (!result.containsKey(lat)) {
+							result.put(lat, new HashSet<>());
+						}
+						final int from = mylons.get(i) * ('E' == Character.toUpperCase(entry.getKey().charAt(1)) ? 1 : -1);
+						final int to = (mylons.size() > i + 1 ? mylons.get(i + 1) : mylons.get(i)) * ('E' == Character.toUpperCase(entry.getKey().charAt(1)) ? 1 : -1);
+						result.get(lat).add(new LongitudeRange(from, to));
+						break;
+					}
+				}
+			}
+		}
+
+		logger.log(Level.FINE, "{0}", System.nanoTime() - startTime);
+
+		return result;
 	}
 
 	/**
