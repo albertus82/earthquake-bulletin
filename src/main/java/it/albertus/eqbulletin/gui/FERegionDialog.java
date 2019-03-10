@@ -183,20 +183,11 @@ public class FERegionDialog extends Dialog {
 		final BrowserFunction mapOnClickFunction = new BrowserFunction(browser, "mapOnClick") {
 			@Override
 			public Object function(final Object[] args) {
-				double lat = ((Number) args[0]).doubleValue();
+				final double lat = ((Number) args[0]).doubleValue();
 				double lon = ((Number) args[1]).doubleValue();
-				logger.log(Level.FINE, "lat={0}, lon={1}", new Double[] { lat, lon });
-				while (lat > 90) {
-					lat -= 180;
-				}
-				while (lat < -90) {
-					lat += 180;
-				}
-				while (lon > 180) {
-					lon -= 360;
-				}
-				while (lon < -180) {
-					lon += 360;
+				logger.log(Level.FINE, "mapOnClickFunction lat={0}, lon={1}", new Double[] { lat, lon });
+				while (Math.abs(lon) > 180) {
+					lon -= Math.signum(lon) * 360;
 				}
 				latitudeSpinner.setSelection((int) (Math.abs(lat) * FACTOR));
 				latitudeCombo.setText(lat < 0 ? "S" : "N");
