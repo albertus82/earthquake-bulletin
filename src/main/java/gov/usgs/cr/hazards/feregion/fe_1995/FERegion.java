@@ -79,7 +79,7 @@ public class FERegion {
 			for (final int i : entry.getValue()) {
 				for (int j = 0; j < mylatbegins.size(); j++) {
 					if (mylatbegins.get(j) > i) {
-						final int lat = 'N' == Character.toUpperCase(entry.getKey().charAt(0)) ? j - 1 : -j;
+						final int lat = 'N' == Character.toUpperCase(entry.getKey().charAt(0)) ? j : -j;
 						if (!result.containsKey(lat)) {
 							result.put(lat, new LinkedHashSet<>());
 						}
