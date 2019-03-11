@@ -2,6 +2,8 @@ package gov.usgs.cr.hazards.feregion.fe_1995;
 
 import java.io.Serializable;
 
+import it.albertus.jface.maps.CoordinateUtils;
+
 /**
  * This class represents geographical coordinates (longitude & latitude) in
  * decimal degrees.
@@ -15,9 +17,7 @@ import java.io.Serializable;
  */
 public class Coordinates implements Serializable {
 
-	private static final long serialVersionUID = -5672208470783902289L;
-
-	private static final char DEGREE_SIGN = '\u00B0';
+	private static final long serialVersionUID = 592347022653444918L;
 
 	private final double longitude;
 	private final double latitude;
@@ -112,7 +112,7 @@ public class Coordinates implements Serializable {
 	/** Returns a string representation of the geographical coordinates. */
 	@Override
 	public String toString() {
-		return Double.toString(Math.abs(latitude)) + DEGREE_SIGN + (latitude < 0 ? 'S' : 'N') + ' ' + Math.abs(longitude) + DEGREE_SIGN + (longitude < 0 ? 'W' : 'E');
+		return Double.toString(Math.abs(latitude)) + CoordinateUtils.DEGREE_SIGN + (latitude < 0 ? 'S' : 'N') + ' ' + Math.abs(longitude) + CoordinateUtils.DEGREE_SIGN + (longitude < 0 ? 'W' : 'E');
 	}
 
 	@Override

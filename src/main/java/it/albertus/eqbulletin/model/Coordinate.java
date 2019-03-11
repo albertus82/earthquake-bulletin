@@ -1,23 +1,65 @@
 package it.albertus.eqbulletin.model;
 
-import java.text.NumberFormat;
-import java.util.Locale;
+abstract class Coordinate extends Number implements Comparable<Coordinate> {
 
-abstract class Coordinate extends FloatValue {
+	private static final long serialVersionUID = -4028527688806190212L;
 
-	private static final long serialVersionUID = 7312923076881011764L;
-
-	static final char DEGREE_SIGN = '\u00B0';
+	final float value;
 
 	Coordinate(final float value) {
-		super(value);
+		this.value = value;
 	}
 
-	static final ThreadLocal<NumberFormat> numberFormats = ThreadLocal.withInitial(() -> {
-		final NumberFormat nf = NumberFormat.getNumberInstance(Locale.US);
-		nf.setMinimumFractionDigits(2);
-		nf.setMaximumFractionDigits(2);
-		return nf;
-	});
+	public float getValue() {
+		return value;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + Float.floatToIntBits(value);
+		return result;
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof Coordinate)) {
+			return false;
+		}
+		final Coordinate other = (Coordinate) obj;
+		return Float.floatToIntBits(value) == Float.floatToIntBits(other.value);
+	}
+
+	@Override
+	public int compareTo(final Coordinate o) {
+		return Float.compare(this.value, o.value);
+	}
+
+	@Override
+	public int intValue() {
+		return (int) value;
+	}
+
+	@Override
+	public long longValue() {
+		return (long) value;
+	}
+
+	@Override
+	public float floatValue() {
+		return value;
+	}
+
+	@Override
+	public double doubleValue() {
+		return Double.parseDouble(Float.toString(value));
+	}
 
 }

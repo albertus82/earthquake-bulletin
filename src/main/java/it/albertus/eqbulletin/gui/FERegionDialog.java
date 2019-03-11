@@ -41,6 +41,7 @@ import gov.usgs.cr.hazards.feregion.fe_1995.Region;
 import it.albertus.eqbulletin.resources.Leaflet;
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.jface.SwtUtils;
+import it.albertus.jface.maps.CoordinateUtils;
 import it.albertus.jface.maps.MapBounds;
 import it.albertus.jface.maps.leaflet.LeafletMapControl;
 import it.albertus.jface.maps.leaflet.LeafletMapDialog;
@@ -58,8 +59,6 @@ public class FERegionDialog extends Dialog {
 
 	private static final short DIGITS = 2;
 	private static final short FACTOR = 100;
-
-	private static final String DEGREE_SIGN = "\u00B0";
 
 	private final FERegion feregion;
 
@@ -116,7 +115,7 @@ public class FERegionDialog extends Dialog {
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(latitudeSpinner);
 		final Label latitudeDegreeLabel = new Label(coordinatesGroup, SWT.NONE);
 		GridDataFactory.swtDefaults().applyTo(latitudeDegreeLabel);
-		latitudeDegreeLabel.setText(DEGREE_SIGN);
+		latitudeDegreeLabel.setText(CoordinateUtils.DEGREE_SIGN);
 		final Combo latitudeCombo = new Combo(coordinatesGroup, SWT.DROP_DOWN | SWT.READ_ONLY);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(false, false).applyTo(latitudeCombo);
 		latitudeCombo.setItems("N", "S");
@@ -137,7 +136,7 @@ public class FERegionDialog extends Dialog {
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(longitudeSpinner);
 		final Label longitudeDegreeLabel = new Label(coordinatesGroup, SWT.NONE);
 		GridDataFactory.swtDefaults().applyTo(longitudeDegreeLabel);
-		longitudeDegreeLabel.setText(DEGREE_SIGN);
+		longitudeDegreeLabel.setText(CoordinateUtils.DEGREE_SIGN);
 		final Combo longitudeCombo = new Combo(coordinatesGroup, SWT.DROP_DOWN | SWT.READ_ONLY);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(false, false).applyTo(longitudeCombo);
 		longitudeCombo.setItems("E", "W");
@@ -311,7 +310,7 @@ public class FERegionDialog extends Dialog {
 
 		@Override
 		public String toString() {
-			return Arrays.asList(a, b, c, d).toString();
+			return Arrays.toString(new int[] { a, b, c, d });
 		}
 	}
 
