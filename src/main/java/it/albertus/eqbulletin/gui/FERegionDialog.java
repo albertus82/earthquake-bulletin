@@ -51,9 +51,9 @@ public class FERegionDialog extends Dialog {
 
 	private static final Logger logger = LoggerFactory.getLogger(FERegionDialog.class);
 
-	private static final int LATITUDE_MIN_VALUE = MapBounds.LATITUDE_MIN_VALUE;
+	private static final int LATITUDE_MIN_VALUE = 0;
 	private static final int LATITUDE_MAX_VALUE = MapBounds.LATITUDE_MAX_VALUE;
-	private static final int LONGITUDE_MIN_VALUE = MapBounds.LONGITUDE_MIN_VALUE;
+	private static final int LONGITUDE_MIN_VALUE = 0;
 	private static final int LONGITUDE_MAX_VALUE = MapBounds.LONGITUDE_MAX_VALUE;
 
 	private static final short DIGITS = 2;
