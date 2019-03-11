@@ -60,11 +60,18 @@ public class FERegionDialog extends Dialog {
 	private static final short DIGITS = 2;
 	private static final short FACTOR = 100;
 
+	private static final String MAP_ONCLICK_FN = "mapOnClick";
+	private static final String MAP_ONLOAD_FN = "mapOnLoad";
+
 	private final FERegion feregion;
 
 	private Coordinates coordinates;
 	private Collection<Rectangle> rectangles;
 
+	private Spinner latitudeSpinner;
+	private Combo latitudeCombo;
+	private Spinner longitudeSpinner;
+	private Combo longitudeCombo;
 	private Text regionNumberText;
 	private Text regionNameText;
 	private Browser browser;
@@ -103,20 +110,17 @@ public class FERegionDialog extends Dialog {
 		final Label latitudeLabel = new Label(coordinatesGroup, SWT.NONE);
 		GridDataFactory.swtDefaults().applyTo(latitudeLabel);
 		latitudeLabel.setText(Messages.get("lbl.feregion.dialog.latitude"));
-		final Spinner latitudeSpinner = new Spinner(coordinatesGroup, SWT.BORDER);
+		latitudeSpinner = new Spinner(coordinatesGroup, SWT.BORDER);
 		latitudeSpinner.setDigits(DIGITS);
 		latitudeSpinner.setMinimum(LATITUDE_MIN_VALUE * FACTOR);
 		latitudeSpinner.setMaximum(LATITUDE_MAX_VALUE * FACTOR);
 		latitudeSpinner.setIncrement(FACTOR);
 		latitudeSpinner.setTextLimit(Integer.toString(latitudeSpinner.getMaximum()).length() + 1);
-		if (coordinates != null) {
-			latitudeSpinner.setSelection((int) coordinates.getLatitude() * FACTOR);
-		}
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(latitudeSpinner);
 		final Label latitudeDegreeLabel = new Label(coordinatesGroup, SWT.NONE);
 		GridDataFactory.swtDefaults().applyTo(latitudeDegreeLabel);
 		latitudeDegreeLabel.setText(CoordinateUtils.DEGREE_SIGN);
-		final Combo latitudeCombo = new Combo(coordinatesGroup, SWT.DROP_DOWN | SWT.READ_ONLY);
+		latitudeCombo = new Combo(coordinatesGroup, SWT.DROP_DOWN | SWT.READ_ONLY);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(false, false).applyTo(latitudeCombo);
 		latitudeCombo.setItems("N", "S");
 		latitudeCombo.select(0);
@@ -124,20 +128,18 @@ public class FERegionDialog extends Dialog {
 		final Label longitudeLabel = new Label(coordinatesGroup, SWT.NONE);
 		GridDataFactory.swtDefaults().applyTo(longitudeLabel);
 		longitudeLabel.setText(Messages.get("lbl.feregion.dialog.longitude"));
-		final Spinner longitudeSpinner = new Spinner(coordinatesGroup, SWT.BORDER);
+		longitudeSpinner = new Spinner(coordinatesGroup, SWT.BORDER);
 		longitudeSpinner.setDigits(DIGITS);
 		longitudeSpinner.setMinimum(LONGITUDE_MIN_VALUE * FACTOR);
 		longitudeSpinner.setMaximum(LONGITUDE_MAX_VALUE * FACTOR);
 		longitudeSpinner.setIncrement(FACTOR);
 		longitudeSpinner.setTextLimit(Integer.toString(longitudeSpinner.getMaximum()).length() + 1);
-		if (coordinates != null) {
-			longitudeSpinner.setSelection((int) coordinates.getLongitude() * FACTOR);
-		}
+
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(longitudeSpinner);
 		final Label longitudeDegreeLabel = new Label(coordinatesGroup, SWT.NONE);
 		GridDataFactory.swtDefaults().applyTo(longitudeDegreeLabel);
 		longitudeDegreeLabel.setText(CoordinateUtils.DEGREE_SIGN);
-		final Combo longitudeCombo = new Combo(coordinatesGroup, SWT.DROP_DOWN | SWT.READ_ONLY);
+		longitudeCombo = new Combo(coordinatesGroup, SWT.DROP_DOWN | SWT.READ_ONLY);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(false, false).applyTo(longitudeCombo);
 		longitudeCombo.setItems("E", "W");
 		longitudeCombo.select(0);
@@ -166,37 +168,50 @@ public class FERegionDialog extends Dialog {
 
 		browser = new Browser(regionGroup, SWT.NONE);
 		GridDataFactory.swtDefaults().span(4, 1).align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(browser);
+
+		final BrowserFunction mapOnClick = new BrowserFunction(browser, MAP_ONCLICK_FN) {
+			@Override
+			public Object function(final Object[] args) {
+				final double latitude = ((Number) args[0]).doubleValue();
+				double longitude = ((Number) args[1]).doubleValue();
+				while (Math.abs(longitude) > LONGITUDE_MAX_VALUE) {
+					longitude -= Math.signum(longitude) * LONGITUDE_MAX_VALUE * 2;
+				}
+				setInputFields(latitude, longitude);
+				return null;
+			}
+		};
+		browser.addDisposeListener(e -> mapOnClick.dispose());
+
 		try (final InputStream is = LeafletMapDialog.class.getResourceAsStream("map.html")) {
-			final String other = "map.on('click', function(e) { mapOnClick(e.latlng.lat, e.latlng.lng); });";
 			final LeafletMapOptions options = new LeafletMapOptions();
 			options.getControls().put(LeafletMapControl.ZOOM, "");
 			options.getControls().put(LeafletMapControl.ATTRIBUTION, "");
 			options.getControls().put(LeafletMapControl.SCALE, "");
+			final StringBuilder other = new StringBuilder("map.on('click', function(e) { ").append(MAP_ONCLICK_FN).append("(e.latlng.lat, e.latlng.lng); }); ");
+			if (coordinates != null) {
+				setInputFields(coordinates.getLatitude(), coordinates.getLongitude());
+				final BrowserFunction mapOnLoad = new BrowserFunction(browser, MAP_ONLOAD_FN) {
+					@Override
+					public Object function(final Object[] args) {
+						setResult();
+						return null;
+					}
+				};
+				browser.addDisposeListener(e -> mapOnLoad.dispose());
+				options.setCenterLat(coordinates.getLatitude());
+				options.setCenterLng(coordinates.getLongitude());
+				options.setZoom(5);
+				other.append("document.onload = ").append(MAP_ONLOAD_FN).append("();");
+			}
 			if (Leaflet.LAYERS != null && !Leaflet.LAYERS.isEmpty()) {
 				options.getControls().put(LeafletMapControl.LAYERS, Leaflet.LAYERS);
 			}
-			browser.setUrl(LeafletMapDialog.getMapPage(shell, is, line -> LeafletMapDialog.parseLine(line, options, Collections.emptySet(), other)).toString());
+			browser.setUrl(LeafletMapDialog.getMapPage(shell, is, line -> LeafletMapDialog.parseLine(line, options, Collections.emptySet(), other.toString())).toString());
 		}
 		catch (final IOException e) {
 			throw new IOError(e);
 		}
-		final BrowserFunction mapOnClickFunction = new BrowserFunction(browser, "mapOnClick") {
-			@Override
-			public Object function(final Object[] args) {
-				final double lat = ((Number) args[0]).doubleValue();
-				double lon = ((Number) args[1]).doubleValue();
-				logger.log(Level.FINE, "mapOnClickFunction lat={0}, lon={1}", new Double[] { lat, lon });
-				while (Math.abs(lon) > LONGITUDE_MAX_VALUE) {
-					lon -= Math.signum(lon) * LONGITUDE_MAX_VALUE * 2;
-				}
-				latitudeSpinner.setSelection((int) (Math.abs(lat) * FACTOR));
-				latitudeCombo.setText(lat < 0 ? "S" : "N");
-				longitudeSpinner.setSelection((int) (Math.abs(lon) * FACTOR));
-				longitudeCombo.setText(lon < 0 ? "W" : "E");
-				return null;
-			}
-		};
-		browser.addDisposeListener(e -> mapOnClickFunction.dispose());
 
 		final Composite buttonBar = new Composite(shell, SWT.NONE);
 		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.CENTER).grab(true, false).applyTo(buttonBar);
@@ -272,6 +287,13 @@ public class FERegionDialog extends Dialog {
 		script.append("map.flyTo(new L.LatLng(").append(coordinates.getLatitude()).append(", ").append(coordinates.getLongitude()).append("));");
 		logger.log(Level.FINER, "Executing script: {0}", script);
 		browser.execute(script.toString());
+	}
+
+	private void setInputFields(final double latitude, final double longitude) {
+		latitudeSpinner.setSelection((int) (Math.abs(latitude) * FACTOR));
+		latitudeCombo.setText(latitude < 0 ? "S" : "N");
+		longitudeSpinner.setSelection((int) (Math.abs(longitude) * FACTOR));
+		longitudeCombo.setText(longitude < 0 ? "W" : "E");
 	}
 
 	private static class Rectangle {
