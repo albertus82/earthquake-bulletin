@@ -41,6 +41,7 @@ import gov.usgs.cr.hazards.feregion.fe_1995.Region;
 import it.albertus.eqbulletin.resources.Leaflet;
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.jface.SwtUtils;
+import it.albertus.jface.maps.MapBounds;
 import it.albertus.jface.maps.leaflet.LeafletMapControl;
 import it.albertus.jface.maps.leaflet.LeafletMapDialog;
 import it.albertus.jface.maps.leaflet.LeafletMapOptions;
@@ -50,10 +51,10 @@ public class FERegionDialog extends Dialog {
 
 	private static final Logger logger = LoggerFactory.getLogger(FERegionDialog.class);
 
-	private static final short LATITUDE_MIN_VALUE = 0;
-	private static final short LATITUDE_MAX_VALUE = 90;
-	private static final short LONGITUDE_MIN_VALUE = 0;
-	private static final short LONGITUDE_MAX_VALUE = 180;
+	private static final int LATITUDE_MIN_VALUE = MapBounds.LATITUDE_MIN_VALUE;
+	private static final int LATITUDE_MAX_VALUE = MapBounds.LATITUDE_MAX_VALUE;
+	private static final int LONGITUDE_MIN_VALUE = MapBounds.LONGITUDE_MIN_VALUE;
+	private static final int LONGITUDE_MAX_VALUE = MapBounds.LONGITUDE_MAX_VALUE;
 
 	private static final short DIGITS = 2;
 	private static final short FACTOR = 100;
@@ -186,8 +187,8 @@ public class FERegionDialog extends Dialog {
 				final double lat = ((Number) args[0]).doubleValue();
 				double lon = ((Number) args[1]).doubleValue();
 				logger.log(Level.FINE, "mapOnClickFunction lat={0}, lon={1}", new Double[] { lat, lon });
-				while (Math.abs(lon) > 180) {
-					lon -= Math.signum(lon) * 360;
+				while (Math.abs(lon) > LONGITUDE_MAX_VALUE) {
+					lon -= Math.signum(lon) * LONGITUDE_MAX_VALUE * 2;
 				}
 				latitudeSpinner.setSelection((int) (Math.abs(lat) * FACTOR));
 				latitudeCombo.setText(lat < 0 ? "S" : "N");
