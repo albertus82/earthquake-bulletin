@@ -87,7 +87,7 @@ public class FERegionDialog extends Dialog {
 	}
 
 	public void open() {
-		final Shell shell = new Shell(getParent(), SWT.CLOSE | SWT.RESIZE | SWT.MAX);
+		final Shell shell = new Shell(getParent(), SWT.APPLICATION_MODAL | SWT.CLOSE | SWT.RESIZE | SWT.MAX);
 		shell.setText(getText());
 		shell.setImages(Images.getMainIconArray());
 		GridLayoutFactory.swtDefaults().applyTo(shell);
