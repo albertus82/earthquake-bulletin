@@ -265,9 +265,9 @@ public class FERegionDialog extends Dialog {
 		final StringBuilder script = new StringBuilder();
 		if (!currentRectangles.equals(this.rectangles)) {
 			this.rectangles = currentRectangles;
-			script.append("if (window.rectangles) { for (var i = 0; i < window.rectangles.length; i++) { window.rectangles[i].remove(); } }; window.rectangles = []; ").append(System.lineSeparator());
-			for (final Rectangle rectangle : currentRectangles) {
-				script.append("window.rectangle = L.rectangle(([[").append(rectangle.a).append(", ").append(rectangle.b).append("], [").append(rectangle.c).append(", ").append(rectangle.d).append("]]), { color: 'red', weight: 0, smoothFactor: 0.95 }); window.rectangles.push(window.rectangle); window.rectangle.addTo(map); ").append(System.lineSeparator());
+			script.append("if (window.rects) { for (var i = 0; i < window.rects.length; i++) { window.rects[i].remove(); } }; window.rects = []; ").append(System.lineSeparator());
+			for (final Rectangle rect : currentRectangles) {
+				script.append("var rect = L.rectangle(([[").append(rect.a).append(", ").append(rect.b).append("], [").append(rect.c).append(", ").append(rect.d).append("]]), { color: 'red', weight: 0, smoothFactor: 0.95 }); window.rects.push(rect); rect.addTo(map); ").append(System.lineSeparator());
 			}
 		}
 		script.append("map.flyTo(new L.LatLng(").append(coordinates.getLatitude()).append(", ").append(coordinates.getLongitude()).append("));");
