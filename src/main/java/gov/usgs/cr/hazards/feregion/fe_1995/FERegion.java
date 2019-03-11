@@ -97,7 +97,7 @@ public class FERegion {
 			}
 		}
 
-		logger.log(Level.FINE, "{0}", System.nanoTime() - startTime);
+		logger.log(Level.FINE, "FERegion.getLatitudeLongitudeMap() execution time: {0} ns.", System.nanoTime() - startTime);
 
 		return result;
 	}

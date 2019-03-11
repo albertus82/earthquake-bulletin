@@ -236,6 +236,8 @@ public class FERegionDialog extends Dialog {
 
 		regionNumberText.setText("");
 
+		browser.setFocus();
+
 		shell.open();
 	}
 
@@ -247,7 +249,7 @@ public class FERegionDialog extends Dialog {
 
 		final Map<Integer, Set<LongitudeRange>> latitudeLongitudeMap = feregion.getLatitudeLongitudeMap(region.getNumber());
 		logger.log(Level.FINE, "latitudeLongitudeMap={0}", latitudeLongitudeMap);
-		final Collection<Rectangle> rects = new LinkedHashSet<>();
+		final Collection<Rectangle> currentRectangles = new LinkedHashSet<>();
 		for (final Entry<Integer, Set<LongitudeRange>> entry : latitudeLongitudeMap.entrySet()) {
 			final int latitude = entry.getKey();
 			for (final LongitudeRange range : entry.getValue()) {
@@ -255,19 +257,22 @@ public class FERegionDialog extends Dialog {
 				final int b = range.getFrom();
 				final int c = latitude < 0 ? latitude + 1 : latitude;
 				final int d = range.getTo();
-				rects.add(new Rectangle(a, b, c, d));
+				currentRectangles.add(new Rectangle(a, b, c, d));
 			}
 		}
-		logger.log(Level.FINE, "rectangles={0} ", rects);
+		logger.log(Level.FINE, "currentRectangles={0} ", currentRectangles);
 
-		if (!rects.equals(this.rectangles)) {
-			this.rectangles = rects;
-			browser.execute("if (window.rectangles) { for (var i = 0; i < window.rectangles.length; i++) { window.rectangles[i].remove(); } }; window.rectangles = [];");
-			for (final Rectangle rectangle : rects) {
-				browser.execute(String.format("window.rectangle = L.rectangle(([[%s, %s], [%s, %s]]), { color: 'red', weight: 0 }); window.rectangles.push(window.rectangle); window.rectangle.addTo(map);", rectangle.a, rectangle.b, rectangle.c, rectangle.d));
+		final StringBuilder script = new StringBuilder();
+		if (!currentRectangles.equals(this.rectangles)) {
+			this.rectangles = currentRectangles;
+			script.append("if (window.rectangles) { for (var i = 0; i < window.rectangles.length; i++) { window.rectangles[i].remove(); } }; window.rectangles = []; ").append(System.lineSeparator());
+			for (final Rectangle rectangle : currentRectangles) {
+				script.append("window.rectangle = L.rectangle(([[").append(rectangle.a).append(", ").append(rectangle.b).append("], [").append(rectangle.c).append(", ").append(rectangle.d).append("]]), { color: 'red', weight: 0 }); window.rectangles.push(window.rectangle); window.rectangle.addTo(map); ").append(System.lineSeparator());
 			}
 		}
-		browser.execute(String.format("map.flyTo(new L.LatLng(%s, %s));", coordinates.getLatitude(), coordinates.getLongitude()));
+		script.append("map.flyTo(new L.LatLng(").append(coordinates.getLatitude()).append(", ").append(coordinates.getLongitude()).append("));");
+		logger.log(Level.FINER, "Executing script: {0}", script);
+		browser.execute(script.toString());
 	}
 
 	private static class Rectangle {

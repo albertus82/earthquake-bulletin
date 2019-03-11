@@ -140,7 +140,7 @@ class Database {
 			}
 		}
 
-		logger.log(Level.FINE, "{0} initialized in {1} ns.", new Object[] { this, System.nanoTime() - startTime });
+		logger.log(Level.FINE, "F-E regions database initialized in {0} ns.", System.nanoTime() - startTime);
 	}
 
 	List<String> getNames() {
