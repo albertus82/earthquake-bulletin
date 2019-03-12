@@ -258,35 +258,8 @@ public class FERegionDialog extends Dialog {
 	private void setResult() {
 		logger.log(Level.FINE, "{0}", coordinates);
 		final Region region = feregion.getGeographicRegion(coordinates);
-		regionNumberText.setText(Integer.toString(region.getNumber()));
-		regionNameText.setText(region.getName());
-
-		final Map<Integer, Set<LongitudeRange>> latitudeLongitudeMap = feregion.getLatitudeLongitudeMap(region.getNumber());
-		logger.log(Level.FINE, "latitudeLongitudeMap={0}", latitudeLongitudeMap);
-		final Collection<Rectangle> currentRectangles = new LinkedHashSet<>();
-		for (final Entry<Integer, Set<LongitudeRange>> entry : latitudeLongitudeMap.entrySet()) {
-			final int latitude = entry.getKey();
-			for (final LongitudeRange range : entry.getValue()) {
-				final int a = latitude >= 0 ? latitude - 1 : latitude;
-				final int b = range.getFrom();
-				final int c = latitude < 0 ? latitude + 1 : latitude;
-				final int d = range.getTo();
-				currentRectangles.add(new Rectangle(a, b, c, d));
-			}
-		}
-		logger.log(Level.FINE, "currentRectangles={0} ", currentRectangles);
-
-		final StringBuilder script = new StringBuilder();
-		if (!currentRectangles.equals(this.rectangles)) {
-			this.rectangles = currentRectangles;
-			script.append("if (window.rects) { for (var i = 0; i < window.rects.length; i++) { window.rects[i].remove(); } }; window.rects = []; ").append(System.lineSeparator());
-			for (final Rectangle rect : currentRectangles) {
-				script.append("var rect = L.rectangle(([[").append(rect.a).append(", ").append(rect.b).append("], [").append(rect.c).append(", ").append(rect.d).append("]]), { color: 'red', weight: 0, smoothFactor: 0.95 }); window.rects.push(rect); rect.addTo(map); ").append(System.lineSeparator());
-			}
-		}
-		script.append("map.flyTo(new L.LatLng(").append(coordinates.getLatitude()).append(", ").append(coordinates.getLongitude()).append("));");
-		logger.log(Level.FINER, "Executing script: {0}", script);
-		browser.execute(script.toString());
+		setResultFields(region);
+		setPolygonOnMap(region);
 	}
 
 	private void setInputFields(final double latitude, final double longitude) {
@@ -294,6 +267,40 @@ public class FERegionDialog extends Dialog {
 		latitudeCombo.setText(latitude < 0 ? "S" : "N");
 		longitudeSpinner.setSelection((int) (Math.abs(longitude) * FACTOR));
 		longitudeCombo.setText(longitude < 0 ? "W" : "E");
+	}
+
+	private void setResultFields(final Region region) {
+		regionNumberText.setText(Integer.toString(region.getNumber()));
+		regionNameText.setText(region.getName());
+	}
+
+	private void setPolygonOnMap(final Region region) {
+		final Map<Integer, Set<LongitudeRange>> map = feregion.getLatitudeLongitudeMap(region.getNumber());
+		logger.log(Level.FINE, "Latitude/longitude map for {0} {1}: {2}", new Object[] { region.getNumber(), region.getName(), map });
+		final Collection<Rectangle> rects = new LinkedHashSet<>();
+		for (final Entry<Integer, Set<LongitudeRange>> entry : map.entrySet()) {
+			final int latitude = entry.getKey();
+			for (final LongitudeRange range : entry.getValue()) {
+				final int a = latitude >= 0 ? latitude - 1 : latitude;
+				final int b = range.getFrom();
+				final int c = latitude < 0 ? latitude + 1 : latitude;
+				final int d = range.getTo();
+				rects.add(new Rectangle(a, b, c, d));
+			}
+		}
+		logger.log(Level.FINE, "Rectangles: {0}", rects);
+
+		final StringBuilder script = new StringBuilder();
+		if (!rects.equals(this.rectangles)) {
+			this.rectangles = rects;
+			script.append("if (window.rects) { for (var i = 0; i < window.rects.length; i++) { window.rects[i].remove(); } }; window.rects = [];").append(System.lineSeparator());
+			for (final Rectangle rect : rects) {
+				script.append("window.rects.push(L.rectangle(([[").append(rect.a).append(", ").append(rect.b).append("], [").append(rect.c).append(", ").append(rect.d).append("]]), { color: 'red', weight: 0, smoothFactor: 0.95 }).addTo(map));").append(System.lineSeparator());
+			}
+		}
+		script.append("map.flyTo(new L.LatLng(").append(coordinates.getLatitude()).append(", ").append(coordinates.getLongitude()).append("));");
+		logger.log(Level.FINE, "Executing script:{0}{1}", new Object[] { System.lineSeparator(), script });
+		browser.execute(script.toString());
 	}
 
 	private static class Rectangle {
