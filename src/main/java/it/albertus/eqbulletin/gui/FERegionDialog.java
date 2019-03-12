@@ -183,31 +183,31 @@ public class FERegionDialog extends Dialog {
 		};
 		browser.addDisposeListener(e -> mapOnClick.dispose());
 
+		final LeafletMapOptions options = new LeafletMapOptions();
+		options.getControls().put(LeafletMapControl.ZOOM, "");
+		options.getControls().put(LeafletMapControl.ATTRIBUTION, "");
+		options.getControls().put(LeafletMapControl.SCALE, "");
+		final StringBuilder other = new StringBuilder("map.on('click', function(e) { ").append(MAP_ONCLICK_FN).append("(e.latlng.lat, e.latlng.lng); }); ");
+		if (coordinates != null) {
+			setInputFields(coordinates.getLatitude(), coordinates.getLongitude());
+			final BrowserFunction mapOnLoad = new BrowserFunction(browser, MAP_ONLOAD_FN) {
+				@Override
+				public Object function(final Object[] args) {
+					setResult();
+					return null;
+				}
+			};
+			browser.addDisposeListener(e -> mapOnLoad.dispose());
+			options.setCenterLat(coordinates.getLatitude());
+			options.setCenterLng(coordinates.getLongitude());
+			options.setZoom(5);
+			other.append("document.onload = ").append(MAP_ONLOAD_FN).append("();");
+		}
+		if (Leaflet.LAYERS != null && !Leaflet.LAYERS.isEmpty()) {
+			options.getControls().put(LeafletMapControl.LAYERS, Leaflet.LAYERS);
+		}
 		try (final InputStream is = LeafletMapDialog.class.getResourceAsStream("map.html")) {
-			final LeafletMapOptions options = new LeafletMapOptions();
-			options.getControls().put(LeafletMapControl.ZOOM, "");
-			options.getControls().put(LeafletMapControl.ATTRIBUTION, "");
-			options.getControls().put(LeafletMapControl.SCALE, "");
-			final StringBuilder other = new StringBuilder("map.on('click', function(e) { ").append(MAP_ONCLICK_FN).append("(e.latlng.lat, e.latlng.lng); }); ");
-			if (coordinates != null) {
-				setInputFields(coordinates.getLatitude(), coordinates.getLongitude());
-				final BrowserFunction mapOnLoad = new BrowserFunction(browser, MAP_ONLOAD_FN) {
-					@Override
-					public Object function(final Object[] args) {
-						setResult();
-						return null;
-					}
-				};
-				browser.addDisposeListener(e -> mapOnLoad.dispose());
-				options.setCenterLat(coordinates.getLatitude());
-				options.setCenterLng(coordinates.getLongitude());
-				options.setZoom(5);
-				other.append("document.onload = ").append(MAP_ONLOAD_FN).append("();");
-			}
-			if (Leaflet.LAYERS != null && !Leaflet.LAYERS.isEmpty()) {
-				options.getControls().put(LeafletMapControl.LAYERS, Leaflet.LAYERS);
-			}
-			browser.setUrl(LeafletMapDialog.getMapPage(shell, is, line -> LeafletMapDialog.parseLine(line, options, Collections.emptySet(), other.toString())).toString());
+			browser.setUrl(LeafletMapDialog.getMapPage(regionGroup.getShell(), is, line -> LeafletMapDialog.parseLine(line, options, Collections.emptySet(), other.toString())).toString());
 		}
 		catch (final IOException e) {
 			throw new IOError(e);
