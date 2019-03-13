@@ -187,7 +187,12 @@ public class FERegionDialog extends Dialog {
 		options.getControls().put(LeafletMapControl.ZOOM, "");
 		options.getControls().put(LeafletMapControl.ATTRIBUTION, "");
 		options.getControls().put(LeafletMapControl.SCALE, "");
+		if (Leaflet.LAYERS != null && !Leaflet.LAYERS.isEmpty()) {
+			options.getControls().put(LeafletMapControl.LAYERS, Leaflet.LAYERS);
+		}
+
 		final StringBuilder other = new StringBuilder("map.on('click', function(e) { ").append(MAP_ONCLICK_FN).append("(e.latlng.lat, e.latlng.lng); }); ");
+
 		if (coordinates != null) {
 			setInputFields(coordinates.getLatitude(), coordinates.getLongitude());
 			final BrowserFunction mapOnLoad = new BrowserFunction(browser, MAP_ONLOAD_FN) {
@@ -203,9 +208,7 @@ public class FERegionDialog extends Dialog {
 			options.setZoom(5);
 			other.append("document.onload = ").append(MAP_ONLOAD_FN).append("();");
 		}
-		if (Leaflet.LAYERS != null && !Leaflet.LAYERS.isEmpty()) {
-			options.getControls().put(LeafletMapControl.LAYERS, Leaflet.LAYERS);
-		}
+
 		try (final InputStream is = LeafletMapDialog.class.getResourceAsStream("map.html")) {
 			browser.setUrl(LeafletMapDialog.getMapPage(regionGroup.getShell(), is, line -> LeafletMapDialog.parseLine(line, options, Collections.emptySet(), other.toString())).toString());
 		}
