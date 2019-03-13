@@ -1,8 +1,8 @@
 package it.albertus.eqbulletin.gui;
 
-import java.io.IOError;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -83,7 +83,7 @@ public class FERegionDialog extends Dialog {
 			feregion = new FERegion();
 		}
 		catch (final IOException e) {
-			throw new IOError(e);
+			throw new UncheckedIOException(e);
 		}
 		setText(Messages.get("lbl.feregion.dialog.title"));
 	}
@@ -213,7 +213,7 @@ public class FERegionDialog extends Dialog {
 			browser.setUrl(LeafletMapDialog.getMapPage(regionGroup.getShell(), is, line -> LeafletMapDialog.parseLine(line, options, Collections.emptySet(), other.toString())).toString());
 		}
 		catch (final IOException e) {
-			throw new IOError(e);
+			throw new UncheckedIOException(e);
 		}
 
 		final Composite buttonBar = new Composite(shell, SWT.NONE);

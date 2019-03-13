@@ -2,6 +2,7 @@ package it.albertus.eqbulletin.gui;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Map;
@@ -33,36 +34,27 @@ public class Images {
 		return 0;
 	};
 
-	private static final Map<Rectangle, Image> mainIconMap = new TreeMap<>(areaComparatorDescending);
-
-	private static final Map<Rectangle, Image> openStreetMapIconMap = new TreeMap<>(areaComparatorDescending);
-
-	private Images() {
-		throw new IllegalAccessError();
-	}
+	private static final Map<Rectangle, Image> mainIconMap;
+	private static final Map<Rectangle, Image> openStreetMapIconMap;
 
 	static {
-		try (final InputStream stream = Images.class.getResourceAsStream("main.ico")) {
-			for (final ImageData data : new ImageLoader().load(stream)) {
-				final Image image = new Image(Display.getCurrent(), data);
-				mainIconMap.put(image.getBounds(), image);
-			}
-		}
-		catch (final IOException e) {
-			logger.log(Level.WARNING, e.toString(), e);
-		}
-		logger.log(Level.CONFIG, "Main icons: {0}", mainIconMap);
+		mainIconMap = loadImagesFromResource("main.ico");
+		openStreetMapIconMap = loadImagesFromResource("osm.ico");
+	}
 
-		try (final InputStream stream = Images.class.getResourceAsStream("osm.ico")) {
+	private static Map<Rectangle, Image> loadImagesFromResource(final String resourceName) {
+		final Map<Rectangle, Image> map = new TreeMap<>(areaComparatorDescending);
+		try (final InputStream stream = Images.class.getResourceAsStream(resourceName)) {
 			for (final ImageData data : new ImageLoader().load(stream)) {
 				final Image image = new Image(Display.getCurrent(), data);
-				openStreetMapIconMap.put(image.getBounds(), image);
+				map.put(image.getBounds(), image);
 			}
+			logger.log(Level.CONFIG, "{0}: {1}", new Object[] { resourceName, map });
+			return map;
 		}
 		catch (final IOException e) {
-			logger.log(Level.WARNING, e.toString(), e);
+			throw new UncheckedIOException(e);
 		}
-		logger.log(Level.CONFIG, "OpenStreetMap icons: {0}", openStreetMapIconMap);
 	}
 
 	public static Image[] getMainIconArray() {
@@ -87,6 +79,10 @@ public class Images {
 	 */
 	public static Map<Rectangle, Image> getOpenStreetMapIconMap() {
 		return Collections.unmodifiableMap(openStreetMapIconMap);
+	}
+
+	private Images() {
+		throw new IllegalAccessError();
 	}
 
 }
