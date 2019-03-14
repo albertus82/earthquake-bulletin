@@ -209,7 +209,7 @@ public class FERegionDialog extends Dialog {
 			other.append("document.onload = ").append(MAP_ONLOAD_FN).append("();");
 		}
 
-		try (final InputStream is = LeafletMapDialog.class.getResourceAsStream("map.html")) {
+		try (final InputStream is = getClass().getResourceAsStream("map.html")) {
 			browser.setUrl(LeafletMapDialog.getMapPage(regionGroup.getShell(), is, line -> LeafletMapDialog.parseLine(line, options, Collections.emptySet(), other.toString())).toString());
 		}
 		catch (final IOException e) {
@@ -296,10 +296,11 @@ public class FERegionDialog extends Dialog {
 		final StringBuilder script = new StringBuilder();
 		if (!rects.equals(this.rectangles)) {
 			this.rectangles = rects;
-			script.append("if (window.rects) { for (var i = 0; i < window.rects.length; i++) { window.rects[i].remove(); } }; window.rects = [];").append(System.lineSeparator());
+			script.append("if (window.unified) { window.unified.remove(); } /*if (window.rects) { map.removeLayer(window.rects); }*/ window.rects = new L.LayerGroup();").append(System.lineSeparator());
 			for (final Rectangle rect : rects) {
-				script.append("window.rects.push(L.rectangle(([[").append(rect.a).append(", ").append(rect.b).append("], [").append(rect.c).append(", ").append(rect.d).append("]]), { color: 'red', weight: 0, smoothFactor: 0.95 }).addTo(map));").append(System.lineSeparator());
+				script.append("L.rectangle(([[").append(rect.a).append(", ").append(rect.b).append("], [").append(rect.c).append(", ").append(rect.d).append("]])).addTo(window.rects);").append(System.lineSeparator());
 			}
+			script.append("window.unified = unify(window.rects.getLayers()).addTo(map);");
 		}
 		script.append("map.flyTo(new L.LatLng(").append(coordinates.getLatitude()).append(", ").append(coordinates.getLongitude()).append("));");
 		logger.log(Level.FINE, "Executing script:{0}{1}", new Object[] { System.lineSeparator(), script });
