@@ -435,7 +435,7 @@
 				<available file="${launch4j.directory}/bin/linux-x64" type="dir" />
 			</and>
 		</condition>
-		<condition property="launch4j.bindir" value="${launch4j.directory}/bin/linux-x64">
+		<condition property="launch4j.bindir" value="${launch4j.directory}/bin/linux-armhf">
 			<and>
 				<os family="unix" />
 				<os arch="arm" />
