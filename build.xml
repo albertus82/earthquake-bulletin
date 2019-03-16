@@ -632,8 +632,8 @@
 	<available file="${build.testSourceDirectory}" type="dir" property="build.test" />
 
 	<target name="test" depends="jar" if="build.test">
-		<mkdir dir="${build.outputTestDirectory}" />
-		<javac srcdir="${build.testSourceDirectory}" destdir="${build.outputTestDirectory}" source="${build.compiler.source}" target="${build.compiler.target}" debug="true" includeantruntime="false">
+		<mkdir dir="${build.outputTestClassesDirectory}" />
+		<javac srcdir="${build.testSourceDirectory}" destdir="${build.outputTestClassesDirectory}" source="${build.compiler.source}" target="${build.compiler.target}" debug="true" includeantruntime="false">
 			<classpath path="${build.outputDirectory}">
 				<fileset refid="classpath" />
 				<fileset dir="${dependencies.directory}/test">
@@ -643,44 +643,32 @@
 			<bootclasspath path="${build.compiler.compilerArguments.bootclasspath}" />
 		</javac>
 
-		<copy todir="${build.outputTestDirectory}" failonerror="false">
+		<copy todir="${build.outputTestClassesDirectory}" failonerror="false">
 			<fileset dir="${build.testResourcesDirectory}" />
 		</copy>
 
 		<taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml">
 			<classpath path="${jacoco.directory}/jacocoant.jar" />
 		</taskdef>
-		<jacoco:coverage destfile="${build.distDirectory}/jacoco/jacoco.exec" >
-			<junit printsummary="yes" haltonfailure="yes" fork="true" forkmode="once" maxmemory="64m">
-				<classpath path="${build.outputTestDirectory}">
+
+		<mkdir dir="${build.outputTestResultsDirectory}" />
+		<jacoco:coverage destfile="${build.distDirectory}/jacoco/jacoco.exec">
+			<junit showoutput="true" printsummary="yes" haltonfailure="yes" fork="true" forkmode="once" maxmemory="64m">
+				<classpath path="${build.outputTestClassesDirectory}">
 					<path location="${build.packagesDirectory}/gtk-linux-armhf/app/${linux.jarFileName}" />
 					<fileset dir="${dependencies.directory}/test">
 						<include name="*.jar" />
 					</fileset>
 				</classpath>
-				<batchtest>
-					<fileset dir="${build.outputTestDirectory}">
+				<batchtest todir="${build.outputTestResultsDirectory}">
+					<fileset dir="${build.outputTestClassesDirectory}">
 						<include name="**/*Test*.class" />
 						<exclude name="**/*$*.class" />
 					</fileset>
 				</batchtest>
-				<formatter type="plain" usefile="false" />
+				<formatter type="xml" />
 			</junit>
 		</jacoco:coverage>
-		<jacoco:report>
-			<executiondata>
-				<file file="${build.distDirectory}/jacoco/jacoco.exec" />
-			</executiondata>
-			<structure name="${project.name}">
-				<classfiles>
-					<fileset dir="${build.outputDirectory}" />
-				</classfiles>
-				<sourcefiles encoding="UTF-8">
-					<fileset dir="${build.sourceDirectory}" />
-				</sourcefiles>
-			</structure>
-			<xml destfile="${build.distDirectory}/jacoco/report.xml" />
-		</jacoco:report>
 	</target>
 
 	<target name="sonar-main">
@@ -702,7 +690,7 @@
 		<propertyfile file="sonar-project.properties">
 			<entry key="sonar.tests" value="${build.testSourceDirectory}" />
 			<entry key="sonar.java.test.libraries" value="${dependencies.directory}/compile/common/*.jar,${dependencies.directory}/compile/platform-dependent/**/*.jar,${dependencies.directory}/test/*.jar" />
-			<entry key="sonar.java.test.binaries" value="${build.outputTestDirectory}" />
+			<entry key="sonar.java.test.binaries" value="${build.outputTestClassesDirectory}" />
 			<entry key="sonar.jacoco.reportPaths" value="${build.directory}/jacoco/jacoco.exec" />
 		</propertyfile>
 	</target>
