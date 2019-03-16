@@ -448,6 +448,13 @@
 
 		<echo message="launch4j.bindir: ${launch4j.bindir}" />
 
+		<condition property="wine.failonerror" else="false">
+			<isfalse value="${ignoreWineErrors}" />
+		</condition>
+		<condition property="wine.failifexecutionfails" else="false">
+			<isfalse value="${ignoreWineErrors}" />
+		</condition>
+
 		<chmod perm="+x" file="${launch4j.bindir}/ld" failonerror="false" failifexecutionfails="false" ignoremissing="true" />
 		<chmod perm="+x" file="${launch4j.bindir}/windres" failonerror="false" failifexecutionfails="false" ignoremissing="true" />
 
@@ -536,7 +543,7 @@
 			<arg value="/O${build.distDirectory}" />
 			<arg value="/F${project.artifactId}-${version.number}-win32-win32-x86-setup" />
 		</exec>
-		<exec osfamily="unix" executable="wine" failonerror="false" failifexecutionfails="false">
+		<exec osfamily="unix" executable="wine" failonerror="${wine.failonerror}" failifexecutionfails="${wine.failifexecutionfails}">
 			<arg value="${innoSetup.directory}/ISCC.exe" />
 			<arg value="${build.packagesDirectory}/win32-win32-x86/setup.iss" />
 			<arg value="/O${build.distDirectory}" />
@@ -629,7 +636,7 @@
 			<arg value="/O${build.distDirectory}" />
 			<arg value="/F${project.artifactId}-${version.number}-win32-win32-x86_64-setup" />
 		</exec>
-		<exec osfamily="unix" executable="wine" failonerror="false" failifexecutionfails="false">
+		<exec osfamily="unix" executable="wine" failonerror="${wine.failonerror}" failifexecutionfails="${wine.failifexecutionfails}">
 			<arg value="${innoSetup.directory}/ISCC.exe" />
 			<arg value="${build.packagesDirectory}/win32-win32-x86_64/setup.iss" />
 			<arg value="/O${build.distDirectory}" />
