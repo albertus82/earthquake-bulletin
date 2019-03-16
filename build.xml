@@ -329,7 +329,7 @@
 		</jar>
 	</target>
 
-	<target name="dist-macos" depends="jar, config, scripts, docs, icons">
+	<target name="dist-macos">
 		<taskdef name="jarbundler" classname="com.ultramixer.jarbundler.JarBundler" classpath="${jarBundler.directory}/jarbundler-core-3.3.0.jar" />
 
 		<mkdir dir="${build.packagesDirectory}/cocoa-macosx-x86_64/bundle" />
@@ -364,7 +364,7 @@
 		</tar>
 	</target>
 
-	<target name="dist-linux" depends="jar, config, scripts, docs, icons">
+	<target name="dist-linux">
 		<tar destfile="${build.distDirectory}/${project.artifactId}-${version.number}-gtk-linux-x86-bin.tar.gz" compression="gzip">
 			<tarfileset dir="${build.packagesDirectory}/gtk-linux-x86/app" prefix="${project.artifactId}" filemode="755">
 				<include name="*.jar" />
@@ -397,7 +397,7 @@
 		</tar>
 	</target>
 
-	<target name="dist-windows" depends="jar, config, scripts, docs, icons">
+	<target name="dist-windows">
 		<echo message="os.name: ${os.name}" />
 		<echo message="os.arch: ${os.arch}" />
 		<echo message="os.version: ${os.version}" />
@@ -637,11 +637,11 @@
 		</exec>
 	</target>
 
-	<target name="dist" depends="dist-linux, dist-macos, dist-windows" />
+	<target name="dist" depends="jar, config, scripts, docs, icons, dist-linux, dist-macos, dist-windows" />
 
 	<available file="${build.testSourceDirectory}" type="dir" property="build.test" />
 
-	<target name="test" depends="jar" if="build.test">
+	<target name="test" if="build.test">
 		<mkdir dir="${build.outputTestClassesDirectory}" />
 		<javac srcdir="${build.testSourceDirectory}" destdir="${build.outputTestClassesDirectory}" source="${build.compiler.source}" target="${build.compiler.target}" debug="true" includeantruntime="false">
 			<classpath path="${build.outputDirectory}">
