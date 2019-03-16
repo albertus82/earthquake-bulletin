@@ -650,7 +650,7 @@
 		<taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml">
 			<classpath path="${jacoco.directory}/jacocoant.jar" />
 		</taskdef>
-		<jacoco:coverage destfile="${build.distDirectory}/jacoco/jacoco.exec">
+		<jacoco:coverage destfile="${build.distDirectory}/jacoco/jacoco.exec" >
 			<junit printsummary="yes" haltonfailure="yes" fork="true" forkmode="once" maxmemory="64m">
 				<classpath path="${build.outputTestDirectory}">
 					<path location="${build.packagesDirectory}/gtk-linux-armhf/app/${linux.jarFileName}" />
@@ -667,6 +667,20 @@
 				<formatter type="plain" usefile="false" />
 			</junit>
 		</jacoco:coverage>
+		<jacoco:report>
+			<executiondata>
+				<file file="${build.distDirectory}/jacoco/jacoco.exec" />
+			</executiondata>
+			<structure name="${project.name}">
+				<classfiles>
+					<fileset dir="${build.outputDirectory}" />
+				</classfiles>
+				<sourcefiles encoding="UTF-8">
+					<fileset dir="${build.sourceDirectory}" />
+				</sourcefiles>
+			</structure>
+			<xml destfile="${build.distDirectory}/jacoco/report.xml" />
+		</jacoco:report>
 	</target>
 
 	<target name="sonar-main">
