@@ -1,5 +1,7 @@
 package it.albertus.eqbulletin.model;
 
+import static it.albertus.jface.maps.CoordinateUtils.DEGREE_SIGN;
+
 import it.albertus.jface.maps.CoordinateUtils;
 
 public class Latitude extends Coordinate {
@@ -12,7 +14,7 @@ public class Latitude extends Coordinate {
 
 	@Override
 	public String toString() {
-		return CoordinateUtils.getFormatter().format(Math.abs(value)) + CoordinateUtils.DEGREE_SIGN + (value < 0 ? 'S' : 'N');
+		return CoordinateUtils.getFormatter().format(Math.abs(value)) + DEGREE_SIGN + (value < 0 ? 'S' : 'N');
 	}
 
 }
