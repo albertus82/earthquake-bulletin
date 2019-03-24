@@ -472,6 +472,11 @@
 				<versionInfo fileversion="${version.number}.0" txtfileversion="${version.number}" filedescription="${launch4j.feregion.name}" copyright="${launch4j.copyright}" productversion="${version.number}.0" txtproductversion="${version.number}" productname="${launch4j.feregion.name}" internalname="${launch4j.feregion.name}" originalfilename="${launch4j.feregion.name}.exe" companyname="${launch4j.companyName}" />
 			</config>
 		</launch4j>
+
+		<zip destfile="${build.distDirectory}/${project.artifactId}-${version.number}-win32-win32-x86-bin.zip" level="9">
+			<zipfileset dir="${build.packagesDirectory}/win32-win32-x86/app" prefix="${project.name}" />
+		</zip>
+
 		<echo file="${build.packagesDirectory}/win32-win32-x86/setup.iss">
 			[Setup]
 			AppName=${project.name}
@@ -564,6 +569,11 @@
 				<versionInfo fileversion="${version.number}.0" txtfileversion="${version.number}" filedescription="${launch4j.feregion.name}" copyright="${launch4j.copyright}" productversion="${version.number}.0" txtproductversion="${version.number}" productname="${launch4j.feregion.name}" internalname="${launch4j.feregion.name}" originalfilename="${launch4j.feregion.name}.exe" companyname="${launch4j.companyName}" />
 			</config>
 		</launch4j>
+
+		<zip destfile="${build.distDirectory}/${project.artifactId}-${version.number}-win32-win32-x86_64-bin.zip" level="9">
+			<zipfileset dir="${build.packagesDirectory}/win32-win32-x86_64/app" prefix="${project.name}" />
+		</zip>
+
 		<echo file="${build.packagesDirectory}/win32-win32-x86_64/setup.iss">
 			[Setup]
 			AppName=${project.name}
