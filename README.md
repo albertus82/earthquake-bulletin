@@ -6,7 +6,7 @@ Earthquake Bulletin
 [![Build status](https://ci.appveyor.com/api/projects/status/github/albertus82/earthquake-bulletin?branch=master&svg=true)](https://ci.appveyor.com/project/albertus82/earthquake-bulletin)
 [![Build status](https://dev.azure.com/albertus82/earthquake-bulletin/_apis/build/status/master)](https://dev.azure.com/albertus82/earthquake-bulletin/_build/latest?definitionId=1)
 
-A cross-platform desktop client for the [**GEOFON Program GFZ Potsdam Earthquake Bulletin**](http://geofon.gfz-potsdam.de/eqinfo/list.php) written in Java.
+A cross-platform desktop client for the [**GEOFON Program GFZ Potsdam Earthquake Bulletin**](https://geofon.gfz-potsdam.de/eqinfo/list.php) written in Java.
 
 ![Screenshot](https://user-images.githubusercontent.com/8672431/55280184-28cc9380-5322-11e9-9dad-1611a3baf837.png)
 
@@ -38,7 +38,7 @@ As In:  feregion   122.5W 36.2N
 
 ## Acknowledgements
 
-Locations were obtained from the [GEOFON](http://geofon.gfz-potsdam.de) programme of the [GFZ](http://www.gfz-potsdam.de) German Research Centre for Geosciences using data from the [GEVN](http://geofon.gfz-potsdam.de/eqinfo/gevn/) partner networks.
+Locations were obtained from the [GEOFON](https://geofon.gfz-potsdam.de) programme of the [GFZ](https://www.gfz-potsdam.de) German Research Centre for Geosciences using data from the [GEVN](https://geofon.gfz-potsdam.de/eqinfo/gevn/) partner networks.
 
 Seismic data were obtained from the GEOFON data centre of the GFZ German Research Centre for Geosciences.
 
