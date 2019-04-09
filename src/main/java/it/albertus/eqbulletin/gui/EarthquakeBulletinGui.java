@@ -168,6 +168,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow implements Multilan
 	@Override
 	public int open() {
 		final int code = super.open();
+		searchForm.setOpenMapButtonImage();
 
 		final UpdateShellStatusListener listener = new UpdateShellStatusListener();
 		getShell().addListener(SWT.Resize, listener);
@@ -212,8 +213,6 @@ public class EarthquakeBulletinGui extends ApplicationWindow implements Multilan
 		if (sizeX != null && sizeY != null) {
 			shell.setSize(Math.max(sizeX, preferredSize.x), Math.max(sizeY, preferredSize.y));
 		}
-
-		searchForm.setOpenMapButtonImage();
 
 		final Integer locationX = configuration.getInt(SHELL_LOCATION_X);
 		final Integer locationY = configuration.getInt(SHELL_LOCATION_Y);
