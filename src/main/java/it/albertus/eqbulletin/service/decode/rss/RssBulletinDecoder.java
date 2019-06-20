@@ -83,7 +83,7 @@ public class RssBulletinDecoder {
 			momentTensorUri = GeofonUtils.getEventMomentTensorUri(guid, time.get(ChronoField.YEAR));
 		}
 
-		return new Earthquake(guid, time, magnitudo, new Latitude(latitude), new Longitude(longitude), new Depth(depth), status, region, link, enclosureUri, momentTensorUri);
+		return new Earthquake(guid, time, magnitudo, new Latitude(latitude), new Longitude(longitude), Depth.valueOf(depth), status, region, link, enclosureUri, momentTensorUri);
 	}
 
 	private RssBulletinDecoder() {

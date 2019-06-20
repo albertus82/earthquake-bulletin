@@ -1,15 +1,34 @@
 package it.albertus.eqbulletin.model;
 
 import java.io.Serializable;
+import java.util.LinkedHashMap;
+import java.util.Map.Entry;
 
 public class Depth implements Serializable, Comparable<Depth> {
 
-	private static final long serialVersionUID = -8317438372695311838L;
+	private static final long serialVersionUID = 2766555831235385141L;
 
-	private final short value; // Earth radius is the distance from Earth's center to its surface, about 6,371 km (3,959 mi).
+	private static final LinkedHashMap<Short, Depth> cache = new LinkedHashMap<Short, Depth>(16, 0.75f, true) { // Flyweight
+		private static final long serialVersionUID = -3656824180998473886L;
+
+		private static final int MAX_ENTRIES = 1000;
+
+		@Override
+		protected boolean removeEldestEntry(final Entry<Short, Depth> eldest) {
+			return size() > MAX_ENTRIES;
+		}
+	};
+
+	private final short value; // Earth radius is the distance from Earth's center to its surface, about 6371 km (3959 mi).
 
 	public Depth(final short value) {
 		this.value = value;
+		cache.put(value, this);
+	}
+
+	public static Depth valueOf(final short value) {
+		final Depth cached = cache.get(value);
+		return cached != null ? cached : new Depth(value);
 	}
 
 	@Override
