@@ -1,6 +1,7 @@
 package it.albertus.eqbulletin.service;
 
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -29,16 +30,16 @@ public class SearchRequestTest {
 		Assert.assertEquals(Format.DEFAULT, r.getFormat());
 	}
 
-	public void testGenerateUrl() throws MalformedURLException {
+	public void testGenerateUrl() throws MalformedURLException, URISyntaxException {
 		final String baseUrl = GeofonUtils.getBulletinBaseUrl();
 
 		final SearchRequest r = new SearchRequest();
-		Assert.assertEquals(baseUrl + "fmt=html", r.toURL());
+		Assert.assertEquals(baseUrl + "fmt=html", r.toURI().toURL());
 
 		r.getParameterMap().put("fmt", "rss");
-		Assert.assertEquals(baseUrl + "fmt=rss", r.toURL());
+		Assert.assertEquals(baseUrl + "fmt=rss", r.toURI().toURL());
 
 		r.getParameterMap().put("fmt", "html");
-		Assert.assertEquals(baseUrl + "fmt=html", r.toURL());
+		Assert.assertEquals(baseUrl + "fmt=html", r.toURI().toURL());
 	}
 }

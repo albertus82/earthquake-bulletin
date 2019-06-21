@@ -3,6 +3,8 @@ package it.albertus.eqbulletin.service.net;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.util.Collection;
@@ -65,7 +67,7 @@ public class HtmlBulletinDownloader implements BulletinDownloader {
 	private Collection<Earthquake> download(final SearchRequest request, final Headers headers, final BooleanSupplier canceled) throws FetchException, DecodeException, CancelException {
 		final Document body;
 		try {
-			final URLConnection connection = ConnectionFactory.makeGetRequest(request.toURL(), headers);
+			final URLConnection connection = ConnectionFactory.makeGetRequest(request.toURI().toURL(), headers);
 			final String responseContentEncoding = connection.getContentEncoding();
 			final boolean gzip = responseContentEncoding != null && responseContentEncoding.toLowerCase().contains("gzip");
 			try (final InputStream raw = connection.getInputStream(); final InputStream in = gzip ? new GZIPInputStream(raw) : raw; final ByteArrayOutputStream out = new ByteArrayOutputStream()) {
@@ -74,10 +76,10 @@ public class HtmlBulletinDownloader implements BulletinDownloader {
 					throw new CancelException();
 				}
 				final Charset charset = ConnectionUtils.detectCharset(connection);
-				body = fetch(in, charset);
+				body = fetch(in, charset, request.toURI());
 			}
 		}
-		catch (final IOException | RuntimeException e) {
+		catch (final IOException | RuntimeException | URISyntaxException e) {
 			throw new FetchException(Messages.get("err.job.fetch"), e);
 		}
 		try {
@@ -91,8 +93,8 @@ public class HtmlBulletinDownloader implements BulletinDownloader {
 		}
 	}
 
-	private static Document fetch(final InputStream in, final Charset charset) throws IOException {
-		return Jsoup.parse(in, charset.name(), "");
+	private static Document fetch(final InputStream in, final Charset charset, final URI uri) throws IOException {
+		return Jsoup.parse(in, charset.name(), uri.getPath().endsWith("/") ? uri.resolve("..").toString() : uri.resolve(".").toString());
 	}
 
 	@Override

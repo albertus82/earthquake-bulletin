@@ -22,8 +22,7 @@ public class GeofonUtils {
 
 	private static final PreferencesConfiguration configuration = EarthquakeBulletinConfig.getInstance();
 
-	public static URI getEventPageUri(final String guid) {
-		final String spec = getBaseUrl() + "/eqinfo/event.php?id=" + guid;
+	public static URI toURI(final String spec) {
 		try {
 			return new URI(spec);
 		}
@@ -31,28 +30,18 @@ public class GeofonUtils {
 			logger.log(Level.WARNING, Messages.get(MSG_KEY_ERR_URL_MALFORMED, spec), e);
 			return null;
 		}
+	}
+
+	public static URI getEventPageUri(final String guid) {
+		return toURI(getBaseUrl() + "/eqinfo/event.php?id=" + guid);
 	}
 
 	public static URI getEventMapUri(final String guid, final int year) {
-		final String spec = getEventBaseUrl(guid, year) + guid + ".jpg";
-		try {
-			return new URI(spec);
-		}
-		catch (final URISyntaxException e) {
-			logger.log(Level.WARNING, Messages.get(MSG_KEY_ERR_URL_MALFORMED, spec), e);
-			return null;
-		}
+		return toURI(getEventBaseUrl(guid, year) + guid + ".jpg");
 	}
 
 	public static URI getEventMomentTensorUri(final String guid, final int year) {
-		final String spec = getEventBaseUrl(guid, year) + MOMENT_TENSOR_FILENAME;
-		try {
-			return new URI(spec);
-		}
-		catch (final URISyntaxException e) {
-			logger.log(Level.WARNING, Messages.get(MSG_KEY_ERR_URL_MALFORMED, spec), e);
-			return null;
-		}
+		return toURI(getEventBaseUrl(guid, year) + MOMENT_TENSOR_FILENAME);
 	}
 
 	public static String getBulletinBaseUrl() {

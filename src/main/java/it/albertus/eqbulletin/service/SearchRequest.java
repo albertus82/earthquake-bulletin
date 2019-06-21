@@ -1,7 +1,7 @@
 package it.albertus.eqbulletin.service;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -40,14 +40,18 @@ public class SearchRequest {
 		return parameterMap;
 	}
 
-	public URL toURL() throws MalformedURLException {
+	public URI toURI() throws URISyntaxException {
+		return new URI(toUrlString());
+	}
+
+	private String toUrlString() {
 		final StringBuilder url = new StringBuilder(GeofonUtils.getBulletinBaseUrl()).append('?').append(Format.KEY).append('=').append(getFormat().getValue());
 		for (final Entry<String, String> param : parameterMap.entrySet()) {
 			if (param.getValue() != null && !param.getValue().isEmpty() && !Format.KEY.equals(param.getKey())) {
 				url.append('&').append(param.getKey()).append('=').append(URIEncoder.encodeURI(param.getValue()));
 			}
 		}
-		return new URL(url.toString());
+		return url.toString();
 	}
 
 	@Override

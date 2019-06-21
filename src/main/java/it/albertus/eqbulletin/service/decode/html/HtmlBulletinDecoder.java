@@ -8,6 +8,7 @@ import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -26,10 +27,10 @@ public class HtmlBulletinDecoder {
 
 	private static final DateTimeFormatter dateTimeFormatter = new DateTimeFormatterBuilder().appendPattern("yyyy-MM-dd HH:mm:ss").parseDefaulting(ChronoField.MILLI_OF_SECOND, 0).toFormatter().withZone(ZoneOffset.UTC);
 
-	public static List<Earthquake> decode(final Document body) {
+	public static List<Earthquake> decode(final Document data) {
 		final List<Earthquake> earthquakes = new ArrayList<>();
-		if (body != null) {
-			final Elements rows = body.getElementsByTag("tr");
+		if (data != null) {
+			final Elements rows = data.getElementsByTag("tr");
 			for (final Element row : rows.subList(2, rows.size() - 1)) { // Discards first and last <td>
 				final Earthquake converted = decodeItem(row);
 				earthquakes.add(converted);
@@ -42,8 +43,12 @@ public class HtmlBulletinDecoder {
 		try {
 			final ZonedDateTime time = dateTimeFormatter.parse(row.child(0).text(), ZonedDateTime::from);
 
-			final String href = row.child(0).child(0).attr("href");
-			final String guid = href.substring(href.indexOf('=') + 1);
+			final Optional<Element> eventLink = findFirstlink(row.child(0));
+			if (!eventLink.isPresent()) {
+				throw new IllegalStateException("Event link not present.");
+			}
+			final String guid = eventLink.get().attr("href").substring(eventLink.get().attr("href").indexOf('=') + 1).trim();
+			final URI link = GeofonUtils.toURI(eventLink.get().absUrl("href"));
 
 			final float magnitude = Float.parseFloat(row.child(1).text());
 
@@ -63,12 +68,15 @@ public class HtmlBulletinDecoder {
 			final Status status = Status.valueOf(row.child(5).text());
 			final String region = row.child(7).text();
 
-			final URI link = GeofonUtils.getEventPageUri(guid);
 			final URI enclosureUri = GeofonUtils.getEventMapUri(guid, time.get(ChronoField.YEAR));
 
 			URI momentTensorUri = null;
-			if (row.child(6).html().contains(GeofonUtils.MOMENT_TENSOR_FILENAME) || row.children().size() > 7 && row.child(7).html().contains(GeofonUtils.MOMENT_TENSOR_FILENAME)) {
-				momentTensorUri = GeofonUtils.getEventMomentTensorUri(guid, time.get(ChronoField.YEAR));
+			for (int i = 6; i < row.children().size(); i++) {
+				final Optional<Element> a = findFirstlink(row.child(i));
+				if (a.isPresent() && "MT".equalsIgnoreCase(a.get().text())) {
+					momentTensorUri = GeofonUtils.toURI(a.get().absUrl("href"));
+					break;
+				}
 			}
 
 			return new Earthquake(guid, time, magnitude, new Latitude(latitude), new Longitude(longitude), Depth.valueOf(depth), status, region, link, enclosureUri, momentTensorUri);
@@ -76,6 +84,10 @@ public class HtmlBulletinDecoder {
 		catch (final Exception e) {
 			throw new IllegalArgumentException(row.toString(), e);
 		}
+	}
+
+	private static Optional<Element> findFirstlink(final Element parent) {
+		return parent.children().stream().filter(child -> "a".equalsIgnoreCase(child.tagName()) && child.hasAttr("href")).findFirst();
 	}
 
 	private HtmlBulletinDecoder() {
