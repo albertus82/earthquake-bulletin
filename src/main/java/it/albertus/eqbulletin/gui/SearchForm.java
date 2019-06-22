@@ -71,12 +71,6 @@ public class SearchForm implements IShellProvider, Multilanguage {
 
 	private static final Logger logger = LoggerFactory.getLogger(SearchForm.class);
 
-	public static final int COORDINATES_TEXT_LIMIT = 7;
-	public static final int MAGNITUDE_TEXT_LIMIT = 4;
-	public static final int PERIOD_TEXT_LIMIT = 10;
-	public static final int RESULTS_TEXT_LIMIT = 4;
-	public static final int AUTOREFRESH_TEXT_LIMIT = 9;
-
 	public static final float LATITUDE_MIN_VALUE = MapBounds.LATITUDE_MIN_VALUE;
 	public static final float LATITUDE_MAX_VALUE = MapBounds.LATITUDE_MAX_VALUE;
 	public static final float LONGITUDE_MIN_VALUE = MapBounds.LONGITUDE_MIN_VALUE;
@@ -84,8 +78,14 @@ public class SearchForm implements IShellProvider, Multilanguage {
 	public static final float MAGNITUDE_MIN_VALUE = 0;
 	public static final float MAGNITUDE_MAX_VALUE = 10;
 	public static final int RESULTS_MIN_VALUE = 1;
-	public static final int RESULTS_MAX_VALUE = 1000;
+	public static final int RESULTS_MAX_VALUE = 5000;
 	public static final int AUTOREFRESH_MIN_VALUE = 1;
+
+	public static final int COORDINATES_TEXT_LIMIT = 7;
+	public static final int MAGNITUDE_TEXT_LIMIT = 4;
+	public static final int PERIOD_TEXT_LIMIT = 10;
+	public static final int RESULTS_TEXT_LIMIT = Integer.toString(RESULTS_MAX_VALUE).length();
+	public static final int AUTOREFRESH_TEXT_LIMIT = 9;
 
 	public static final String DATE_PATTERN = "yyyy-MM-dd";
 

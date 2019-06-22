@@ -7,7 +7,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
 import java.util.logging.Level;
@@ -64,10 +66,41 @@ public class HtmlBulletinDownloader implements BulletinDownloader {
 		}
 	}
 
-	private Collection<Earthquake> download(final SearchRequest request, final Headers headers, final BooleanSupplier canceled) throws FetchException, DecodeException, CancelException {
+	private List<Earthquake> download(final SearchRequest request, final Headers headers, final BooleanSupplier canceled) throws FetchException, DecodeException, CancelException {
+		try {
+			final List<Earthquake> result = new ArrayList<>();
+			final Collection<URI> uris = request.toURIs();
+			final Optional<Short> limit = request.getLimit();
+			for (final URI uri : uris) {
+				if (canceled.getAsBoolean()) {
+					throw new CancelException();
+				}
+				final Collection<Earthquake> partial = downloadPage(uri, headers, canceled);
+				logger.log(Level.FINE, "partial.size() = {0,number,#}", partial.size());
+				if (partial.isEmpty()) {
+					break;
+				}
+				result.addAll(partial);
+				if (limit.isPresent() && partial.size() < limit.get() / uris.size()) {
+					break;
+				}
+			}
+			if (limit.isPresent() && result.size() > limit.get()) {
+				return result.subList(0, limit.get());
+			}
+			else {
+				return result;
+			}
+		}
+		catch (final URISyntaxException e) {
+			throw new FetchException(Messages.get("err.job.fetch"), e);
+		}
+	}
+
+	private List<Earthquake> downloadPage(final URI uri, final Headers headers, final BooleanSupplier canceled) throws CancelException, FetchException, DecodeException {
 		final Document body;
 		try {
-			final URLConnection connection = ConnectionFactory.makeGetRequest(request.toURI().toURL(), headers);
+			final URLConnection connection = ConnectionFactory.makeGetRequest(uri.toURL(), headers);
 			final String responseContentEncoding = connection.getContentEncoding();
 			final boolean gzip = responseContentEncoding != null && responseContentEncoding.toLowerCase().contains("gzip");
 			try (final InputStream raw = connection.getInputStream(); final InputStream in = gzip ? new GZIPInputStream(raw) : raw; final ByteArrayOutputStream out = new ByteArrayOutputStream()) {
@@ -76,10 +109,10 @@ public class HtmlBulletinDownloader implements BulletinDownloader {
 					throw new CancelException();
 				}
 				final Charset charset = ConnectionUtils.detectCharset(connection);
-				body = fetch(in, charset, request.toURI());
+				body = fetch(in, charset, uri);
 			}
 		}
-		catch (final IOException | RuntimeException | URISyntaxException e) {
+		catch (final IOException | RuntimeException e) {
 			throw new FetchException(Messages.get("err.job.fetch"), e);
 		}
 		try {

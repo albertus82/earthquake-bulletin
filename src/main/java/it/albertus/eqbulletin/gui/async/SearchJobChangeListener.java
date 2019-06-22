@@ -70,9 +70,9 @@ class SearchJobChangeListener extends JobChangeAdapter {
 				showErrorDialog(e, gui.getTrayIcon());
 			}
 			finally {
-				final long delay = request.getDelay();
-				if (delay > 0) {
-					event.getJob().schedule(delay);
+				final Optional<Long> delay = request.getDelay();
+				if (delay.isPresent() && delay.get() > 0) {
+					event.getJob().schedule(delay.get());
 				}
 				else {
 					SearchAsyncOperation.cancelCurrentJob();

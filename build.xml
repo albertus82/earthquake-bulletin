@@ -2,10 +2,10 @@
 <!DOCTYPE project>
 <project name="earthquake-bulletin" default="all" xmlns:as="antlib:org.codehaus.mojo.animal_sniffer" xmlns:jacoco="antlib:org.jacoco.ant">
 
-	<property name="version.number" value="2.1.2" />
+	<property name="version.number" value="2.2.0" />
 
 	<property environment="env" />
-	<property name="env.JRE8_HOME" value="${env.JAVA_HOME}/../jdk1.8.0_201/jre" />
+	<property name="env.JRE8_HOME" value="${env.JAVA_HOME}/../jdk1.8.0_211/jre" />
 
 	<property file="build.properties" />
 

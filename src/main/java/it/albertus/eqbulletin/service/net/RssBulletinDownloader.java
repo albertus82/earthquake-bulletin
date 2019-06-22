@@ -86,7 +86,7 @@ public class RssBulletinDownloader implements BulletinDownloader {
 	private Collection<Earthquake> download(final SearchRequest request, final Headers headers, final BooleanSupplier canceled) throws FetchException, DecodeException, CancelException {
 		final String body;
 		try {
-			final URLConnection connection = ConnectionFactory.makeGetRequest(request.toURI().toURL(), headers);
+			final URLConnection connection = ConnectionFactory.makeGetRequest(request.toURIs().get(0).toURL(), headers);
 			final String responseContentEncoding = connection.getContentEncoding();
 			final boolean gzip = responseContentEncoding != null && responseContentEncoding.toLowerCase().contains("gzip");
 			try (final InputStream raw = connection.getInputStream(); final InputStream in = gzip ? new GZIPInputStream(raw) : raw; final ByteArrayOutputStream out = new ByteArrayOutputStream()) {
