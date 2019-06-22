@@ -97,7 +97,7 @@ public class SearchRequest {
 
 	@Override
 	public String toString() {
-		return "SearchRequest [valid=" + valid + ", delay=" + delay + ", parameterMap=" + parameterMap + "]";
+		return "SearchRequest [valid=" + valid + ", delay=" + delay + ", limit=" + limit + ", parameterMap=" + parameterMap + "]";
 	}
 
 	static class PaginationParameters implements Serializable {
