@@ -21,14 +21,14 @@ public class Depth implements Serializable, Comparable<Depth> {
 
 	private final short value; // Earth radius is the distance from Earth's center to its surface, about 6371 km (3959 mi).
 
-	public Depth(final short value) {
+	private Depth(final short value) {
 		this.value = value;
 		cache.put(value, this);
 	}
 
-	public static Depth valueOf(final short value) {
-		final Depth cached = cache.get(value);
-		return cached != null ? cached : new Depth(value);
+	public static Depth valueOf(final short km) {
+		final Depth cached = cache.get(km);
+		return cached != null ? cached : new Depth(km);
 	}
 
 	@Override
