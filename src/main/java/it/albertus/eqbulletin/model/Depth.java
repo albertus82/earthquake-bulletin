@@ -3,19 +3,27 @@ package it.albertus.eqbulletin.model;
 import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import it.albertus.util.logging.LoggerFactory;
 
 public class Depth implements Serializable, Comparable<Depth> {
 
 	private static final long serialVersionUID = 2766555831235385141L;
 
-	private static final LinkedHashMap<Short, Depth> cache = new LinkedHashMap<Short, Depth>(16, 0.75f, true) { // Flyweight
-		private static final long serialVersionUID = -3656824180998473886L;
+	private static final Logger logger = LoggerFactory.getLogger(Depth.class);
 
-		private static final int MAX_ENTRIES = 1000;
+	private static final LinkedHashMap<Short, Depth> cache = new LinkedHashMap<Short, Depth>(16, 0.75f, true) { // Flyweight
+		private static final long serialVersionUID = -3229317830656593292L;
+
+		private static final short MAX_ENTRIES = 0xFF;
 
 		@Override
 		protected boolean removeEldestEntry(final Entry<Short, Depth> eldest) {
-			return size() > MAX_ENTRIES;
+			final int size = size();
+			logger.log(Level.FINER, "Depth cache size: {0}.", size);
+			return size > MAX_ENTRIES;
 		}
 	};
 
