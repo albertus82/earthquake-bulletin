@@ -112,6 +112,9 @@ public class MapCanvas implements IShellProvider, Multilanguage {
 					setZoomLevel(level);
 				}
 			});
+			if (level == AUTO_SCALE) {
+				new MenuItem(zoomSubMenu, SWT.SEPARATOR);
+			}
 		}
 
 		zoomSubMenu.addMenuListener(new MenuAdapter() {
