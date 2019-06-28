@@ -16,7 +16,7 @@ Download the [latest release](https://github.com/albertus82/earthquake-bulletin/
 
 ## Installation
 
-* **Windows**: run the installer to install the application.
+* **Windows**: if you downloaded a ZIP package, simply unpack the archive; otherwise run the installer (EXE) to install the application.
 
   If Windows complains with a ***Windows protected your PC*** popup, you may need to click ***Run anyway*** to proceed with the installation.
 
