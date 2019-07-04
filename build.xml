@@ -696,6 +696,20 @@
 				<formatter type="xml" />
 			</junit>
 		</jacoco:coverage>
+		<jacoco:report>
+			<executiondata>
+				<file file="${build.outputTestResultsDirectory}/jacoco/jacoco.exec" />
+			</executiondata>
+			<structure name="${project.artifactId}">
+				<classfiles>
+					<fileset dir="${build.outputDirectory}" />
+				</classfiles>
+				<sourcefiles encoding="UTF-8">
+					<fileset dir="${build.sourceDirectory}" />
+				</sourcefiles>
+			</structure>
+			<xml destfile="${build.outputTestResultsDirectory}/jacoco/jacoco.xml" />
+		</jacoco:report>
 	</target>
 
 	<target name="sonar-main">
@@ -718,7 +732,7 @@
 			<entry key="sonar.tests" value="${build.testSourceDirectory}" />
 			<entry key="sonar.java.test.libraries" value="${dependencies.directory}/compile/common/*.jar,${dependencies.directory}/compile/platform-dependent/**/*.jar,${dependencies.directory}/test/*.jar" />
 			<entry key="sonar.java.test.binaries" value="${build.outputTestClassesDirectory}" />
-			<entry key="sonar.jacoco.reportPaths" value="${build.outputTestResultsDirectory}/jacoco/jacoco.exec" />
+			<entry key="sonar.coverage.jacoco.xmlReportPaths" value="${build.outputTestResultsDirectory}/jacoco/jacoco.xml" />
 		</propertyfile>
 	</target>
 
