@@ -227,6 +227,16 @@ public class ResultsTable implements IShellProvider, Multilanguage {
 			}
 		});
 
+		table.addMouseMoveListener(e -> {
+			final ViewerCell cell = tableViewer.getCell(new Point(e.x, e.y));
+			if (cell != null && cell.getColumnIndex() == COL_IDX_MT && MT.equals(cell.getText())) {
+				shell.setCursor(shell.getDisplay().getSystemCursor(SWT.CURSOR_HAND));
+			}
+			else if (shell.getCursor() != null) {
+				shell.setCursor(null);
+			}
+		});
+
 		table.setRedraw(false);
 		packColumns(table);
 		table.setRedraw(true);
