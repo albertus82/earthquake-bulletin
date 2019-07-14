@@ -66,14 +66,14 @@ public class HtmlBulletinDecoder {
 
 			final short depth = Short.parseShort(row.child(4).text());
 			final Status status = Status.valueOf(row.child(5).text());
-			final String region = row.child(7).text();
+			final String region = row.child(7).text().isEmpty() ? row.child(6).text() : row.child(7).text();
 
 			final URI enclosureUri = GeofonUtils.getEventMapUri(guid, time.get(ChronoField.YEAR));
 
 			URI momentTensorUri = null;
 			for (int i = 6; i < row.children().size(); i++) {
 				final Optional<Element> a = findFirstlink(row.child(i));
-				if (a.isPresent() && "MT".equalsIgnoreCase(a.get().text())) {
+				if (a.isPresent() && ("MT".equalsIgnoreCase(a.get().text()) || a.get().attr("href").endsWith(GeofonUtils.MOMENT_TENSOR_FILENAME))) {
 					momentTensorUri = GeofonUtils.toURI(a.get().absUrl("href"));
 					break;
 				}
