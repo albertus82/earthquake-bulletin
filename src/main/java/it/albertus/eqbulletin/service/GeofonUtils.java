@@ -32,10 +32,6 @@ public class GeofonUtils {
 		}
 	}
 
-	public static URI getEventPageUri(final String guid) {
-		return toURI(getBaseUrl() + "/eqinfo/event.php?id=" + guid);
-	}
-
 	public static URI getEventMapUri(final String guid, final int year) {
 		return toURI(getEventBaseUrl(guid, year) + guid + ".jpg");
 	}
