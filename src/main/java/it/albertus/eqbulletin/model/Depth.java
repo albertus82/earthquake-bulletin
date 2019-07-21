@@ -10,7 +10,7 @@ import it.albertus.util.logging.LoggerFactory;
 
 public class Depth implements Serializable, Comparable<Depth> {
 
-	private static final long serialVersionUID = 2766555831235385141L;
+	private static final long serialVersionUID = 894681925414643001L;
 
 	private static final Logger logger = LoggerFactory.getLogger(Depth.class);
 
@@ -29,7 +29,7 @@ public class Depth implements Serializable, Comparable<Depth> {
 
 	private final short value; // Earth radius is the distance from Earth's center to its surface, about 6371 km (3959 mi).
 
-	private Depth(final short value) {
+	protected Depth(final short value) {
 		this.value = value;
 		cache.put(value, this);
 	}

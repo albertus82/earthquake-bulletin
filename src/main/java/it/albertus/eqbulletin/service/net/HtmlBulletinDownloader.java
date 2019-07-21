@@ -1,6 +1,5 @@
 package it.albertus.eqbulletin.service.net;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -98,18 +97,18 @@ public class HtmlBulletinDownloader implements BulletinDownloader {
 	}
 
 	private List<Earthquake> downloadPage(final URI uri, final Headers headers, final BooleanSupplier canceled) throws CancelException, FetchException, DecodeException {
-		final Document body;
+		final Document document;
 		try {
 			final URLConnection connection = ConnectionFactory.makeGetRequest(uri.toURL(), headers);
 			final String responseContentEncoding = connection.getContentEncoding();
 			final boolean gzip = responseContentEncoding != null && responseContentEncoding.toLowerCase().contains("gzip");
-			try (final InputStream raw = connection.getInputStream(); final InputStream in = gzip ? new GZIPInputStream(raw) : raw; final ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+			try (final InputStream raw = connection.getInputStream(); final InputStream in = gzip ? new GZIPInputStream(raw) : raw) {
 				connectionInputStream = raw;
 				if (canceled.getAsBoolean()) {
 					throw new CancelException();
 				}
 				final Charset charset = ConnectionUtils.detectCharset(connection);
-				body = fetch(in, charset, uri);
+				document = fetch(in, charset, uri);
 			}
 		}
 		catch (final IOException | RuntimeException e) {
@@ -119,7 +118,7 @@ public class HtmlBulletinDownloader implements BulletinDownloader {
 			if (canceled.getAsBoolean()) {
 				throw new CancelException();
 			}
-			return HtmlBulletinDecoder.decode(body);
+			return HtmlBulletinDecoder.decode(document);
 		}
 		catch (final RuntimeException e) {
 			throw new DecodeException(Messages.get("err.job.decode"), e);

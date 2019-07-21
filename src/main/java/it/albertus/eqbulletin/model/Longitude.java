@@ -6,10 +6,14 @@ import it.albertus.jface.maps.CoordinateUtils;
 
 public class Longitude extends Coordinate {
 
-	private static final long serialVersionUID = -1729941517478220543L;
+	private static final long serialVersionUID = -1880226620057493276L;
 
-	public Longitude(final float value) {
+	protected Longitude(final float value) {
 		super(value);
+	}
+
+	public static Longitude valueOf(final float value) {
+		return new Longitude(value);
 	}
 
 	@Override

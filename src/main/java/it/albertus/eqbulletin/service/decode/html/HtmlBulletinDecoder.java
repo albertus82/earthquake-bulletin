@@ -7,6 +7,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.ChronoField;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,16 +28,19 @@ public class HtmlBulletinDecoder {
 
 	private static final DateTimeFormatter dateTimeFormatter = new DateTimeFormatterBuilder().appendPattern("yyyy-MM-dd HH:mm:ss").parseDefaulting(ChronoField.MILLI_OF_SECOND, 0).toFormatter().withZone(ZoneOffset.UTC);
 
-	public static List<Earthquake> decode(final Document data) {
-		final List<Earthquake> earthquakes = new ArrayList<>();
-		if (data != null) {
-			final Elements rows = data.getElementsByTag("tr");
-			for (final Element row : rows.subList(2, rows.size() - 1)) { // Discards first and last <td>
+	public static List<Earthquake> decode(final Document document) {
+		if (document != null) {
+			final List<Earthquake> earthquakes = new ArrayList<>();
+			final Elements rows = document.getElementsByTag("tr");
+			for (final Element row : rows.subList(2, rows.size() - 1)) { // Discards table header & footer
 				final Earthquake converted = decodeItem(row);
 				earthquakes.add(converted);
 			}
+			return earthquakes;
 		}
-		return earthquakes;
+		else {
+			return Collections.emptyList();
+		}
 	}
 
 	private static Earthquake decodeItem(final Element row) {
@@ -79,7 +83,7 @@ public class HtmlBulletinDecoder {
 				}
 			}
 
-			return new Earthquake(guid, time, magnitude, new Latitude(latitude), new Longitude(longitude), Depth.valueOf(depth), status, region, link, enclosureUri, momentTensorUri);
+			return new Earthquake(guid, time, magnitude, Latitude.valueOf(latitude), Longitude.valueOf(longitude), Depth.valueOf(depth), status, region, link, enclosureUri, momentTensorUri);
 		}
 		catch (final Exception e) {
 			throw new IllegalArgumentException(row.toString(), e);
@@ -87,7 +91,7 @@ public class HtmlBulletinDecoder {
 	}
 
 	private static Optional<Element> findFirstlink(final Element parent) {
-		return parent.children().stream().filter(child -> "a".equalsIgnoreCase(child.tagName()) && child.hasAttr("href")).findFirst();
+		return parent.children().stream().filter(child -> "a".equals(child.normalName()) && child.hasAttr("href")).findFirst();
 	}
 
 	private HtmlBulletinDecoder() {

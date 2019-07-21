@@ -84,7 +84,7 @@ public class SearchRequest {
 			}
 			else {
 				final LinkedHashSet<String> urls = new LinkedHashSet<>();
-				for (int page = 1; page <= pp.getPages(); page++) {
+				for (short page = 1; page <= pp.getPages(); page++) {
 					urls.add(baseUrl + "&page=" + page + "&nmax=" + pp.getNmax()); // Don't append to the StringBuilder here!
 				}
 				return urls;
@@ -102,7 +102,7 @@ public class SearchRequest {
 
 	static class PaginationParameters implements Serializable {
 
-		private static final long serialVersionUID = -740569133844727521L;
+		private static final long serialVersionUID = 8859166869888375735L;
 
 		private static final short API_LIMIT = 1000;
 
@@ -121,11 +121,11 @@ public class SearchRequest {
 			logger.log(Level.FINE, "Computed (nmax={0,number,#}, pages={1}).", new Number[] { nmax, pages });
 		}
 
-		int getNmax() {
+		short getNmax() {
 			return nmax;
 		}
 
-		int getPages() {
+		byte getPages() {
 			return pages;
 		}
 	}
