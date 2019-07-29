@@ -50,6 +50,7 @@ import it.albertus.eqbulletin.model.Status;
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.jface.Multilanguage;
 import it.albertus.jface.SwtUtils;
+import it.albertus.jface.closeable.CloseableResource;
 import it.albertus.jface.preference.IPreferencesConfiguration;
 
 public class ResultsTable implements IShellProvider, Multilanguage {
@@ -230,9 +231,11 @@ public class ResultsTable implements IShellProvider, Multilanguage {
 		table.addMouseMoveListener(e -> {
 			final ViewerCell cell = tableViewer.getCell(new Point(e.x, e.y));
 			if (cell != null && cell.getColumnIndex() == COL_IDX_MT && MT.equals(cell.getText())) {
-				shell.setCursor(shell.getDisplay().getSystemCursor(SWT.CURSOR_HAND));
+				if (shell.getCursor() == null) {
+					shell.setCursor(shell.getDisplay().getSystemCursor(SWT.CURSOR_HAND));
+				}
 			}
-			else if (shell.getCursor() != null) {
+			else if (shell.getDisplay().getSystemCursor(SWT.CURSOR_HAND).equals(shell.getCursor())) {
 				shell.setCursor(null);
 			}
 		});
@@ -407,15 +410,8 @@ public class ResultsTable implements IShellProvider, Multilanguage {
 		for (final TableColumn column : table.getColumns()) {
 			column.pack();
 			if (Util.isGtk()) { // colmuns are badly resized on GTK, more space is actually needed
-				GC gc = null;
-				try {
-					gc = new GC(table);
-					column.setWidth(column.getWidth() + gc.stringExtent(" ").x);
-				}
-				finally {
-					if (gc != null) {
-						gc.dispose();
-					}
+				try (final CloseableResource<GC> cr = new CloseableResource<>(new GC(table))) {
+					column.setWidth(column.getWidth() + cr.getResource().stringExtent(" ").x);
 				}
 			}
 		}

@@ -43,6 +43,7 @@ import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.jface.EnhancedErrorDialog;
 import it.albertus.jface.HqImageResizer;
 import it.albertus.jface.Multilanguage;
+import it.albertus.jface.closeable.CloseableResource;
 import it.albertus.jface.preference.IPreferencesConfiguration;
 import it.albertus.util.logging.LoggerFactory;
 
@@ -190,17 +191,11 @@ public class MapCanvas implements IShellProvider, Multilanguage {
 	}
 
 	public void clear() {
-		GC gc = null;
-		try {
-			gc = new GC(canvas);
+		try (final CloseableResource<GC> cr = new CloseableResource<>(new GC(canvas))) {
+			final GC gc = cr.getResource();
 			gc.setBackground(getBackgroundColor());
 			final Rectangle canvasBounds = canvas.getBounds();
 			gc.fillRectangle(0, 0, canvasBounds.width, canvasBounds.height);
-		}
-		finally {
-			if (gc != null) {
-				gc.dispose();
-			}
 		}
 		if (image != null) {
 			image.dispose();
@@ -216,9 +211,8 @@ public class MapCanvas implements IShellProvider, Multilanguage {
 		final Rectangle originalRect = image.getBounds();
 		final Rectangle resizedRect = getResizedRectangle(scalePercent);
 
-		GC gc = null;
-		try {
-			gc = new GC(canvas);
+		try (final CloseableResource<GC> cr = new CloseableResource<>(new GC(canvas))) {
+			final GC gc = cr.getResource();
 			if (resizedRect.height == originalRect.height) { // Do not resize!
 				prepareCanvas(gc, scalePercent);
 				gc.drawImage(image, resizedRect.x, resizedRect.y);
@@ -239,11 +233,6 @@ public class MapCanvas implements IShellProvider, Multilanguage {
 					prepareCanvas(gc, scalePercent);
 					gc.drawImage(image, 0, 0, originalRect.width, originalRect.height, resizedRect.x, resizedRect.y, resizedRect.width, resizedRect.height);
 				}
-			}
-		}
-		finally {
-			if (gc != null) {
-				gc.dispose();
 			}
 		}
 	}

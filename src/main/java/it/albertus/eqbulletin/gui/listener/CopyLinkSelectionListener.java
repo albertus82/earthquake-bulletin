@@ -13,6 +13,7 @@ import org.eclipse.swt.widgets.Table;
 
 import it.albertus.eqbulletin.gui.EarthquakeBulletinGui;
 import it.albertus.eqbulletin.model.Earthquake;
+import it.albertus.jface.closeable.CloseableClipboard;
 
 public class CopyLinkSelectionListener extends SelectionAdapter {
 
@@ -30,9 +31,9 @@ public class CopyLinkSelectionListener extends SelectionAdapter {
 		if (selection != null && table != null && !table.isDisposed()) {
 			final Optional<URI> link = selection.getLink();
 			if (link.isPresent()) {
-				final Clipboard clipboard = new Clipboard(table.getDisplay());
-				clipboard.setContents(new String[] { link.get().toString() }, new Transfer[] { TextTransfer.getInstance() });
-				clipboard.dispose();
+				try (final CloseableClipboard cc = new CloseableClipboard(new Clipboard(table.getDisplay()))) {
+					cc.getClipboard().setContents(new String[] { link.get().toString() }, new Transfer[] { TextTransfer.getInstance() });
+				}
 			}
 		}
 	}

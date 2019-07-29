@@ -28,6 +28,7 @@ import it.albertus.eqbulletin.model.MomentTensor;
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.jface.JFaceMessages;
 import it.albertus.jface.SwtUtils;
+import it.albertus.jface.closeable.CloseableResource;
 import it.albertus.util.logging.LoggerFactory;
 
 public class MomentTensorDialog extends Dialog {
@@ -94,16 +95,9 @@ public class MomentTensorDialog extends Dialog {
 		text.setFont(JFaceResources.getTextFont());
 		final String momentTensorText = momentTensor.getText().trim();
 		text.setText(momentTensorText);
-		GC gc = null;
-		try {
-			gc = new GC(text);
-			final Point textExtent = gc.textExtent(momentTensorText);
+		try (final CloseableResource<GC> cr = new CloseableResource<>(new GC(text))) {
+			final Point textExtent = cr.getResource().textExtent(momentTensorText);
 			GridDataFactory.fillDefaults().grab(true, true).hint(textExtent.x, SWT.DEFAULT).applyTo(text);
-		}
-		finally {
-			if (gc != null) {
-				gc.dispose();
-			}
 		}
 		createButtonBox(shell);
 	}
