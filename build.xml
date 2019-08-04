@@ -488,6 +488,7 @@
 			AppUpdatesURL=${innoSetup.AppUpdatesURL}
 			AppMutex=${mainClass}
 			PrivilegesRequired=lowest
+			PrivilegesRequiredOverridesAllowed=dialog
 			DefaultDirName={localappdata}\${project.name}
 			DefaultGroupName=${project.name}
 			UninstallDisplayIcon={app}\${windows.exeFileName}
@@ -585,6 +586,7 @@
 			AppUpdatesURL=${innoSetup.AppUpdatesURL}
 			AppMutex=${mainClass}
 			PrivilegesRequired=lowest
+			PrivilegesRequiredOverridesAllowed=dialog
 			DefaultDirName={localappdata}\${project.name}
 			DefaultGroupName=${project.name}
 			UninstallDisplayIcon={app}\${windows.exeFileName}
