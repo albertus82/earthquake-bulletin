@@ -8,6 +8,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.ChronoField;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,13 +31,16 @@ public class RssBulletinDecoder {
 	private static final DateTimeFormatter dateTimeFormatter = new DateTimeFormatterBuilder().appendPattern("yyyy-MM-dd HH:mm:ss").parseDefaulting(ChronoField.MILLI_OF_SECOND, 0).toFormatter().withZone(ZoneOffset.UTC);
 
 	public static List<Earthquake> decode(final RssBulletin data) {
-		final List<Earthquake> earthquakes = new ArrayList<>();
 		if (data != null && data.getChannel() != null && data.getChannel().getItems() != null) {
+			final List<Earthquake> earthquakes = new ArrayList<>();
 			for (final Item item : data.getChannel().getItems()) {
 				earthquakes.add(decodeItem(item));
 			}
+			return earthquakes;
 		}
-		return earthquakes;
+		else {
+			return Collections.emptyList();
+		}
 	}
 
 	private static Earthquake decodeItem(final Item item) {
@@ -83,7 +87,7 @@ public class RssBulletinDecoder {
 			momentTensorUri = GeofonUtils.getEventMomentTensorUri(guid, time.get(ChronoField.YEAR));
 		}
 
-		return new Earthquake(guid, time, magnitudo, new Latitude(latitude), new Longitude(longitude), new Depth(depth), status, region, link, enclosureUri, momentTensorUri);
+		return new Earthquake(guid, time, magnitudo, Latitude.valueOf(latitude), Longitude.valueOf(longitude), Depth.valueOf(depth), status, region, link, enclosureUri, momentTensorUri);
 	}
 
 	private RssBulletinDecoder() {

@@ -37,6 +37,7 @@ import it.albertus.jface.EnhancedErrorDialog;
 import it.albertus.jface.Events;
 import it.albertus.jface.Multilanguage;
 import it.albertus.jface.SwtUtils;
+import it.albertus.jface.closeable.CloseableDevice;
 import it.albertus.jface.preference.IPreferencesConfiguration;
 import it.albertus.util.Version;
 import it.albertus.util.logging.LoggerFactory;
@@ -97,35 +98,35 @@ public class EarthquakeBulletinGui extends ApplicationWindow implements Multilan
 	public static void run(final InitializationException ie) {
 		Display.setAppName(Messages.get("msg.application.name"));
 		Display.setAppVersion(Version.getInstance().getNumber());
-		final Display display = Display.getDefault();
+		try (final CloseableDevice<Display> cd = new CloseableDevice<>(Display.getDefault())) {
+			final Display display = cd.getDevice();
 
-		if (ie != null) { // Display error dialog and exit.
-			EnhancedErrorDialog.openError(null, Messages.get("lbl.window.title"), ie.getLocalizedMessage() != null ? ie.getLocalizedMessage() : ie.getMessage(), IStatus.ERROR, ie.getCause() != null ? ie.getCause() : ie, Images.getMainIconArray());
-		}
-		else { // Open main window.
-			final EarthquakeBulletinGui gui = new EarthquakeBulletinGui();
-			gui.open();
-			final Shell shell = gui.getShell();
-			try {
-				while (!shell.isDisposed()) {
-					if (!display.isDisposed() && !display.readAndDispatch()) {
-						display.sleep();
+			if (ie != null) { // Display error dialog and exit.
+				EnhancedErrorDialog.openError(null, Messages.get("lbl.window.title"), ie.getLocalizedMessage() != null ? ie.getLocalizedMessage() : ie.getMessage(), IStatus.ERROR, ie.getCause() != null ? ie.getCause() : ie, Images.getMainIconArray());
+			}
+			else { // Open main window.
+				final EarthquakeBulletinGui gui = new EarthquakeBulletinGui();
+				gui.open();
+				final Shell shell = gui.getShell();
+				try {
+					while (!shell.isDisposed()) {
+						if (!display.isDisposed() && !display.readAndDispatch()) {
+							display.sleep();
+						}
+					}
+				}
+				catch (final Exception e) {
+					final String message = Messages.get("err.fatal");
+					if (shell.isDisposed()) {
+						logger.log(Level.FINE, message, e);
+					}
+					else {
+						logger.log(Level.SEVERE, message, e);
+						EnhancedErrorDialog.openError(shell, Messages.get("msg.application.name"), message, IStatus.ERROR, e, display.getSystemImage(SWT.ICON_ERROR));
 					}
 				}
 			}
-			catch (final Exception e) {
-				final String message = Messages.get("err.fatal");
-				if (shell.isDisposed()) {
-					logger.log(Level.FINE, message, e);
-				}
-				else {
-					logger.log(Level.SEVERE, message, e);
-					EnhancedErrorDialog.openError(shell, Messages.get("msg.application.name"), message, IStatus.ERROR, e, display.getSystemImage(SWT.ICON_ERROR));
-				}
-			}
 		}
-
-		display.dispose();
 	}
 
 	@Override
@@ -168,6 +169,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow implements Multilan
 	@Override
 	public int open() {
 		final int code = super.open();
+		searchForm.setOpenMapButtonImage();
 
 		final UpdateShellStatusListener listener = new UpdateShellStatusListener();
 		getShell().addListener(SWT.Resize, listener);
@@ -212,8 +214,6 @@ public class EarthquakeBulletinGui extends ApplicationWindow implements Multilan
 		if (sizeX != null && sizeY != null) {
 			shell.setSize(Math.max(sizeX, preferredSize.x), Math.max(sizeY, preferredSize.y));
 		}
-
-		searchForm.setOpenMapButtonImage();
 
 		final Integer locationX = configuration.getInt(SHELL_LOCATION_X);
 		final Integer locationY = configuration.getInt(SHELL_LOCATION_Y);

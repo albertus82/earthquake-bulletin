@@ -6,9 +6,9 @@ Earthquake Bulletin
 [![Build status](https://ci.appveyor.com/api/projects/status/github/albertus82/earthquake-bulletin?branch=master&svg=true)](https://ci.appveyor.com/project/albertus82/earthquake-bulletin)
 [![Build status](https://dev.azure.com/albertus82/earthquake-bulletin/_apis/build/status/master)](https://dev.azure.com/albertus82/earthquake-bulletin/_build/latest?definitionId=1)
 
-A cross-platform desktop client for the [**GEOFON Program GFZ Potsdam Earthquake Bulletin**](http://geofon.gfz-potsdam.de/eqinfo/list.php) written in Java.
+A cross-platform desktop client for the [**GEOFON Program GFZ Potsdam Earthquake Bulletin**](https://geofon.gfz-potsdam.de/eqinfo/list.php) written in Java.
 
-![Screenshot](https://user-images.githubusercontent.com/8672431/53291565-7e5ad100-37b5-11e9-934a-66da47a6fb16.png)
+![Screenshot](https://user-images.githubusercontent.com/8672431/55280184-28cc9380-5322-11e9-9dad-1611a3baf837.png)
 
 ## Download
 
@@ -16,9 +16,9 @@ Download the [latest release](https://github.com/albertus82/earthquake-bulletin/
 
 ## Installation
 
-* **Windows**: run the installer to install the application.
+* **Windows**: if you downloaded a ZIP package, simply unpack the archive; otherwise run the installer (EXE) to install the application.
 
-  If Windows complains with a ***Windows protected your PC*** popup, you may need to click ***Run anyway*** to proceed with the installation.
+  If the OS complains with a ***Windows protected your PC*** popup, you may need to click ***Run anyway*** to proceed with the installation.
 
   ![Windows protected your PC](https://user-images.githubusercontent.com/8672431/31048995-7145b034-a62a-11e7-860b-c477237145ce.png)
 
@@ -38,7 +38,7 @@ As In:  feregion   122.5W 36.2N
 
 ## Acknowledgements
 
-Locations were obtained from the [GEOFON](http://geofon.gfz-potsdam.de) programme of the [GFZ](http://www.gfz-potsdam.de) German Research Centre for Geosciences using data from the [GEVN](http://geofon.gfz-potsdam.de/eqinfo/gevn/) partner networks.
+Locations were obtained from the [GEOFON](https://geofon.gfz-potsdam.de) programme of the [GFZ](https://www.gfz-potsdam.de) German Research Centre for Geosciences using data from the [GEVN](https://geofon.gfz-potsdam.de/eqinfo/gevn/) partner networks.
 
 Seismic data were obtained from the GEOFON data centre of the GFZ German Research Centre for Geosciences.
 

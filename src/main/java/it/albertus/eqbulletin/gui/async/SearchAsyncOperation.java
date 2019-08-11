@@ -72,8 +72,8 @@ public class SearchAsyncOperation extends AsyncOperation {
 			params.put("lonmin", form.getLongitudeFromText().getText());
 			params.put("lonmax", form.getLongitudeToText().getText());
 			params.put("magmin", form.getMinimumMagnitudeText().getText());
-			if (form.getResultsText().isEnabled()) {
-				params.put("nmax", form.getResultsText().getText());
+			if (form.getResultsText().isEnabled() && !form.getResultsText().getText().isEmpty()) {
+				request.setLimit(Short.valueOf(form.getResultsText().getText()));
 			}
 		}
 		return request;
@@ -88,7 +88,7 @@ public class SearchAsyncOperation extends AsyncOperation {
 		return SearchForm.Defaults.FORMAT.getValue();
 	}
 
-	private static long getDelay(final SearchForm form) {
+	private static Long getDelay(final SearchForm form) {
 		if (form.getAutoRefreshButton().getSelection()) {
 			final String time = form.getAutoRefreshText().getText().trim();
 			if (!time.isEmpty()) {
@@ -103,7 +103,7 @@ public class SearchAsyncOperation extends AsyncOperation {
 				}
 			}
 		}
-		return -1;
+		return null;
 	}
 
 }

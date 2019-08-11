@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.net.URISyntaxException;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.util.Collection;
@@ -85,7 +86,7 @@ public class RssBulletinDownloader implements BulletinDownloader {
 	private Collection<Earthquake> download(final SearchRequest request, final Headers headers, final BooleanSupplier canceled) throws FetchException, DecodeException, CancelException {
 		final String body;
 		try {
-			final URLConnection connection = ConnectionFactory.makeGetRequest(request.toURL(), headers);
+			final URLConnection connection = ConnectionFactory.makeGetRequest(request.toURIs().get(0).toURL(), headers);
 			final String responseContentEncoding = connection.getContentEncoding();
 			final boolean gzip = responseContentEncoding != null && responseContentEncoding.toLowerCase().contains("gzip");
 			try (final InputStream raw = connection.getInputStream(); final InputStream in = gzip ? new GZIPInputStream(raw) : raw; final ByteArrayOutputStream out = new ByteArrayOutputStream()) {
@@ -97,7 +98,7 @@ public class RssBulletinDownloader implements BulletinDownloader {
 				body = fetch(in, charset);
 			}
 		}
-		catch (final IOException | RuntimeException e) {
+		catch (final IOException | RuntimeException | URISyntaxException e) {
 			throw new FetchException(Messages.get("err.job.fetch"), e);
 		}
 		try {
