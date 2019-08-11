@@ -14,12 +14,9 @@
 		<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@turf/turf@5/turf.min.js"></script>
 		<script type="text/javascript">
 			function unify(polyList) {
-				for (var i = 0; i < polyList.length; ++i) {
-					if (i == 0) {
-						var unionTemp = polyList[i].toGeoJSON();
-					} else {
-						unionTemp = turf.union(unionTemp, polyList[i].toGeoJSON());
-					}
+				var unionTemp = polyList[0].toGeoJSON();
+				for (var i = 1; i < polyList.length; ++i) {
+					unionTemp = turf.union(unionTemp, polyList[i].toGeoJSON());
 				}
 				return L.geoJson(unionTemp);
 			}

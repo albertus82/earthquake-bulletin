@@ -296,9 +296,9 @@ public class FERegionDialog extends Dialog {
 		final StringBuilder script = new StringBuilder();
 		if (!rects.equals(this.rectangles)) {
 			this.rectangles = rects;
-			script.append("if (window.unified) { window.unified.remove(); } /*if (window.rects) { map.removeLayer(window.rects); }*/ window.rects = new L.LayerGroup();").append(System.lineSeparator());
+			script.append("if (window.unified) { window.unified.remove(); } window.rects = new L.LayerGroup();").append(System.lineSeparator());
 			for (final Rectangle rect : rects) {
-				script.append("L.rectangle(([[").append(rect.a).append(", ").append(rect.b).append("], [").append(rect.c).append(", ").append(rect.d).append("]])).addTo(window.rects);").append(System.lineSeparator());
+				script.append("L.rectangle([[").append(rect.a).append(", ").append(rect.b).append("], [").append(rect.c).append(", ").append(rect.d).append("]]).addTo(window.rects);").append(System.lineSeparator());
 			}
 			script.append("window.unified = unify(window.rects.getLayers()).addTo(map);");
 		}
