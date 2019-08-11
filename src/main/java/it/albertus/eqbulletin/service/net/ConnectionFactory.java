@@ -84,7 +84,7 @@ public class ConnectionFactory {
 		return urlConnection;
 	}
 
-	public static HttpURLConnection prepareConnection(final URL url, final Headers headers) throws IOException {
+	private static HttpURLConnection prepareConnection(final URL url, final Headers headers) throws IOException {
 		final HttpURLConnection urlConnection = createConnection(url);
 		for (final Entry<String, List<String>> header : headers.entrySet()) {
 			for (final String value : header.getValue()) {
