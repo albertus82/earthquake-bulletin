@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
@@ -34,6 +35,7 @@ import it.albertus.util.logging.LoggerFactory;
 public class MomentTensorDialog extends Dialog {
 
 	private static final boolean LIMIT_HEIGHT = false;
+	private static final byte MAX_DIALOGS = 0xF;
 
 	private static final Logger logger = LoggerFactory.getLogger(MomentTensorDialog.class);
 
@@ -42,19 +44,47 @@ public class MomentTensorDialog extends Dialog {
 	private MomentTensor momentTensor;
 	private final Earthquake earthquake;
 
+	private Shell shell;
 	private Text text;
 
-	public MomentTensorDialog(final Shell parent, final MomentTensor momentTensor, final Earthquake earthquake) {
-		super(parent, SWT.SHEET | SWT.RESIZE);
-		this.earthquake = earthquake;
-		this.momentTensor = momentTensor;
-		addInstance(this); // Available for update on-the-fly.
-		setText(Messages.get("lbl.mt.title"));
+	public static synchronized MomentTensorDialog getInstance(final Shell parent, final MomentTensor momentTensor, final Earthquake earthquake) {
+		for (final MomentTensorDialog instance : instances) {
+			if (instance.earthquake.getGuid().equals(earthquake.getGuid())) {
+				return instance;
+			}
+		}
+		return new MomentTensorDialog(parent, momentTensor, earthquake);
 	}
 
-	public void open() {
+	private MomentTensorDialog(final Shell parent, final MomentTensor momentTensor, final Earthquake earthquake) {
+		super(parent, SWT.CLOSE | SWT.RESIZE);
+		this.earthquake = earthquake;
+		this.momentTensor = momentTensor;
+		addInstance(); // Available for update on-the-fly.
+		setText(earthquake.getSummary());
+	}
+
+	public void show() {
+		if (shell != null && !shell.isDisposed()) {
+			shell.setActive();
+		}
+		else if (instances.size() <= MAX_DIALOGS) {
+			open();
+		}
+		else {
+			logger.log(Level.FINE, "Moment tensor dialog limit reached ({0}). Sending alert to the user...", MAX_DIALOGS);
+			removeInstance();
+			final MessageBox mb = new MessageBox(getParent(), SWT.ICON_WARNING);
+			mb.setText(Messages.get("err.mt.too.many.dialogs.title"));
+			mb.setMessage(Messages.get("err.mt.too.many.dialogs.text"));
+			mb.open();
+		}
+	}
+
+	private void open() {
 		try {
-			final Shell shell = new Shell(getParent(), getStyle());
+			shell = new Shell(getParent(), getStyle());
+			shell.addDisposeListener(e -> removeInstance()); // No longer available for update on-the-fly.
 			final Point defaultSize = getSize(shell);
 			shell.setText(getText());
 			final Image[] images = Images.getMainIconArray();
@@ -76,7 +106,7 @@ public class MomentTensorDialog extends Dialog {
 			}
 		}
 		finally {
-			removeInstance(this); // Not available for update on-the-fly.
+			removeInstance(); // No longer available for update on-the-fly.
 		}
 	}
 
@@ -121,14 +151,16 @@ public class MomentTensorDialog extends Dialog {
 		return buttonComposite;
 	}
 
-	private static synchronized void addInstance(final MomentTensorDialog instance) {
-		instances.add(instance);
-		logger.log(instances.size() == 1 ? Level.FINE : Level.WARNING, "Moment tensor dialog instance added; instances.size() = {0}.", instances.size());
+	private synchronized void addInstance() {
+		if (instances.add(this)) {
+			logger.log(Level.FINE, "Moment tensor dialog instance added; instances.size() = {0}.", instances.size());
+		}
 	}
 
-	private static synchronized void removeInstance(final MomentTensorDialog instance) {
-		instances.remove(instance);
-		logger.log(instances.isEmpty() ? Level.FINE : Level.WARNING, "Moment tensor dialog instance removed; instances.size() = {0}.", instances.size());
+	private synchronized void removeInstance() {
+		if (instances.remove(this)) {
+			logger.log(Level.FINE, "Moment tensor dialog instance removed; instances.size() = {0}.", instances.size());
+		}
 	}
 
 	public static synchronized void updateMomentTensorText(final MomentTensor momentTensor, final Earthquake earthquake) {
