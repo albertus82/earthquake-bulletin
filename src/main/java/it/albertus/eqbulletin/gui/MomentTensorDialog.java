@@ -24,22 +24,32 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
+import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
 import it.albertus.eqbulletin.model.Earthquake;
 import it.albertus.eqbulletin.model.MomentTensor;
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.jface.JFaceMessages;
 import it.albertus.jface.SwtUtils;
 import it.albertus.jface.closeable.CloseableResource;
+import it.albertus.jface.preference.PreferencesConfiguration;
 import it.albertus.util.logging.LoggerFactory;
 
 public class MomentTensorDialog extends Dialog {
 
-	private static final boolean LIMIT_HEIGHT = false;
-	private static final byte MAX_DIALOGS = 0xF;
+	public static class Defaults {
+		public static final boolean LIMIT_HEIGHT = false;
+		public static final byte MAX_DIALOGS = 0xF;
+
+		private Defaults() {
+			throw new IllegalAccessError("Constants class");
+		}
+	}
 
 	private static final Logger logger = LoggerFactory.getLogger(MomentTensorDialog.class);
 
 	private static final Collection<MomentTensorDialog> instances = new ArrayList<>();
+
+	private static final PreferencesConfiguration configuration = EarthquakeBulletinConfig.getInstance();
 
 	private MomentTensor momentTensor;
 	private final Earthquake earthquake;
@@ -68,16 +78,19 @@ public class MomentTensorDialog extends Dialog {
 		if (shell != null && !shell.isDisposed()) {
 			shell.setActive();
 		}
-		else if (instances.size() <= MAX_DIALOGS) {
-			open();
-		}
 		else {
-			logger.log(Level.FINE, "Moment tensor dialog limit reached ({0}). Sending alert to the user...", MAX_DIALOGS);
-			removeInstance();
-			final MessageBox mb = new MessageBox(getParent(), SWT.ICON_WARNING);
-			mb.setText(Messages.get("err.mt.too.many.dialogs.title"));
-			mb.setMessage(Messages.get("err.mt.too.many.dialogs.text"));
-			mb.open();
+			final byte maxDialogs = configuration.getByte("mt.max.dialogs", Defaults.MAX_DIALOGS);
+			if (instances.size() <= maxDialogs) {
+				open();
+			}
+			else {
+				logger.log(Level.FINE, "Moment tensor dialog limit reached ({0}). Sending alert to the user...", maxDialogs);
+				removeInstance();
+				final MessageBox mb = new MessageBox(getParent(), SWT.ICON_WARNING);
+				mb.setText(Messages.get("err.mt.too.many.dialogs.title"));
+				mb.setMessage(Messages.get("err.mt.too.many.dialogs.text"));
+				mb.open();
+			}
 		}
 	}
 
@@ -94,7 +107,7 @@ public class MomentTensorDialog extends Dialog {
 			GridLayoutFactory.swtDefaults().applyTo(shell);
 			createContents(shell);
 			shell.pack();
-			if (LIMIT_HEIGHT) {
+			if (configuration.getBoolean("mt.limit.height", Defaults.LIMIT_HEIGHT)) {
 				shell.setSize(shell.getSize().x, defaultSize.y);
 			}
 			shell.open();
