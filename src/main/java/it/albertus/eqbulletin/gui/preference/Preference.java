@@ -1,5 +1,6 @@
 package it.albertus.eqbulletin.gui.preference;
 
+import static it.albertus.eqbulletin.gui.preference.PageDefinition.ADVANCED;
 import static it.albertus.eqbulletin.gui.preference.PageDefinition.CACHE;
 import static it.albertus.eqbulletin.gui.preference.PageDefinition.CONNECTION;
 import static it.albertus.eqbulletin.gui.preference.PageDefinition.CRITERIA;
@@ -26,12 +27,14 @@ import it.albertus.eqbulletin.config.TimeZoneConfig;
 import it.albertus.eqbulletin.gui.CloseDialog;
 import it.albertus.eqbulletin.gui.EarthquakeBulletinGui;
 import it.albertus.eqbulletin.gui.MapCanvas;
+import it.albertus.eqbulletin.gui.MomentTensorDialog;
 import it.albertus.eqbulletin.gui.ResultsTable;
 import it.albertus.eqbulletin.gui.SearchForm;
 import it.albertus.eqbulletin.gui.TrayIcon;
 import it.albertus.eqbulletin.model.Format;
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.eqbulletin.resources.Messages.Language;
+import it.albertus.eqbulletin.service.GeofonUtils;
 import it.albertus.eqbulletin.service.net.ConnectionFactory;
 import it.albertus.jface.SwtUtils;
 import it.albertus.jface.preference.FieldEditorDetails;
@@ -107,7 +110,11 @@ public enum Preference implements IPreference {
 	LOGGING_FILES_ENABLED(new PreferenceDetailsBuilder(LOGGING).separate().defaultValue(LoggingConfig.DEFAULT_LOGGING_FILES_ENABLED).build(), new FieldEditorDetailsBuilder(DefaultBooleanFieldEditor.class).build()),
 	LOGGING_FILES_PATH(new PreferenceDetailsBuilder(LOGGING).parent(LOGGING_FILES_ENABLED).defaultValue(EarthquakeBulletinConfig.DEFAULT_LOGGING_FILES_PATH).build(), new FieldEditorDetailsBuilder(EnhancedDirectoryFieldEditor.class).emptyStringAllowed(false).directoryMustExist(false).directoryDialogMessage(() -> Messages.get("msg.preferences.directory.dialog.message.log")).build()),
 	LOGGING_FILES_LIMIT(new PreferenceDetailsBuilder(LOGGING).parent(LOGGING_FILES_ENABLED).defaultValue(LoggingConfig.DEFAULT_LOGGING_FILES_LIMIT).build(), new FieldEditorDetailsBuilder(ScaleIntegerFieldEditor.class).scaleMinimum(512).scaleMaximum(8192).scalePageIncrement(512).build()),
-	LOGGING_FILES_COUNT(new PreferenceDetailsBuilder(LOGGING).parent(LOGGING_FILES_ENABLED).defaultValue(LoggingConfig.DEFAULT_LOGGING_FILES_COUNT).build(), new FieldEditorDetailsBuilder(ScaleIntegerFieldEditor.class).scaleMinimum(1).scaleMaximum(9).scalePageIncrement(1).build());
+	LOGGING_FILES_COUNT(new PreferenceDetailsBuilder(LOGGING).parent(LOGGING_FILES_ENABLED).defaultValue(LoggingConfig.DEFAULT_LOGGING_FILES_COUNT).build(), new FieldEditorDetailsBuilder(ScaleIntegerFieldEditor.class).scaleMinimum(1).scaleMaximum(9).scalePageIncrement(1).build()),
+
+	GEOFON_BASE_URL(new PreferenceDetailsBuilder(ADVANCED).defaultValue(GeofonUtils.GEOFON_DEFAULT_BASE_URL).build(), new FieldEditorDetailsBuilder(EnhancedStringFieldEditor.class).textLimit(253).emptyStringAllowed(false).boldCustomValues(false).build()),
+	MT_MAX_DIALOGS(new PreferenceDetailsBuilder(ADVANCED).defaultValue(MomentTensorDialog.Defaults.MAX_DIALOGS).build(), new FieldEditorDetailsBuilder(ScaleIntegerFieldEditor.class).scaleMinimum(1).scaleMaximum(Byte.MAX_VALUE).scalePageIncrement(10).build()),
+	MT_LIMIT_HEIGHT(new PreferenceDetailsBuilder(ADVANCED).defaultValue(MomentTensorDialog.Defaults.LIMIT_HEIGHT).build(), new FieldEditorDetailsBuilder(DefaultBooleanFieldEditor.class).build());
 
 	private static final String LABEL_KEY_PREFIX = "lbl.preferences.";
 

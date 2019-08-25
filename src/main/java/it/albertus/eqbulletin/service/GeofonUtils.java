@@ -14,7 +14,7 @@ public class GeofonUtils {
 
 	public static final String MOMENT_TENSOR_FILENAME = "mt.txt";
 
-	private static final String DEFAULT_BASE_URL = "https://geofon.gfz-potsdam.de";
+	public static final String GEOFON_DEFAULT_BASE_URL = "https://geofon.gfz-potsdam.de";
 
 	private static final String MSG_KEY_ERR_URL_MALFORMED = "err.url.malformed";
 
@@ -45,7 +45,7 @@ public class GeofonUtils {
 	}
 
 	private static String getBaseUrl() {
-		return configuration.getString("base.url", GeofonUtils.DEFAULT_BASE_URL);
+		return configuration.getString("geofon.base.url", GeofonUtils.GEOFON_DEFAULT_BASE_URL);
 	}
 
 	private static String getEventBaseUrl(final String guid, final int year) {
