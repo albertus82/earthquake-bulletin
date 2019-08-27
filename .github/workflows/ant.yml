@@ -16,4 +16,5 @@ jobs:
     - name: Build with Ant
       run:
         ant -diagnostics
+        
         ant -noinput -buildfile build.xml
