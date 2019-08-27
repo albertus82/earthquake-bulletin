@@ -15,5 +15,5 @@ jobs:
         java-version: 1.8
     - name: Build with Ant
       run:
-      - ant -diagnostics
-      - ant -noinput -buildfile build.xmlù
+        ant -diagnostics
+        ant -noinput -buildfile build.xml
