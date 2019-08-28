@@ -13,8 +13,7 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
+    - name: Ant diagnostics
+      run: ant -diagnostics
     - name: Build with Ant
-      run:
-        ant -diagnostics
-        
-        ant -noinput -buildfile build.xml
+      run: ant all
