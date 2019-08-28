@@ -7,13 +7,11 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        java: [ '8', '11' ]
-        arch: [ 'x86', 'x64' ]
+        java: [ '8', '9', '10', '11', '12' ]
     steps:
     - uses: actions/checkout@v1
     - uses: actions/setup-java@v1
       with:
         java-version: ${{ matrix.java }}
-        architecture: ${{ matrix.arch }}
     - run: ant -diagnostics
     - run: ant all
