@@ -4,9 +4,9 @@ on: [push]
 
 jobs:
   build:
- 
+
     runs-on: windows-latest
-    
+
     steps:
     - uses: actions/checkout@v1
     - name: Set up JDK 1.8
@@ -17,7 +17,3 @@ jobs:
       run: ant -diagnostics
     - name: Build with Ant
       run: ant all
-    - uses: actions/upload-artifact@master
-      with:
-        name: artifacts
-        path: build/*.exe
