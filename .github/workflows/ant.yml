@@ -17,3 +17,6 @@ jobs:
       run: ant -diagnostics
     - name: Build with Ant
       run: ant all
+    - uses: actions/upload-artifact@master
+      with:
+        path: build
