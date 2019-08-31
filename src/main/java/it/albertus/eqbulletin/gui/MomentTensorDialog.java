@@ -31,7 +31,7 @@ import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.jface.JFaceMessages;
 import it.albertus.jface.SwtUtils;
 import it.albertus.jface.closeable.CloseableResource;
-import it.albertus.jface.preference.PreferencesConfiguration;
+import it.albertus.jface.preference.IPreferencesConfiguration;
 import it.albertus.util.logging.LoggerFactory;
 
 public class MomentTensorDialog extends Dialog {
@@ -49,7 +49,7 @@ public class MomentTensorDialog extends Dialog {
 
 	private static final Collection<MomentTensorDialog> instances = new ArrayList<>();
 
-	private static final PreferencesConfiguration configuration = EarthquakeBulletinConfig.getInstance();
+	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getInstance();
 
 	private MomentTensor momentTensor;
 	private final Earthquake earthquake;

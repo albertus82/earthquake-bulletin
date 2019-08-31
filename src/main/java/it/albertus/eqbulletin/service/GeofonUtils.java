@@ -7,7 +7,7 @@ import java.util.logging.Logger;
 
 import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
 import it.albertus.eqbulletin.resources.Messages;
-import it.albertus.jface.preference.PreferencesConfiguration;
+import it.albertus.jface.preference.IPreferencesConfiguration;
 import it.albertus.util.logging.LoggerFactory;
 
 public class GeofonUtils {
@@ -20,7 +20,7 @@ public class GeofonUtils {
 
 	private static final Logger logger = LoggerFactory.getLogger(GeofonUtils.class);
 
-	private static final PreferencesConfiguration configuration = EarthquakeBulletinConfig.getInstance();
+	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getInstance();
 
 	public static URI toURI(final String spec) {
 		try {
