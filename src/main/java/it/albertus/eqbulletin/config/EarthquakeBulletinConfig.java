@@ -9,17 +9,20 @@ import java.util.logging.Logger;
 
 import org.eclipse.jface.util.Util;
 
-import it.albertus.eqbulletin.EarthquakeBulletin;
-import it.albertus.eqbulletin.gui.preference.Preference;
+import it.albertus.eqbulletin.resources.LanguageManager;
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.eqbulletin.util.InitializationException;
+import it.albertus.jface.preference.IPreferencesConfiguration;
 import it.albertus.jface.preference.PreferencesConfiguration;
+import it.albertus.util.ILanguageManager;
 import it.albertus.util.SystemUtils;
-import it.albertus.util.config.LanguageConfig;
-import it.albertus.util.config.LoggingConfig;
+import it.albertus.util.config.Configuration;
+import it.albertus.util.config.PropertiesConfiguration;
+import it.albertus.util.logging.ILoggingManager;
 import it.albertus.util.logging.LoggerFactory;
+import it.albertus.util.logging.LoggingManager;
 
-public class EarthquakeBulletinConfig extends LoggingConfig implements LanguageConfig {
+public class EarthquakeBulletinConfig extends Configuration {
 
 	private static final Logger logger = LoggerFactory.getLogger(EarthquakeBulletinConfig.class);
 
@@ -28,20 +31,21 @@ public class EarthquakeBulletinConfig extends LoggingConfig implements LanguageC
 	public static final String APPDATA_DIRECTORY = SystemUtils.getOsSpecificLocalAppDataDir() + File.separator + DIRECTORY_NAME;
 
 	private static final String CFG_FILE_NAME = Util.isLinux() ? ARTIFACT_ID + ".cfg" : "EarthquakeBulletin.cfg";
-	public static final String LOG_FILE_NAME_PATTERN = Util.isLinux() ? ARTIFACT_ID + ".%g.log" : "EarthquakeBulletin.%g.log";
 
-	public static final String DEFAULT_LOGGING_FILES_PATH = APPDATA_DIRECTORY + File.separator + "log";
-	public static final Level DEFAULT_LOGGING_LEVEL = Level.WARNING;
+	private static IPreferencesConfiguration instance;
+	private static int instanceCount = 0;
 
-	private static PreferencesConfiguration instance;
-	private static volatile int instanceCount = 0;
+	private final ILoggingManager loggingManager;
+	private final ILanguageManager languageManager;
 
 	private EarthquakeBulletinConfig() throws IOException {
-		super(DIRECTORY_NAME + File.separator + CFG_FILE_NAME, true);
-		init();
+		super(new PropertiesConfiguration(DIRECTORY_NAME + File.separator + CFG_FILE_NAME, true));
+		final IPreferencesConfiguration pc = new PreferencesConfiguration(this);
+		loggingManager = new LoggingManager(new LoggingConfig(pc), true);
+		languageManager = new LanguageManager(new LanguageConfig(pc), true);
 	}
 
-	public static synchronized PreferencesConfiguration getInstance() {
+	public static synchronized IPreferencesConfiguration getInstance() {
 		if (instance == null) {
 			try {
 				instance = new PreferencesConfiguration(new EarthquakeBulletinConfig());
@@ -61,50 +65,10 @@ public class EarthquakeBulletinConfig extends LoggingConfig implements LanguageC
 	}
 
 	@Override
-	protected void init() {
-		super.init();
-		updateLanguage();
-	}
-
-	@Override
-	public void updateLanguage() {
-		Messages.setLanguage(getString(Preference.LANGUAGE.getName(), Messages.DEFAULT_LANGUAGE));
-	}
-
-	@Override
-	protected boolean isFileHandlerEnabled() {
-		return getBoolean("logging.files.enabled", super.isFileHandlerEnabled());
-	}
-
-	@Override
-	protected String getLoggingLevel() {
-		return getString("logging.level", DEFAULT_LOGGING_LEVEL.getName());
-	}
-
-	@Override
-	protected String getFileHandlerPattern() {
-		return getString("logging.files.path", DEFAULT_LOGGING_FILES_PATH) + File.separator + LOG_FILE_NAME_PATTERN;
-	}
-
-	@Override
-	protected int getFileHandlerLimit() {
-		final Integer limit = getInt("logging.files.limit");
-		if (limit != null) {
-			return limit * 1024;
-		}
-		else {
-			return super.getFileHandlerLimit();
-		}
-	}
-
-	@Override
-	protected int getFileHandlerCount() {
-		return getInt("logging.files.count", super.getFileHandlerCount());
-	}
-
-	@Override
-	protected String getFileHandlerFormat() {
-		return EarthquakeBulletin.LOG_FORMAT;
+	public void reload() throws IOException {
+		super.reload();
+		loggingManager.initializeLogging();
+		languageManager.resetLanguage();
 	}
 
 }

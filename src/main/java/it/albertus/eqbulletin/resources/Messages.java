@@ -11,8 +11,6 @@ import it.albertus.jface.JFaceMessages;
 
 public final class Messages {
 
-	public static final String DEFAULT_LANGUAGE = Locale.getDefault().getLanguage();
-
 	public enum Language {
 		ENGLISH(Locale.ENGLISH),
 		ITALIAN(Locale.ITALIAN);
@@ -38,7 +36,7 @@ public final class Messages {
 	}
 
 	/** Aggiorna la lingua in cui vengono mostrati i messaggi. */
-	public static void setLanguage(final String language) {
+	static void setLanguage(final String language) {
 		if (language != null) {
 			resources = ResourceBundle.getBundle(BASE_NAME, new Locale(language), ResourceBundle.Control.getNoFallbackControl(ResourceBundle.Control.FORMAT_PROPERTIES));
 			JFaceMessages.setLanguage(language);
