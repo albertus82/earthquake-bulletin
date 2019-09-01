@@ -45,7 +45,7 @@ public class EarthquakeBulletinConfig extends Configuration {
 		languageManager = new LanguageManager(new LanguageConfig(pc), true);
 	}
 
-	public static synchronized IPreferencesConfiguration getInstance() {
+	public static synchronized IPreferencesConfiguration getPreferencesConfiguration() {
 		if (instance == null) {
 			try {
 				instance = new PreferencesConfiguration(new EarthquakeBulletinConfig());

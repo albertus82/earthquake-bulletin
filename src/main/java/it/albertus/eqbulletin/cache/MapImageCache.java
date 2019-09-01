@@ -24,7 +24,7 @@ public class MapImageCache implements Cache<String, MapImage> {
 		}
 	}
 
-	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getInstance();
+	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getPreferencesConfiguration();
 
 	private static final CacheManager<MapImageCache> manager = new CacheManager<>();
 

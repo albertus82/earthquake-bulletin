@@ -16,7 +16,7 @@ public class TimeZoneConfig {
 
 	public static ZoneId getZoneId() {
 		try {
-			return ZoneId.of(EarthquakeBulletinConfig.getInstance().getString(Preference.TIMEZONE, DEFAULT_ZONE_ID));
+			return ZoneId.of(EarthquakeBulletinConfig.getPreferencesConfiguration().getString(Preference.TIMEZONE, DEFAULT_ZONE_ID));
 		}
 		catch (final DateTimeException e) {
 			logger.log(Level.WARNING, e.toString(), e);

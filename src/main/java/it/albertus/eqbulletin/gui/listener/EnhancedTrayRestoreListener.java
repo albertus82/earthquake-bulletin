@@ -21,7 +21,7 @@ public class EnhancedTrayRestoreListener extends TrayRestoreListener {
 
 	private static final Logger logger = LoggerFactory.getLogger(EnhancedTrayRestoreListener.class);
 
-	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getInstance();
+	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getPreferencesConfiguration();
 
 	private boolean firstTime = true;
 

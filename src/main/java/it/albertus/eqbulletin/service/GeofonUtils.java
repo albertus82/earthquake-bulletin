@@ -6,21 +6,19 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
+import it.albertus.eqbulletin.gui.preference.Preference;
 import it.albertus.eqbulletin.resources.Messages;
-import it.albertus.jface.preference.IPreferencesConfiguration;
 import it.albertus.util.logging.LoggerFactory;
 
 public class GeofonUtils {
 
 	public static final String MOMENT_TENSOR_FILENAME = "mt.txt";
 
-	public static final String GEOFON_DEFAULT_BASE_URL = "https://geofon.gfz-potsdam.de";
+	public static final String DEFAULT_GEOFON_BASE_URL = "https://geofon.gfz-potsdam.de";
 
 	private static final String MSG_KEY_ERR_URL_MALFORMED = "err.url.malformed";
 
 	private static final Logger logger = LoggerFactory.getLogger(GeofonUtils.class);
-
-	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getInstance();
 
 	public static URI toURI(final String spec) {
 		try {
@@ -44,12 +42,12 @@ public class GeofonUtils {
 		return getBaseUrl() + "/eqinfo/list.php";
 	}
 
-	private static String getBaseUrl() {
-		return configuration.getString("geofon.base.url", GeofonUtils.GEOFON_DEFAULT_BASE_URL);
-	}
-
 	private static String getEventBaseUrl(final String guid, final int year) {
 		return getBaseUrl() + "/data/alerts/" + year + "/" + guid + "/";
+	}
+
+	private static String getBaseUrl() {
+		return EarthquakeBulletinConfig.getPreferencesConfiguration().getString(Preference.GEOFON_BASE_URL, GeofonUtils.DEFAULT_GEOFON_BASE_URL);
 	}
 
 	private GeofonUtils() {

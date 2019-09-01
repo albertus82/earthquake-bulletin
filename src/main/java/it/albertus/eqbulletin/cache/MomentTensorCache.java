@@ -24,7 +24,7 @@ public class MomentTensorCache implements Cache<String, MomentTensor> {
 		}
 	}
 
-	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getInstance();
+	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getPreferencesConfiguration();
 
 	private static final CacheManager<MomentTensorCache> manager = new CacheManager<>();
 

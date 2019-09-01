@@ -17,7 +17,7 @@ public class EarthquakeBulletin {
 			LoggingSupport.setFormat(LoggingConfig.LOG_FORMAT);
 		}
 		try {
-			EarthquakeBulletinConfig.getInstance();
+			EarthquakeBulletinConfig.getPreferencesConfiguration();
 		}
 		catch (final InitializationException e) {
 			initializationException = e;

@@ -65,7 +65,7 @@ public class MapCanvas implements IShellProvider, Multilanguage {
 
 	private static final LinkedList<Integer> zoomLevels = new LinkedList<>(new TreeSet<>(Arrays.asList(AUTO_SCALE, 10, 12, 15, 20, 25, 30, 40, 50, 60, 80, 100, 120, 150, 200, 250, 300, 400, 500)));
 
-	private final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getInstance();
+	private final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getPreferencesConfiguration();
 
 	private final Shell shell;
 

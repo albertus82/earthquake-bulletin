@@ -67,7 +67,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow implements Multilan
 
 	private static final Logger logger = LoggerFactory.getLogger(EarthquakeBulletinGui.class);
 
-	private final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getInstance();
+	private final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getPreferencesConfiguration();
 
 	private final Collection<Multilanguage> multilanguages = new ArrayList<>();
 

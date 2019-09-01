@@ -25,6 +25,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
+import it.albertus.eqbulletin.gui.preference.Preference;
 import it.albertus.eqbulletin.model.Earthquake;
 import it.albertus.eqbulletin.model.MomentTensor;
 import it.albertus.eqbulletin.resources.Messages;
@@ -49,7 +50,7 @@ public class MomentTensorDialog extends Dialog {
 
 	private static final Collection<MomentTensorDialog> instances = new ArrayList<>();
 
-	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getInstance();
+	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getPreferencesConfiguration();
 
 	private MomentTensor momentTensor;
 	private final Earthquake earthquake;
@@ -79,7 +80,7 @@ public class MomentTensorDialog extends Dialog {
 			shell.setActive();
 		}
 		else {
-			final byte maxDialogs = configuration.getByte("mt.max.dialogs", Defaults.MAX_DIALOGS);
+			final byte maxDialogs = configuration.getByte(Preference.MT_MAX_DIALOGS, Defaults.MAX_DIALOGS);
 			if (instances.size() <= maxDialogs) {
 				open();
 			}
@@ -107,7 +108,7 @@ public class MomentTensorDialog extends Dialog {
 			GridLayoutFactory.swtDefaults().applyTo(shell);
 			createContents(shell);
 			shell.pack();
-			if (configuration.getBoolean("mt.limit.height", Defaults.LIMIT_HEIGHT)) {
+			if (configuration.getBoolean(Preference.MT_LIMIT_HEIGHT, Defaults.LIMIT_HEIGHT)) {
 				shell.setSize(shell.getSize().x, defaultSize.y);
 			}
 			shell.open();

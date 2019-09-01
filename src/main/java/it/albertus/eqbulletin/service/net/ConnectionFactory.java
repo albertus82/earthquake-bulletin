@@ -50,7 +50,7 @@ public class ConnectionFactory {
 
 	private static final byte REDIRECTION_LIMIT = 20;
 
-	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getInstance();
+	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getPreferencesConfiguration();
 
 	private static final Logger logger = LoggerFactory.getLogger(ConnectionFactory.class);
 

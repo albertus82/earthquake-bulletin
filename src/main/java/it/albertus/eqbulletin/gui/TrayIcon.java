@@ -48,7 +48,7 @@ public class TrayIcon implements IShellProvider, Multilanguage {
 		}
 	}
 
-	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getInstance();
+	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getPreferencesConfiguration();
 
 	private final Shell shell;
 

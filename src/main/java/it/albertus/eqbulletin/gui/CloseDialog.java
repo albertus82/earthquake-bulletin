@@ -31,7 +31,7 @@ public class CloseDialog {
 	}
 
 	public static boolean mustShow() {
-		return EarthquakeBulletinConfig.getInstance().getBoolean(Preference.CONFIRM_CLOSE, Defaults.CONFIRM_CLOSE);
+		return EarthquakeBulletinConfig.getPreferencesConfiguration().getBoolean(Preference.CONFIRM_CLOSE, Defaults.CONFIRM_CLOSE);
 	}
 
 }
