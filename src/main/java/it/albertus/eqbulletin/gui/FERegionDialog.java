@@ -43,6 +43,7 @@ import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.jface.SwtUtils;
 import it.albertus.jface.maps.CoordinateUtils;
 import it.albertus.jface.maps.MapBounds;
+import it.albertus.jface.maps.MapDialog;
 import it.albertus.jface.maps.leaflet.LeafletMapControl;
 import it.albertus.jface.maps.leaflet.LeafletMapDialog;
 import it.albertus.jface.maps.leaflet.LeafletMapOptions;
@@ -210,7 +211,7 @@ public class FERegionDialog extends Dialog {
 		}
 
 		try (final InputStream is = LeafletMapDialog.class.getResourceAsStream("map.html")) {
-			browser.setUrl(LeafletMapDialog.getMapPage(regionGroup.getShell(), is, line -> LeafletMapDialog.parseLine(line, options, Collections.emptySet(), other.toString())).toString());
+			browser.setUrl(MapDialog.getMapPage(regionGroup.getShell(), is, line -> LeafletMapDialog.parseLine(line, options, Collections.emptySet(), other.toString())).toString());
 		}
 		catch (final IOException e) {
 			throw new UncheckedIOException(e);

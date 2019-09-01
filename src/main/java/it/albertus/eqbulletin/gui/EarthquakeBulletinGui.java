@@ -3,11 +3,14 @@ package it.albertus.eqbulletin.gui;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.action.StatusLineManager;
@@ -323,7 +326,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow implements Multilan
 			final Shell shell = getShell();
 			if (shell != null && !shell.isDisposed()) {
 				shellMaximized = shell.getMaximized();
-				if (!shellMaximized && !POINT_ZERO.equals(shell.getSize())) {
+				if (Boolean.FALSE.equals(shellMaximized) && !POINT_ZERO.equals(shell.getSize())) {
 					shellSize = shell.getSize();
 					shellLocation = shell.getLocation();
 				}
@@ -365,11 +368,12 @@ public class EarthquakeBulletinGui extends ApplicationWindow implements Multilan
 	}
 
 	public void saveShellStatus() {
-		final List<Integer> sashWeights = new ArrayList<>();
+		final List<Integer> sashWeights;
 		if (sashForm != null && !sashForm.isDisposed()) {
-			for (final int weight : sashForm.getWeights()) {
-				sashWeights.add(weight);
-			}
+			sashWeights = Arrays.stream(sashForm.getWeights()).boxed().collect(Collectors.toList());
+		}
+		else {
+			sashWeights = Collections.emptyList();
 		}
 		new Thread(() -> { // don't perform I/O in UI thread
 			try {
