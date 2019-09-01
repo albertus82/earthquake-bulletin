@@ -1,7 +1,6 @@
 package it.albertus.eqbulletin;
 
 import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
-import it.albertus.eqbulletin.config.LoggingConfig;
 import it.albertus.eqbulletin.gui.EarthquakeBulletinGui;
 import it.albertus.eqbulletin.util.InitializationException;
 import it.albertus.util.logging.LoggingSupport;
@@ -14,10 +13,10 @@ public class EarthquakeBulletin {
 
 	static {
 		if (LoggingSupport.getFormat() == null) {
-			LoggingSupport.setFormat(LoggingConfig.LOG_FORMAT);
+			LoggingSupport.setFormat(LoggingSupport.DEFAULT_FORMAT);
 		}
 		try {
-			EarthquakeBulletinConfig.getPreferencesConfiguration();
+			EarthquakeBulletinConfig.getPreferencesConfiguration(); // Load configuration from file
 		}
 		catch (final InitializationException e) {
 			initializationException = e;

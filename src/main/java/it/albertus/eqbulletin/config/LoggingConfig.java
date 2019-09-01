@@ -1,6 +1,8 @@
 package it.albertus.eqbulletin.config;
 
 import static it.albertus.eqbulletin.EarthquakeBulletin.ARTIFACT_ID;
+import static it.albertus.eqbulletin.config.EarthquakeBulletinConfig.APPDATA_DIRECTORY;
+import static java.util.logging.Level.WARNING;
 
 import java.io.File;
 import java.util.logging.Level;
@@ -13,11 +15,14 @@ import it.albertus.util.logging.LoggingDefaultConfig;
 
 public class LoggingConfig extends LoggingDefaultConfig {
 
-	public static final String LOG_FORMAT = "%1$td/%1$tm/%1$tY %1$tH:%1$tM:%1$tS.%tL %4$s %3$s - %5$s%6$s%n";
+	public static class Defaults {
+		public static final String LOGGING_FILES_PATH = APPDATA_DIRECTORY + File.separator + "log";
+		public static final Level LOGGING_LEVEL = WARNING;
 
-	public static final String LOG_FILE_NAME_PATTERN = Util.isLinux() ? ARTIFACT_ID + ".%g.log" : "EarthquakeBulletin.%g.log";
-	public static final String DEFAULT_LOGGING_FILES_PATH = EarthquakeBulletinConfig.APPDATA_DIRECTORY + File.separator + "log";
-	public static final Level DEFAULT_LOGGING_LEVEL = Level.WARNING;
+		private Defaults() {
+			throw new IllegalAccessError("Constants class");
+		}
+	}
 
 	private final IPreferencesConfiguration configuration;
 
@@ -32,12 +37,12 @@ public class LoggingConfig extends LoggingDefaultConfig {
 
 	@Override
 	public String getLoggingLevel() {
-		return configuration.getString(Preference.LOGGING_LEVEL, DEFAULT_LOGGING_LEVEL.getName());
+		return configuration.getString(Preference.LOGGING_LEVEL, Defaults.LOGGING_LEVEL.getName());
 	}
 
 	@Override
 	public String getFileHandlerPattern() {
-		return configuration.getString(Preference.LOGGING_FILES_PATH, DEFAULT_LOGGING_FILES_PATH) + File.separator + LOG_FILE_NAME_PATTERN;
+		return configuration.getString(Preference.LOGGING_FILES_PATH, Defaults.LOGGING_FILES_PATH) + File.separator + (Util.isLinux() ? ARTIFACT_ID + ".%g.log" : "EarthquakeBulletin.%g.log");
 	}
 
 	@Override
@@ -54,11 +59,6 @@ public class LoggingConfig extends LoggingDefaultConfig {
 	@Override
 	public int getFileHandlerCount() {
 		return configuration.getInt(Preference.LOGGING_FILES_COUNT, super.getFileHandlerCount());
-	}
-
-	@Override
-	public String getFileHandlerFormat() {
-		return LOG_FORMAT;
 	}
 
 }
