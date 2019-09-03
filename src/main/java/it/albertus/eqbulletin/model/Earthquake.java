@@ -2,12 +2,15 @@ package it.albertus.eqbulletin.model;
 
 import java.io.Serializable;
 import java.net.URI;
+import java.text.NumberFormat;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import java.util.Optional;
+
+import it.albertus.jface.maps.CoordinateUtils;
 
 public class Earthquake implements Serializable, Comparable<Earthquake> {
 
@@ -132,7 +135,8 @@ public class Earthquake implements Serializable, Comparable<Earthquake> {
 
 	public String getDetails(final ZoneId timeZone) {
 		final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z").withZone(timeZone);
-		return new StringBuilder(dateTimeFormatter.format(time)).append(' ').append(latitude).append(' ').append(longitude).append(' ').append(depth).append(' ').append(status).toString();
+		final NumberFormat numberFormat = CoordinateUtils.newFormatter();
+		return new StringBuilder(dateTimeFormatter.format(time)).append(' ').append(latitude.toString(numberFormat)).append(' ').append(longitude.toString(numberFormat)).append(' ').append(depth).append(' ').append(status).toString();
 	}
 
 	private String getDetails() {

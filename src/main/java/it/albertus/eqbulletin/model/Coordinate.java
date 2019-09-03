@@ -1,8 +1,8 @@
 package it.albertus.eqbulletin.model;
 
-abstract class Coordinate extends Number implements Comparable<Coordinate> {
+public abstract class Coordinate extends Number implements FormattedNumber, Comparable<Coordinate> {
 
-	private static final long serialVersionUID = -4028527688806190212L;
+	private static final long serialVersionUID = 7850722288973835763L;
 
 	final float value;
 
@@ -60,6 +60,11 @@ abstract class Coordinate extends Number implements Comparable<Coordinate> {
 	@Override
 	public double doubleValue() {
 		return Double.parseDouble(Float.toString(value));
+	}
+
+	@Override
+	public String toString() {
+		return Float.toString(value);
 	}
 
 }

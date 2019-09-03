@@ -1,5 +1,6 @@
 package it.albertus.eqbulletin.gui;
 
+import java.text.NumberFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -51,6 +52,7 @@ import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.jface.Multilanguage;
 import it.albertus.jface.SwtUtils;
 import it.albertus.jface.closeable.CloseableResource;
+import it.albertus.jface.maps.CoordinateUtils;
 import it.albertus.jface.preference.IPreferencesConfiguration;
 
 public class ResultsTable implements IShellProvider, Multilanguage {
@@ -292,9 +294,11 @@ public class ResultsTable implements IShellProvider, Multilanguage {
 		final TableViewerColumn col = createTableViewerColumn(labelsMap.get(COL_IDX_LATITUDE).get(), COL_IDX_LATITUDE);
 		col.getColumn().setAlignment(SWT.RIGHT);
 		col.setLabelProvider(new EarthquakeColumnLabelProvider() {
+			private final NumberFormat numberFormat = CoordinateUtils.newFormatter();
+
 			@Override
 			protected String getText(final Earthquake element) {
-				return String.valueOf(element.getLatitude());
+				return element.getLatitude().toString(numberFormat);
 			}
 		});
 	}
@@ -303,9 +307,11 @@ public class ResultsTable implements IShellProvider, Multilanguage {
 		final TableViewerColumn col = createTableViewerColumn(labelsMap.get(COL_IDX_LONGITUDE).get(), COL_IDX_LONGITUDE);
 		col.getColumn().setAlignment(SWT.RIGHT);
 		col.setLabelProvider(new EarthquakeColumnLabelProvider() {
+			private final NumberFormat numberFormat = CoordinateUtils.newFormatter();
+
 			@Override
 			protected String getText(final Earthquake element) {
-				return String.valueOf(element.getLongitude());
+				return element.getLongitude().toString(numberFormat);
 			}
 		});
 	}

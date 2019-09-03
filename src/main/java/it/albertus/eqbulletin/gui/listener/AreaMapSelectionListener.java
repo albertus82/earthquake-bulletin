@@ -30,15 +30,15 @@ public class AreaMapSelectionListener extends SelectionAdapter {
 			final Text southWestLngText = form.getLongitudeFromText();
 			final Text northEastLngText = form.getLongitudeToText();
 
-			final MapBounds mb = mapBoundsDialog.getBounds();
-			final NumberFormat formatter = CoordinateUtils.getFormatter();
-			if (mb.getSouthWestLat() != null && mb.getNorthEastLat() != null) {
-				southWestLatText.setText(formatter.format(mb.getSouthWestLat()));
-				northEastLatText.setText(formatter.format(mb.getNorthEastLat()));
+			final MapBounds bounds = mapBoundsDialog.getBounds();
+			final NumberFormat numberFormat = CoordinateUtils.newFormatter();
+			if (bounds.getSouthWestLat() != null && bounds.getNorthEastLat() != null) {
+				southWestLatText.setText(numberFormat.format(bounds.getSouthWestLat()));
+				northEastLatText.setText(numberFormat.format(bounds.getNorthEastLat()));
 			}
-			if (mb.getSouthWestLng() != null && mb.getNorthEastLng() != null) {
-				southWestLngText.setText(formatter.format(mb.getSouthWestLng()));
-				northEastLngText.setText(formatter.format(mb.getNorthEastLng()));
+			if (bounds.getSouthWestLng() != null && bounds.getNorthEastLng() != null) {
+				southWestLngText.setText(numberFormat.format(bounds.getSouthWestLng()));
+				northEastLngText.setText(numberFormat.format(bounds.getNorthEastLng()));
 			}
 		}
 	}

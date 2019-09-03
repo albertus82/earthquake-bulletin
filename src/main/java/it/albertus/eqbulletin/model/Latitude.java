@@ -2,11 +2,11 @@ package it.albertus.eqbulletin.model;
 
 import static it.albertus.jface.maps.CoordinateUtils.DEGREE_SIGN;
 
-import it.albertus.jface.maps.CoordinateUtils;
+import java.text.NumberFormat;
 
 public class Latitude extends Coordinate {
 
-	private static final long serialVersionUID = -3229264319710892255L;
+	private static final long serialVersionUID = -5718184537510614995L;
 
 	protected Latitude(final float value) {
 		super(value);
@@ -17,8 +17,8 @@ public class Latitude extends Coordinate {
 	}
 
 	@Override
-	public String toString() {
-		return CoordinateUtils.getFormatter().format(Math.abs(value)) + DEGREE_SIGN + (value < 0 ? 'S' : 'N');
+	public String toString(final NumberFormat numberFormat) {
+		return numberFormat.format(Math.abs(value)) + DEGREE_SIGN + (value < 0 ? 'S' : 'N');
 	}
 
 }
