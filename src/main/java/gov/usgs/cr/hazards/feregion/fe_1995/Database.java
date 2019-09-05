@@ -30,8 +30,6 @@ import it.albertus.util.logging.LoggerFactory;
  */
 class Database {
 
-	private static final Logger logger = LoggerFactory.getLogger(Database.class);
-
 	// Names of files containing Flinn-Engdahl Regionalization info.
 	private static final String[] sectfiles = { "nesect.asc", "nwsect.asc", "sesect.asc", "swsect.asc" };
 	private static final String[] quadorder = { "ne", "nw", "se", "sw" };
@@ -47,6 +45,8 @@ class Database {
 	private final List<Integer> seisreg = new ArrayList<>(757);
 
 	Database() throws IOException { // NOSONAR Preserve comparability with Perl source.
+		final Logger logger = LoggerFactory.getLogger(getClass());
+
 		final long startTime = System.nanoTime();
 
 		final Pattern pattern = Pattern.compile("\\s+");
