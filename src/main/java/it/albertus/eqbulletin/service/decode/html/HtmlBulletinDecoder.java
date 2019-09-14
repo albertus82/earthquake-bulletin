@@ -91,7 +91,7 @@ public class HtmlBulletinDecoder {
 	}
 
 	private static Optional<Element> findFirstlink(final Element parent) {
-		return parent.children().stream().filter(child -> "a".equals(child.normalName()) && child.hasAttr("href")).findFirst();
+		return parent.getElementsByTag("a").stream().filter(e -> e.hasAttr("href")).findFirst();
 	}
 
 	private HtmlBulletinDecoder() {
