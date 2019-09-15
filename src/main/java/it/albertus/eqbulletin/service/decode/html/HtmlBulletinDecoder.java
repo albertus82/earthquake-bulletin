@@ -47,7 +47,7 @@ public class HtmlBulletinDecoder {
 		try {
 			final ZonedDateTime time = dateTimeFormatter.parse(row.child(0).text(), ZonedDateTime::from);
 
-			final Optional<Element> eventLink = findFirstlink(row.child(0));
+			final Optional<Element> eventLink = findFirstLink(row.child(0));
 			if (!eventLink.isPresent()) {
 				throw new IllegalStateException("Event link not present.");
 			}
@@ -76,7 +76,7 @@ public class HtmlBulletinDecoder {
 
 			URI momentTensorUri = null;
 			for (int i = 6; i < row.children().size(); i++) {
-				final Optional<Element> a = findFirstlink(row.child(i));
+				final Optional<Element> a = findFirstLink(row.child(i));
 				if (a.isPresent() && ("MT".equalsIgnoreCase(a.get().text()) || a.get().attr("href").endsWith(GeofonUtils.MOMENT_TENSOR_FILENAME))) {
 					momentTensorUri = GeofonUtils.toURI(a.get().absUrl("href"));
 					break;
@@ -90,7 +90,7 @@ public class HtmlBulletinDecoder {
 		}
 	}
 
-	private static Optional<Element> findFirstlink(final Element parent) {
+	private static Optional<Element> findFirstLink(final Element parent) {
 		return parent.getElementsByTag("a").stream().filter(e -> e.hasAttr("href")).findFirst();
 	}
 
