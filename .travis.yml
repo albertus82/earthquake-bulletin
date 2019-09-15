@@ -4,7 +4,7 @@ dist: xenial
 
 env:
   global:
-    - JRE8_HOME=/usr/lib/jvm/java-8-oracle/jre
+    - JRE8_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre
 
 matrix:
   include:
@@ -17,9 +17,7 @@ matrix:
       after_success:
         - sonar-scanner -Dsonar.login=$SONAR_TOKEN
     - os: linux
-      jdk: oraclejdk8
-    - os: linux
-      jdk: openjdk8      
+      jdk: openjdk8
     - os: osx
       before_install:
         - brew update
