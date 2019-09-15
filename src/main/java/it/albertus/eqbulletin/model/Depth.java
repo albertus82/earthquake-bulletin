@@ -14,7 +14,7 @@ public class Depth implements Serializable, Comparable<Depth> {
 
 	private static final Logger logger = LoggerFactory.getLogger(Depth.class);
 
-	private static final LinkedHashMap<Short, Depth> cache = new LinkedHashMap<Short, Depth>(16, 0.75f, true) { // Flyweight
+	private static final LinkedHashMap<Short, Depth> cache = new LinkedHashMap<Short, Depth>(16, 0.75f, true) {
 		private static final long serialVersionUID = -3229317830656593292L;
 
 		private static final short MAX_ENTRIES = 0xFF;
@@ -27,7 +27,7 @@ public class Depth implements Serializable, Comparable<Depth> {
 		}
 	};
 
-	private final short value; // Earth radius is the distance from Earth's center to its surface, about 6371 km (3959 mi).
+	private final short value; // Earth radius is about 6371 km (3959 mi).
 
 	protected Depth(final short value) {
 		this.value = value;
