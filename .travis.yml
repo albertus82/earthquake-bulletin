@@ -1,6 +1,6 @@
 language: java
 
-dist: trusty
+dist: xenial
 
 env:
   global:
@@ -30,7 +30,7 @@ addons:
     organization: "albertus82-github"
   apt:
     sources:
-      - sourceline: 'deb https://dl.winehq.org/wine-builds/ubuntu/ trusty main'
+      - sourceline: 'deb https://dl.winehq.org/wine-builds/ubuntu/ xenial main'
         key_url: https://dl.winehq.org/wine-builds/winehq.key
     packages:
       - ant-optional
