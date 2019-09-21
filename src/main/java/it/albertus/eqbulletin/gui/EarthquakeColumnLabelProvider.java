@@ -4,6 +4,7 @@ import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
 
 import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
@@ -74,6 +75,15 @@ public class EarthquakeColumnLabelProvider extends ColumnLabelProvider {
 
 	protected String getToolTipText(final Earthquake element) {
 		return super.getToolTipText(element);
+	}
+
+	@Override
+	public final Image getToolTipImage(final Object element) {
+		return getToolTipImage((Earthquake) element);
+	}
+
+	protected Image getToolTipImage(final Earthquake element) {
+		return super.getToolTipImage(element);
 	}
 
 }

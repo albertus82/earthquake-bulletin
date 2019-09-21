@@ -78,7 +78,7 @@ public class MomentTensorAsyncOperation extends AsyncOperation {
 		if (cachedObject.getEtag() != null && !cachedObject.getEtag().trim().isEmpty()) {
 			final Runnable checkForUpdate = () -> {
 				try {
-					final Optional<MomentTensor> downloadedObject = MomentTensorDownloader.download(earthquake, cachedObject);
+					final Optional<MomentTensor> downloadedObject = new MomentTensorDownloader().download(earthquake, cachedObject);
 					if (downloadedObject.isPresent() && !downloadedObject.get().equals(cachedObject)) {
 						new DisplayThreadExecutor(shell, ASYNC).execute(() -> MomentTensorDialog.updateMomentTensorText(downloadedObject.get(), earthquake)); // Update UI on-the-fly.
 						MomentTensorCache.getInstance().put(earthquake.getGuid(), downloadedObject.get());
@@ -97,5 +97,7 @@ public class MomentTensorAsyncOperation extends AsyncOperation {
 			setDefaultCursor(shell);
 		}
 	}
+
+	private MomentTensorAsyncOperation() {}
 
 }

@@ -3,100 +3,42 @@ package it.albertus.eqbulletin.service.net;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.URLConnection;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.zip.GZIPInputStream;
-
-import com.sun.net.httpserver.Headers;
 
 import it.albertus.eqbulletin.model.Earthquake;
 import it.albertus.eqbulletin.model.MapImage;
 import it.albertus.util.IOUtils;
-import it.albertus.util.logging.LoggerFactory;
 
-public class MapImageDownloader {
+public class MapImageDownloader extends StaticResourceDownloader<MapImage> {
 
-	private static final short BUFFER_SIZE = 8192;
+	private static final short BUFFER_SIZE = 0x2000;
 
-	private static final Logger logger = LoggerFactory.getLogger(MapImageDownloader.class);
-
-	private InputStream connectionInputStream;
+	public MapImageDownloader() {
+		super("image/jpeg,image/*;q=0.9,*/*;q=0.8");
+	}
 
 	public Optional<MapImage> download(final Earthquake earthquake, final BooleanSupplier canceled) throws IOException {
-		return Optional.ofNullable(doDownload(earthquake, canceled));
+		return Optional.ofNullable(doDownload(getUrl(earthquake), canceled));
 	}
 
 	public Optional<MapImage> download(final Earthquake earthquake, final MapImage cached, final BooleanSupplier canceled) throws IOException {
-		return Optional.ofNullable(doDownload(earthquake, cached, canceled));
+		return Optional.ofNullable(doDownload(getUrl(earthquake), cached, canceled));
 	}
 
-	private MapImage doDownload(final Earthquake earthquake, final BooleanSupplier canceled) throws IOException {
-		return doDownload(earthquake, null, canceled);
-	}
-
-	private MapImage doDownload(final Earthquake earthquake, final MapImage cached, final BooleanSupplier canceled) throws IOException {
-		final Headers headers = new Headers();
-		headers.set("Accept", "image/jpeg,image/*;q=0.9,*/*;q=0.8");
-		headers.set("Accept-Encoding", "gzip");
-		if (cached != null && cached.getEtag() != null && !cached.getEtag().trim().isEmpty()) {
-			headers.set("If-None-Match", cached.getEtag());
-		}
-		if (canceled.getAsBoolean()) {
-			logger.fine("Download canceled before connection.");
-			return null;
-		}
-		final HttpURLConnection connection = ConnectionFactory.makeGetRequest(earthquake.getEnclosureUri().orElseThrow(IllegalStateException::new).toURL(), headers);
-		if (connection.getResponseCode() == HttpURLConnection.HTTP_NOT_MODIFIED) {
-			return cached; // Not modified.
-		}
-		else {
-			return parseResponseContent(connection, cached, canceled);
-		}
-	}
-
-	private MapImage parseResponseContent(final URLConnection connection, final MapImage cached, final BooleanSupplier canceled) throws IOException {
-		final String responseContentEncoding = connection.getContentEncoding();
-		final boolean gzip = responseContentEncoding != null && responseContentEncoding.toLowerCase().contains("gzip");
-		try (final InputStream raw = connection.getInputStream(); final InputStream in = gzip ? new GZIPInputStream(raw) : raw; final ByteArrayOutputStream out = new ByteArrayOutputStream()) {
-			connectionInputStream = raw;
-			if (canceled.getAsBoolean()) {
-				logger.fine("Download canceled after connection.");
-				return null;
-			}
+	@Override
+	protected MapImage makeObject(final InputStream in, final URLConnection connection) throws IOException {
+		try (final ByteArrayOutputStream out = new ByteArrayOutputStream()) {
 			IOUtils.copy(in, out, BUFFER_SIZE);
-			final MapImage downloaded = new MapImage(out.toByteArray(), connection.getHeaderField("Etag"));
-			if (downloaded.equals(cached)) {
-				logger.fine("downloaded.equals(cached)");
-				return cached;
-			}
-			else {
-				return downloaded;
-			}
-		}
-		catch (final IOException e) {
-			if (canceled.getAsBoolean()) {
-				logger.log(Level.FINE, "Download canceled during download:", e);
-				return null;
-			}
-			else {
-				throw e;
-			}
+			return new MapImage(out.toByteArray(), connection.getHeaderField("Etag"));
 		}
 	}
 
-	public void cancel() {
-		if (connectionInputStream != null) {
-			try {
-				connectionInputStream.close();
-			}
-			catch (final Exception e) {
-				logger.log(Level.FINE, e.toString(), e);
-			}
-		}
+	private static URL getUrl(final Earthquake earthquake) throws MalformedURLException {
+		return earthquake.getEnclosureUri().orElseThrow(IllegalStateException::new).toURL();
 	}
 
 }

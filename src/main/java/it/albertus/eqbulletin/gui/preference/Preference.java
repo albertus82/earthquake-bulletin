@@ -22,6 +22,7 @@ import org.eclipse.swt.widgets.Composite;
 
 import it.albertus.eqbulletin.cache.MapImageCache;
 import it.albertus.eqbulletin.cache.MomentTensorCache;
+import it.albertus.eqbulletin.cache.MomentTensorImageCache;
 import it.albertus.eqbulletin.config.LanguageConfig;
 import it.albertus.eqbulletin.config.LoggingConfig;
 import it.albertus.eqbulletin.config.TimeZoneConfig;
@@ -106,6 +107,8 @@ public enum Preference implements IPreference {
 	MAP_CACHE_SAVE(new PreferenceDetailsBuilder(CACHE).defaultValue(MapImageCache.Defaults.CACHE_SAVE).build(), new FieldEditorDetailsBuilder(DefaultBooleanFieldEditor.class).build()),
 	MT_CACHE_SIZE(new PreferenceDetailsBuilder(CACHE).defaultValue(MomentTensorCache.Defaults.CACHE_SIZE).build(), new FieldEditorDetailsBuilder(ScaleIntegerFieldEditor.class).scaleMinimum(1).scaleMaximum(Byte.MAX_VALUE).scalePageIncrement(8).build()),
 	MT_CACHE_SAVE(new PreferenceDetailsBuilder(CACHE).defaultValue(MomentTensorCache.Defaults.CACHE_SAVE).build(), new FieldEditorDetailsBuilder(DefaultBooleanFieldEditor.class).build()),
+	MTI_CACHE_SIZE(new PreferenceDetailsBuilder(CACHE).defaultValue(MomentTensorImageCache.Defaults.CACHE_SIZE).build(), new FieldEditorDetailsBuilder(ScaleIntegerFieldEditor.class).scaleMinimum(1).scaleMaximum(Byte.MAX_VALUE).scalePageIncrement(8).build()),
+	MTI_CACHE_SAVE(new PreferenceDetailsBuilder(CACHE).defaultValue(MomentTensorImageCache.Defaults.CACHE_SAVE).build(), new FieldEditorDetailsBuilder(DefaultBooleanFieldEditor.class).build()),
 
 	LOGGING_LEVEL(new PreferenceDetailsBuilder(LOGGING).defaultValue(LoggingConfig.Defaults.LOGGING_LEVEL.getName()).build(), new FieldEditorDetailsBuilder(DefaultComboFieldEditor.class).labelsAndValues(getLoggingComboOptions()).build()),
 	LOGGING_FILES_ENABLED(new PreferenceDetailsBuilder(LOGGING).separate().defaultValue(LoggingDefaultConfig.DEFAULT_LOGGING_FILES_ENABLED).build(), new FieldEditorDetailsBuilder(DefaultBooleanFieldEditor.class).build()),

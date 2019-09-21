@@ -1,5 +1,7 @@
 package it.albertus.eqbulletin.gui;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.text.NumberFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -20,11 +22,14 @@ import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
@@ -33,10 +38,12 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
+import it.albertus.eqbulletin.cache.MomentTensorImageCache;
 import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
 import it.albertus.eqbulletin.config.TimeZoneConfig;
 import it.albertus.eqbulletin.gui.async.BulletinExporter;
 import it.albertus.eqbulletin.gui.async.MomentTensorAsyncOperation;
+import it.albertus.eqbulletin.gui.async.MomentTensorImageAsyncOperation;
 import it.albertus.eqbulletin.gui.listener.CopyLinkSelectionListener;
 import it.albertus.eqbulletin.gui.listener.EpicenterMapSelectionListener;
 import it.albertus.eqbulletin.gui.listener.ExportCsvSelectionListener;
@@ -47,6 +54,7 @@ import it.albertus.eqbulletin.gui.listener.ShowMapListener;
 import it.albertus.eqbulletin.gui.listener.ShowMomentTensorListener;
 import it.albertus.eqbulletin.gui.preference.Preference;
 import it.albertus.eqbulletin.model.Earthquake;
+import it.albertus.eqbulletin.model.MomentTensorImage;
 import it.albertus.eqbulletin.model.Status;
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.jface.Multilanguage;
@@ -217,30 +225,8 @@ public class ResultsTable implements IShellProvider, Multilanguage {
 		createMomentTensorColumn();
 		createRegionColumn();
 
-		table.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseDown(final MouseEvent e) {
-				if (e.button == 1) {
-					final ViewerCell cell = tableViewer.getCell(new Point(e.x, e.y));
-					if (cell != null && cell.getColumnIndex() == COL_IDX_MT && MT.equals(cell.getText()) && cell.getElement() instanceof Earthquake) {
-						final Earthquake earthquake = (Earthquake) cell.getElement();
-						MomentTensorAsyncOperation.execute(earthquake, table.getShell());
-					}
-				}
-			}
-		});
-
-		table.addMouseMoveListener(e -> {
-			final ViewerCell cell = tableViewer.getCell(new Point(e.x, e.y));
-			if (cell != null && cell.getColumnIndex() == COL_IDX_MT && MT.equals(cell.getText())) {
-				if (shell.getCursor() == null) {
-					shell.setCursor(shell.getDisplay().getSystemCursor(SWT.CURSOR_HAND));
-				}
-			}
-			else if (shell.getDisplay().getSystemCursor(SWT.CURSOR_HAND).equals(shell.getCursor())) {
-				shell.setCursor(null);
-			}
-		});
+		table.addMouseListener(new TableMouseListener());
+		table.addMouseMoveListener(new TableMouseMoveListener());
 
 		table.setRedraw(false);
 		packColumns(table);
@@ -357,6 +343,9 @@ public class ResultsTable implements IShellProvider, Multilanguage {
 		final TableViewerColumn col = createTableViewerColumn(labelsMap.get(COL_IDX_MT).get(), COL_IDX_MT);
 		col.getColumn().setAlignment(SWT.CENTER);
 		col.setLabelProvider(new EarthquakeColumnLabelProvider() {
+
+			private Image image = null;
+
 			@Override
 			protected String getText(final Earthquake element) {
 				return element.getMomentTensorUri().isPresent() ? MT : "";
@@ -368,8 +357,27 @@ public class ResultsTable implements IShellProvider, Multilanguage {
 			}
 
 			@Override
-			protected String getToolTipText(final Earthquake element) {
-				return element.getMomentTensorUri().isPresent() ? Messages.get("lbl.table.mt.tooltip") : null;
+			public Image getToolTipImage(final Earthquake element) {
+				if (image != null) {
+					image.dispose();
+				}
+				final MomentTensorImage cachedObject = MomentTensorImageCache.getInstance().get(element.getGuid());
+				if (cachedObject != null) {
+					try (final ByteArrayInputStream in = new ByteArrayInputStream(cachedObject.getBytes())) {
+						final ImageData data = new ImageData(in);
+						image = new Image(shell.getDisplay(), data, data.getTransparencyMask());
+						return image;
+					}
+					catch (final IOException e) {
+						throw new IllegalStateException(e);
+					}
+				}
+				return null;
+			}
+
+			@Override
+			public Color getToolTipBackgroundColor(final Object object) {
+				return col.getColumn().getDisplay().getSystemColor(SWT.COLOR_TRANSPARENT);
 			}
 
 			@Override
@@ -451,7 +459,6 @@ public class ResultsTable implements IShellProvider, Multilanguage {
 	}
 
 	public class ContextMenu extends AbstractMenu {
-
 		private final Menu menu;
 
 		private ContextMenu(final EarthquakeBulletinGui gui) {
@@ -505,6 +512,41 @@ public class ResultsTable implements IShellProvider, Multilanguage {
 
 		public Menu getMenu() {
 			return menu;
+		}
+	}
+
+	private class TableMouseListener extends MouseAdapter {
+		@Override
+		public void mouseDown(final MouseEvent e) {
+			if (e.button == 1) {
+				final ViewerCell cell = tableViewer.getCell(new Point(e.x, e.y));
+				if (cell != null && cell.getColumnIndex() == COL_IDX_MT && MT.equals(cell.getText()) && cell.getElement() instanceof Earthquake) {
+					final Earthquake earthquake = (Earthquake) cell.getElement();
+					MomentTensorAsyncOperation.execute(earthquake, tableViewer.getTable().getShell());
+				}
+			}
+		}
+	}
+
+	private class TableMouseMoveListener implements MouseMoveListener {
+		private String guid = null;
+
+		@Override
+		public void mouseMove(final MouseEvent e) {
+			final ViewerCell cell = tableViewer.getCell(new Point(e.x, e.y));
+			if (cell != null && cell.getColumnIndex() == COL_IDX_MT && MT.equals(cell.getText()) && cell.getElement() instanceof Earthquake) {
+				final Earthquake earthquake = (Earthquake) cell.getElement();
+				if (guid == null || !guid.equals(earthquake.getGuid())) {
+					guid = earthquake.getGuid();
+					MomentTensorImageAsyncOperation.execute(earthquake);
+				}
+				if (shell.getCursor() == null) {
+					shell.setCursor(shell.getDisplay().getSystemCursor(SWT.CURSOR_HAND));
+				}
+			}
+			else if (shell.getDisplay().getSystemCursor(SWT.CURSOR_HAND).equals(shell.getCursor())) {
+				shell.setCursor(null);
+			}
 		}
 	}
 

@@ -38,6 +38,10 @@ public class GeofonUtils {
 		return toURI(getEventBaseUrl(guid, year) + MOMENT_TENSOR_FILENAME);
 	}
 
+	public static URI getEventMomentTensorImageUri(final String guid, final int year) {
+		return toURI(getEventBaseUrl(guid, year) + "bb.png");
+	}
+
 	public static String getBulletinBaseUrl() {
 		return getBaseUrl() + "/eqinfo/list.php";
 	}
