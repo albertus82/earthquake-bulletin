@@ -50,8 +50,8 @@ public class MomentTensorImageCache implements Cache<String, MomentTensorImage> 
 	private final Map<String, MomentTensorImage> cache = new LinkedHashMap<>(16, 0.75f, true);
 
 	@Override
-	public synchronized void put(final String guid, final MomentTensorImage map) {
-		cache.put(guid, map);
+	public synchronized void put(final String guid, final MomentTensorImage image) {
+		cache.put(guid, image);
 		while (cache.size() > 0 && cache.size() > configuration.getByte(Preference.MTI_CACHE_SIZE, Defaults.CACHE_SIZE)) {
 			final String firstKey = cache.keySet().iterator().next();
 			cache.remove(firstKey);
