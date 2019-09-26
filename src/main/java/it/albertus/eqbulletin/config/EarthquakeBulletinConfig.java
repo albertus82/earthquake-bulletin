@@ -32,29 +32,30 @@ public class EarthquakeBulletinConfig extends Configuration {
 
 	private static final String CFG_FILE_NAME = Util.isLinux() ? ARTIFACT_ID + ".cfg" : "EarthquakeBulletin.cfg";
 
-	private static IPreferencesConfiguration instance;
+	private static EarthquakeBulletinConfig instance;
+	private static IPreferencesConfiguration wrapper;
 	private static int instanceCount = 0;
 
 	private final ILoggingManager loggingManager;
 	private final ILanguageManager languageManager;
 
-	private EarthquakeBulletinConfig() throws IOException {
+	private EarthquakeBulletinConfig(final boolean initialize) throws IOException {
 		super(new PropertiesConfiguration(DIRECTORY_NAME + File.separator + CFG_FILE_NAME, true));
 		final IPreferencesConfiguration pc = new PreferencesConfiguration(this);
-		loggingManager = new LoggingManager(new LoggingConfig(pc), true);
-		languageManager = new LanguageManager(new LanguageConfig(pc), true);
+		loggingManager = new LoggingManager(new LoggingConfig(pc), initialize);
+		languageManager = new LanguageManager(new LanguageConfig(pc), initialize);
 	}
 
-	public static synchronized IPreferencesConfiguration getPreferencesConfiguration() {
+	private static synchronized EarthquakeBulletinConfig getInstance() {
 		if (instance == null) {
 			try {
-				instance = new PreferencesConfiguration(new EarthquakeBulletinConfig());
+				instance = new EarthquakeBulletinConfig(false);
 				instanceCount++;
 				if (logger.isLoggable(Level.CONFIG)) {
-					logger.log(Level.CONFIG, "Created {0} instance.", PreferencesConfiguration.class.getSimpleName());
+					logger.log(Level.CONFIG, "Created {0} instance.", instance.getClass().getSimpleName());
 				}
 				if (instanceCount > 1) {
-					throw new InitializationException("Detected multiple instances of singleton " + PreferencesConfiguration.class);
+					throw new InitializationException("Detected multiple instances of singleton " + instance.getClass());
 				}
 			}
 			catch (final IOException e) {
@@ -64,11 +65,23 @@ public class EarthquakeBulletinConfig extends Configuration {
 		return instance;
 	}
 
+	public static synchronized IPreferencesConfiguration getPreferencesConfiguration() {
+		if (wrapper == null) {
+			wrapper = new PreferencesConfiguration(getInstance());
+		}
+		return wrapper;
+	}
+
+	public static void initialize() {
+		final EarthquakeBulletinConfig instance = getInstance();
+		instance.loggingManager.initializeLogging();
+		instance.languageManager.resetLanguage();
+	}
+
 	@Override
 	public void reload() throws IOException {
 		super.reload();
-		loggingManager.initializeLogging();
-		languageManager.resetLanguage();
+		initialize();
 	}
 
 }
