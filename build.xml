@@ -2,7 +2,7 @@
 <!DOCTYPE project>
 <project name="earthquake-bulletin" default="all" xmlns:as="antlib:org.codehaus.mojo.animal_sniffer" xmlns:jacoco="antlib:org.jacoco.ant">
 
-	<property name="version.number" value="2.2.0" />
+	<property name="version.number" value="2.2.1" />
 
 	<property environment="env" />
 	<property name="env.JRE8_HOME" value="${env.JAVA_HOME}/../jdk1.8.0_221/jre" />
@@ -511,13 +511,13 @@
 			[Icons]
 			Name: "{group}\${project.name}"; Filename: "{app}\${windows.exeFileName}"
 			Name: "{group}\{cm:UninstallProgram,${project.name}}"; Filename: "{uninstallexe}"
-			Name: "{userdesktop}\${project.name}"; Filename: "{app}\${windows.exeFileName}"; Tasks: desktopicon
+			Name: "{autodesktop}\${project.name}"; Filename: "{app}\${windows.exeFileName}"; Tasks: desktopicon
 			Name: "{userstartup}\${project.name}"; Filename: "{app}\${windows.exeFileName}"; Tasks: startupicon
 
 			[Files]
 			Source: "app\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
 			Source: "config\*"; DestDir: "{userappdata}\${project.name}"; Flags: onlyifdoesntexist skipifsourcedoesntexist
-			Source: "setup.log"; DestDir: "{localappdata}\${project.name}"; DestName: "${dependencies.logFileName}"; Flags: ignoreversion overwritereadonly uninsremovereadonly; Attribs: hidden readonly
+			Source: "setup.log"; DestDir: "{autoappdata}\${project.name}"; DestName: "${dependencies.logFileName}"; Flags: ignoreversion overwritereadonly uninsremovereadonly; Attribs: hidden readonly
 
 			[Code]
 			procedure CurStepChanged(CurStep: TSetupStep);
@@ -525,7 +525,7 @@
 				jarFileNames: TArrayOfString;
 				i: Integer;
 			begin
-				if (CurStep = ssInstall) and (LoadStringsFromFile(ExpandConstant('{localappdata}\${project.name}\${dependencies.logFileName}'), jarFileNames)) then
+				if (CurStep = ssInstall) and (LoadStringsFromFile(ExpandConstant('{autoappdata}\${project.name}\${dependencies.logFileName}'), jarFileNames)) then
 				begin
 					for i := 0 to GetArrayLength(jarFileNames) - 1 do
 						DeleteFile(ExpandConstant('{app}\${dependencies.directory}\' + jarFileNames[i]));
@@ -610,13 +610,13 @@
 			[Icons]
 			Name: "{group}\${project.name}"; Filename: "{app}\${windows.exeFileName}"
 			Name: "{group}\{cm:UninstallProgram,${project.name}}"; Filename: "{uninstallexe}"
-			Name: "{userdesktop}\${project.name}"; Filename: "{app}\${windows.exeFileName}"; Tasks: desktopicon
+			Name: "{autodesktop}\${project.name}"; Filename: "{app}\${windows.exeFileName}"; Tasks: desktopicon
 			Name: "{userstartup}\${project.name}"; Filename: "{app}\${windows.exeFileName}"; Tasks: startupicon
 
 			[Files]
 			Source: "app\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
 			Source: "config\*"; DestDir: "{userappdata}\${project.name}"; Flags: onlyifdoesntexist skipifsourcedoesntexist
-			Source: "setup.log"; DestDir: "{localappdata}\${project.name}"; DestName: "${dependencies.logFileName}"; Flags: ignoreversion overwritereadonly uninsremovereadonly; Attribs: hidden readonly
+			Source: "setup.log"; DestDir: "{autoappdata}\${project.name}"; DestName: "${dependencies.logFileName}"; Flags: ignoreversion overwritereadonly uninsremovereadonly; Attribs: hidden readonly
 
 			[Code]
 			procedure CurStepChanged(CurStep: TSetupStep);
@@ -624,7 +624,7 @@
 				jarFileNames: TArrayOfString;
 				i: Integer;
 			begin
-				if (CurStep = ssInstall) and (LoadStringsFromFile(ExpandConstant('{localappdata}\${project.name}\${dependencies.logFileName}'), jarFileNames)) then
+				if (CurStep = ssInstall) and (LoadStringsFromFile(ExpandConstant('{autoappdata}\${project.name}\${dependencies.logFileName}'), jarFileNames)) then
 				begin
 					for i := 0 to GetArrayLength(jarFileNames) - 1 do
 						DeleteFile(ExpandConstant('{app}\${dependencies.directory}\' + jarFileNames[i]));
