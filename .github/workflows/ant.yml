@@ -3,12 +3,12 @@ name: build
 on: [push]
 
 jobs:
-  build:
-    runs-on: windows-latest
+  build_
     strategy:
       matrix:
         java: [ '8', '9', '10', '11', '12' ]
         os: [ 'windows-latest', 'ubuntu-latest' ]
+    runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v1
     - uses: actions/setup-java@v1
