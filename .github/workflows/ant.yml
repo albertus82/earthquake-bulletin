@@ -13,7 +13,7 @@ jobs:
     - if: matrix.platform == 'ubuntu-latest'
       run: sudo dpkg --add-architecture i386 && sudo apt-get update && sudo apt-get install -y wine32
     - if: matrix.platform == 'macOS-latest'
-      run: brew update && brew install ant --skip-recommended && brew install wine
+      run: brew update && brew install --ignore-dependencies ant && brew install wine
     - uses: actions/checkout@v1
     - uses: actions/setup-java@v1
       with:
