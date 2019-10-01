@@ -14,8 +14,8 @@ jobs:
       run: sudo dpkg --add-architecture i386 && sudo apt-get update && sudo apt-get install -y wine32
     - if: matrix.os == 'macOS-latest'
       run: brew update && brew install ant wine
-    - uses: actions/checkout@latest
-    - uses: actions/setup-java@latest
+    - uses: actions/checkout@master
+    - uses: actions/setup-java@master
       with:
         java-version: ${{ matrix.java }}
     - run: ant -diagnostics
