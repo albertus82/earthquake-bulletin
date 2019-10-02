@@ -1,6 +1,5 @@
 package it.albertus.eqbulletin.service.net;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -70,7 +69,7 @@ public abstract class StaticResourceDownloader<T extends StaticResource> {
 	private T parseResponseContent(final URLConnection connection, final T cached, final BooleanSupplier canceled) throws IOException {
 		final String responseContentEncoding = connection.getContentEncoding();
 		final boolean gzip = responseContentEncoding != null && responseContentEncoding.toLowerCase().contains("gzip");
-		try (final InputStream raw = connection.getInputStream(); final InputStream in = gzip ? new GZIPInputStream(raw) : raw; final ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+		try (final InputStream raw = connection.getInputStream(); final InputStream in = gzip ? new GZIPInputStream(raw) : raw) {
 			connectionInputStream = raw;
 			if (canceled.getAsBoolean()) {
 				logger.fine("Download canceled after connection.");

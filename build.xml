@@ -62,6 +62,7 @@
 			</classpath>
 			<bootclasspath path="${build.compiler.compilerArguments.bootclasspath}" />
 			<compilerarg value="-version" />
+			<compilerarg value="-Xlint" />
 		</javac>
 
 		<typedef uri="antlib:org.codehaus.mojo.animal_sniffer">
