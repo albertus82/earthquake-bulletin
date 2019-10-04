@@ -20,7 +20,7 @@ jobs:
         java-version: ${{ matrix.java }}
     - run: ant -diagnostics
     - run: ant -noinput
-    - if: matrix.os == 'ubuntu-latest' && matrix.java == '12'
+    - if: matrix.os == 'ubuntu-latest' && matrix.java == '13'
       uses: sonarsource/sonarcloud-github-action@master
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
