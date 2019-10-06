@@ -24,7 +24,7 @@ before_build:
   - ant -diagnostics
 
 build_script:
-  - ant all
+  - ant -noinput
 
 after_build:
   - IF "%APPVEYOR_REPO_TAG%" == "true" IF DEFINED VT_API_KEY SET ARTIFACTS_PATH=build\*.* & FOR /R build %%f IN (*.exe *.tar.gz *.zip) DO IF NOT %%~xf == .exec ECHO Submitting file "%%f" to VirusTotal... & curl -v -F "file=@%%f" -F apikey=%VT_API_KEY% https://www.virustotal.com/vtapi/v2/file/scan & ECHO File "%%f" submitted to VirusTotal. & TIMEOUT 15 /NOBREAK
