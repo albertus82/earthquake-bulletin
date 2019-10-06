@@ -10,11 +10,11 @@ jobs:
         os: [ 'windows-latest', 'ubuntu-latest', 'macOS-latest' ]
     runs-on: ${{ matrix.os }}
     steps:
+    - uses: actions/checkout@master
     - if: startsWith(matrix.os, 'ubuntu')
       run: sudo dpkg --add-architecture i386 && sudo apt-get update && sudo apt-get install -y wine32
     - if: startsWith(matrix.os, 'macOS')
       run: brew update && brew install ant wine
-    - uses: actions/checkout@master
     - uses: actions/setup-java@master
       with:
         java-version: ${{ matrix.java }}
