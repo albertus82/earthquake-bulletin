@@ -7,9 +7,10 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.ChronoField;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -31,10 +32,16 @@ public class HtmlBulletinDecoder {
 	public static List<Earthquake> decode(final Document document) {
 		if (document != null) {
 			final List<Earthquake> earthquakes = new ArrayList<>();
-			final Elements rows = document.getElementsByTag("tr");
-			for (final Element row : rows.subList(2, rows.size() - 1)) { // Discards table header & footer
-				final Earthquake converted = decodeItem(row);
-				earthquakes.add(converted);
+			final Elements elements = document.getElementsByClass("eqlist");
+			if (elements.size() > 1) {
+				throw new IllegalStateException();
+			}
+			for (final Element element : elements) {
+				final Collection<Element> anchors = element.getElementsByTag("a").stream().filter(a -> !a.classNames().contains("external-link") && a.hasAttr("href")).collect(Collectors.toList());
+				for (final Element anchor : anchors) {
+					final Earthquake converted = decodeItem(anchor);
+					earthquakes.add(converted);
+				}
 			}
 			return earthquakes;
 		}
@@ -43,42 +50,42 @@ public class HtmlBulletinDecoder {
 		}
 	}
 
-	private static Earthquake decodeItem(final Element row) {
+	private static Earthquake decodeItem(final Element anchor) {
 		try {
-			final ZonedDateTime time = dateTimeFormatter.parse(row.child(0).text(), ZonedDateTime::from);
+			final Elements divs = anchor.getElementsByTag("div");
+			final Elements spans = anchor.getElementsByTag("span");
 
-			final Optional<Element> eventLink = findFirstLink(row.child(0));
-			if (!eventLink.isPresent()) {
-				throw new IllegalStateException("Event link not present.");
-			}
-			final String guid = eventLink.get().attr("href").substring(eventLink.get().attr("href").indexOf('=') + 1).trim();
-			final URI link = GeofonUtils.toURI(eventLink.get().absUrl("href"));
+			final ZonedDateTime time = dateTimeFormatter.parse(divs.get(6).textNodes().get(0).text().trim(), ZonedDateTime::from);
 
-			final float magnitude = Float.parseFloat(row.child(1).text());
+			final String guid = anchor.attr("href").substring(anchor.attr("href").indexOf('=') + 1).trim();
+			final URI link = GeofonUtils.toURI(anchor.absUrl("href"));
 
-			final String[] splitLat = row.child(2).text().split(DEGREE_SIGN);
+			final float magnitude = Float.parseFloat(spans.first().text());
+
+			final String[] lonLat = divs.get(4).attr("title").split(",");
+
+			final String[] splitLat = lonLat[1].split(DEGREE_SIGN);
 			float latitude = Float.parseFloat(splitLat[0]);
 			if ("S".equalsIgnoreCase(splitLat[1])) {
 				latitude = -latitude;
 			}
 
-			final String[] splitLon = row.child(3).text().split(DEGREE_SIGN);
+			final String[] splitLon = lonLat[0].split(DEGREE_SIGN);
 			float longitude = Float.parseFloat(splitLon[0]);
 			if ("W".equalsIgnoreCase(splitLon[1])) {
 				longitude = -longitude;
 			}
 
-			final short depth = Short.parseShort(row.child(4).text());
-			final Status status = Status.valueOf(row.child(5).text());
-			final String region = row.child(7).text().isEmpty() ? row.child(6).text() : row.child(7).text();
+			final short depth = Short.parseShort(spans.last().text());
+			final Status status = null; // Removed from the web page on 08/10/2019
+			final String region = divs.get(4).text();
 
 			final URI enclosureUri = GeofonUtils.getEventMapUri(guid, time.get(ChronoField.YEAR));
 
 			URI momentTensorUri = null;
-			for (int i = 6; i < row.children().size(); i++) {
-				final Optional<Element> a = findFirstLink(row.child(i));
-				if (a.isPresent() && ("MT".equalsIgnoreCase(a.get().text()) || a.get().attr("href").endsWith(GeofonUtils.MOMENT_TENSOR_FILENAME))) {
-					momentTensorUri = GeofonUtils.toURI(a.get().absUrl("href"));
+			for (final Element img : anchor.getElementsByTag("img")) {
+				if ("MT".equalsIgnoreCase(img.attr("alt"))) {
+					momentTensorUri = GeofonUtils.getEventMomentTensorUri(guid, time.get(ChronoField.YEAR));
 					break;
 				}
 			}
@@ -86,12 +93,8 @@ public class HtmlBulletinDecoder {
 			return new Earthquake(guid, time, magnitude, Latitude.valueOf(latitude), Longitude.valueOf(longitude), Depth.valueOf(depth), status, region, link, enclosureUri, momentTensorUri);
 		}
 		catch (final Exception e) {
-			throw new IllegalArgumentException(row.toString(), e);
+			throw new IllegalArgumentException(anchor.toString(), e);
 		}
-	}
-
-	private static Optional<Element> findFirstLink(final Element parent) {
-		return parent.getElementsByTag("a").stream().filter(e -> e.hasAttr("href")).findFirst();
 	}
 
 	private HtmlBulletinDecoder() {

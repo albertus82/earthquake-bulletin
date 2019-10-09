@@ -34,7 +34,7 @@ public class Earthquake implements Serializable, Comparable<Earthquake> {
 		Objects.requireNonNull(latitude);
 		Objects.requireNonNull(longitude);
 		Objects.requireNonNull(depth);
-		Objects.requireNonNull(status);
+		// Status was removed from the web page on 08/10/2019
 		Objects.requireNonNull(region);
 		this.guid = guid;
 		this.time = time;
@@ -73,8 +73,8 @@ public class Earthquake implements Serializable, Comparable<Earthquake> {
 		return depth;
 	}
 
-	public Status getStatus() {
-		return status;
+	public Optional<Status> getStatus() {
+		return Optional.ofNullable(status);
 	}
 
 	public String getRegion() {
@@ -136,7 +136,11 @@ public class Earthquake implements Serializable, Comparable<Earthquake> {
 	public String getDetails(final ZoneId timeZone) {
 		final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z").withZone(timeZone);
 		final NumberFormat numberFormat = CoordinateUtils.newFormatter();
-		return new StringBuilder(dateTimeFormatter.format(time)).append(' ').append(latitude.toString(numberFormat)).append(' ').append(longitude.toString(numberFormat)).append(' ').append(depth).append(' ').append(status).toString();
+		final StringBuilder details = new StringBuilder(dateTimeFormatter.format(time)).append(' ').append(latitude.toString(numberFormat)).append(' ').append(longitude.toString(numberFormat)).append(' ').append(depth);
+		if (status != null) {
+			details.append(' ').append(status);
+		}
+		return details.toString();
 	}
 
 	private String getDetails() {

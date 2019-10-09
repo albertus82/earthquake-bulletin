@@ -6,6 +6,7 @@ import java.text.NumberFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.eclipse.jface.resource.FontRegistry;
@@ -139,7 +140,20 @@ public class ResultsTable implements IShellProvider, Multilanguage {
 				rc = eq1.getDepth().compareTo(eq2.getDepth());
 				break;
 			case COL_IDX_STATUS:
-				rc = eq1.getStatus().compareTo(eq2.getStatus());
+				final Optional<Status> status1 = eq1.getStatus();
+				final Optional<Status> status2 = eq2.getStatus();
+				if (status1.isPresent() && status2.isPresent()) {
+					rc = status1.get().compareTo(status2.get());
+				}
+				else if (status1.isPresent()) {
+					rc = 1;
+				}
+				else if (status2.isPresent()) {
+					rc = -1;
+				}
+				else {
+					rc = 0;
+				}
 				break;
 			case COL_IDX_MT:
 				if (!eq1.getMomentTensorUri().isPresent() && !eq2.getMomentTensorUri().isPresent() || eq1.getMomentTensorUri().isPresent() && eq2.getMomentTensorUri().isPresent()) {
@@ -319,7 +333,8 @@ public class ResultsTable implements IShellProvider, Multilanguage {
 		col.setLabelProvider(new EarthquakeColumnLabelProvider() {
 			@Override
 			protected String getText(final Earthquake element) {
-				return String.valueOf(element.getStatus());
+				final Optional<Status> status = element.getStatus();
+				return status.isPresent() ? status.get().toString() : null;
 			}
 
 			@Override
@@ -329,7 +344,8 @@ public class ResultsTable implements IShellProvider, Multilanguage {
 
 			@Override
 			protected String getToolTipText(final Earthquake element) {
-				return element.getStatus().getDescription();
+				final Optional<Status> status = element.getStatus();
+				return status.isPresent() ? status.get().getDescription() : null;
 			}
 
 			@Override
@@ -365,7 +381,7 @@ public class ResultsTable implements IShellProvider, Multilanguage {
 				if (cachedObject != null) {
 					try (final ByteArrayInputStream in = new ByteArrayInputStream(cachedObject.getBytes())) {
 						final ImageData data = new ImageData(in);
-						image = new Image(shell.getDisplay(), data, data.getTransparencyMask());
+						image = new Image(shell.getDisplay(), data);
 						return image;
 					}
 					catch (final IOException e) {
