@@ -339,7 +339,13 @@ public class ResultsTable implements IShellProvider, Multilanguage {
 
 			@Override
 			protected Color getForeground(final Earthquake element) {
-				return col.getColumn().getDisplay().getSystemColor(Status.A.equals(element.getStatus()) ? SWT.COLOR_RED : SWT.COLOR_DARK_GREEN);
+				final Optional<Status> status = element.getStatus();
+				if (status.isPresent()) {
+					return col.getColumn().getDisplay().getSystemColor(Status.A.equals(status.get()) ? SWT.COLOR_RED : SWT.COLOR_DARK_GREEN);
+				}
+				else {
+					return null;
+				}
 			}
 
 			@Override
