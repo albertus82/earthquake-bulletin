@@ -11,7 +11,7 @@ import it.albertus.jface.preference.IPreferencesConfiguration;
 
 public class BeachBallCache implements Cache<String, BeachBall> {
 
-	private static final long serialVersionUID = 8229169461451106599L;
+	private static final long serialVersionUID = 6219702620502135946L;
 
 	private static final String CACHE_FILE = CacheManager.CACHE_DIRECTORY + File.separator + "mticache.ser";
 
