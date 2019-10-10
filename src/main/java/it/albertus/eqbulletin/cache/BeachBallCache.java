@@ -6,10 +6,10 @@ import java.util.Map;
 
 import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
 import it.albertus.eqbulletin.gui.preference.Preference;
-import it.albertus.eqbulletin.model.MomentTensorImage;
+import it.albertus.eqbulletin.model.BeachBall;
 import it.albertus.jface.preference.IPreferencesConfiguration;
 
-public class MomentTensorImageCache implements Cache<String, MomentTensorImage> {
+public class BeachBallCache implements Cache<String, BeachBall> {
 
 	private static final long serialVersionUID = 8229169461451106599L;
 
@@ -26,31 +26,31 @@ public class MomentTensorImageCache implements Cache<String, MomentTensorImage> 
 
 	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getPreferencesConfiguration();
 
-	private static final CacheManager<MomentTensorImageCache> manager = new CacheManager<>();
+	private static final CacheManager<BeachBallCache> manager = new CacheManager<>();
 
-	private static MomentTensorImageCache instance;
+	private static BeachBallCache instance;
 
-	public static synchronized MomentTensorImageCache getInstance() {
+	public static synchronized BeachBallCache getInstance() {
 		if (instance == null) {
 			if (configuration.getBoolean(Preference.MTI_CACHE_SAVE, Defaults.CACHE_SAVE)) {
-				instance = manager.deserialize(CACHE_FILE, MomentTensorImageCache.class);
+				instance = manager.deserialize(CACHE_FILE, BeachBallCache.class);
 			}
 			else {
 				manager.delete(CACHE_FILE);
 			}
 			if (instance == null) {
-				instance = new MomentTensorImageCache();
+				instance = new BeachBallCache();
 			}
 		}
 		return instance;
 	}
 
-	private MomentTensorImageCache() {}
+	private BeachBallCache() {}
 
-	private final Map<String, MomentTensorImage> cache = new LinkedHashMap<>(16, 0.75f, true);
+	private final Map<String, BeachBall> cache = new LinkedHashMap<>(16, 0.75f, true);
 
 	@Override
-	public synchronized void put(final String guid, final MomentTensorImage image) {
+	public synchronized void put(final String guid, final BeachBall image) {
 		cache.put(guid, image);
 		while (cache.size() > 0 && cache.size() > configuration.getByte(Preference.MTI_CACHE_SIZE, Defaults.CACHE_SIZE)) {
 			final String firstKey = cache.keySet().iterator().next();
@@ -62,7 +62,7 @@ public class MomentTensorImageCache implements Cache<String, MomentTensorImage> 
 	}
 
 	@Override
-	public synchronized MomentTensorImage get(final String guid) {
+	public synchronized BeachBall get(final String guid) {
 		return cache.get(guid);
 	}
 
@@ -78,7 +78,7 @@ public class MomentTensorImageCache implements Cache<String, MomentTensorImage> 
 
 	@Override
 	public String toString() {
-		return "MomentTensorImageCache [size=" + getSize() + "]";
+		return "BeachBallCache [size=" + getSize() + "]";
 	}
 
 }

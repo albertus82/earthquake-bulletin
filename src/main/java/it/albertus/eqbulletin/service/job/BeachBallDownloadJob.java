@@ -10,20 +10,20 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 
 import it.albertus.eqbulletin.model.Earthquake;
-import it.albertus.eqbulletin.model.MomentTensorImage;
+import it.albertus.eqbulletin.model.BeachBall;
 import it.albertus.eqbulletin.resources.Messages;
-import it.albertus.eqbulletin.service.net.MomentTensorImageDownloader;
+import it.albertus.eqbulletin.service.net.BeachBallDownloader;
 
-public class MomentTensorImageDownloadJob extends Job implements DownloadJob<MomentTensorImage> {
+public class BeachBallDownloadJob extends Job implements DownloadJob<BeachBall> {
 
 	private final Earthquake earthquake;
 
-	private Optional<MomentTensorImage> downloadedObject = Optional.empty();
+	private Optional<BeachBall> downloadedObject = Optional.empty();
 
-	private MomentTensorImageDownloader downloader;
+	private BeachBallDownloader downloader;
 
-	public MomentTensorImageDownloadJob(final Earthquake earthquake) {
-		super(MomentTensorImageDownloadJob.class.getSimpleName());
+	public BeachBallDownloadJob(final Earthquake earthquake) {
+		super(BeachBallDownloadJob.class.getSimpleName());
 		this.earthquake = earthquake;
 		setUser(true);
 	}
@@ -32,7 +32,7 @@ public class MomentTensorImageDownloadJob extends Job implements DownloadJob<Mom
 	public IStatus run(final IProgressMonitor monitor) {
 		monitor.beginTask(getName(), IProgressMonitor.UNKNOWN);
 		try {
-			downloader = new MomentTensorImageDownloader();
+			downloader = new BeachBallDownloader();
 			downloadedObject = downloader.download(earthquake, monitor::isCanceled);
 			monitor.done();
 			return monitor.isCanceled() ? Status.CANCEL_STATUS : Status.OK_STATUS;
@@ -49,7 +49,7 @@ public class MomentTensorImageDownloadJob extends Job implements DownloadJob<Mom
 	}
 
 	@Override
-	public Optional<MomentTensorImage> getDownloadedObject() {
+	public Optional<BeachBall> getDownloadedObject() {
 		return downloadedObject;
 	}
 

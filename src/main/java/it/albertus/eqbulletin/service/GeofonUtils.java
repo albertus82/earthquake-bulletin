@@ -12,9 +12,10 @@ import it.albertus.util.logging.LoggerFactory;
 
 public class GeofonUtils {
 
-	public static final String MOMENT_TENSOR_FILENAME = "mt.txt";
-
 	public static final String DEFAULT_GEOFON_BASE_URL = "https://geofon.gfz-potsdam.de";
+
+	private static final String MOMENT_TENSOR_FILENAME = "mt.txt";
+	private static final String BEACH_BALL_FILENAME = "bb.png";
 
 	private static final String MSG_KEY_ERR_URL_MALFORMED = "err.url.malformed";
 
@@ -38,8 +39,8 @@ public class GeofonUtils {
 		return toURI(getEventBaseUrl(guid, year) + MOMENT_TENSOR_FILENAME);
 	}
 
-	public static URI getEventMomentTensorImageUri(final String guid, final int year) {
-		return toURI(getEventBaseUrl(guid, year) + "bb.png");
+	public static URI getBeachBallUri(final String guid, final int year) {
+		return toURI(getEventBaseUrl(guid, year) + BEACH_BALL_FILENAME);
 	}
 
 	public static String getBulletinBaseUrl() {

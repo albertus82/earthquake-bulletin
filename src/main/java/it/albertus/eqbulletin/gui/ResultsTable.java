@@ -39,12 +39,12 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
-import it.albertus.eqbulletin.cache.MomentTensorImageCache;
+import it.albertus.eqbulletin.cache.BeachBallCache;
 import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
 import it.albertus.eqbulletin.config.TimeZoneConfig;
 import it.albertus.eqbulletin.gui.async.BulletinExporter;
 import it.albertus.eqbulletin.gui.async.MomentTensorAsyncOperation;
-import it.albertus.eqbulletin.gui.async.MomentTensorImageAsyncOperation;
+import it.albertus.eqbulletin.gui.async.BeachBallAsyncOperation;
 import it.albertus.eqbulletin.gui.listener.CopyLinkSelectionListener;
 import it.albertus.eqbulletin.gui.listener.EpicenterMapSelectionListener;
 import it.albertus.eqbulletin.gui.listener.ExportCsvSelectionListener;
@@ -55,7 +55,7 @@ import it.albertus.eqbulletin.gui.listener.ShowMapListener;
 import it.albertus.eqbulletin.gui.listener.ShowMomentTensorListener;
 import it.albertus.eqbulletin.gui.preference.Preference;
 import it.albertus.eqbulletin.model.Earthquake;
-import it.albertus.eqbulletin.model.MomentTensorImage;
+import it.albertus.eqbulletin.model.BeachBall;
 import it.albertus.eqbulletin.model.Status;
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.jface.Multilanguage;
@@ -383,7 +383,7 @@ public class ResultsTable implements IShellProvider, Multilanguage {
 				if (image != null) {
 					image.dispose();
 				}
-				final MomentTensorImage cachedObject = MomentTensorImageCache.getInstance().get(element.getGuid());
+				final BeachBall cachedObject = BeachBallCache.getInstance().get(element.getGuid());
 				if (cachedObject != null) {
 					try (final ByteArrayInputStream in = new ByteArrayInputStream(cachedObject.getBytes())) {
 						final ImageData data = new ImageData(in);
@@ -560,7 +560,7 @@ public class ResultsTable implements IShellProvider, Multilanguage {
 				final Earthquake earthquake = (Earthquake) cell.getElement();
 				if (guid == null || !guid.equals(earthquake.getGuid())) {
 					guid = earthquake.getGuid();
-					MomentTensorImageAsyncOperation.execute(earthquake);
+					BeachBallAsyncOperation.execute(earthquake);
 				}
 				if (shell.getCursor() == null) {
 					shell.setCursor(shell.getDisplay().getSystemCursor(SWT.CURSOR_HAND));

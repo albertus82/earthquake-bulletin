@@ -10,25 +10,25 @@ import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 
-import it.albertus.eqbulletin.cache.MomentTensorImageCache;
+import it.albertus.eqbulletin.cache.BeachBallCache;
 import it.albertus.eqbulletin.model.Earthquake;
-import it.albertus.eqbulletin.model.MomentTensorImage;
-import it.albertus.eqbulletin.service.job.MomentTensorImageDownloadJob;
-import it.albertus.eqbulletin.service.net.MomentTensorImageDownloader;
+import it.albertus.eqbulletin.model.BeachBall;
+import it.albertus.eqbulletin.service.job.BeachBallDownloadJob;
+import it.albertus.eqbulletin.service.net.BeachBallDownloader;
 import it.albertus.util.logging.LoggerFactory;
 
-public class MomentTensorImageAsyncOperation extends AsyncOperation {
+public class BeachBallAsyncOperation extends AsyncOperation {
 
-	private static final Logger logger = LoggerFactory.getLogger(MomentTensorImageAsyncOperation.class);
+	private static final Logger logger = LoggerFactory.getLogger(BeachBallAsyncOperation.class);
 
 	private static Job currentJob;
 
 	public static synchronized void execute(final Earthquake earthquake) {
 		if (earthquake != null && earthquake.getMomentTensorUri().isPresent()) {
 			cancelCurrentJob();
-			final MomentTensorImageCache cache = MomentTensorImageCache.getInstance();
+			final BeachBallCache cache = BeachBallCache.getInstance();
 			final String guid = earthquake.getGuid();
-			final MomentTensorImage cachedObject = cache.get(guid);
+			final BeachBall cachedObject = cache.get(guid);
 			if (cachedObject == null) {
 				logger.log(Level.FINE, "Cache miss for key \"{0}\". Cache size: {1}.", new Serializable[] { guid, cache.getSize() });
 				cacheMiss(earthquake);
@@ -40,12 +40,12 @@ public class MomentTensorImageAsyncOperation extends AsyncOperation {
 		}
 	}
 
-	private static void cacheHit(final MomentTensorImage cachedObject, final Earthquake earthquake) {
+	private static void cacheHit(final BeachBall cachedObject, final Earthquake earthquake) {
 		checkForUpdateAndRefreshIfNeeded(cachedObject, earthquake);
 	}
 
 	private static void cacheMiss(final Earthquake earthquake) {
-		final MomentTensorImageDownloadJob job = new MomentTensorImageDownloadJob(earthquake);
+		final BeachBallDownloadJob job = new BeachBallDownloadJob(earthquake);
 		job.addJobChangeListener(new JobChangeAdapter() {
 			@Override
 			public void done(final IJobChangeEvent event) {
@@ -53,9 +53,9 @@ public class MomentTensorImageAsyncOperation extends AsyncOperation {
 					if (!event.getResult().isOK() && event.getResult().getSeverity() != IStatus.CANCEL) {
 						throw new AsyncOperationException(job.getResult());
 					}
-					final Optional<MomentTensorImage> downloadedObject = job.getDownloadedObject();
+					final Optional<BeachBall> downloadedObject = job.getDownloadedObject();
 					if (downloadedObject.isPresent()) {
-						MomentTensorImageCache.getInstance().put(earthquake.getGuid(), downloadedObject.get());
+						BeachBallCache.getInstance().put(earthquake.getGuid(), downloadedObject.get());
 					}
 				}
 				catch (final AsyncOperationException e) {
@@ -67,13 +67,13 @@ public class MomentTensorImageAsyncOperation extends AsyncOperation {
 		setCurrentJob(job);
 	}
 
-	private static void checkForUpdateAndRefreshIfNeeded(final MomentTensorImage cachedObject, final Earthquake earthquake) {
+	private static void checkForUpdateAndRefreshIfNeeded(final BeachBall cachedObject, final Earthquake earthquake) {
 		if (cachedObject.getEtag() != null && !cachedObject.getEtag().trim().isEmpty()) {
 			final Runnable checkForUpdate = () -> {
 				try {
-					final Optional<MomentTensorImage> downloadedObject = new MomentTensorImageDownloader().download(earthquake, cachedObject, () -> false);
+					final Optional<BeachBall> downloadedObject = new BeachBallDownloader().download(earthquake, cachedObject, () -> false);
 					if (downloadedObject.isPresent() && !downloadedObject.get().equals(cachedObject)) {
-						MomentTensorImageCache.getInstance().put(earthquake.getGuid(), downloadedObject.get());
+						BeachBallCache.getInstance().put(earthquake.getGuid(), downloadedObject.get());
 					}
 				}
 				catch (final Exception e) {
@@ -95,6 +95,6 @@ public class MomentTensorImageAsyncOperation extends AsyncOperation {
 		}
 	}
 
-	private MomentTensorImageAsyncOperation() {}
+	private BeachBallAsyncOperation() {}
 
 }
