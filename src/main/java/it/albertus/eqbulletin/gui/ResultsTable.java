@@ -42,9 +42,9 @@ import org.eclipse.swt.widgets.TableColumn;
 import it.albertus.eqbulletin.cache.BeachBallCache;
 import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
 import it.albertus.eqbulletin.config.TimeZoneConfig;
+import it.albertus.eqbulletin.gui.async.BeachBallAsyncOperation;
 import it.albertus.eqbulletin.gui.async.BulletinExporter;
 import it.albertus.eqbulletin.gui.async.MomentTensorAsyncOperation;
-import it.albertus.eqbulletin.gui.async.BeachBallAsyncOperation;
 import it.albertus.eqbulletin.gui.listener.CopyLinkSelectionListener;
 import it.albertus.eqbulletin.gui.listener.EpicenterMapSelectionListener;
 import it.albertus.eqbulletin.gui.listener.ExportCsvSelectionListener;
@@ -54,8 +54,8 @@ import it.albertus.eqbulletin.gui.listener.ResultsTableContextMenuDetectListener
 import it.albertus.eqbulletin.gui.listener.ShowMapListener;
 import it.albertus.eqbulletin.gui.listener.ShowMomentTensorListener;
 import it.albertus.eqbulletin.gui.preference.Preference;
-import it.albertus.eqbulletin.model.Earthquake;
 import it.albertus.eqbulletin.model.BeachBall;
+import it.albertus.eqbulletin.model.Earthquake;
 import it.albertus.eqbulletin.model.Status;
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.jface.Multilanguage;
@@ -203,6 +203,7 @@ public class ResultsTable implements IShellProvider, Multilanguage {
 					table.setRedraw(true);
 					initialized = true;
 				}
+				autoSizeStatusColumn(tableViewer.getTable(), input); // Manage missing Status column values when data source is HTML
 			}
 		};
 		final Table table = tableViewer.getTable();
@@ -444,10 +445,30 @@ public class ResultsTable implements IShellProvider, Multilanguage {
 
 	private static void packColumns(final Table table) {
 		for (final TableColumn column : table.getColumns()) {
-			column.pack();
-			if (Util.isGtk()) { // colmuns are badly resized on GTK, more space is actually needed
-				try (final CloseableResource<GC> cr = new CloseableResource<>(new GC(table))) {
-					column.setWidth(column.getWidth() + cr.getResource().stringExtent(" ").x);
+			packColumn(table, column);
+		}
+	}
+
+	private static void packColumn(final Table table, final TableColumn column) {
+		column.pack();
+		if (Util.isGtk()) { // colmuns are badly resized on GTK, more space is actually needed
+			try (final CloseableResource<GC> cr = new CloseableResource<>(new GC(table))) {
+				column.setWidth(column.getWidth() + cr.getResource().stringExtent(" ").x);
+			}
+		}
+	}
+
+	private static void autoSizeStatusColumn(final Table table, final Object input) {
+		if (input instanceof Earthquake[]) {
+			final Earthquake[] elements = (Earthquake[]) input;
+			if (elements.length > 0) {
+				if (elements[0].getStatus().isPresent()) {
+					if (table.getColumn(COL_IDX_STATUS).getWidth() == 0) {
+						packColumn(table, table.getColumn(COL_IDX_STATUS));
+					}
+				}
+				else {
+					table.getColumn(COL_IDX_STATUS).setWidth(0);
 				}
 			}
 		}
