@@ -14,7 +14,7 @@ jobs:
     - if: startsWith(matrix.os, 'ubuntu')
       run: sudo dpkg --add-architecture i386 && sudo apt-get update && sudo apt-get install -y wine32
     - if: startsWith(matrix.os, 'macOS')
-      run: brew update && brew install ant wine
+      run: brew update && brew install ant
     - uses: actions/setup-java@master
       with:
         java-version: ${{ matrix.java }}
