@@ -6,7 +6,7 @@ jobs:
   build:
     strategy:
       matrix:
-        java: [ '8', '9', '10', '11', '12', '13' ]
+        java: [ '8', '9', '10', '11', '12', '13', '14' ]
         os: [ 'windows-latest', 'ubuntu-latest', 'macOS-latest' ]
     runs-on: ${{ matrix.os }}
     steps:
@@ -19,8 +19,8 @@ jobs:
       with:
         java-version: ${{ matrix.java }}
     - run: ant -diagnostics
-    - run: ant -noinput
-    - if: matrix.os == 'ubuntu-latest' && matrix.java == '13'
+    - run: ant -noinput -DignoreWineErrors=true
+    - if: matrix.os == 'ubuntu-latest' && matrix.java == '14'
       uses: sonarsource/sonarcloud-github-action@master
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
