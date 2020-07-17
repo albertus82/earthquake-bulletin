@@ -41,7 +41,7 @@ public class CacheManager<T extends Cache<?, ?>> {
 				logger.log(Level.CONFIG, "{0} serialized successfully.", instance);
 			}
 			catch (final IOException e) {
-				logger.log(Level.WARNING, "Cannot serialize " + instance + ':', e);
+				logger.log(Level.WARNING, e, () -> "Cannot serialize " + instance + ':');
 			}
 		}
 	}
@@ -62,7 +62,7 @@ public class CacheManager<T extends Cache<?, ?>> {
 				}
 			}
 			catch (final IOException | ClassNotFoundException | ClassCastException e) {
-				logger.log(Level.WARNING, "Cannot deserialize cache object from \"" + file + "\":", e);
+				logger.log(Level.WARNING, e, () -> "Cannot deserialize cache object from \"" + file + "\":");
 			}
 		}
 		return null;
@@ -76,7 +76,7 @@ public class CacheManager<T extends Cache<?, ?>> {
 			}
 		}
 		catch (final IOException e) {
-			logger.log(Level.WARNING, "Cannot delete cache file \"" + path + "\":", e);
+			logger.log(Level.WARNING, e, () -> "Cannot delete cache file \"" + path + "\":");
 		}
 	}
 
