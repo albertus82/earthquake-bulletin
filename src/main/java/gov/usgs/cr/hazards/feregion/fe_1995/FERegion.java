@@ -9,10 +9,15 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import it.albertus.util.logging.LoggerFactory;
+import picocli.CommandLine;
+import picocli.CommandLine.Command;
+import picocli.CommandLine.ExitCode;
+import picocli.CommandLine.Parameters;
 
 /**
  * This class can provide Flinn-Engdahl region informations.
@@ -200,23 +205,33 @@ public class FERegion {
 	 * @param args command line arguments
 	 * @throws IOException if the <tt>asc</tt> resources aren't readable
 	 */
-	public static void main(final String[] args) throws IOException {
-		if (args.length != 2) {
-			System.err.println("   Usage:  feregion  <lon> <lat>");
-			System.err.println("   As In:  feregion  -122.5  36.2");
-			System.err.println("   As In:  feregion   122.5W 36.2N");
+	public static void main(final String... args) {
+		System.exit(new CommandLine(new FERegionCommand()).setCommandName(FERegion.class.getSimpleName().toLowerCase()).execute(args));
+	}
+}
+
+@Command(description = "Returns Flinn-Engdahl Region name from decimal lon, lat values given on command line.", footer = { "As in: feregion -122.5  36.2", "As in: feregion  122.5W 36.2N" }, usageHelpWidth = 128, mixinStandardHelpOptions = false)
+class FERegionCommand implements Callable<Integer> {
+
+	private static final Logger logger = LoggerFactory.getLogger(FERegionCommand.class);
+
+	@Parameters(index = "0", description = "longitude")
+	private String lon;
+
+	@Parameters(index = "1", description = "latitude")
+	private String lat;
+
+	@Override
+	public Integer call() throws IOException {
+		FERegion instance = new FERegion();
+		try {
+			System.out.println(instance.getGeographicRegion(lon, lat).getName());
+			return ExitCode.OK;
 		}
-		else {
-			final FERegion instance = new FERegion();
-			try {
-				System.out.println(instance.getGeographicRegion(args[0], args[1]).getName());
-			}
-			catch (final IllegalCoordinateException e) {
-				System.err.println(e.getMessage());
-				logger.log(Level.FINE, e.toString(), e);
-				System.exit(1);
-			}
+		catch (final IllegalCoordinateException e) {
+			System.err.println(e.getMessage());
+			logger.log(Level.FINE, e.toString(), e);
+			return ExitCode.SOFTWARE;
 		}
 	}
-
 }
