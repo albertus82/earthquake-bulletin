@@ -24,7 +24,7 @@ public class Leaflet {
 			layers = out.toString(StandardCharsets.UTF_8.name());
 		}
 		catch (final Exception e) {
-			logger.log(Level.SEVERE, "Cannot read resource \"/" + Leaflet.class.getPackage().getName().replace('.', '/') + '/' + RESOURCE_NAME + "\":", e);
+			logger.log(Level.SEVERE, e, () -> "Cannot read resource \"/" + Leaflet.class.getPackage().getName().replace('.', '/') + '/' + RESOURCE_NAME + "\":");
 		}
 		LAYERS = layers;
 	}

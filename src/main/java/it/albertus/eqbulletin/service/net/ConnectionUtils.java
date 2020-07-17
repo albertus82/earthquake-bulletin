@@ -28,7 +28,7 @@ public class ConnectionUtils {
 					return charset;
 				}
 				catch (final IllegalArgumentException e) {
-					logger.log(Level.WARNING, "Cannot detect charset for name \"" + charsetName + "\":", e);
+					logger.log(Level.WARNING, e, () -> "Cannot detect charset for name \"" + charsetName + "\":");
 				}
 			}
 		}
