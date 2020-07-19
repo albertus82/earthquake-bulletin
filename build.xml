@@ -5,7 +5,7 @@
 	<property name="version.number" value="2.2.4" />
 
 	<property environment="env" />
-	<property name="env.JRE8_HOME" value="${env.JAVA_HOME}/../jdk1.8.0_221/jre" />
+	<property name="env.JRE8_HOME" value="${env.JAVA_HOME}/../jdk1.8.0_261/jre" />
 
 	<property file="build.properties" />
 
