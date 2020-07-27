@@ -1,11 +1,18 @@
 package it.albertus.eqbulletin.gui;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UncheckedIOException;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
+import java.util.Collection;
 import java.util.Date;
+import java.util.Objects;
+import java.util.Properties;
+import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -14,14 +21,29 @@ import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.resource.FontRegistry;
 import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.viewers.CellLabelProvider;
+import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
+import org.eclipse.jface.viewers.StyledCellLabelProvider;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StyleRange;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 
 import it.albertus.eqbulletin.resources.Messages;
@@ -50,13 +72,13 @@ public class AboutDialog extends Dialog {
 	public void open() {
 		final Shell shell = new Shell(getParent(), getStyle());
 		shell.setText(getText());
-		shell.setImage(shell.getDisplay().getSystemImage(SWT.ICON_INFORMATION));
+		shell.setImage(Images.getMainIconMap().get(new Rectangle(0, 0, 16, 16)));
 		createContents(shell);
 		constrainShellSize(shell);
 		shell.open();
 	}
 
-	private void createContents(final Shell shell) {
+	private static void createContents(final Shell shell) {
 		GridLayoutFactory.swtDefaults().applyTo(shell);
 
 		final LinkSelectionListener linkSelectionListener = new LinkSelectionListener();
@@ -82,12 +104,8 @@ public class AboutDialog extends Dialog {
 
 		final Link acknowledgementsLocations = new Link(shell, SWT.WRAP);
 		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.CENTER).grab(true, false).applyTo(acknowledgementsLocations);
-		acknowledgementsLocations.setText(Messages.get("lbl.about.acknowledgements.locations", buildAnchor(Messages.get("url.geofon"), Messages.get("lbl.geofon")), buildAnchor(Messages.get("url.gfz"), Messages.get("lbl.gfz")), buildAnchor(Messages.get("url.gevn"), Messages.get("lbl.gevn"))));
+		acknowledgementsLocations.setText(Messages.get("lbl.about.acknowledgements.icon", buildAnchor(Messages.get("url.icon"), Messages.get("lbl.icon"))));
 		acknowledgementsLocations.addSelectionListener(linkSelectionListener);
-
-		final Label acknowledgementsData = new Label(shell, SWT.WRAP);
-		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.CENTER).grab(true, false).applyTo(acknowledgementsData);
-		acknowledgementsData.setText(Messages.get("lbl.about.acknowledgements.data", Messages.get("lbl.geofon"), Messages.get("lbl.gfz")));
 
 		final Link linkLicense = new Link(shell, SWT.WRAP);
 		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.CENTER).grab(true, false).applyTo(linkLicense);
@@ -100,10 +118,10 @@ public class AboutDialog extends Dialog {
 		appLicense.setBackground(shell.getDisplay().getSystemColor(SWT.COLOR_LIST_BACKGROUND));
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).hint(SWT.DEFAULT, SwtUtils.convertVerticalDLUsToPixels(appLicense, 80)).applyTo(appLicense);
 
-		final Link linkEclipseLicense = new Link(shell, SWT.WRAP);
-		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.CENTER).grab(true, false).applyTo(linkEclipseLicense);
-		linkEclipseLicense.setText(Messages.get("lbl.about.license.thirdparty", buildAnchor(Messages.get("url.epl"), Messages.get("lbl.epl"))));
-		linkEclipseLicense.addSelectionListener(linkSelectionListener);
+		final Label thirdPartySoftwareLabel = new Label(shell, SWT.WRAP);
+		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.CENTER).grab(true, false).applyTo(thirdPartySoftwareLabel);
+		thirdPartySoftwareLabel.setText(Messages.get("lbl.about.thirdparty"));
+		createThirdPartySoftwareTable(shell);
 
 		final Button okButton = new Button(shell, SWT.PUSH);
 		okButton.setText(Messages.get("lbl.button.ok"));
@@ -119,7 +137,7 @@ public class AboutDialog extends Dialog {
 		shell.setDefaultButton(okButton);
 	}
 
-	private void constrainShellSize(final Shell shell) {
+	private static void constrainShellSize(final Shell shell) {
 		final int preferredWidth = shell.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x;
 		final int clientWidth = shell.getMonitor().getClientArea().width;
 		if (preferredWidth > clientWidth / MONITOR_SIZE_DIVISOR) {
@@ -150,17 +168,176 @@ public class AboutDialog extends Dialog {
 		return text.length() <= System.lineSeparator().length() ? "" : text.substring(System.lineSeparator().length());
 	}
 
-	/*
-	 * public static void main(String[] args) { Display display = new Display();
-	 * Shell shell = new Shell(display); GridLayout layout = new GridLayout();
-	 * shell.setLayout(layout); Label label = new Label(shell, SWT.WRAP); final
-	 * GridData data = new GridData(SWT.FILL, SWT.TOP, true, false, 1, 1);
-	 * label.setLayoutData(data); label.setText(
-	 * "asda sda sdasd asda sda sdada dadads asd adsad as dadsa sad sada dsasda sd adsa sasd"
-	 * ); List list = new List(shell, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
-	 * list.setLayoutData(new GridData(GridData.FILL_BOTH)); for (int i = 0; i <
-	 * 100; i++) { list.add("asddas "+i); } shell.open(); while
-	 * (!shell.isDisposed()) { if (!display.readAndDispatch()) display.sleep();
-	 * } display.dispose(); }
-	 */
+	private static void createThirdPartySoftwareTable(final Composite parent) {
+		final TableViewer tableViewer = new TableViewer(parent, SWT.BORDER | SWT.FULL_SELECTION);
+		ColumnViewerToolTipSupport.enableFor(tableViewer);
+		final Table table = tableViewer.getTable();
+		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(table);
+		table.setLinesVisible(true);
+		table.setHeaderVisible(false);
+
+		final TableViewerColumn authorColumn = new TableViewerColumn(tableViewer, SWT.NONE);
+		authorColumn.setLabelProvider(new CellLabelProvider() {
+			@Override
+			public void update(final ViewerCell cell) {
+				if (cell.getElement() instanceof ThirdPartySoftware) {
+					final ThirdPartySoftware element = (ThirdPartySoftware) cell.getElement();
+					cell.setText(element.getAuthor());
+				}
+			}
+		});
+
+		final TableViewerColumn licenseColumn = new TableViewerColumn(tableViewer, SWT.NONE);
+		licenseColumn.setLabelProvider(new StyledCellLabelProvider() { // NOSONAR Cannot avoid extending this JFace class.
+			@Override
+			public void update(final ViewerCell cell) {
+				cell.setForeground(table.getDisplay().getSystemColor(SWT.COLOR_LINK_FOREGROUND));
+				final String text = Messages.get("lbl.about.thirdparty.license");
+				cell.setText(text);
+				final StyleRange styleRange = new StyleRange();
+				styleRange.underline = true;
+				styleRange.length = text.length();
+				cell.setStyleRanges(new StyleRange[] { styleRange });
+				super.update(cell);
+			}
+
+			@Override
+			public String getToolTipText(final Object o) {
+				if (o instanceof ThirdPartySoftware) {
+					final ThirdPartySoftware element = (ThirdPartySoftware) o;
+					return element.getLicenseUri().toString();
+				}
+				else {
+					return super.getToolTipText(o);
+				}
+			}
+		});
+
+		final TableViewerColumn homePageColumn = new TableViewerColumn(tableViewer, SWT.NONE);
+		homePageColumn.setLabelProvider(new StyledCellLabelProvider() { // NOSONAR Cannot avoid extending this JFace class.
+			@Override
+			public void update(final ViewerCell cell) {
+				cell.setForeground(table.getDisplay().getSystemColor(SWT.COLOR_LINK_FOREGROUND));
+				final String text = Messages.get("lbl.about.thirdparty.homepage");
+				cell.setText(text);
+				final StyleRange styleRange = new StyleRange();
+				styleRange.underline = true;
+				styleRange.length = text.length();
+				cell.setStyleRanges(new StyleRange[] { styleRange });
+				super.update(cell);
+			}
+
+			@Override
+			public String getToolTipText(final Object o) {
+				if (o instanceof ThirdPartySoftware) {
+					final ThirdPartySoftware element = (ThirdPartySoftware) o;
+					return element.getHomePageUri().toString();
+				}
+				else {
+					return super.getToolTipText(o);
+				}
+			}
+		});
+
+		tableViewer.add(ThirdPartySoftware.loadFromProperties().toArray());
+		for (final TableColumn column : table.getColumns()) {
+			column.pack();
+		}
+
+		table.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(final MouseEvent e) {
+				if (e.button == 1) {
+					final ViewerCell cell = tableViewer.getCell(new Point(e.x, e.y));
+					if (cell != null && cell.getElement() instanceof ThirdPartySoftware) {
+						final ThirdPartySoftware element = (ThirdPartySoftware) cell.getElement();
+						if (cell.getColumnIndex() == 1) {
+							Program.launch(element.getLicenseUri().toString());
+						}
+						else if (cell.getColumnIndex() == 2) {
+							Program.launch(element.getHomePageUri().toString());
+						}
+					}
+				}
+			}
+		});
+
+		table.addMouseMoveListener(e -> {
+			final ViewerCell cell = tableViewer.getCell(new Point(e.x, e.y));
+			if (cell != null && cell.getColumnIndex() != 0) {
+				if (parent.getCursor() == null) {
+					parent.setCursor(parent.getDisplay().getSystemCursor(SWT.CURSOR_HAND));
+				}
+			}
+			else if (parent.getDisplay().getSystemCursor(SWT.CURSOR_HAND).equals(parent.getCursor())) {
+				parent.setCursor(null);
+			}
+		});
+	}
+
+	private static class ThirdPartySoftware implements Comparable<ThirdPartySoftware> {
+
+		private final String author;
+		private final URI licenseUri;
+		private final URI homePageUri;
+
+		private ThirdPartySoftware(final String author, final URI licenseUri, final URI homePageUri) {
+			this.author = author;
+			this.licenseUri = licenseUri;
+			this.homePageUri = homePageUri;
+		}
+
+		private String getAuthor() {
+			return author;
+		}
+
+		private URI getLicenseUri() {
+			return licenseUri;
+		}
+
+		private URI getHomePageUri() {
+			return homePageUri;
+		}
+
+		private static Collection<ThirdPartySoftware> loadFromProperties() {
+			final Properties properties = new Properties();
+			try (final InputStream is = ThirdPartySoftware.class.getResourceAsStream("thirdparty.properties")) {
+				properties.load(is);
+			}
+			catch (final IOException e) {
+				throw new UncheckedIOException(e);
+			}
+			final Collection<ThirdPartySoftware> set = new TreeSet<>();
+			for (byte i = 1; i < Byte.MAX_VALUE; i++) {
+				final String author = properties.getProperty(i + ".author");
+				if (author == null) {
+					break;
+				}
+				set.add(new ThirdPartySoftware(author, URI.create(properties.getProperty(i + ".licenseUri")), URI.create(properties.getProperty(i + ".homePageUri"))));
+			}
+			return set;
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hash(author);
+		}
+
+		@Override
+		public boolean equals(final Object obj) {
+			if (this == obj) {
+				return true;
+			}
+			if (!(obj instanceof ThirdPartySoftware)) {
+				return false;
+			}
+			ThirdPartySoftware other = (ThirdPartySoftware) obj;
+			return Objects.equals(author, other.author);
+		}
+
+		@Override
+		public int compareTo(final ThirdPartySoftware o) {
+			return this.author.compareTo(o.author);
+		}
+	}
 }
