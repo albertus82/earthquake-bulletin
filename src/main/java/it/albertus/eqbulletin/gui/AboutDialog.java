@@ -104,8 +104,12 @@ public class AboutDialog extends Dialog {
 
 		final Link acknowledgementsLocations = new Link(shell, SWT.WRAP);
 		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.CENTER).grab(true, false).applyTo(acknowledgementsLocations);
-		acknowledgementsLocations.setText(Messages.get("lbl.about.acknowledgements.icon", buildAnchor(Messages.get("url.icon"), Messages.get("lbl.icon"))));
+		acknowledgementsLocations.setText(Messages.get("lbl.about.acknowledgements.locations", buildAnchor(Messages.get("url.geofon"), Messages.get("lbl.geofon")), buildAnchor(Messages.get("url.gfz"), Messages.get("lbl.gfz")), buildAnchor(Messages.get("url.gevn"), Messages.get("lbl.gevn"))));
 		acknowledgementsLocations.addSelectionListener(linkSelectionListener);
+
+		final Label acknowledgementsData = new Label(shell, SWT.WRAP);
+		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.CENTER).grab(true, false).applyTo(acknowledgementsData);
+		acknowledgementsData.setText(Messages.get("lbl.about.acknowledgements.data", Messages.get("lbl.geofon"), Messages.get("lbl.gfz")));
 
 		final Link linkLicense = new Link(shell, SWT.WRAP);
 		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.CENTER).grab(true, false).applyTo(linkLicense);
