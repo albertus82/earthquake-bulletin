@@ -21,6 +21,7 @@ import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.resource.FontRegistry;
 import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.util.Util;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.StyledCellLabelProvider;
@@ -33,6 +34,7 @@ import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.program.Program;
@@ -48,6 +50,7 @@ import org.eclipse.swt.widgets.Text;
 
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.jface.SwtUtils;
+import it.albertus.jface.closeable.CloseableResource;
 import it.albertus.jface.listener.LinkSelectionListener;
 import it.albertus.util.Version;
 import it.albertus.util.logging.LoggerFactory;
@@ -103,7 +106,7 @@ public class AboutDialog extends Dialog {
 			logger.log(Level.WARNING, e.toString(), e);
 			versionDate = new Date();
 		}
-		info.setText(buildAnchor(Messages.get("url"), Messages.get("msg.application.name")) + ' ' + Messages.get("msg.version", version.getNumber(), DateFormat.getDateInstance(DateFormat.MEDIUM, Messages.getLanguage().getLocale()).format(versionDate)));
+		info.setText(buildAnchor(Messages.get("project.url"), Messages.get("msg.application.name")) + ' ' + Messages.get("msg.version", version.getNumber(), DateFormat.getDateInstance(DateFormat.MEDIUM, Messages.getLanguage().getLocale()).format(versionDate)));
 		info.addSelectionListener(linkSelectionListener);
 
 		final Link acknowledgementsLocations = new Link(shell, SWT.WRAP);
@@ -236,9 +239,8 @@ public class AboutDialog extends Dialog {
 		});
 
 		tableViewer.add(ThirdPartySoftware.loadFromProperties().toArray());
-		for (final TableColumn column : table.getColumns()) {
-			column.pack();
-		}
+
+		packColumns(table);
 
 		table.addMouseListener(new MouseAdapter() {
 			@Override
@@ -278,6 +280,21 @@ public class AboutDialog extends Dialog {
 		styleRange.underline = true;
 		styleRange.length = label.length();
 		cell.setStyleRanges(new StyleRange[] { styleRange });
+	}
+
+	private static void packColumns(final Table table) {
+		for (final TableColumn column : table.getColumns()) {
+			packColumn(table, column);
+		}
+	}
+
+	private static void packColumn(final Table table, final TableColumn column) {
+		column.pack();
+		if (Util.isGtk()) { // colmuns are badly resized on GTK, more space is actually needed
+			try (final CloseableResource<GC> cr = new CloseableResource<>(new GC(table))) {
+				column.setWidth(column.getWidth() + cr.getResource().stringExtent("  ").x);
+			}
+		}
 	}
 
 	private static class ThirdPartySoftware implements Comparable<ThirdPartySoftware> {
@@ -342,7 +359,7 @@ public class AboutDialog extends Dialog {
 
 		@Override
 		public int compareTo(final ThirdPartySoftware o) {
-			return this.author.compareTo(o.author);
+			return author.compareTo(o.author);
 		}
 	}
 }
