@@ -59,7 +59,7 @@ public class AboutDialog extends Dialog {
 
 	private static final double MONITOR_SIZE_DIVISOR = 1.2;
 
-	private static final String SYM_NAME_FONT_DEFAULT = AboutDialog.class.getName().toLowerCase() + ".default";
+	private static final String SYM_NAME_FONT_DEFAULT = AboutDialog.class.getName() + ".default";
 
 	private static final int COL_IDX_THIRDPARTY_AUTHOR = 0;
 	private static final int COL_IDX_THIRDPARTY_LICENSE = 1;
@@ -284,14 +284,14 @@ public class AboutDialog extends Dialog {
 
 	private static void packColumns(final Table table) {
 		for (final TableColumn column : table.getColumns()) {
-			packColumn(table, column);
+			packColumn(column);
 		}
 	}
 
-	private static void packColumn(final Table table, final TableColumn column) {
+	private static void packColumn(final TableColumn column) {
 		column.pack();
 		if (Util.isGtk()) { // colmuns are badly resized on GTK, more space is actually needed
-			try (final CloseableResource<GC> cr = new CloseableResource<>(new GC(table))) {
+			try (final CloseableResource<GC> cr = new CloseableResource<>(new GC(column.getParent()))) {
 				column.setWidth(column.getWidth() + cr.getResource().stringExtent("  ").x);
 			}
 		}
