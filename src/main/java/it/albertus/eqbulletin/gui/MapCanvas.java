@@ -143,12 +143,13 @@ public class MapCanvas implements IShellProvider, Multilanguage {
 
 		canvas.addMouseWheelListener(e -> {
 			if (image != null && e.count != 0) {
-				final int[] nearestValues = getZoomNearestValues(zoomLevel == AUTO_SCALE ? getAutoscaleRatio() : zoomLevel);
+				final float autoscaleRatio = getAutoscaleRatio();
+				final int[] nearestValues = getZoomNearestValues(zoomLevel == AUTO_SCALE ? autoscaleRatio : zoomLevel);
 				if (e.count > 0) { // Zoom in
-					setZoomLevel(nearestValues[1]);
+					zoomIn(autoscaleRatio, nearestValues);
 				}
 				else if (e.count < 0) { // Zoom out
-					setZoomLevel(nearestValues[0]);
+					zoomOut(autoscaleRatio, nearestValues);
 				}
 			}
 		});
@@ -157,18 +158,37 @@ public class MapCanvas implements IShellProvider, Multilanguage {
 			@Override
 			public void keyPressed(final KeyEvent e) {
 				if (image != null) {
-					final int[] nearestValues = getZoomNearestValues(zoomLevel == AUTO_SCALE ? getAutoscaleRatio() : zoomLevel);
+					final float autoscaleRatio = getAutoscaleRatio();
+					final int[] nearestValues = getZoomNearestValues(zoomLevel == AUTO_SCALE ? autoscaleRatio : zoomLevel);
 					if (e.keyCode == '+' || e.keyCode == SWT.KEYPAD_ADD) { // Zoom in
-						setZoomLevel(nearestValues[1]);
+						zoomIn(autoscaleRatio, nearestValues);
 					}
 					else if (e.keyCode == '-' || e.keyCode == SWT.KEYPAD_SUBTRACT) { // Zoom out
-						setZoomLevel(nearestValues[0]);
+						zoomOut(autoscaleRatio, nearestValues);
 					}
 				}
 			}
 		});
 
 		setInstance(this);
+	}
+
+	private void zoomIn(final float autoscaleRatio, final int[] nearestValues) {
+		if (zoomLevel != AUTO_SCALE && zoomLevel < autoscaleRatio && autoscaleRatio < nearestValues[1]) {
+			setZoomLevel(AUTO_SCALE);
+		}
+		else {
+			setZoomLevel(nearestValues[1]);
+		}
+	}
+
+	private void zoomOut(final float autoscaleRatio, final int[] nearestValues) {
+		if (zoomLevel != AUTO_SCALE && zoomLevel > autoscaleRatio && autoscaleRatio > nearestValues[0]) {
+			setZoomLevel(AUTO_SCALE);
+		}
+		else {
+			setZoomLevel(nearestValues[0]);
+		}
 	}
 
 	private static void setInstance(final MapCanvas instance) {
