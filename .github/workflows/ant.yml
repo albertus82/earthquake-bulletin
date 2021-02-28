@@ -6,16 +6,16 @@ jobs:
   build:
     strategy:
       matrix:
-        java: [ '8', '9', '10', '11', '12', '13', '14' ]
+        java: [ '8', '9', '10', '11', '12', '13', '14', '15' ]
         os: [ 'windows-latest', 'ubuntu-latest', 'macOS-latest' ]
     runs-on: ${{ matrix.os }}
     steps:
-    - uses: actions/checkout@master
+    - uses: actions/checkout@v2
     - if: startsWith(matrix.os, 'ubuntu')
       run: sudo dpkg --add-architecture i386 && sudo apt-get update && sudo apt-get install -y wine32
     - if: startsWith(matrix.os, 'macOS')
       run: brew update && brew install ant
-    - uses: actions/setup-java@master
+    - uses: actions/setup-java@v1
       with:
         java-version: ${{ matrix.java }}
     - run: ant -diagnostics
