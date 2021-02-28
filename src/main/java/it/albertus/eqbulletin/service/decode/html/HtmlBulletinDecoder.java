@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.jsoup.nodes.Document;
@@ -76,7 +77,8 @@ public class HtmlBulletinDecoder {
 				longitude = -longitude;
 			}
 
-			final short depth = Short.parseShort(spans.last().text());
+			final Optional<Element> depthSpan = spans.stream().filter(e -> e.hasClass("pull-right")).findFirst();
+			final short depth = Short.parseShort(depthSpan.orElseThrow(() -> new IllegalArgumentException(String.valueOf(spans))).text().replace("*", "").trim());
 			final Status status = null; // Removed from the web page on 08/10/2019
 			final String region = divs.get(4).text();
 
