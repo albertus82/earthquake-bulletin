@@ -6,3 +6,4 @@
 /build/
 /target/
 /sonar-project.properties
+lombok.config
