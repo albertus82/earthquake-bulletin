@@ -474,8 +474,26 @@
 			</config>
 		</launch4j>
 
+		<launch4j bindir="${launch4j.bindir}">
+			<config outfile="${build.packagesDirectory}/win32-win32-x86_64/app/${windows.exeFileName}" jarpath="${windows.jarFileName}" headertype="${launch4j.headerType}" dontwrapjar="${launch4j.dontWrapJar}" stayalive="${launch4j.stayAlive}" restartoncrash="${launch4j.restartOnCrash}" priority="${launch4j.priority}" errtitle="${launch4j.errTitle}" chdir="." icon="${icons.directory}/main.ico">
+				<singleInstance mutexname="${mainClass}" windowtitle="${project.name}" />
+				<jre runtimebits="64" minversion="${build.compiler.target}.0" jdkpreference="${launch4j.jdkPreference}" initialheapsize="${vm.initialHeapSize}" maxheapsize="${vm.maxHeapSize}" />
+				<versionInfo fileversion="${version.number}.0" txtfileversion="${version.number}" filedescription="${project.name}" copyright="${launch4j.copyright}" productversion="${version.number}.0" txtproductversion="${version.number}" productname="${project.name}" internalname="${project.artifactId}" originalfilename="${windows.exeFileName}" companyname="${launch4j.companyName}" />
+			</config>
+		</launch4j>
+		<launch4j bindir="${launch4j.bindir}">
+			<config outfile="${build.packagesDirectory}/win32-win32-x86_64/app/${launch4j.feregion.name}.exe" jarpath="${windows.jarFileName}" headertype="${launch4j.feregion.headerType}" dontwrapjar="${launch4j.dontWrapJar}" stayalive="${launch4j.stayAlive}" restartoncrash="${launch4j.restartOnCrash}" priority="${launch4j.priority}" errtitle="${launch4j.errTitle}" chdir=".">
+				<jre minversion="${build.compiler.target}.0" jdkpreference="${launch4j.jdkPreference}" initialheapsize="${feregion.vm.initialHeapSize}" maxheapsize="${feregion.vm.maxHeapSize}" />
+				<classPath mainclass="${feregion.mainClass}" cp="${dependencies.directory}/*.jar" />
+				<versionInfo fileversion="${version.number}.0" txtfileversion="${version.number}" filedescription="${launch4j.feregion.name}" copyright="${launch4j.copyright}" productversion="${version.number}.0" txtproductversion="${version.number}" productname="${launch4j.feregion.name}" internalname="${launch4j.feregion.name}" originalfilename="${launch4j.feregion.name}.exe" companyname="${launch4j.companyName}" />
+			</config>
+		</launch4j>
+
 		<zip destfile="${build.distDirectory}/${project.artifactId}-${version.number}-win32-win32-x86-bin.zip" level="9">
 			<zipfileset dir="${build.packagesDirectory}/win32-win32-x86/app" prefix="${project.name}" />
+		</zip>
+		<zip destfile="${build.distDirectory}/${project.artifactId}-${version.number}-win32-win32-x86_64-bin.zip" level="9">
+			<zipfileset dir="${build.packagesDirectory}/win32-win32-x86_64/app" prefix="${project.name}" />
 		</zip>
 
 		<echo file="${build.packagesDirectory}/win32-win32-x86/setup.iss">
@@ -497,6 +515,63 @@
 			SolidCompression=yes
 			CloseApplications=no
 			ArchitecturesAllowed=x86
+
+			[Languages]
+			Name: "English"; MessagesFile: "compiler:Default.isl"; LicenseFile: "app\LICENSE.txt"
+			Name: "Italiano"; MessagesFile: "compiler:Languages\Italian.isl"; LicenseFile: "app\LICENSE.txt"
+
+			[Run]
+			Filename: "{app}\${windows.exeFileName}"; Description: "{cm:LaunchProgram,${project.name}}"; Flags: nowait postinstall skipifsilent
+
+			[Tasks]
+			Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
+			Name: "startupicon"; Description: "{cm:AutoStartProgram,${project.name}}"; GroupDescription: "{cm:AutoStartProgramGroupDescription}"; Flags: unchecked
+
+			[Icons]
+			Name: "{group}\${project.name}"; Filename: "{app}\${windows.exeFileName}"
+			Name: "{group}\{cm:UninstallProgram,${project.name}}"; Filename: "{uninstallexe}"
+			Name: "{autodesktop}\${project.name}"; Filename: "{app}\${windows.exeFileName}"; Tasks: desktopicon
+			Name: "{userstartup}\${project.name}"; Filename: "{app}\${windows.exeFileName}"; Tasks: startupicon
+
+			[Files]
+			Source: "app\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
+			Source: "config\*"; DestDir: "{userappdata}\${project.name}"; Flags: onlyifdoesntexist skipifsourcedoesntexist
+			Source: "setup.log"; DestDir: "{autoappdata}\${project.name}"; DestName: "${dependencies.logFileName}"; Flags: ignoreversion overwritereadonly uninsremovereadonly; Attribs: hidden readonly
+
+			[Code]
+			procedure CurStepChanged(CurStep: TSetupStep);
+			var
+				jarFileNames: TArrayOfString;
+				i: Integer;
+			begin
+				if (CurStep = ssInstall) and (LoadStringsFromFile(ExpandConstant('{autoappdata}\${project.name}\${dependencies.logFileName}'), jarFileNames)) then
+				begin
+					for i := 0 to GetArrayLength(jarFileNames) - 1 do
+						DeleteFile(ExpandConstant('{app}\${dependencies.directory}\' + jarFileNames[i]));
+				end;
+			end;
+		</echo>
+
+		<echo file="${build.packagesDirectory}/win32-win32-x86_64/setup.iss">
+			[Setup]
+			AppName=${project.name}
+			AppVersion=${version.number}
+			VersionInfoVersion=${version.number}
+			AppId=${innoSetup.AppId.x64}
+			AppPublisherURL=${innoSetup.AppPublisherURL}
+			AppSupportURL=${innoSetup.AppSupportURL}
+			AppUpdatesURL=${innoSetup.AppUpdatesURL}
+			AppMutex=${mainClass}
+			PrivilegesRequired=lowest
+			PrivilegesRequiredOverridesAllowed=dialog
+			DefaultDirName={autopf64}\${project.name}
+			DefaultGroupName=${project.name}
+			UninstallDisplayIcon={app}\${windows.exeFileName}
+			Compression=lzma2
+			SolidCompression=yes
+			CloseApplications=no
+			ArchitecturesAllowed=x64
+			ArchitecturesInstallIn64BitMode=x64
 
 			[Languages]
 			Name: "English"; MessagesFile: "compiler:Default.isl"; LicenseFile: "app\LICENSE.txt"
@@ -556,82 +631,6 @@
 			<arg value="/O${build.distDirectory}" />
 			<arg value="/F${project.artifactId}-${version.number}-win32-win32-x86-setup" />
 		</exec>
-
-		<launch4j bindir="${launch4j.bindir}">
-			<config outfile="${build.packagesDirectory}/win32-win32-x86_64/app/${windows.exeFileName}" jarpath="${windows.jarFileName}" headertype="${launch4j.headerType}" dontwrapjar="${launch4j.dontWrapJar}" stayalive="${launch4j.stayAlive}" restartoncrash="${launch4j.restartOnCrash}" priority="${launch4j.priority}" errtitle="${launch4j.errTitle}" chdir="." icon="${icons.directory}/main.ico">
-				<singleInstance mutexname="${mainClass}" windowtitle="${project.name}" />
-				<jre runtimebits="64" minversion="${build.compiler.target}.0" jdkpreference="${launch4j.jdkPreference}" initialheapsize="${vm.initialHeapSize}" maxheapsize="${vm.maxHeapSize}" />
-				<versionInfo fileversion="${version.number}.0" txtfileversion="${version.number}" filedescription="${project.name}" copyright="${launch4j.copyright}" productversion="${version.number}.0" txtproductversion="${version.number}" productname="${project.name}" internalname="${project.artifactId}" originalfilename="${windows.exeFileName}" companyname="${launch4j.companyName}" />
-			</config>
-		</launch4j>
-		<launch4j bindir="${launch4j.bindir}">
-			<config outfile="${build.packagesDirectory}/win32-win32-x86_64/app/${launch4j.feregion.name}.exe" jarpath="${windows.jarFileName}" headertype="${launch4j.feregion.headerType}" dontwrapjar="${launch4j.dontWrapJar}" stayalive="${launch4j.stayAlive}" restartoncrash="${launch4j.restartOnCrash}" priority="${launch4j.priority}" errtitle="${launch4j.errTitle}" chdir=".">
-				<jre minversion="${build.compiler.target}.0" jdkpreference="${launch4j.jdkPreference}" initialheapsize="${feregion.vm.initialHeapSize}" maxheapsize="${feregion.vm.maxHeapSize}" />
-				<classPath mainclass="${feregion.mainClass}" cp="${dependencies.directory}/*.jar" />
-				<versionInfo fileversion="${version.number}.0" txtfileversion="${version.number}" filedescription="${launch4j.feregion.name}" copyright="${launch4j.copyright}" productversion="${version.number}.0" txtproductversion="${version.number}" productname="${launch4j.feregion.name}" internalname="${launch4j.feregion.name}" originalfilename="${launch4j.feregion.name}.exe" companyname="${launch4j.companyName}" />
-			</config>
-		</launch4j>
-
-		<zip destfile="${build.distDirectory}/${project.artifactId}-${version.number}-win32-win32-x86_64-bin.zip" level="9">
-			<zipfileset dir="${build.packagesDirectory}/win32-win32-x86_64/app" prefix="${project.name}" />
-		</zip>
-
-		<echo file="${build.packagesDirectory}/win32-win32-x86_64/setup.iss">
-			[Setup]
-			AppName=${project.name}
-			AppVersion=${version.number}
-			VersionInfoVersion=${version.number}
-			AppId=${innoSetup.AppId.x64}
-			AppPublisherURL=${innoSetup.AppPublisherURL}
-			AppSupportURL=${innoSetup.AppSupportURL}
-			AppUpdatesURL=${innoSetup.AppUpdatesURL}
-			AppMutex=${mainClass}
-			PrivilegesRequired=lowest
-			PrivilegesRequiredOverridesAllowed=dialog
-			DefaultDirName={autopf64}\${project.name}
-			DefaultGroupName=${project.name}
-			UninstallDisplayIcon={app}\${windows.exeFileName}
-			Compression=lzma2
-			SolidCompression=yes
-			CloseApplications=no
-			ArchitecturesAllowed=x64
-			ArchitecturesInstallIn64BitMode=x64
-
-			[Languages]
-			Name: "English"; MessagesFile: "compiler:Default.isl"; LicenseFile: "app\LICENSE.txt"
-			Name: "Italiano"; MessagesFile: "compiler:Languages\Italian.isl"; LicenseFile: "app\LICENSE.txt"
-
-			[Run]
-			Filename: "{app}\${windows.exeFileName}"; Description: "{cm:LaunchProgram,${project.name}}"; Flags: nowait postinstall skipifsilent
-
-			[Tasks]
-			Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
-			Name: "startupicon"; Description: "{cm:AutoStartProgram,${project.name}}"; GroupDescription: "{cm:AutoStartProgramGroupDescription}"; Flags: unchecked
-
-			[Icons]
-			Name: "{group}\${project.name}"; Filename: "{app}\${windows.exeFileName}"
-			Name: "{group}\{cm:UninstallProgram,${project.name}}"; Filename: "{uninstallexe}"
-			Name: "{autodesktop}\${project.name}"; Filename: "{app}\${windows.exeFileName}"; Tasks: desktopicon
-			Name: "{userstartup}\${project.name}"; Filename: "{app}\${windows.exeFileName}"; Tasks: startupicon
-
-			[Files]
-			Source: "app\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
-			Source: "config\*"; DestDir: "{userappdata}\${project.name}"; Flags: onlyifdoesntexist skipifsourcedoesntexist
-			Source: "setup.log"; DestDir: "{autoappdata}\${project.name}"; DestName: "${dependencies.logFileName}"; Flags: ignoreversion overwritereadonly uninsremovereadonly; Attribs: hidden readonly
-
-			[Code]
-			procedure CurStepChanged(CurStep: TSetupStep);
-			var
-				jarFileNames: TArrayOfString;
-				i: Integer;
-			begin
-				if (CurStep = ssInstall) and (LoadStringsFromFile(ExpandConstant('{autoappdata}\${project.name}\${dependencies.logFileName}'), jarFileNames)) then
-				begin
-					for i := 0 to GetArrayLength(jarFileNames) - 1 do
-						DeleteFile(ExpandConstant('{app}\${dependencies.directory}\' + jarFileNames[i]));
-				end;
-			end;
-		</echo>
 
 		<pathconvert pathsep="&#13;&#10;" property="dependencies.log.x86_64">
 			<fileset dir="${build.packagesDirectory}/win32-win32-x86_64/app/${dependencies.directory}">
