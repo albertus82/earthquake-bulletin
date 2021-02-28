@@ -100,7 +100,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow implements Multilan
 
 	public static void run(final InitializationException ie) {
 		Display.setAppName(Messages.get("msg.application.name"));
-		Display.setAppVersion(Version.getInstance().getNumber());
+		Display.setAppVersion(Version.getNumber());
 		try (final CloseableDevice<Display> cd = new CloseableDevice<>(Display.getDefault())) {
 			final Display display = cd.getDevice();
 

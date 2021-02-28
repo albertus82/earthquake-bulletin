@@ -8,7 +8,6 @@
 	<classpathentry kind="lib" path="lib/compile/common/javax.activation-api-1.2.0.jar" sourcepath="lib/compile/common/src/javax.activation-api-1.2.0-sources.jar"/>
 	<classpathentry kind="lib" path="lib/compile/common/jaxb-api-2.3.1.jar" sourcepath="lib/compile/common/src/jaxb-api-2.3.1-sources.jar"/>
 	<classpathentry kind="lib" path="lib/compile/common/jaxb-runtime-2.3.1.jar" sourcepath="lib/compile/common/src/jaxb-runtime-2.3.1-sources.jar"/>
-	<classpathentry kind="lib" path="lib/compile/common/jface-utils-16.0.2.jar" sourcepath="lib/compile/common/src/jface-utils-16.0.2-sources.jar"/>
 	<classpathentry kind="lib" path="lib/compile/common/jsoup-1.13.1.jar" sourcepath="lib/compile/common/src/jsoup-1.13.1-sources.jar"/>
 	<classpathentry kind="lib" path="lib/compile/common/org.eclipse.core.commands_3.9.0.v20170530-1048.jar" sourcepath="lib/compile/common/src/org.eclipse.core.commands.source_3.9.0.v20170530-1048.jar"/>
 	<classpathentry kind="lib" path="lib/compile/common/org.eclipse.core.jobs_3.9.3.v20180115-1757.jar" sourcepath="lib/compile/common/src/org.eclipse.core.jobs.source_3.9.3.v20180115-1757.jar"/>
@@ -26,5 +25,6 @@
 			<accessrule kind="accessible" pattern="com/sun/net/httpserver/Headers"/>
 		</accessrules>
 	</classpathentry>
+	<classpathentry combineaccessrules="false" kind="src" path="/jface-utils"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

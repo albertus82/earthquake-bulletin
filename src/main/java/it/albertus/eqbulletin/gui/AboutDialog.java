@@ -96,17 +96,16 @@ public class AboutDialog extends Dialog {
 			fontRegistry.put(SYM_NAME_FONT_DEFAULT, info.getFont().getFontData());
 		}
 		info.setFont(fontRegistry.getBold(SYM_NAME_FONT_DEFAULT));
-		final Version version = Version.getInstance();
 		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.CENTER).grab(true, false).applyTo(info);
 		Date versionDate;
 		try {
-			versionDate = version.getDate();
+			versionDate = Version.getDate();
 		}
 		catch (final Exception e) {
 			logger.log(Level.WARNING, e.toString(), e);
 			versionDate = new Date();
 		}
-		info.setText(buildAnchor(Messages.get("project.url"), Messages.get("msg.application.name")) + ' ' + Messages.get("msg.version", version.getNumber(), DateFormat.getDateInstance(DateFormat.MEDIUM, Messages.getLanguage().getLocale()).format(versionDate)));
+		info.setText(buildAnchor(Messages.get("project.url"), Messages.get("msg.application.name")) + ' ' + Messages.get("msg.version", Version.getNumber(), DateFormat.getDateInstance(DateFormat.MEDIUM, Messages.getLanguage().getLocale()).format(versionDate)));
 		info.addSelectionListener(linkSelectionListener);
 
 		final Link acknowledgementsLocations = new Link(shell, SWT.WRAP);
