@@ -11,6 +11,6 @@ while [ -h "$PRG" ] ; do
 done
 PRGDIR=`dirname "$PRG"`
 if [ "$JAVA_HOME" != "" ]
-  then "$JAVA_HOME/bin/java" -DSWT_GTK3=0 -Xms@vm.initialHeapSize@m -Xmx@vm.maxHeapSize@m -classpath "$PRGDIR/@linux.jarFileName@:$PRGDIR/lib/*" @mainClass@
-  else java -DSWT_GTK3=0 -Xms@vm.initialHeapSize@m -Xmx@vm.maxHeapSize@m -classpath "$PRGDIR/@linux.jarFileName@:$PRGDIR/lib/*" @mainClass@
+  then "$JAVA_HOME/bin/java" -Xms@vm.initialHeapSize@m -Xmx@vm.maxHeapSize@m -classpath "$PRGDIR/@linux.jarFileName@:$PRGDIR/lib/*" @mainClass@
+  else java -Xms@vm.initialHeapSize@m -Xmx@vm.maxHeapSize@m -classpath "$PRGDIR/@linux.jarFileName@:$PRGDIR/lib/*" @mainClass@
 fi
