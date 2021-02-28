@@ -228,6 +228,21 @@ public class SearchForm implements IShellProvider, Multilanguage {
 		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.FILL).span(1, 2).applyTo(openMapButton);
 		openMapButton.setToolTipText(Messages.get("lbl.form.button.map.tooltip"));
 		openMapButton.addSelectionListener(new AreaMapSelectionListener(this));
+		openMapButton.addPaintListener(e -> {
+			if (openMapButton.getImage() == null) {
+				final Point buttonSize = openMapButton.getSize();
+				for (final Entry<Rectangle, Image> entry : Images.getOpenStreetMapIconMap().entrySet()) {
+					if (entry.getKey().height < buttonSize.y - buttonSize.y / 6.8f) { // leaving some room around the image
+						logger.log(Level.FINE, "Open Map button size: {0}; setting OpenStreetMap icon: {1}.", new Object[] { buttonSize, entry });
+						openMapButton.setImage(entry.getValue());
+						break;
+					}
+				}
+				openMapButton.requestLayout();
+				final Point preferredSize = shell.computeSize(SWT.DEFAULT, SWT.DEFAULT, true);
+				shell.setMinimumSize(preferredSize.x, preferredSize.y);
+			}
+		});
 
 		longitudeLabel = new Label(areaGroup, SWT.NONE);
 		longitudeLabel.setText(Messages.get("lbl.form.criteria.longitude"));
@@ -383,19 +398,6 @@ public class SearchForm implements IShellProvider, Multilanguage {
 		if (Leaflet.LAYERS != null && !Leaflet.LAYERS.isEmpty()) {
 			mapBoundsDialog.getOptions().getControls().put(LeafletMapControl.LAYERS, Leaflet.LAYERS);
 		}
-	}
-
-	void setOpenMapButtonImage() {
-		final Point buttonSize = openMapButton.getSize();
-		for (final Entry<Rectangle, Image> entry : Images.getOpenStreetMapIconMap().entrySet()) {
-			if (entry.getKey().height < buttonSize.y - buttonSize.y / 6.8f) { // leaving some room around the image
-				logger.log(Level.FINE, "Open Map button size: {0}; setting OpenStreetMap icon: {1}.", new Object[] { buttonSize, entry });
-				openMapButton.setImage(entry.getValue());
-				break;
-			}
-		}
-		openMapButton.setRedraw(true);
-		openMapButton.requestLayout();
 	}
 
 	public boolean isValid() {
