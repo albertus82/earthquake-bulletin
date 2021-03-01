@@ -45,13 +45,13 @@ public class Images {
 		mapIconMap = loadFromResource(Images.class.getPackage().getName() + ".icon.map");
 	}
 
-	private static Map<Rectangle, Image> loadFromResource(final String resourceName) {
-		final Reflections reflections = new Reflections(resourceName, new ResourcesScanner());
-		final Iterable<String> fileNames = reflections.getResources(Pattern.compile(".*\\.png"));
+	private static Map<Rectangle, Image> loadFromResource(final String packageName) {
+		final Reflections reflections = new Reflections(packageName, new ResourcesScanner());
+		final Iterable<String> resourceNames = reflections.getResources(Pattern.compile(".*\\.png"));
 
 		final Map<Rectangle, Image> map = new TreeMap<>(areaComparatorDescending);
-		for (final String fileName : fileNames) {
-			try (final InputStream stream = Images.class.getResourceAsStream('/' + fileName)) {
+		for (final String resourceName : resourceNames) {
+			try (final InputStream stream = Images.class.getResourceAsStream('/' + resourceName)) {
 				for (final ImageData data : new ImageLoader().load(stream)) {
 					final Image image = new Image(Display.getCurrent(), data);
 					map.put(image.getBounds(), image);
@@ -61,7 +61,7 @@ public class Images {
 				throw new UncheckedIOException(e);
 			}
 		}
-		logger.log(Level.CONFIG, "{0}: {1}", new Object[] { resourceName, map });
+		logger.log(Level.CONFIG, "{0}: {1}", new Object[] { packageName, map });
 		return map;
 	}
 
