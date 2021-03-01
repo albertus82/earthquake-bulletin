@@ -43,4 +43,15 @@ Locations were obtained from the [GEOFON](https://geofon.gfz-potsdam.de) program
 
 Seismic data were obtained from the GEOFON data centre of the GFZ German Research Centre for Geosciences.
 
-This application includes software developed by the Eclipse Foundation that is distributed under the [Eclipse Public License](https://eclipse.org/org/documents/epl-v10.php).
+This application uses or includes portions of the following third party software:
+
+|Component                   |Author                     |License                                                |Home page                                     |
+|----------------------------|---------------------------|-------------------------------------------------------|----------------------------------------------|
+|Activation, iStack, JAXB    |Oracle Corporation         |[License](https://git.io/JtpKN)                        |[Home page](https://www.oracle.com)           |
+|Eclipse Platform & SWT      |Eclipse Foundation         |[License](https://www.eclipse.org/legal/epl-2.0/)      |[Home page](https://www.eclipse.org)          |
+|Inno Setup                  |Jordan Russell             |[License](https://jrsoftware.org/files/is/license.txt) |[Home page](https://jrsoftware.org/isinfo.php)|
+|jsoup                       |Jonathan Hedley            |[License](https://jsoup.org/license)                   |[Home page](https://jsoup.org)                |
+|Launch4j                    |Grzegorz Kowal             |[License](https://opensource.org/licenses/BSD-3-Clause)|[Home page](http://launch4j.sourceforge.net)  |
+|Picocli                     |Remko Popma                |[License](https://git.io/JUqAY)                        |[Home page](https://picocli.info)             |
+|Reflections                 |ronmamo                    |[License](https://git.io/Jtp8i)                        |[Home page](https://git.io/Jtp81)             |
+|universalJavaApplicationStub|Tobias Fischer             |[License](https://git.io/JUqAq)                        |[Home page](https://git.io/JUqAF)             |

@@ -61,6 +61,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
+
 @Log
 public class AboutDialog extends Dialog {
 
