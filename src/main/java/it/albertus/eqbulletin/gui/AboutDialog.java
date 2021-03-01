@@ -8,13 +8,13 @@ import java.io.UncheckedIOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Objects;
 import java.util.Properties;
 import java.util.TreeSet;
+import java.util.function.Function;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -22,13 +22,14 @@ import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.resource.FontRegistry;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.util.Util;
-import org.eclipse.jface.viewers.CellLabelProvider;
+import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.StyledCellLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
@@ -37,9 +38,11 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
@@ -53,25 +56,25 @@ import it.albertus.jface.SwtUtils;
 import it.albertus.jface.closeable.CloseableResource;
 import it.albertus.jface.listener.LinkSelectionListener;
 import it.albertus.util.Version;
-import it.albertus.util.logging.LoggerFactory;
-
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
+@Log
 public class AboutDialog extends Dialog {
 
 	private static final double MONITOR_SIZE_DIVISOR = 1.2;
 
+	private static final int SCROLLABLE_VERTICAL_SIZE_DLUS = 25;
+
 	private static final String SYM_NAME_FONT_DEFAULT = AboutDialog.class.getName() + ".default";
 
-	private static final int COL_IDX_THIRDPARTY_AUTHOR = 0;
-	private static final int COL_IDX_THIRDPARTY_LICENSE = 1;
-	private static final int COL_IDX_THIRDPARTY_HOMEPAGE = 2;
-
-	private static final Logger logger = LoggerFactory.getLogger(AboutDialog.class);
-
-	public AboutDialog(final Shell parent) {
-		this(parent, SWT.SHEET);
+	public AboutDialog(@NonNull final Shell parent) {
+		this(parent, SWT.SHEET | SWT.RESIZE);
 	}
 
-	public AboutDialog(final Shell parent, final int style) {
+	public AboutDialog(@NonNull final Shell parent, final int style) {
 		super(parent, style);
 		this.setText(Messages.get("lbl.about.title"));
 	}
@@ -101,8 +104,8 @@ public class AboutDialog extends Dialog {
 		try {
 			versionDate = Version.getDate();
 		}
-		catch (final Exception e) {
-			logger.log(Level.WARNING, e.toString(), e);
+		catch (final ParseException e) {
+			log.log(Level.WARNING, "Invalid version date:", e);
 			versionDate = new Date();
 		}
 		info.setText(buildAnchor(Messages.get("project.url"), Messages.get("msg.application.name")) + ' ' + Messages.get("msg.version", Version.getNumber(), DateFormat.getDateInstance(DateFormat.MEDIUM, Messages.getLanguage().getLocale()).format(versionDate)));
@@ -126,12 +129,19 @@ public class AboutDialog extends Dialog {
 		appLicense.setText(loadTextResource("/META-INF/LICENSE.txt"));
 		appLicense.setEditable(false);
 		appLicense.setBackground(shell.getDisplay().getSystemColor(SWT.COLOR_LIST_BACKGROUND));
-		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).hint(SWT.DEFAULT, SwtUtils.convertVerticalDLUsToPixels(appLicense, 80)).applyTo(appLicense);
+		GridDataFactory.fillDefaults().grab(true, true).hint(SWT.DEFAULT, SwtUtils.convertVerticalDLUsToPixels(appLicense, SCROLLABLE_VERTICAL_SIZE_DLUS)).applyTo(appLicense);
 
 		final Label thirdPartySoftwareLabel = new Label(shell, SWT.WRAP);
 		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.CENTER).grab(true, false).applyTo(thirdPartySoftwareLabel);
 		thirdPartySoftwareLabel.setText(Messages.get("lbl.about.thirdparty"));
-		createThirdPartySoftwareTable(shell);
+
+		final ScrolledComposite scrolledComposite = new ScrolledComposite(shell, SWT.V_SCROLL | SWT.H_SCROLL);
+		scrolledComposite.setLayout(new FillLayout());
+		scrolledComposite.setExpandVertical(true);
+		scrolledComposite.setExpandHorizontal(true);
+		final ThirdPartySoftwareTable thirdPartySoftwareTable = new ThirdPartySoftwareTable(scrolledComposite, null);
+		scrolledComposite.setContent(thirdPartySoftwareTable.getTableViewer().getControl());
+		GridDataFactory.fillDefaults().grab(true, true).hint(SWT.DEFAULT, SwtUtils.convertVerticalDLUsToPixels(scrolledComposite, SCROLLABLE_VERTICAL_SIZE_DLUS)).applyTo(scrolledComposite);
 
 		final Button okButton = new Button(shell, SWT.PUSH);
 		okButton.setText(Messages.get("lbl.button.ok"));
@@ -148,16 +158,17 @@ public class AboutDialog extends Dialog {
 	}
 
 	private static void constrainShellSize(final Shell shell) {
-		final int preferredWidth = shell.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x;
+		final Point preferredSize = shell.computeSize(SWT.DEFAULT, SWT.DEFAULT, true);
 		final int clientWidth = shell.getMonitor().getClientArea().width;
-		if (preferredWidth > clientWidth / MONITOR_SIZE_DIVISOR) {
-			final int wHint = (int) (clientWidth / MONITOR_SIZE_DIVISOR);
-			shell.setSize(wHint, shell.computeSize(wHint, SWT.DEFAULT, true).y);
+		final int desiredWidth;
+		if (preferredSize.x > clientWidth / MONITOR_SIZE_DIVISOR) {
+			desiredWidth = (int) (clientWidth / MONITOR_SIZE_DIVISOR);
 		}
 		else {
-			shell.pack();
+			desiredWidth = preferredSize.x;
 		}
-		shell.setMinimumSize(shell.getSize());
+		shell.setSize(desiredWidth, shell.getSize().y);
+		shell.setMinimumSize(desiredWidth, preferredSize.y);
 	}
 
 	private static String buildAnchor(final String href, final String label) {
@@ -173,192 +184,210 @@ public class AboutDialog extends Dialog {
 			}
 		}
 		catch (final Exception e) {
-			logger.log(Level.WARNING, e.toString(), e);
+			log.log(Level.WARNING, e.toString(), e);
 		}
 		return text.length() <= System.lineSeparator().length() ? "" : text.substring(System.lineSeparator().length());
 	}
 
-	private static void createThirdPartySoftwareTable(final Composite parent) {
-		final TableViewer tableViewer = new TableViewer(parent, SWT.BORDER | SWT.FULL_SELECTION);
-		ColumnViewerToolTipSupport.enableFor(tableViewer);
-		final Table table = tableViewer.getTable();
-		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(table);
-		table.setLinesVisible(true);
-		table.setHeaderVisible(false);
+	@Getter
+	private static class ThirdPartySoftwareTable {
 
-		final TableViewerColumn authorColumn = new TableViewerColumn(tableViewer, SWT.NONE);
-		authorColumn.setLabelProvider(new CellLabelProvider() {
-			@Override
-			public void update(final ViewerCell cell) {
-				if (cell.getElement() instanceof ThirdPartySoftware) {
-					final ThirdPartySoftware element = (ThirdPartySoftware) cell.getElement();
-					cell.setText(element.getAuthor());
-				}
+		private static final byte COL_IDX_THIRDPARTY_NAME = 0;
+		private static final byte COL_IDX_THIRDPARTY_AUTHOR = 1;
+		private static final byte COL_IDX_THIRDPARTY_LICENSE = 2;
+		private static final byte COL_IDX_THIRDPARTY_HOMEPAGE = 3;
+
+		private final TableViewer tableViewer;
+
+		private ThirdPartySoftwareTable(@NonNull final Composite parent, final Object layoutData) {
+			tableViewer = new TableViewer(parent, SWT.BORDER | SWT.FULL_SELECTION);
+			ColumnViewerToolTipSupport.enableFor(tableViewer);
+			final Table table = tableViewer.getTable();
+			if (layoutData != null) {
+				table.setLayoutData(layoutData);
 			}
-		});
+			table.setLinesVisible(true);
+			table.setHeaderVisible(true);
 
-		final TableViewerColumn licenseColumn = new TableViewerColumn(tableViewer, SWT.NONE);
-		licenseColumn.setLabelProvider(new StyledCellLabelProvider() { // NOSONAR Cannot avoid extending this JFace class.
-			@Override
-			public void update(final ViewerCell cell) {
-				setLinkStyle(cell, Messages.get("lbl.about.thirdparty.license"));
-				super.update(cell);
-			}
+			final TableViewerColumn nameColumn = new TableViewerColumn(tableViewer, SWT.NONE);
+			nameColumn.getColumn().setText(Messages.get("lbl.about.thirdparty.name"));
+			nameColumn.setLabelProvider(new TextColumnLabelProvider(ThirdPartySoftware::getName));
 
-			@Override
-			public String getToolTipText(final Object o) {
-				if (o instanceof ThirdPartySoftware) {
-					final ThirdPartySoftware element = (ThirdPartySoftware) o;
-					return element.getLicenseUri().toString();
-				}
-				else {
-					return super.getToolTipText(o);
-				}
-			}
-		});
+			final TableViewerColumn authorColumn = new TableViewerColumn(tableViewer, SWT.NONE);
+			authorColumn.getColumn().setText(Messages.get("lbl.about.thirdparty.author"));
+			authorColumn.setLabelProvider(new TextColumnLabelProvider(ThirdPartySoftware::getAuthor));
 
-		final TableViewerColumn homePageColumn = new TableViewerColumn(tableViewer, SWT.NONE);
-		homePageColumn.setLabelProvider(new StyledCellLabelProvider() { // NOSONAR Cannot avoid extending this JFace class.
-			@Override
-			public void update(final ViewerCell cell) {
-				setLinkStyle(cell, Messages.get("lbl.about.thirdparty.homepage"));
-				super.update(cell);
-			}
+			final TableViewerColumn licenseColumn = new TableViewerColumn(tableViewer, SWT.NONE);
+			licenseColumn.setLabelProvider(new LinkStyledCellLabelProvider(Messages.get("lbl.about.thirdparty.license"), ThirdPartySoftware::getLicenseUri));
 
-			@Override
-			public String getToolTipText(final Object o) {
-				if (o instanceof ThirdPartySoftware) {
-					final ThirdPartySoftware element = (ThirdPartySoftware) o;
-					return element.getHomePageUri().toString();
-				}
-				else {
-					return super.getToolTipText(o);
-				}
-			}
-		});
+			final TableViewerColumn homePageColumn = new TableViewerColumn(tableViewer, SWT.NONE);
+			homePageColumn.setLabelProvider(new LinkStyledCellLabelProvider(Messages.get("lbl.about.thirdparty.homepage"), ThirdPartySoftware::getHomePageUri));
 
-		tableViewer.add(ThirdPartySoftware.loadFromProperties().toArray());
+			tableViewer.add(ThirdPartySoftware.loadFromProperties().toArray());
 
-		packColumns(table);
+			packColumns();
 
-		table.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseDown(final MouseEvent e) {
-				if (e.button == 1) {
-					final ViewerCell cell = tableViewer.getCell(new Point(e.x, e.y));
-					if (cell != null && cell.getElement() instanceof ThirdPartySoftware) {
-						final ThirdPartySoftware element = (ThirdPartySoftware) cell.getElement();
-						if (cell.getColumnIndex() == COL_IDX_THIRDPARTY_LICENSE) {
-							Program.launch(element.getLicenseUri().toString());
-						}
-						else if (cell.getColumnIndex() == COL_IDX_THIRDPARTY_HOMEPAGE) {
-							Program.launch(element.getHomePageUri().toString());
+			configureMouseListener();
+			configureMouseMoveListener();
+		}
+
+		private void configureMouseListener() {
+			tableViewer.getTable().addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseDown(final MouseEvent e) {
+					if (e.button == 1) {
+						final ViewerCell cell = tableViewer.getCell(new Point(e.x, e.y));
+						if (cell != null && cell.getElement() instanceof ThirdPartySoftware) {
+							final ThirdPartySoftware element = (ThirdPartySoftware) cell.getElement();
+							if (cell.getColumnIndex() == COL_IDX_THIRDPARTY_LICENSE) {
+								Program.launch(element.getLicenseUri().toString());
+							}
+							else if (cell.getColumnIndex() == COL_IDX_THIRDPARTY_HOMEPAGE) {
+								Program.launch(element.getHomePageUri().toString());
+							}
 						}
 					}
 				}
-			}
-		});
+			});
+		}
 
-		table.addMouseMoveListener(e -> {
-			final ViewerCell cell = tableViewer.getCell(new Point(e.x, e.y));
-			if (cell != null && cell.getColumnIndex() != COL_IDX_THIRDPARTY_AUTHOR) {
-				if (parent.getCursor() == null) {
-					parent.setCursor(parent.getDisplay().getSystemCursor(SWT.CURSOR_HAND));
+		private void configureMouseMoveListener() {
+			final Table table = tableViewer.getTable();
+			final Control parent = table.getParent();
+			table.addMouseMoveListener(e -> {
+				final ViewerCell cell = tableViewer.getCell(new Point(e.x, e.y));
+				if (cell != null && cell.getColumnIndex() != COL_IDX_THIRDPARTY_NAME && cell.getColumnIndex() != COL_IDX_THIRDPARTY_AUTHOR) {
+					if (parent.getCursor() == null) {
+						parent.setCursor(parent.getDisplay().getSystemCursor(SWT.CURSOR_HAND));
+					}
+				}
+				else if (parent.getDisplay().getSystemCursor(SWT.CURSOR_HAND).equals(parent.getCursor())) {
+					parent.setCursor(null);
+				}
+			});
+		}
+
+		private void packColumns() {
+			for (final TableColumn column : tableViewer.getTable().getColumns()) {
+				packColumn(column);
+			}
+		}
+
+		private static void packColumn(final TableColumn column) {
+			column.pack();
+			if (Util.isCocoa()) { // colmuns are badly resized on Cocoa, more space is actually needed
+				try (final CloseableResource<GC> cr = new CloseableResource<>(new GC(column.getParent()))) {
+					column.setWidth(column.getWidth() + cr.getResource().stringExtent("  ").x);
 				}
 			}
-			else if (parent.getDisplay().getSystemCursor(SWT.CURSOR_HAND).equals(parent.getCursor())) {
-				parent.setCursor(null);
-			}
-		});
-	}
-
-	private static void setLinkStyle(final ViewerCell cell, final String label) {
-		cell.setForeground(cell.getControl().getDisplay().getSystemColor(SWT.COLOR_LINK_FOREGROUND));
-		cell.setText(label);
-		final StyleRange styleRange = new StyleRange();
-		styleRange.underline = true;
-		styleRange.length = label.length();
-		cell.setStyleRanges(new StyleRange[] { styleRange });
-	}
-
-	private static void packColumns(final Table table) {
-		for (final TableColumn column : table.getColumns()) {
-			packColumn(column);
-		}
-	}
-
-	private static void packColumn(final TableColumn column) {
-		column.pack();
-		if (Util.isGtk()) { // colmuns are badly resized on GTK, more space is actually needed
-			try (final CloseableResource<GC> cr = new CloseableResource<>(new GC(column.getParent()))) {
-				column.setWidth(column.getWidth() + cr.getResource().stringExtent("  ").x);
-			}
-		}
-	}
-
-	private static class ThirdPartySoftware implements Comparable<ThirdPartySoftware> {
-
-		private final String author;
-		private final URI licenseUri;
-		private final URI homePageUri;
-
-		private ThirdPartySoftware(final String author, final URI licenseUri, final URI homePageUri) {
-			this.author = author;
-			this.licenseUri = licenseUri;
-			this.homePageUri = homePageUri;
-		}
-
-		private String getAuthor() {
-			return author;
-		}
-
-		private URI getLicenseUri() {
-			return licenseUri;
-		}
-
-		private URI getHomePageUri() {
-			return homePageUri;
-		}
-
-		private static Collection<ThirdPartySoftware> loadFromProperties() {
-			final Properties properties = new Properties();
-			try (final InputStream is = ThirdPartySoftware.class.getResourceAsStream("thirdparty.properties")) {
-				properties.load(is);
-			}
-			catch (final IOException e) {
-				throw new UncheckedIOException(e);
-			}
-			final Collection<ThirdPartySoftware> set = new TreeSet<>();
-			for (byte i = 1; i < Byte.MAX_VALUE; i++) {
-				final String author = properties.getProperty(i + ".author");
-				if (author == null) {
-					break;
+			else if (Util.isGtk()) { // colmuns are badly resized on GTK, more space is actually needed
+				try (final CloseableResource<GC> cr = new CloseableResource<>(new GC(column.getParent()))) {
+					column.setWidth(column.getWidth() + cr.getResource().stringExtent(" ").x);
 				}
-				set.add(new ThirdPartySoftware(author, URI.create(properties.getProperty(i + ".licenseUri")), URI.create(properties.getProperty(i + ".homePageUri"))));
 			}
-			return set;
 		}
 
-		@Override
-		public int hashCode() {
-			return Objects.hash(author);
+		@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+		private static class TextColumnLabelProvider extends ColumnLabelProvider {
+
+			private final Function<ThirdPartySoftware, String> textFunction;
+
+			@Override
+			public String getText(final Object element) {
+				if (element instanceof ThirdPartySoftware) {
+					final ThirdPartySoftware thirdPartySoftware = (ThirdPartySoftware) element;
+					return textFunction.apply(thirdPartySoftware);
+				}
+				else {
+					return super.getText(element);
+				}
+			}
 		}
 
-		@Override
-		public boolean equals(final Object obj) {
-			if (this == obj) {
-				return true;
+		@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+		private static class LinkStyledCellLabelProvider extends StyledCellLabelProvider { // NOSONAR This class has 6 parents which is greater than 5 authorized.
+																							// Inheritance tree of classes should not be too deep (java:S110)
+
+			private final String label;
+			private final Function<ThirdPartySoftware, URI> toolTipTextFunction;
+
+			@Override
+			public void update(final ViewerCell cell) {
+				setLinkStyle(cell, label);
+				super.update(cell);
 			}
-			if (!(obj instanceof ThirdPartySoftware)) {
-				return false;
+
+			@Override
+			public String getToolTipText(final Object element) {
+				if (element instanceof ThirdPartySoftware) {
+					final ThirdPartySoftware thirdPartySoftware = (ThirdPartySoftware) element;
+					return String.valueOf(toolTipTextFunction.apply(thirdPartySoftware));
+				}
+				else {
+					return super.getToolTipText(element);
+				}
 			}
-			ThirdPartySoftware other = (ThirdPartySoftware) obj;
-			return Objects.equals(author, other.author);
+
+			private static void setLinkStyle(final ViewerCell cell, final String label) {
+				cell.setForeground(cell.getControl().getDisplay().getSystemColor(SWT.COLOR_LINK_FOREGROUND));
+				cell.setText(label);
+				final StyleRange styleRange = new StyleRange();
+				styleRange.underline = true;
+				styleRange.length = label.length();
+				cell.setStyleRanges(new StyleRange[] { styleRange });
+			}
 		}
 
-		@Override
-		public int compareTo(final ThirdPartySoftware o) {
-			return author.compareTo(o.author);
+		@Getter(AccessLevel.PRIVATE)
+		@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+		private static class ThirdPartySoftware implements Comparable<ThirdPartySoftware> {
+
+			private final String name;
+			private final String author;
+			private final URI licenseUri;
+			private final URI homePageUri;
+
+			private static Collection<ThirdPartySoftware> loadFromProperties() {
+				final Properties properties = new Properties();
+				try (final InputStream is = ThirdPartySoftware.class.getResourceAsStream("3rdparty.properties")) {
+					properties.load(is);
+				}
+				catch (final IOException e) {
+					throw new UncheckedIOException(e);
+				}
+				final Collection<ThirdPartySoftware> set = new TreeSet<>();
+				for (byte i = 1; i < Byte.MAX_VALUE; i++) {
+					final String name = properties.getProperty(i + ".name");
+					if (name == null) {
+						break;
+					}
+					set.add(new ThirdPartySoftware(name, properties.getProperty(i + ".author"), URI.create(properties.getProperty(i + ".licenseUri")), URI.create(properties.getProperty(i + ".homePageUri"))));
+				}
+				return set;
+			}
+
+			@Override
+			public boolean equals(final Object obj) {
+				if (this == obj) {
+					return true;
+				}
+				if (!(obj instanceof ThirdPartySoftware)) {
+					return false;
+				}
+				final ThirdPartySoftware other = (ThirdPartySoftware) obj;
+				return name.equalsIgnoreCase(other.name);
+			}
+
+			@Override
+			public int hashCode() {
+				return name.toLowerCase().hashCode();
+			}
+
+			@Override
+			public int compareTo(final ThirdPartySoftware o) {
+				return name.compareToIgnoreCase(o.name);
+			}
 		}
 	}
+
 }
