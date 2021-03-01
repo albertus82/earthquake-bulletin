@@ -451,9 +451,9 @@ public class ResultsTable implements IShellProvider, Multilanguage {
 
 	private static void packColumn(final Table table, final TableColumn column) {
 		column.pack();
-		if (Util.isGtk()) { // colmuns are badly resized on GTK, more space is actually needed
+		if (!Util.isWindows()) { // colmuns are badly resized on GTK, more space is actually needed
 			try (final CloseableResource<GC> cr = new CloseableResource<>(new GC(table))) {
-				column.setWidth(column.getWidth() + cr.getResource().stringExtent(" ").x);
+				column.setWidth(column.getWidth() + cr.getResource().stringExtent("  ").x);
 			}
 		}
 	}
