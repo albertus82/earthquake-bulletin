@@ -25,6 +25,6 @@
 			<accessrule kind="accessible" pattern="com/sun/net/httpserver/Headers"/>
 		</accessrules>
 	</classpathentry>
-	<classpathentry combineaccessrules="false" kind="src" path="/jface-utils"/>
+	<classpathentry kind="lib" path="lib/compile/common/jface-utils-17.1.3.jar" sourcepath="lib/compile/common/src/jface-utils-17.1.3-sources.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
