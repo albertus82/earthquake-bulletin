@@ -73,13 +73,13 @@ public class BulletinExporter implements IRunnableWithProgress {
 				final String message = Messages.get("err.job.csv.save");
 				logger.log(Level.WARNING, message, e);
 				SwtUtils.unblockShell(shell);
-				EnhancedErrorDialog.openError(shell, Messages.get("lbl.window.title"), message, IStatus.WARNING, e.getCause() != null ? e.getCause() : e, Images.getMainIconArray());
+				EnhancedErrorDialog.openError(shell, Messages.get("lbl.window.title"), message, IStatus.WARNING, e.getCause() != null ? e.getCause() : e, Images.getAppIconArray());
 			}
 			catch (final Exception e) {
 				final String message = Messages.get("err.job.csv.create");
 				logger.log(Level.SEVERE, message, e);
 				SwtUtils.unblockShell(shell);
-				EnhancedErrorDialog.openError(shell, Messages.get("lbl.window.title"), message, IStatus.ERROR, e, Images.getMainIconArray());
+				EnhancedErrorDialog.openError(shell, Messages.get("lbl.window.title"), message, IStatus.ERROR, e, Images.getAppIconArray());
 			}
 			finally {
 				SwtUtils.unblockShell(shell);

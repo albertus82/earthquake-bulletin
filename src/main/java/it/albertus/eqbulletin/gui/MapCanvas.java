@@ -342,7 +342,7 @@ public class MapCanvas implements IShellProvider, Multilanguage {
 				catch (final Exception e) {
 					final String message = Messages.get("err.image.save", fileName);
 					logger.log(Level.WARNING, message, e);
-					EnhancedErrorDialog.openError(canvas.getShell(), Messages.get("lbl.window.title"), message, IStatus.WARNING, e, Images.getMainIconArray());
+					EnhancedErrorDialog.openError(canvas.getShell(), Messages.get("lbl.window.title"), message, IStatus.WARNING, e, Images.getAppIconArray());
 				}
 			}
 		}

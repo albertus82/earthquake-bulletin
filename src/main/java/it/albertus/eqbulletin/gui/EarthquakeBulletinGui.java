@@ -105,7 +105,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow implements Multilan
 			final Display display = cd.getDevice();
 
 			if (ie != null) { // Display error dialog and exit.
-				EnhancedErrorDialog.openError(null, Messages.get("lbl.window.title"), ie.getLocalizedMessage() != null ? ie.getLocalizedMessage() : ie.getMessage(), IStatus.ERROR, ie.getCause() != null ? ie.getCause() : ie, Images.getMainIconArray());
+				EnhancedErrorDialog.openError(null, Messages.get("lbl.window.title"), ie.getLocalizedMessage() != null ? ie.getLocalizedMessage() : ie.getMessage(), IStatus.ERROR, ie.getCause() != null ? ie.getCause() : ie, Images.getAppIconArray());
 			}
 			else { // Open main window.
 				final EarthquakeBulletinGui gui = new EarthquakeBulletinGui();
@@ -135,7 +135,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow implements Multilan
 	@Override
 	protected void configureShell(final Shell shell) {
 		super.configureShell(shell);
-		shell.setImages(Images.getMainIconArray());
+		shell.setImages(Images.getAppIconArray());
 		shell.setText(Messages.get("lbl.window.title"));
 	}
 

@@ -227,7 +227,7 @@ public class SearchForm implements IShellProvider, Multilanguage {
 		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.FILL).span(1, 2).applyTo(openMapButton);
 		openMapButton.setToolTipText(Messages.get("lbl.form.button.map.tooltip"));
 		final int buttonVerticalSize = SwtUtils.convertVerticalDLUsToPixels(openMapButton, 25);
-		for (final Entry<Rectangle, Image> entry : Images.getOpenStreetMapIconMap().entrySet()) {
+		for (final Entry<Rectangle, Image> entry : Images.getMapIconMap().entrySet()) {
 			if (entry.getKey().height < buttonVerticalSize - buttonVerticalSize / 6.8f) { // leaving some room around the image
 				logger.log(Level.FINE, "Open Map button size: {0}; setting OpenStreetMap icon: {1}.", new Object[] { buttonVerticalSize, entry });
 				openMapButton.setImage(entry.getValue());
@@ -383,7 +383,7 @@ public class SearchForm implements IShellProvider, Multilanguage {
 		// Map
 		mapBoundsDialog = new LeafletMapBoundsDialog(shell);
 		mapBoundsDialog.setText(Messages.get("lbl.map.bounds.title"));
-		mapBoundsDialog.setImages(Images.getMainIconArray());
+		mapBoundsDialog.setImages(Images.getAppIconArray());
 		mapBoundsDialog.getOptions().getControls().put(LeafletMapControl.ZOOM, "");
 		mapBoundsDialog.getOptions().getControls().put(LeafletMapControl.ATTRIBUTION, "");
 		mapBoundsDialog.getOptions().getControls().put(LeafletMapControl.SCALE, "");

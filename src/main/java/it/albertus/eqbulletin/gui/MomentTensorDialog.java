@@ -101,7 +101,7 @@ public class MomentTensorDialog extends Dialog {
 			shell.addDisposeListener(e -> removeInstance()); // No longer available for update on-the-fly.
 			final Point defaultSize = getSize(shell);
 			shell.setText(getText());
-			final Image[] images = Images.getMainIconArray();
+			final Image[] images = Images.getAppIconArray();
 			if (images != null && images.length > 0) {
 				shell.setImages(images);
 			}

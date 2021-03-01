@@ -55,7 +55,7 @@ public abstract class AsyncOperation {
 	protected static void showErrorDialog(final AsyncOperationException e, final Shell shell) {
 		logger.log(e.getLoggingLevel(), e.getMessage(), e);
 		if (!shell.isDisposed()) {
-			new DisplayThreadExecutor(shell, ASYNC).execute(() -> EnhancedErrorDialog.openError(shell, Messages.get("lbl.window.title"), e.getMessage(), e.getSeverity(), e.getCause() != null ? e.getCause() : e, Images.getMainIconArray()));
+			new DisplayThreadExecutor(shell, ASYNC).execute(() -> EnhancedErrorDialog.openError(shell, Messages.get("lbl.window.title"), e.getMessage(), e.getSeverity(), e.getCause() != null ? e.getCause() : e, Images.getAppIconArray()));
 		}
 	}
 

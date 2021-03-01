@@ -132,7 +132,7 @@ class SearchJobChangeListener extends JobChangeAdapter {
 		if (trayIcon != null && !trayIcon.getShell().isDisposed()) {
 			new DisplayThreadExecutor(trayIcon.getShell(), SYNC).execute(() -> {
 				if (trayIcon.getTrayItem() == null || !trayIcon.getTrayItem().getVisible()) { // Show error dialog only if not minimized in the tray.
-					final Window dialog = new EnhancedErrorDialog(trayIcon.getShell(), Messages.get("lbl.window.title"), e.getMessage(), e.getSeverity(), e.getCause() != null ? e.getCause() : e, Images.getMainIconArray());
+					final Window dialog = new EnhancedErrorDialog(trayIcon.getShell(), Messages.get("lbl.window.title"), e.getMessage(), e.getSeverity(), e.getCause() != null ? e.getCause() : e, Images.getAppIconArray());
 					dialog.setBlockOnOpen(true); // Avoid stacking of error dialogs when auto refresh is enabled.
 					dialog.open();
 				}

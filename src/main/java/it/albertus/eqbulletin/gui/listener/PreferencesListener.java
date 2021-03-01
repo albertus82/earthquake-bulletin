@@ -49,7 +49,7 @@ public class PreferencesListener extends SelectionAdapter implements Listener {
 		final short mapZoomLevel = configuration.getShort(Preference.MAP_ZOOM_LEVEL, MapCanvas.Defaults.MAP_ZOOM_LEVEL);
 		final boolean mapResizeHq = configuration.getBoolean(Preference.MAP_RESIZE_HQ, MapCanvas.Defaults.MAP_RESIZE_HQ);
 
-		final Preferences preferences = new Preferences(PageDefinition.values(), Preference.values(), configuration, Images.getMainIconArray());
+		final Preferences preferences = new Preferences(PageDefinition.values(), Preference.values(), configuration, Images.getAppIconArray());
 		final Shell shell = gui.getShell();
 		try {
 			preferences.openDialog(shell);
@@ -57,7 +57,7 @@ public class PreferencesListener extends SelectionAdapter implements Listener {
 		catch (final IOException e) {
 			final String message = Messages.get("err.preferences.dialog.open");
 			logger.log(Level.WARNING, message, e);
-			EnhancedErrorDialog.openError(shell, Messages.get("lbl.window.title"), message, IStatus.WARNING, e, Images.getMainIconArray());
+			EnhancedErrorDialog.openError(shell, Messages.get("lbl.window.title"), message, IStatus.WARNING, e, Images.getAppIconArray());
 		}
 
 		// Check if must update texts...

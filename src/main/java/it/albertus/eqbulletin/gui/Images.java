@@ -9,12 +9,15 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Display;
+import org.reflections.Reflections;
+import org.reflections.scanners.ResourcesScanner;
 
 import it.albertus.util.logging.LoggerFactory;
 
@@ -34,51 +37,53 @@ public class Images {
 		return 0;
 	};
 
-	private static final Map<Rectangle, Image> mainIconMap;
-	private static final Map<Rectangle, Image> openStreetMapIconMap;
+	private static final Map<Rectangle, Image> appIconMap;
+	private static final Map<Rectangle, Image> mapIconMap;
 
 	static {
-		mainIconMap = loadFromResource("main.ico");
-		openStreetMapIconMap = loadFromResource("osm.ico");
+		appIconMap = loadFromResource(Images.class.getPackage().getName() + ".icon.app");
+		mapIconMap = loadFromResource(Images.class.getPackage().getName() + ".icon.map");
 	}
 
 	private static Map<Rectangle, Image> loadFromResource(final String resourceName) {
+		final Reflections reflections = new Reflections(resourceName, new ResourcesScanner());
+		final Iterable<String> fileNames = reflections.getResources(Pattern.compile(".*\\.png"));
+
 		final Map<Rectangle, Image> map = new TreeMap<>(areaComparatorDescending);
-		try (final InputStream stream = Images.class.getResourceAsStream(resourceName)) {
-			for (final ImageData data : new ImageLoader().load(stream)) {
-				final Image image = new Image(Display.getCurrent(), data);
-				map.put(image.getBounds(), image);
+		for (final String fileName : fileNames) {
+			try (final InputStream stream = Images.class.getResourceAsStream('/' + fileName)) {
+				for (final ImageData data : new ImageLoader().load(stream)) {
+					final Image image = new Image(Display.getCurrent(), data);
+					map.put(image.getBounds(), image);
+				}
 			}
-			logger.log(Level.CONFIG, "{0}: {1}", new Object[] { resourceName, map });
-			return map;
+			catch (final IOException e) {
+				throw new UncheckedIOException(e);
+			}
 		}
-		catch (final IOException e) {
-			throw new UncheckedIOException(e);
-		}
+		logger.log(Level.CONFIG, "{0}: {1}", new Object[] { resourceName, map });
+		return map;
 	}
 
-	public static Image[] getMainIconArray() {
-		return getMainIconMap().values().toArray(new Image[0]);
+	public static Image[] getAppIconArray() {
+		return getAppIconMap().values().toArray(new Image[0]);
 	}
 
 	/**
 	 * Main application icon in various formats, sorted by size (area)
 	 * <b>descending</b>.
 	 */
-	public static Map<Rectangle, Image> getMainIconMap() {
-		return Collections.unmodifiableMap(mainIconMap);
+	public static Map<Rectangle, Image> getAppIconMap() {
+		return Collections.unmodifiableMap(appIconMap);
 	}
 
-	public static Image[] getOpenStreetMapIconArray() {
-		return getOpenStreetMapIconMap().values().toArray(new Image[0]);
+	public static Image[] getMapIconArray() {
+		return getMapIconMap().values().toArray(new Image[0]);
 	}
 
-	/**
-	 * <i>OpenStreetMap</i> icon in various formats, sorted by size (area)
-	 * <b>descending</b>.
-	 */
-	public static Map<Rectangle, Image> getOpenStreetMapIconMap() {
-		return Collections.unmodifiableMap(openStreetMapIconMap);
+	/** Map icon in various formats, sorted by size (area) <b>descending</b>. */
+	public static Map<Rectangle, Image> getMapIconMap() {
+		return Collections.unmodifiableMap(mapIconMap);
 	}
 
 	private Images() {
