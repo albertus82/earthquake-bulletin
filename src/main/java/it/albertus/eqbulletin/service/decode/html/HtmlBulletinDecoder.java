@@ -38,7 +38,7 @@ public class HtmlBulletinDecoder {
 				throw new IllegalStateException();
 			}
 			for (final Element element : elements) {
-				final Collection<Element> anchors = element.getElementsByTag("a").stream().filter(a -> !a.classNames().contains("external-link") && a.hasAttr("href")).collect(Collectors.toList());
+				final Collection<Element> anchors = element.getElementsByTag("a").stream().filter(a -> !a.classNames().contains("external-link") && !a.classNames().contains("alert-link") && a.hasAttr("href")).collect(Collectors.toList());
 				for (final Element anchor : anchors) {
 					final Earthquake converted = decodeItem(anchor);
 					earthquakes.add(converted);
