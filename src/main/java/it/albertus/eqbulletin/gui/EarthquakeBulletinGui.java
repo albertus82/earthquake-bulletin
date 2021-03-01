@@ -177,7 +177,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow implements Multilan
 		mapCanvas = new MapCanvas(sashForm);
 		multilanguages.add(mapCanvas);
 
-		sashForm.setWeights(new int[] { configuration.getInt(SHELL_SASH_WEIGHT + ".0", Defaults.SASH_WEIGHTS[0]), configuration.getInt(SHELL_SASH_WEIGHT + ".1", Defaults.SASH_WEIGHTS[1]) });
+		sashForm.setWeights(new int[] { configuration.getInt(SHELL_SASH_WEIGHT + ".0", Defaults.SASH_WEIGHTS[0]), configuration.getInt(SHELL_SASH_WEIGHT + ".1", Defaults.SASH_WEIGHTS[1]) }); // NOSONAR Keep compatibility with older SWT versions.
 
 		statusBar = new StatusBar(this);
 		multilanguages.add(statusBar);
