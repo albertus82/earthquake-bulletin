@@ -1,9 +1,7 @@
-/.settings/
 /bin/
-/nbproject/private/
-/nbbuild/
-/dist/
 /build/
 /target/
-/sonar-project.properties
+.settings/
+sonar-project.properties
 lombok.config
+hs_err_pid*.log
