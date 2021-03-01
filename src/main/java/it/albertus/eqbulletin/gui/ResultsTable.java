@@ -451,11 +451,17 @@ public class ResultsTable implements IShellProvider, Multilanguage {
 
 	private static void packColumn(final Table table, final TableColumn column) {
 		column.pack();
-		if (Util.isGtk()) { // colmuns are badly resized on GTK, more space is actually needed
+		if (Util.isCocoa()) { // colmuns are badly resized on Cocoa, more space is actually needed
+			try (final CloseableResource<GC> cr = new CloseableResource<>(new GC(table))) {
+				column.setWidth(column.getWidth() + cr.getResource().stringExtent("  ").x);
+			}
+		}
+		else if (Util.isGtk()) { // colmuns are badly resized on GTK, more space is actually needed
 			try (final CloseableResource<GC> cr = new CloseableResource<>(new GC(table))) {
 				column.setWidth(column.getWidth() + cr.getResource().stringExtent(" ").x);
 			}
 		}
+
 	}
 
 	private static void autoSizeStatusColumn(final Table table, final Object input) {
