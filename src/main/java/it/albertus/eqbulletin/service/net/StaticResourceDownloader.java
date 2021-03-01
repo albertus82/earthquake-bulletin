@@ -7,29 +7,26 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.function.BooleanSupplier;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 
 import com.sun.net.httpserver.Headers;
 
-import it.albertus.util.logging.LoggerFactory;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 
+@Log
+@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class StaticResourceDownloader<T extends StaticResource> {
 
 	private static final String DEFAULT_ACCEPT = "*/*";
-
-	private static final Logger logger = LoggerFactory.getLogger(StaticResourceDownloader.class);
 
 	private InputStream connectionInputStream;
 
 	private final String accept;
 
-	public StaticResourceDownloader() {
-		this.accept = DEFAULT_ACCEPT;
-	}
-
-	public StaticResourceDownloader(final String accept) {
-		this.accept = accept;
+	protected StaticResourceDownloader() {
+		this(DEFAULT_ACCEPT);
 	}
 
 	protected abstract T makeObject(InputStream in, URLConnection connection) throws IOException;
@@ -54,7 +51,7 @@ public abstract class StaticResourceDownloader<T extends StaticResource> {
 			headers.set("If-None-Match", cached.getEtag());
 		}
 		if (canceled.getAsBoolean()) {
-			logger.fine("Download canceled before connection.");
+			log.fine("Download canceled before connection.");
 			return null;
 		}
 		final HttpURLConnection connection = ConnectionFactory.makeGetRequest(url, headers);
@@ -72,12 +69,12 @@ public abstract class StaticResourceDownloader<T extends StaticResource> {
 		try (final InputStream raw = connection.getInputStream(); final InputStream in = gzip ? new GZIPInputStream(raw) : raw) {
 			connectionInputStream = raw;
 			if (canceled.getAsBoolean()) {
-				logger.fine("Download canceled after connection.");
+				log.fine("Download canceled after connection.");
 				return null;
 			}
 			final T downloaded = makeObject(in, connection);
 			if (downloaded.equals(cached)) {
-				logger.fine("downloaded.equals(cached)");
+				log.fine("downloaded.equals(cached)");
 				return cached;
 			}
 			else {
@@ -86,7 +83,7 @@ public abstract class StaticResourceDownloader<T extends StaticResource> {
 		}
 		catch (final IOException e) {
 			if (canceled.getAsBoolean()) {
-				logger.log(Level.FINE, "Download canceled during download:", e);
+				log.log(Level.FINE, "Download canceled during download:", e);
 				return null;
 			}
 			else {
@@ -101,7 +98,7 @@ public abstract class StaticResourceDownloader<T extends StaticResource> {
 				connectionInputStream.close();
 			}
 			catch (final Exception e) {
-				logger.log(Level.FINE, e.toString(), e);
+				log.log(Level.FINE, e.toString(), e);
 			}
 		}
 	}

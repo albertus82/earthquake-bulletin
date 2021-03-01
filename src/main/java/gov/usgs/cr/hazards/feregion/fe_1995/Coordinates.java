@@ -3,6 +3,7 @@ package gov.usgs.cr.hazards.feregion.fe_1995;
 import static it.albertus.jface.maps.CoordinateUtils.DEGREE_SIGN;
 
 import java.io.Serializable;
+import java.util.Locale;
 
 /**
  * This class represents geographical coordinates (longitude & latitude) in
@@ -60,8 +61,8 @@ public class Coordinates implements Serializable {
 	 * @throws IllegalCoordinateException if the provided arguments are invalid
 	 */
 	public static Coordinates parse(String longitude, String latitude) {
-		longitude = longitude.toUpperCase();
-		latitude = latitude.toUpperCase();
+		longitude = longitude.toUpperCase(Locale.ROOT);
+		latitude = latitude.toUpperCase(Locale.ROOT);
 
 		// Allow for NSEW and switching of arguments.
 		if (longitude.endsWith("N") || longitude.endsWith("S")) {
@@ -75,8 +76,8 @@ public class Coordinates implements Serializable {
 		if (latitude.endsWith("S")) {
 			latitude = '-' + latitude;
 		}
-		longitude = longitude.replaceAll("E|W", "");
-		latitude = latitude.replaceAll("N|S", "");
+		longitude = longitude.replaceAll("[EW]", "");
+		latitude = latitude.replaceAll("[NS]", "");
 
 		final double lng;
 		final double lat;
