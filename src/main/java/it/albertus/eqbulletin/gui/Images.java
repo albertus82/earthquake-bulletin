@@ -28,13 +28,13 @@ public class Images {
 	 * <b>descending</b>.
 	 */
 	@Getter
-	private static final Map<Rectangle, Image> appIconMap = Collections.unmodifiableMap(loadFromResource(Images.class.getPackage().getName() + ".icon.app"));
+	private static final Map<Rectangle, Image> appIconMap = Collections.unmodifiableMap(loadFromResources(Images.class.getPackage().getName() + ".icon.app"));
 
 	/** Map icon in various formats, sorted by size (area) <b>descending</b>. */
 	@Getter
-	private static final Map<Rectangle, Image> mapIconMap = Collections.unmodifiableMap(loadFromResource(Images.class.getPackage().getName() + ".icon.map"));
+	private static final Map<Rectangle, Image> mapIconMap = Collections.unmodifiableMap(loadFromResources(Images.class.getPackage().getName() + ".icon.map"));
 
-	private static Map<Rectangle, Image> loadFromResource(final String packageName) {
+	private static Map<Rectangle, Image> loadFromResources(final String packageName) {
 		final Reflections reflections = new Reflections(packageName, new ResourcesScanner());
 		final Iterable<String> resourceNames = reflections.getResources(name -> name.toLowerCase(Locale.ROOT).endsWith(".png")).stream().map(name -> '/' + name).collect(Collectors.toSet());
 		final Map<Rectangle, Image> map = ImageUtils.createImageMap(resourceNames, SortOrder.DESCENDING);
