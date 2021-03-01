@@ -1,93 +1,53 @@
 package it.albertus.eqbulletin.gui;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UncheckedIOException;
 import java.util.Collections;
-import java.util.Comparator;
+import java.util.Locale;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
+import javax.swing.SortOrder;
 
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.ImageData;
-import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.Display;
 import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
 
-import it.albertus.util.logging.LoggerFactory;
+import it.albertus.jface.ImageUtils;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.extern.java.Log;
 
+@Log
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Images {
-
-	private static final Logger logger = LoggerFactory.getLogger(Images.class);
-
-	private static final Comparator<Rectangle> areaComparatorDescending = (r1, r2) -> {
-		final int a1 = r1.width * r1.height;
-		final int a2 = r2.width * r2.height;
-		if (a1 > a2) {
-			return -1;
-		}
-		if (a1 < a2) {
-			return 1;
-		}
-		return 0;
-	};
-
-	private static final Map<Rectangle, Image> appIconMap;
-	private static final Map<Rectangle, Image> mapIconMap;
-
-	static {
-		appIconMap = loadFromResource(Images.class.getPackage().getName() + ".icon.app");
-		mapIconMap = loadFromResource(Images.class.getPackage().getName() + ".icon.map");
-	}
-
-	private static Map<Rectangle, Image> loadFromResource(final String packageName) {
-		final Reflections reflections = new Reflections(packageName, new ResourcesScanner());
-		final Iterable<String> resourceNames = reflections.getResources(Pattern.compile(".*\\.png"));
-
-		final Map<Rectangle, Image> map = new TreeMap<>(areaComparatorDescending);
-		for (final String resourceName : resourceNames) {
-			try (final InputStream stream = Images.class.getResourceAsStream('/' + resourceName)) {
-				for (final ImageData data : new ImageLoader().load(stream)) {
-					final Image image = new Image(Display.getCurrent(), data);
-					map.put(image.getBounds(), image);
-				}
-			}
-			catch (final IOException e) {
-				throw new UncheckedIOException(e);
-			}
-		}
-		logger.log(Level.CONFIG, "{0}: {1}", new Object[] { packageName, map });
-		return map;
-	}
-
-	public static Image[] getAppIconArray() {
-		return getAppIconMap().values().toArray(new Image[0]);
-	}
 
 	/**
 	 * Main application icon in various formats, sorted by size (area)
 	 * <b>descending</b>.
 	 */
-	public static Map<Rectangle, Image> getAppIconMap() {
-		return Collections.unmodifiableMap(appIconMap);
+	@Getter
+	private static final Map<Rectangle, Image> appIconMap = Collections.unmodifiableMap(loadFromResource(Images.class.getPackage().getName() + ".icon.app"));
+
+	/** Map icon in various formats, sorted by size (area) <b>descending</b>. */
+	@Getter
+	private static final Map<Rectangle, Image> mapIconMap = Collections.unmodifiableMap(loadFromResource(Images.class.getPackage().getName() + ".icon.map"));
+
+	private static Map<Rectangle, Image> loadFromResource(final String packageName) {
+		final Reflections reflections = new Reflections(packageName, new ResourcesScanner());
+		final Iterable<String> resourceNames = reflections.getResources(name -> name.toLowerCase(Locale.ROOT).endsWith(".png")).stream().map(name -> '/' + name).collect(Collectors.toSet());
+		final Map<Rectangle, Image> map = ImageUtils.createImageMap(resourceNames, SortOrder.DESCENDING);
+		log.log(Level.CONFIG, "{0}: {1}", new Object[] { packageName, map });
+		return map;
+	}
+
+	public static Image[] getAppIconArray() {
+		return appIconMap.values().toArray(new Image[0]);
 	}
 
 	public static Image[] getMapIconArray() {
-		return getMapIconMap().values().toArray(new Image[0]);
-	}
-
-	/** Map icon in various formats, sorted by size (area) <b>descending</b>. */
-	public static Map<Rectangle, Image> getMapIconMap() {
-		return Collections.unmodifiableMap(mapIconMap);
-	}
-
-	private Images() {
-		throw new IllegalAccessError();
+		return mapIconMap.values().toArray(new Image[0]);
 	}
 
 }

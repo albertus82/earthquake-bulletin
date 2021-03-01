@@ -41,7 +41,7 @@ import it.albertus.eqbulletin.model.Earthquake;
 import it.albertus.eqbulletin.model.MapImage;
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.jface.EnhancedErrorDialog;
-import it.albertus.jface.HqImageResizer;
+import it.albertus.jface.ImageUtils;
 import it.albertus.jface.Multilanguage;
 import it.albertus.jface.closeable.CloseableResource;
 import it.albertus.jface.preference.IPreferencesConfiguration;
@@ -241,7 +241,7 @@ public class MapCanvas implements IShellProvider, Multilanguage {
 				if (configuration.getBoolean(Preference.MAP_RESIZE_HQ, Defaults.MAP_RESIZE_HQ) && (scalePercent == AUTO_SCALE || scalePercent % 100 != 0 && scalePercent <= MAX_HQ_RESIZE_RATIO)) {
 					logger.log(Level.FINE, "HQ resizing scale {0}.", scalePercent);
 					final Image oldImage = resized;
-					resized = HqImageResizer.resize(image, resizedRect.height / (float) originalRect.height);
+					resized = ImageUtils.resize(image, resizedRect.height / (float) originalRect.height);
 					prepareCanvas(gc, scalePercent);
 					gc.drawImage(resized, resizedRect.x, resizedRect.y);
 					if (oldImage != null && oldImage != resized) {
