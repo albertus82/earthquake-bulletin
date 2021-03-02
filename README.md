@@ -9,7 +9,7 @@ Earthquake Bulletin
 
 A cross-platform desktop client for the [**GEOFON Program GFZ Potsdam Earthquake Bulletin**](https://geofon.gfz-potsdam.de/eqinfo/list.php) written in Java.
 
-![Screenshot](https://user-images.githubusercontent.com/8672431/55280184-28cc9380-5322-11e9-9dad-1611a3baf837.png)
+![Screenshot](https://user-images.githubusercontent.com/8672431/109716334-0ba33e00-7ba5-11eb-9772-b45f3c6b7ca0.png)
 
 ## Download
 
