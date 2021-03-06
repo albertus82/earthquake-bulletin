@@ -2,6 +2,7 @@ package it.albertus.eqbulletin.gui.listener;
 
 import java.net.URI;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.dnd.Clipboard;
@@ -11,21 +12,20 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Table;
 
-import it.albertus.eqbulletin.gui.EarthquakeBulletinGui;
+import it.albertus.eqbulletin.gui.ResultsTable;
 import it.albertus.eqbulletin.model.Earthquake;
 import it.albertus.jface.closeable.CloseableClipboard;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 public class CopyLinkSelectionListener extends SelectionAdapter {
 
-	private final EarthquakeBulletinGui gui;
-
-	public CopyLinkSelectionListener(final EarthquakeBulletinGui gui) {
-		this.gui = gui;
-	}
+	private final @NonNull Supplier<ResultsTable> resultsTableSupplier;
 
 	@Override
 	public void widgetSelected(final SelectionEvent se) {
-		final TableViewer tableViewer = gui.getResultsTable().getTableViewer();
+		final TableViewer tableViewer = resultsTableSupplier.get().getTableViewer();
 		final Earthquake selection = (Earthquake) tableViewer.getStructuredSelection().getFirstElement();
 		final Table table = tableViewer.getTable();
 		if (selection != null && table != null && !table.isDisposed()) {

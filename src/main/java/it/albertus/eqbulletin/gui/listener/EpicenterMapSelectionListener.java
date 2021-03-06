@@ -1,32 +1,33 @@
 package it.albertus.eqbulletin.gui.listener;
 
+import java.util.function.Supplier;
+
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 
 import it.albertus.eqbulletin.config.TimeZoneConfig;
-import it.albertus.eqbulletin.gui.EarthquakeBulletinGui;
 import it.albertus.eqbulletin.gui.Images;
+import it.albertus.eqbulletin.gui.ResultsTable;
 import it.albertus.eqbulletin.model.Earthquake;
 import it.albertus.eqbulletin.resources.Leaflet;
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.jface.maps.MapMarker;
 import it.albertus.jface.maps.leaflet.LeafletMapControl;
 import it.albertus.jface.maps.leaflet.LeafletMapDialog;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 public class EpicenterMapSelectionListener extends SelectionAdapter {
 
 	private static final int DEFAULT_ZOOM_LEVEL = 6;
 
-	private final EarthquakeBulletinGui gui;
-
-	public EpicenterMapSelectionListener(final EarthquakeBulletinGui gui) {
-		this.gui = gui;
-	}
+	private final @NonNull Supplier<ResultsTable> resultsTableSupplier;
 
 	@Override
 	public void widgetSelected(final SelectionEvent se) {
-		final TableViewer tableViewer = gui.getResultsTable().getTableViewer();
+		final TableViewer tableViewer = resultsTableSupplier.get().getTableViewer();
 		final Earthquake selection = (Earthquake) tableViewer.getStructuredSelection().getFirstElement();
 		if (selection != null && !tableViewer.getTable().isDisposed()) {
 			final LeafletMapDialog epicenterMapDialog = new LeafletMapDialog(tableViewer.getTable().getShell());
