@@ -23,7 +23,10 @@ import it.albertus.eqbulletin.model.Latitude;
 import it.albertus.eqbulletin.model.Longitude;
 import it.albertus.eqbulletin.model.Status;
 import it.albertus.eqbulletin.service.GeofonUtils;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class HtmlBulletinDecoder {
 
 	private static final String DEGREE_SIGN = "\u00B0";
@@ -97,10 +100,6 @@ public class HtmlBulletinDecoder {
 		catch (final Exception e) {
 			throw new IllegalArgumentException(anchor.toString(), e);
 		}
-	}
-
-	private HtmlBulletinDecoder() {
-		throw new IllegalAccessError();
 	}
 
 }

@@ -8,7 +8,10 @@ import java.util.logging.Logger;
 
 import it.albertus.util.IOUtils;
 import it.albertus.util.logging.LoggerFactory;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Leaflet {
 
 	public static final String LAYERS;
@@ -27,10 +30,6 @@ public class Leaflet {
 			logger.log(Level.SEVERE, e, () -> "Cannot read resource \"/" + Leaflet.class.getPackage().getName().replace('.', '/') + '/' + RESOURCE_NAME + "\":");
 		}
 		LAYERS = layers;
-	}
-
-	private Leaflet() {
-		throw new IllegalAccessError();
 	}
 
 }

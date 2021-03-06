@@ -12,16 +12,15 @@ import org.eclipse.jface.util.Util;
 import it.albertus.eqbulletin.gui.preference.Preference;
 import it.albertus.jface.preference.IPreferencesConfiguration;
 import it.albertus.util.logging.LoggingDefaultConfig;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 public class LoggingConfig extends LoggingDefaultConfig {
 
+	@NoArgsConstructor(access = AccessLevel.PRIVATE)
 	public static class Defaults {
 		public static final String LOGGING_FILES_PATH = APPDATA_DIRECTORY + File.separator + "log";
 		public static final Level LOGGING_LEVEL = WARNING;
-
-		private Defaults() {
-			throw new IllegalAccessError("Constants class");
-		}
 	}
 
 	private final IPreferencesConfiguration configuration;

@@ -63,16 +63,15 @@ import it.albertus.jface.SwtUtils;
 import it.albertus.jface.closeable.CloseableResource;
 import it.albertus.jface.maps.CoordinateUtils;
 import it.albertus.jface.preference.IPreferencesConfiguration;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 public class ResultsTable implements IShellProvider, Multilanguage {
 
+	@NoArgsConstructor(access = AccessLevel.PRIVATE)
 	public static class Defaults {
 		public static final float MAGNITUDE_BIG = 5.0f;
 		public static final float MAGNITUDE_XXL = 6.0f;
-
-		private Defaults() {
-			throw new IllegalAccessError("Constants class");
-		}
 	}
 
 	private static final int TOOLTIP_TIME_DISPLAYED = 5000;

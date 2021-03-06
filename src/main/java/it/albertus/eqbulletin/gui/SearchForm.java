@@ -65,6 +65,8 @@ import it.albertus.jface.validation.FloatTextValidator;
 import it.albertus.jface.validation.IntegerTextValidator;
 import it.albertus.jface.validation.Validator;
 import it.albertus.util.logging.LoggerFactory;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 public class SearchForm implements IShellProvider, Multilanguage {
 
@@ -94,14 +96,11 @@ public class SearchForm implements IShellProvider, Multilanguage {
 	private static final String MSG_KEY_ERR_INTEGER_RANGE = "err.preferences.integer.range";
 	private static final String MSG_KEY_ERR_DECIMAL_RANGE = "err.preferences.decimal.range";
 
+	@NoArgsConstructor(access = AccessLevel.PRIVATE)
 	public static class Defaults {
 		public static final boolean AUTOREFRESH_ENABLED = false;
 		public static final boolean CRITERIA_RESTRICT = false;
 		public static final Format FORMAT = Format.DEFAULT;
-
-		private Defaults() {
-			throw new IllegalAccessError("Constants class");
-		}
 	}
 
 	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getPreferencesConfiguration();

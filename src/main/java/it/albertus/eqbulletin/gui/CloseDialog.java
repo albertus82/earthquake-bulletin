@@ -7,15 +7,14 @@ import org.eclipse.swt.widgets.Shell;
 import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
 import it.albertus.eqbulletin.gui.preference.Preference;
 import it.albertus.eqbulletin.resources.Messages;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 public class CloseDialog {
 
+	@NoArgsConstructor(access = AccessLevel.PRIVATE)
 	public static class Defaults {
 		public static final boolean CONFIRM_CLOSE = false;
-
-		private Defaults() {
-			throw new IllegalAccessError("Constants class");
-		}
 	}
 
 	private final MessageBox messageBox;

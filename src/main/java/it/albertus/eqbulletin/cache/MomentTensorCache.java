@@ -8,20 +8,20 @@ import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
 import it.albertus.eqbulletin.gui.preference.Preference;
 import it.albertus.eqbulletin.model.MomentTensor;
 import it.albertus.jface.preference.IPreferencesConfiguration;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MomentTensorCache implements Cache<String, MomentTensor> {
 
 	private static final long serialVersionUID = -3278285082043132654L;
 
 	private static final String CACHE_FILE = CacheManager.CACHE_DIRECTORY + File.separator + "mtcache.ser";
 
+	@NoArgsConstructor(access = AccessLevel.PRIVATE)
 	public static class Defaults {
 		public static final byte CACHE_SIZE = 20;
 		public static final boolean CACHE_SAVE = true;
-
-		private Defaults() {
-			throw new IllegalAccessError("Constants class");
-		}
 	}
 
 	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getPreferencesConfiguration();
@@ -44,8 +44,6 @@ public class MomentTensorCache implements Cache<String, MomentTensor> {
 		}
 		return instance;
 	}
-
-	private MomentTensorCache() {}
 
 	private final Map<String, PackedMomentTensor> cache = new LinkedHashMap<>(16, 0.75f, true);
 

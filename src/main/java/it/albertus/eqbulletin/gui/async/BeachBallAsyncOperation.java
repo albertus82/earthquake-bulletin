@@ -11,12 +11,15 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 
 import it.albertus.eqbulletin.cache.BeachBallCache;
-import it.albertus.eqbulletin.model.Earthquake;
 import it.albertus.eqbulletin.model.BeachBall;
+import it.albertus.eqbulletin.model.Earthquake;
 import it.albertus.eqbulletin.service.job.BeachBallDownloadJob;
 import it.albertus.eqbulletin.service.net.BeachBallDownloader;
 import it.albertus.util.logging.LoggerFactory;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class BeachBallAsyncOperation extends AsyncOperation {
 
 	private static final Logger logger = LoggerFactory.getLogger(BeachBallAsyncOperation.class);
@@ -94,7 +97,5 @@ public class BeachBallAsyncOperation extends AsyncOperation {
 			currentJob = null;
 		}
 	}
-
-	private BeachBallAsyncOperation() {}
 
 }

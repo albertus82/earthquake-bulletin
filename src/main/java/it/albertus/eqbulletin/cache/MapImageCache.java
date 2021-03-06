@@ -8,20 +8,20 @@ import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
 import it.albertus.eqbulletin.gui.preference.Preference;
 import it.albertus.eqbulletin.model.MapImage;
 import it.albertus.jface.preference.IPreferencesConfiguration;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MapImageCache implements Cache<String, MapImage> {
 
 	private static final long serialVersionUID = 14746911870762927L;
 
 	private static final String CACHE_FILE = CacheManager.CACHE_DIRECTORY + File.separator + "mapcache.ser";
 
+	@NoArgsConstructor(access = AccessLevel.PRIVATE)
 	public static class Defaults {
 		public static final byte CACHE_SIZE = 20;
 		public static final boolean CACHE_SAVE = true;
-
-		private Defaults() {
-			throw new IllegalAccessError("Constants class");
-		}
 	}
 
 	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getPreferencesConfiguration();
@@ -44,8 +44,6 @@ public class MapImageCache implements Cache<String, MapImage> {
 		}
 		return instance;
 	}
-
-	private MapImageCache() {}
 
 	private final Map<String, MapImage> cache = new LinkedHashMap<>(16, 0.75f, true);
 

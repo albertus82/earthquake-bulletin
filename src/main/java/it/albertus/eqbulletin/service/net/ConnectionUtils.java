@@ -8,7 +8,10 @@ import java.util.logging.Logger;
 
 import it.albertus.util.StringUtils;
 import it.albertus.util.logging.LoggerFactory;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ConnectionUtils {
 
 	private static final Logger logger = LoggerFactory.getLogger(ConnectionUtils.class);
@@ -35,10 +38,6 @@ public class ConnectionUtils {
 		final Charset charset = StandardCharsets.ISO_8859_1;
 		logger.log(Level.FINE, "Using default HTTP 1.1 charset: {0}", charset);
 		return charset;
-	}
-
-	private ConnectionUtils() {
-		throw new IllegalAccessError("Utility class");
 	}
 
 }

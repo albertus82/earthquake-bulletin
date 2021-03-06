@@ -23,7 +23,10 @@ import it.albertus.eqbulletin.service.GeofonUtils;
 import it.albertus.eqbulletin.service.decode.rss.xml.Item;
 import it.albertus.eqbulletin.service.decode.rss.xml.RssBulletin;
 import it.albertus.util.logging.LoggerFactory;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class RssBulletinDecoder {
 
 	private static final Logger logger = LoggerFactory.getLogger(RssBulletinDecoder.class);
@@ -88,10 +91,6 @@ public class RssBulletinDecoder {
 		}
 
 		return new Earthquake(guid, time, magnitudo, Latitude.valueOf(latitude), Longitude.valueOf(longitude), Depth.valueOf(depth), status, region, link, enclosureUri, momentTensorUri);
-	}
-
-	private RssBulletinDecoder() {
-		throw new IllegalAccessError();
 	}
 
 }

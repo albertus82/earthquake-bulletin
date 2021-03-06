@@ -1,5 +1,8 @@
 package com.dmurph;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 /**
  * Simple uri encoder, made from the spec at http://www.ietf.org/rfc/rfc2396.txt
  * Feel free to copy this. I'm not responsible for this code in any way, ever.
@@ -7,14 +10,11 @@ package com.dmurph;
  * 
  * @author Daniel Murphy
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class URIEncoder {
 
 	private static final String MARK = "-_.!~*'()\"";
 	private static final char[] hex = "0123456789ABCDEF".toCharArray();
-
-	private URIEncoder() {
-		throw new IllegalAccessError();
-	}
 
 	public static String encodeURI(String argString) {
 		StringBuilder uri = new StringBuilder();

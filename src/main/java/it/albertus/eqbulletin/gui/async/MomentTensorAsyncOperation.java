@@ -20,7 +20,10 @@ import it.albertus.eqbulletin.service.job.MomentTensorDownloadJob;
 import it.albertus.eqbulletin.service.net.MomentTensorDownloader;
 import it.albertus.jface.DisplayThreadExecutor;
 import it.albertus.util.logging.LoggerFactory;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MomentTensorAsyncOperation extends AsyncOperation {
 
 	private static final Logger logger = LoggerFactory.getLogger(MomentTensorAsyncOperation.class);
@@ -97,7 +100,5 @@ public class MomentTensorAsyncOperation extends AsyncOperation {
 			setDefaultCursor(shell);
 		}
 	}
-
-	private MomentTensorAsyncOperation() {}
 
 }

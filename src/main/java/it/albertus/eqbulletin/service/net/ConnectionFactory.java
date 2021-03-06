@@ -26,9 +26,13 @@ import it.albertus.eqbulletin.gui.preference.Preference;
 import it.albertus.jface.preference.IPreferencesConfiguration;
 import it.albertus.util.Version;
 import it.albertus.util.logging.LoggerFactory;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ConnectionFactory {
 
+	@NoArgsConstructor(access = AccessLevel.PRIVATE)
 	public static class Defaults {
 		public static final int CONNECTION_TIMEOUT_IN_MILLIS = 20000;
 		public static final int READ_TIMEOUT_IN_MILLIS = 20000;
@@ -38,10 +42,6 @@ public class ConnectionFactory {
 		public static final String PROXY_ADDRESS = "10.0.0.1";
 		public static final int PROXY_PORT = 8080;
 		public static final boolean PROXY_AUTH_REQUIRED = false;
-
-		private Defaults() {
-			throw new IllegalAccessError("Constants class");
-		}
 	}
 
 	private static final String USER_AGENT = String.format("Mozilla/5.0 (%s; %s; %s) EarthquakeBulletin/%s (KHTML, like Gecko)", System.getProperty("os.name"), System.getProperty("os.arch"), System.getProperty("os.version"), Version.getNumber());
@@ -53,10 +53,6 @@ public class ConnectionFactory {
 	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getPreferencesConfiguration();
 
 	private static final Logger logger = LoggerFactory.getLogger(ConnectionFactory.class);
-
-	private ConnectionFactory() {
-		throw new IllegalAccessError();
-	}
 
 	public static HttpURLConnection makeGetRequest(URL url, final Headers headers) throws IOException {
 		HttpURLConnection urlConnection = prepareConnection(url, headers);

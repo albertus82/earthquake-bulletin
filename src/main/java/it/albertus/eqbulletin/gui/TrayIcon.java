@@ -33,6 +33,8 @@ import it.albertus.jface.listener.TrayRestoreListener;
 import it.albertus.jface.preference.IPreferencesConfiguration;
 import it.albertus.util.MapUtils;
 import it.albertus.util.logging.LoggerFactory;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 public class TrayIcon implements IShellProvider, Multilanguage {
 
@@ -40,12 +42,9 @@ public class TrayIcon implements IShellProvider, Multilanguage {
 
 	private static final int[] icons = { SWT.ICON_INFORMATION, SWT.ICON_WARNING, SWT.ICON_ERROR };
 
+	@NoArgsConstructor(access = AccessLevel.PRIVATE)
 	public static class Defaults {
 		public static final boolean MINIMIZE_TRAY = SystemTray.isSupported();
-
-		private Defaults() {
-			throw new IllegalAccessError("Constants class");
-		}
 	}
 
 	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getPreferencesConfiguration();

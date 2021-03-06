@@ -17,7 +17,10 @@ import it.albertus.jface.DisplayThreadExecutor;
 import it.albertus.jface.EnhancedErrorDialog;
 import it.albertus.util.DaemonThreadFactory;
 import it.albertus.util.logging.LoggerFactory;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class AsyncOperation {
 
 	private static final Logger logger = LoggerFactory.getLogger(AsyncOperation.class);
@@ -57,10 +60,6 @@ public abstract class AsyncOperation {
 		if (!shell.isDisposed()) {
 			new DisplayThreadExecutor(shell, ASYNC).execute(() -> EnhancedErrorDialog.openError(shell, Messages.get("lbl.window.title"), e.getMessage(), e.getSeverity(), e.getCause() != null ? e.getCause() : e, Images.getAppIconArray()));
 		}
-	}
-
-	protected AsyncOperation() {
-		throw new IllegalAccessError();
 	}
 
 }

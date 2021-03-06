@@ -34,16 +34,15 @@ import it.albertus.jface.SwtUtils;
 import it.albertus.jface.closeable.CloseableResource;
 import it.albertus.jface.preference.IPreferencesConfiguration;
 import it.albertus.util.logging.LoggerFactory;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 public class MomentTensorDialog extends Dialog {
 
+	@NoArgsConstructor(access = AccessLevel.PRIVATE)
 	public static class Defaults {
 		public static final boolean LIMIT_HEIGHT = false;
 		public static final byte MAX_DIALOGS = 0xF;
-
-		private Defaults() {
-			throw new IllegalAccessError("Constants class");
-		}
 	}
 
 	private static final Logger logger = LoggerFactory.getLogger(MomentTensorDialog.class);

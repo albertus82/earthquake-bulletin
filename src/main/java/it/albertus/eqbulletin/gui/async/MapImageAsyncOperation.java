@@ -22,7 +22,10 @@ import it.albertus.eqbulletin.service.job.MapImageDownloadJob;
 import it.albertus.eqbulletin.service.net.MapImageDownloader;
 import it.albertus.jface.DisplayThreadExecutor;
 import it.albertus.util.logging.LoggerFactory;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MapImageAsyncOperation extends AsyncOperation {
 
 	private static final Logger logger = LoggerFactory.getLogger(MapImageAsyncOperation.class);
@@ -115,7 +118,5 @@ public class MapImageAsyncOperation extends AsyncOperation {
 			currentJob = null;
 		}
 	}
-
-	private MapImageAsyncOperation() {}
 
 }

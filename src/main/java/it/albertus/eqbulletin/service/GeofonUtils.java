@@ -9,7 +9,10 @@ import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
 import it.albertus.eqbulletin.gui.preference.Preference;
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.util.logging.LoggerFactory;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class GeofonUtils {
 
 	public static final String DEFAULT_GEOFON_BASE_URL = "https://geofon.gfz-potsdam.de";
@@ -53,10 +56,6 @@ public class GeofonUtils {
 
 	private static String getBaseUrl() {
 		return EarthquakeBulletinConfig.getPreferencesConfiguration().getString(Preference.GEOFON_BASE_URL, GeofonUtils.DEFAULT_GEOFON_BASE_URL);
-	}
-
-	private GeofonUtils() {
-		throw new IllegalAccessError("Utility class");
 	}
 
 }

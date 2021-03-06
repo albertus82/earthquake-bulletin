@@ -7,7 +7,10 @@ import java.util.logging.Logger;
 
 import it.albertus.eqbulletin.gui.preference.Preference;
 import it.albertus.util.logging.LoggerFactory;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class TimeZoneConfig {
 
 	private static final Logger logger = LoggerFactory.getLogger(TimeZoneConfig.class);
@@ -22,10 +25,6 @@ public class TimeZoneConfig {
 			logger.log(Level.WARNING, e.toString(), e);
 			return ZoneId.of(DEFAULT_ZONE_ID);
 		}
-	}
-
-	private TimeZoneConfig() {
-		throw new IllegalAccessError("Utility class");
 	}
 
 }

@@ -46,16 +46,15 @@ import it.albertus.jface.Multilanguage;
 import it.albertus.jface.closeable.CloseableResource;
 import it.albertus.jface.preference.IPreferencesConfiguration;
 import it.albertus.util.logging.LoggerFactory;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 public class MapCanvas implements IShellProvider, Multilanguage {
 
+	@NoArgsConstructor(access = AccessLevel.PRIVATE)
 	public static class Defaults {
 		public static final boolean MAP_RESIZE_HQ = true;
 		public static final short MAP_ZOOM_LEVEL = AUTO_SCALE;
-
-		private Defaults() {
-			throw new IllegalAccessError("Constants class");
-		}
 	}
 
 	private static final int AUTO_SCALE = 0;
