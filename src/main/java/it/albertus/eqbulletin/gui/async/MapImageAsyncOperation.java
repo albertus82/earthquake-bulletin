@@ -6,7 +6,6 @@ import static it.albertus.jface.DisplayThreadExecutor.Mode.SYNC;
 import java.io.Serializable;
 import java.util.Optional;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
@@ -21,14 +20,13 @@ import it.albertus.eqbulletin.model.MapImage;
 import it.albertus.eqbulletin.service.job.MapImageDownloadJob;
 import it.albertus.eqbulletin.service.net.MapImageDownloader;
 import it.albertus.jface.DisplayThreadExecutor;
-import it.albertus.util.logging.LoggerFactory;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.extern.java.Log;
 
+@Log
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MapImageAsyncOperation extends AsyncOperation {
-
-	private static final Logger logger = LoggerFactory.getLogger(MapImageAsyncOperation.class);
 
 	private static Job currentJob;
 
@@ -40,11 +38,11 @@ public class MapImageAsyncOperation extends AsyncOperation {
 			final String guid = earthquake.getGuid();
 			final MapImage cachedObject = cache.get(guid);
 			if (cachedObject == null) {
-				logger.log(Level.FINE, "Cache miss for key \"{0}\". Cache size: {1}.", new Serializable[] { guid, cache.getSize() });
+				log.log(Level.FINE, "Cache miss for key \"{0}\". Cache size: {1}.", new Serializable[] { guid, cache.getSize() });
 				cacheMiss(earthquake, shell);
 			}
 			else {
-				logger.log(Level.FINE, "Cache hit for key \"{0}\". Cache size: {1}.", new Serializable[] { guid, cache.getSize() });
+				log.log(Level.FINE, "Cache hit for key \"{0}\". Cache size: {1}.", new Serializable[] { guid, cache.getSize() });
 				cacheHit(cachedObject, earthquake, shell);
 			}
 		}
@@ -95,7 +93,7 @@ public class MapImageAsyncOperation extends AsyncOperation {
 					}
 				}
 				catch (final Exception e) {
-					logger.log(Level.WARNING, e.toString(), e);
+					log.log(Level.WARNING, e.toString(), e);
 				}
 				finally {
 					new DisplayThreadExecutor(shell, SYNC).execute(() -> setDefaultCursor(shell));

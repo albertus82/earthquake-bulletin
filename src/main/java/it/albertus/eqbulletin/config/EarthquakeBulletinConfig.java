@@ -5,7 +5,6 @@ import static it.albertus.eqbulletin.EarthquakeBulletin.ARTIFACT_ID;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.eclipse.jface.util.Util;
 
@@ -19,12 +18,11 @@ import it.albertus.util.SystemUtils;
 import it.albertus.util.config.Configuration;
 import it.albertus.util.config.PropertiesConfiguration;
 import it.albertus.util.logging.ILoggingManager;
-import it.albertus.util.logging.LoggerFactory;
 import it.albertus.util.logging.LoggingManager;
+import lombok.extern.java.Log;
 
+@Log
 public class EarthquakeBulletinConfig extends Configuration {
-
-	private static final Logger logger = LoggerFactory.getLogger(EarthquakeBulletinConfig.class);
 
 	private static final String DIRECTORY_NAME = Util.isLinux() ? '.' + ARTIFACT_ID : "Earthquake Bulletin";
 
@@ -51,8 +49,8 @@ public class EarthquakeBulletinConfig extends Configuration {
 			try {
 				instance = new EarthquakeBulletinConfig(false);
 				instanceCount++;
-				if (logger.isLoggable(Level.CONFIG)) {
-					logger.log(Level.CONFIG, "Created {0} instance.", instance.getClass().getSimpleName());
+				if (log.isLoggable(Level.CONFIG)) {
+					log.log(Level.CONFIG, "Created {0} instance.", instance.getClass().getSimpleName());
 				}
 				if (instanceCount > 1) {
 					throw new InitializationException("Detected multiple instances of singleton " + instance.getClass());

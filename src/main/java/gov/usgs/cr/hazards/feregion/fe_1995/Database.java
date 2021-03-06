@@ -11,10 +11,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
-import it.albertus.util.logging.LoggerFactory;
+import lombok.extern.java.Log;
 
 /**
  * This class represents the Flinn-Engdahl regions database used by
@@ -28,6 +27,7 @@ import it.albertus.util.logging.LoggerFactory;
  *      revision of the Flinn-Engdahl (F-E) seismic and geographical
  *      regionalization scheme and programs</a>
  */
+@Log
 class Database {
 
 	// Names of files containing Flinn-Engdahl Regionalization info.
@@ -45,8 +45,6 @@ class Database {
 	private final List<Integer> seisreg = new ArrayList<>(757);
 
 	Database() throws IOException { // NOSONAR Preserve comparability with Perl source.
-		final Logger logger = LoggerFactory.getLogger(getClass());
-
 		final long startTime = System.nanoTime();
 
 		final Pattern pattern = Pattern.compile("\\s+");
@@ -69,7 +67,7 @@ class Database {
 				}
 			}
 		}
-		logger.log(Level.FINE, "  * Numitems in quadsindex = {0}", quadsindex.size());
+		log.log(Level.FINE, "  * Numitems in quadsindex = {0}", quadsindex.size());
 
 		final Map<String, List<Integer>> sects = new HashMap<>(quadorder.length * 2);
 		for (int i = 0; i < sectfiles.length; i++) {
@@ -103,8 +101,8 @@ class Database {
 				begin = end + 1;
 				begins.add(begin);
 				end += item;
-				if (logger.isLoggable(Level.FINE) && n <= 10) {
-					logger.log(Level.FINE, "{0} {1} {2} {3}", new Object[] { quad, item, begin, end });
+				if (log.isLoggable(Level.FINE) && n <= 10) {
+					log.log(Level.FINE, "{0} {1} {2} {3}", new Object[] { quad, item, begin, end });
 				}
 			}
 			latbegins.put(quad, begins);
@@ -140,7 +138,7 @@ class Database {
 			}
 		}
 
-		logger.log(Level.FINE, "F-E regions database initialized in {0} ns.", System.nanoTime() - startTime);
+		log.log(Level.FINE, "F-E regions database initialized in {0} ns.", System.nanoTime() - startTime);
 	}
 
 	List<String> getNames() {

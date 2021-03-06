@@ -17,7 +17,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import com.sun.net.httpserver.Headers;
 
@@ -25,10 +24,11 @@ import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
 import it.albertus.eqbulletin.gui.preference.Preference;
 import it.albertus.jface.preference.IPreferencesConfiguration;
 import it.albertus.util.Version;
-import it.albertus.util.logging.LoggerFactory;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.extern.java.Log;
 
+@Log
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ConnectionFactory {
 
@@ -52,8 +52,6 @@ public class ConnectionFactory {
 
 	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getPreferencesConfiguration();
 
-	private static final Logger logger = LoggerFactory.getLogger(ConnectionFactory.class);
-
 	public static HttpURLConnection makeGetRequest(URL url, final Headers headers) throws IOException {
 		HttpURLConnection urlConnection = prepareConnection(url, headers);
 		byte redirectionCounter = 0;
@@ -73,7 +71,7 @@ public class ConnectionFactory {
 			else { // Absolute
 				spec = location;
 			}
-			logger.log(Level.FINE, "Redirecting from \"{0}\" to \"{1}\"", new Serializable[] { url, spec });
+			log.log(Level.FINE, "Redirecting from \"{0}\" to \"{1}\"", new Serializable[] { url, spec });
 			url = new URL(spec);
 			urlConnection = prepareConnection(url, headers);
 		}
@@ -119,7 +117,7 @@ public class ConnectionFactory {
 				}
 				proxy = new Proxy(Proxy.Type.valueOf(configuration.getString(Preference.PROXY_TYPE, Defaults.PROXY_TYPE.name())), new InetSocketAddress(configuration.getString(Preference.PROXY_ADDRESS, Defaults.PROXY_ADDRESS), configuration.getInt(Preference.PROXY_PORT, Defaults.PROXY_PORT)));
 			}
-			logger.log(Level.CONFIG, "Using proxy: {0}", proxy);
+			log.log(Level.CONFIG, "Using proxy: {0}", proxy);
 			connection = url.openConnection(proxy);
 		}
 		else {

@@ -12,7 +12,6 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 
 import javax.xml.bind.JAXBContext;
@@ -30,11 +29,10 @@ import it.albertus.eqbulletin.service.decode.rss.RssBulletinDecoder;
 import it.albertus.eqbulletin.service.decode.rss.xml.RssBulletin;
 import it.albertus.eqbulletin.util.InitializationException;
 import it.albertus.util.IOUtils;
-import it.albertus.util.logging.LoggerFactory;
+import lombok.extern.java.Log;
 
+@Log
 public class RssBulletinDownloader implements BulletinDownloader {
-
-	private static final Logger logger = LoggerFactory.getLogger(RssBulletinDownloader.class);
 
 	private static final short BUFFER_SIZE = 4096;
 
@@ -57,7 +55,7 @@ public class RssBulletinDownloader implements BulletinDownloader {
 			return Optional.of(new Bulletin(doDownload(request, canceled)));
 		}
 		catch (final CancelException e) {
-			logger.log(Level.FINE, "Operation canceled:", e);
+			log.log(Level.FINE, "Operation canceled:", e);
 			return Optional.empty();
 		}
 	}
@@ -132,7 +130,7 @@ public class RssBulletinDownloader implements BulletinDownloader {
 				connectionInputStream.close();
 			}
 			catch (final Exception e) {
-				logger.log(Level.FINE, e.toString(), e);
+				log.log(Level.FINE, e.toString(), e);
 			}
 		}
 	}

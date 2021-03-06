@@ -13,7 +13,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -64,13 +63,12 @@ import it.albertus.jface.validation.ControlValidator;
 import it.albertus.jface.validation.FloatTextValidator;
 import it.albertus.jface.validation.IntegerTextValidator;
 import it.albertus.jface.validation.Validator;
-import it.albertus.util.logging.LoggerFactory;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.extern.java.Log;
 
+@Log
 public class SearchForm implements IShellProvider, Multilanguage {
-
-	private static final Logger logger = LoggerFactory.getLogger(SearchForm.class);
 
 	public static final float LATITUDE_MIN_VALUE = MapBounds.LATITUDE_MIN_VALUE;
 	public static final float LATITUDE_MAX_VALUE = MapBounds.LATITUDE_MAX_VALUE;
@@ -228,7 +226,7 @@ public class SearchForm implements IShellProvider, Multilanguage {
 		final int buttonVerticalSize = SwtUtils.convertVerticalDLUsToPixels(openMapButton, 25);
 		for (final Entry<Rectangle, Image> entry : Images.getMapIconMap().entrySet()) {
 			if (entry.getKey().height < buttonVerticalSize - buttonVerticalSize / 6.8f) { // leaving some room around the image
-				logger.log(Level.FINE, "Open Map button size: {0}; setting OpenStreetMap icon: {1}.", new Object[] { buttonVerticalSize, entry });
+				log.log(Level.FINE, "Open Map button size: {0}; setting OpenStreetMap icon: {1}.", new Object[] { buttonVerticalSize, entry });
 				openMapButton.setImage(entry.getValue());
 				break;
 			}
@@ -279,7 +277,7 @@ public class SearchForm implements IShellProvider, Multilanguage {
 			selectedFormat = Format.valueOf(configuration.getString(Preference.CRITERIA_FORMAT, Defaults.FORMAT.name()).trim().toUpperCase());
 		}
 		catch (final IllegalArgumentException e) {
-			logger.log(Level.WARNING, e.toString(), e);
+			log.log(Level.WARNING, e.toString(), e);
 			selectedFormat = Defaults.FORMAT;
 		}
 		for (final Format format : Format.values()) {
@@ -447,7 +445,7 @@ public class SearchForm implements IShellProvider, Multilanguage {
 			}
 		}
 		catch (final RuntimeException e) {
-			logger.log(Level.WARNING, e.toString(), e);
+			log.log(Level.WARNING, e.toString(), e);
 		}
 		return value;
 	}
@@ -461,7 +459,7 @@ public class SearchForm implements IShellProvider, Multilanguage {
 			}
 		}
 		catch (final RuntimeException e) {
-			logger.log(Level.WARNING, e.toString(), e);
+			log.log(Level.WARNING, e.toString(), e);
 		}
 		return value;
 	}
@@ -475,7 +473,7 @@ public class SearchForm implements IShellProvider, Multilanguage {
 				value = Date.from(dateTimeFormatter.parse(dateStr, Instant::from));
 			}
 			catch (final RuntimeException e) {
-				logger.log(Level.WARNING, e.toString(), e);
+				log.log(Level.WARNING, e.toString(), e);
 			}
 		}
 		return value;

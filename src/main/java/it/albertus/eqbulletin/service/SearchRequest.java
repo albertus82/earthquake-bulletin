@@ -13,16 +13,14 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import com.dmurph.URIEncoder;
 
 import it.albertus.eqbulletin.model.Format;
-import it.albertus.util.logging.LoggerFactory;
+import lombok.extern.java.Log;
 
+@Log
 public class SearchRequest {
-
-	private static final Logger logger = LoggerFactory.getLogger(SearchRequest.class);
 
 	private boolean valid;
 	private Long delay;
@@ -112,13 +110,13 @@ public class SearchRequest {
 		PaginationParameters(final short limit) {
 			nmax = limit;
 			pages = 1;
-			logger.log(Level.FINE, "Desired (nmax={0,number,#}).", limit);
+			log.log(Level.FINE, "Desired (nmax={0,number,#}).", limit);
 			while (nmax > API_LIMIT) {
 				pages++;
 				nmax = (short) Math.ceil((double) limit / pages);
-				logger.log(Level.FINE, "Computing (nmax={0,number,#}, pages={1})...", new Number[] { nmax, pages });
+				log.log(Level.FINE, "Computing (nmax={0,number,#}, pages={1})...", new Number[] { nmax, pages });
 			}
-			logger.log(Level.FINE, "Computed (nmax={0,number,#}, pages={1}).", new Number[] { nmax, pages });
+			log.log(Level.FINE, "Computed (nmax={0,number,#}, pages={1}).", new Number[] { nmax, pages });
 		}
 
 		short getNmax() {

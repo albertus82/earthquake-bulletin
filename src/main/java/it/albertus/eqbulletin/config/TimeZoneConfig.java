@@ -3,17 +3,15 @@ package it.albertus.eqbulletin.config;
 import java.time.DateTimeException;
 import java.time.ZoneId;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import it.albertus.eqbulletin.gui.preference.Preference;
-import it.albertus.util.logging.LoggerFactory;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.extern.java.Log;
 
+@Log
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class TimeZoneConfig {
-
-	private static final Logger logger = LoggerFactory.getLogger(TimeZoneConfig.class);
 
 	public static final String DEFAULT_ZONE_ID = "UTC";
 
@@ -22,7 +20,7 @@ public class TimeZoneConfig {
 			return ZoneId.of(EarthquakeBulletinConfig.getPreferencesConfiguration().getString(Preference.TIMEZONE, DEFAULT_ZONE_ID));
 		}
 		catch (final DateTimeException e) {
-			logger.log(Level.WARNING, e.toString(), e);
+			log.log(Level.WARNING, e.toString(), e);
 			return ZoneId.of(DEFAULT_ZONE_ID);
 		}
 	}

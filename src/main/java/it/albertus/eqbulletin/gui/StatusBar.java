@@ -6,7 +6,6 @@ import java.time.format.FormatStyle;
 import java.time.temporal.TemporalAccessor;
 import java.util.Locale;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.eclipse.jface.action.StatusLineManager;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -18,13 +17,12 @@ import org.eclipse.swt.widgets.Shell;
 import it.albertus.eqbulletin.config.TimeZoneConfig;
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.jface.Multilanguage;
-import it.albertus.util.logging.LoggerFactory;
+import lombok.extern.java.Log;
 
+@Log
 public class StatusBar implements IShellProvider, Multilanguage {
 
 	private static final String SPACER = "      ";
-
-	private static final Logger logger = LoggerFactory.getLogger(StatusBar.class);
 
 	private final StatusLineManager manager;
 	private final Shell shell;
@@ -91,7 +89,7 @@ public class StatusBar implements IShellProvider, Multilanguage {
 			}
 		}
 		catch (final IllegalAccessException | RuntimeException e) {
-			logger.log(Level.WARNING, e.toString(), e);
+			log.log(Level.WARNING, e.toString(), e);
 		}
 	}
 

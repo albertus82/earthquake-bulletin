@@ -3,7 +3,6 @@ package it.albertus.eqbulletin.gui;
 import java.awt.SystemTray;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.eclipse.jface.util.Util;
 import org.eclipse.jface.window.IShellProvider;
@@ -32,13 +31,12 @@ import it.albertus.jface.Multilanguage;
 import it.albertus.jface.listener.TrayRestoreListener;
 import it.albertus.jface.preference.IPreferencesConfiguration;
 import it.albertus.util.MapUtils;
-import it.albertus.util.logging.LoggerFactory;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.extern.java.Log;
 
+@Log
 public class TrayIcon implements IShellProvider, Multilanguage {
-
-	private static final Logger logger = LoggerFactory.getLogger(TrayIcon.class);
 
 	private static final int[] icons = { SWT.ICON_INFORMATION, SWT.ICON_WARNING, SWT.ICON_ERROR };
 
@@ -73,7 +71,7 @@ public class TrayIcon implements IShellProvider, Multilanguage {
 						iconify(gui);
 					}
 					else {
-						logger.log(Level.INFO, "The system tray is not supported on the current platform.");
+						log.log(Level.INFO, "The system tray is not supported on the current platform.");
 					}
 				}
 			}
@@ -132,7 +130,7 @@ public class TrayIcon implements IShellProvider, Multilanguage {
 				}
 			}
 			catch (final Exception e) {
-				logger.log(Level.SEVERE, Messages.get("err.tray.init"), e);
+				log.log(Level.SEVERE, Messages.get("err.tray.init"), e);
 			}
 		}
 
@@ -166,7 +164,7 @@ public class TrayIcon implements IShellProvider, Multilanguage {
 				});
 			}
 			catch (final RuntimeException e) {
-				logger.log(Level.WARNING, e.toString(), e);
+				log.log(Level.WARNING, e.toString(), e);
 			}
 		}
 	}
@@ -189,7 +187,7 @@ public class TrayIcon implements IShellProvider, Multilanguage {
 				});
 			}
 			catch (final RuntimeException e) {
-				logger.log(Level.WARNING, e.toString(), e);
+				log.log(Level.WARNING, e.toString(), e);
 			}
 		}
 	}

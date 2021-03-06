@@ -5,7 +5,6 @@ import static it.albertus.jface.DisplayThreadExecutor.Mode.ASYNC;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.eclipse.core.runtime.jobs.IJobManager;
 import org.eclipse.swt.SWT;
@@ -16,21 +15,20 @@ import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.jface.DisplayThreadExecutor;
 import it.albertus.jface.EnhancedErrorDialog;
 import it.albertus.util.DaemonThreadFactory;
-import it.albertus.util.logging.LoggerFactory;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.extern.java.Log;
 
+@Log
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class AsyncOperation {
-
-	private static final Logger logger = LoggerFactory.getLogger(AsyncOperation.class);
 
 	protected static final ThreadFactory threadFactory = new DaemonThreadFactory() {
 		@Override
 		public Thread newThread(final Runnable r) {
 			final Thread thread = super.newThread(r);
 			thread.setPriority(Thread.MIN_PRIORITY);
-			thread.setUncaughtExceptionHandler((t, e) -> logger.log(Level.SEVERE, t.toString(), e));
+			thread.setUncaughtExceptionHandler((t, e) -> log.log(Level.SEVERE, t.toString(), e));
 			return thread;
 		}
 	};
@@ -42,7 +40,7 @@ public abstract class AsyncOperation {
 	}
 
 	protected static void setAppStartingCursor(final Shell shell) {
-		logger.log(Level.FINE, "setAppStartingCursor() - operationCount = {0}", operationCount);
+		log.log(Level.FINE, "setAppStartingCursor() - operationCount = {0}", operationCount);
 		if (operationCount.getAndIncrement() == 0 && shell != null && !shell.isDisposed()) {
 			shell.setCursor(shell.getDisplay().getSystemCursor(SWT.CURSOR_APPSTARTING));
 		}
@@ -52,11 +50,11 @@ public abstract class AsyncOperation {
 		if (operationCount.updateAndGet(o -> o > 1 ? o - 1 : 0) == 0 && shell != null && !shell.isDisposed()) {
 			shell.setCursor(null);
 		}
-		logger.log(Level.FINE, "setDefaultCursor() - operationCount = {0}", operationCount);
+		log.log(Level.FINE, "setDefaultCursor() - operationCount = {0}", operationCount);
 	}
 
 	protected static void showErrorDialog(final AsyncOperationException e, final Shell shell) {
-		logger.log(e.getLoggingLevel(), e.getMessage(), e);
+		log.log(e.getLoggingLevel(), e.getMessage(), e);
 		if (!shell.isDisposed()) {
 			new DisplayThreadExecutor(shell, ASYNC).execute(() -> EnhancedErrorDialog.openError(shell, Messages.get("lbl.window.title"), e.getMessage(), e.getSeverity(), e.getCause() != null ? e.getCause() : e, Images.getAppIconArray()));
 		}

@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeSet;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.window.IShellProvider;
@@ -45,10 +44,11 @@ import it.albertus.jface.ImageUtils;
 import it.albertus.jface.Multilanguage;
 import it.albertus.jface.closeable.CloseableResource;
 import it.albertus.jface.preference.IPreferencesConfiguration;
-import it.albertus.util.logging.LoggerFactory;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.extern.java.Log;
 
+@Log
 public class MapCanvas implements IShellProvider, Multilanguage {
 
 	@NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -59,8 +59,6 @@ public class MapCanvas implements IShellProvider, Multilanguage {
 
 	private static final int AUTO_SCALE = 0;
 	private static final int MAX_HQ_RESIZE_RATIO = 250;
-
-	private static final Logger logger = LoggerFactory.getLogger(MapCanvas.class);
 
 	private static final LinkedList<Integer> zoomLevels = new LinkedList<>(new TreeSet<>(Arrays.asList(AUTO_SCALE, 10, 12, 15, 20, 25, 30, 40, 50, 60, 80, 100, 120, 150, 200, 250, 300, 400, 500)));
 
@@ -238,7 +236,7 @@ public class MapCanvas implements IShellProvider, Multilanguage {
 			}
 			else {
 				if (configuration.getBoolean(Preference.MAP_RESIZE_HQ, Defaults.MAP_RESIZE_HQ) && (scalePercent == AUTO_SCALE || scalePercent % 100 != 0 && scalePercent <= MAX_HQ_RESIZE_RATIO)) {
-					logger.log(Level.FINE, "HQ resizing scale {0}.", scalePercent);
+					log.log(Level.FINE, "HQ resizing scale {0}.", scalePercent);
 					final Image oldImage = resized;
 					resized = ImageUtils.resize(image, resizedRect.height / (float) originalRect.height);
 					prepareCanvas(gc, scalePercent);
@@ -248,7 +246,7 @@ public class MapCanvas implements IShellProvider, Multilanguage {
 					}
 				}
 				else { // Fast low-quality resizing
-					logger.log(Level.FINE, "LQ Resizing scale {0}.", scalePercent);
+					log.log(Level.FINE, "LQ Resizing scale {0}.", scalePercent);
 					prepareCanvas(gc, scalePercent);
 					gc.drawImage(image, 0, 0, originalRect.width, originalRect.height, resizedRect.x, resizedRect.y, resizedRect.width, resizedRect.height);
 				}
@@ -340,7 +338,7 @@ public class MapCanvas implements IShellProvider, Multilanguage {
 				}
 				catch (final Exception e) {
 					final String message = Messages.get("err.image.save", fileName);
-					logger.log(Level.WARNING, message, e);
+					log.log(Level.WARNING, message, e);
 					EnhancedErrorDialog.openError(canvas.getShell(), Messages.get("lbl.window.title"), message, IStatus.WARNING, e, Images.getAppIconArray());
 				}
 			}
@@ -366,21 +364,21 @@ public class MapCanvas implements IShellProvider, Multilanguage {
 
 	public static synchronized void setMapImage(final MapImage mapImage, final Earthquake earthquake) {
 		if (instance != null) {
-			logger.log(Level.FINE, "Setting map image canvas for {0}...", earthquake);
+			log.log(Level.FINE, "Setting map image canvas for {0}...", earthquake);
 			update(mapImage, earthquake);
 		}
 	}
 
 	public static synchronized void updateMapImage(final MapImage mapImage, final Earthquake earthquake) {
 		if (instance != null && instance.earthquake != null && earthquake.getGuid().equals(instance.earthquake.getGuid())) { // Only if the provided image belongs to the current earthquake.
-			logger.log(Level.FINE, "Updating map image canvas for {0}...", earthquake);
+			log.log(Level.FINE, "Updating map image canvas for {0}...", earthquake);
 			update(mapImage, earthquake);
 		}
 	}
 
 	private static void update(final MapImage mapImage, final Earthquake earthquake) {
 		if (mapImage.equals(instance.mapImage)) {
-			logger.log(Level.FINE, "Map image canvas already set for {0}.", earthquake);
+			log.log(Level.FINE, "Map image canvas already set for {0}.", earthquake);
 		}
 		else {
 			final byte[] imageBytes = mapImage.getBytes();
@@ -394,10 +392,10 @@ public class MapCanvas implements IShellProvider, Multilanguage {
 					if (oldImage != null) {
 						oldImage.dispose();
 					}
-					logger.log(Level.FINE, "Map image canvas set/updated for {0}.", earthquake);
+					log.log(Level.FINE, "Map image canvas set/updated for {0}.", earthquake);
 				}
 				catch (final Exception e) {
-					logger.log(Level.WARNING, e.toString(), e);
+					log.log(Level.WARNING, e.toString(), e);
 				}
 			}
 		}

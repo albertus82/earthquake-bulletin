@@ -10,18 +10,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import it.albertus.util.logging.LoggerFactory;
+import lombok.extern.java.Log;
 
+@Log
 public class FERegionTest {
-
-	private static final Logger logger = LoggerFactory.getLogger(FERegionTest.class);
 
 	private static FERegion instance;
 
@@ -33,14 +31,14 @@ public class FERegionTest {
 	@Test
 	public void testCoordinates() {
 		final Coordinates c1 = new Coordinates(12, -34);
-		logger.info(c1.toString());
+		log.info(c1.toString());
 		Assert.assertFalse(c1 == null);
 		Assert.assertFalse(c1.equals(new Object()));
 		final Coordinates c2 = new Coordinates(-156, 78);
-		logger.info(c2.toString());
+		log.info(c2.toString());
 		Assert.assertFalse(c1.equals(c2));
 		final Coordinates c3 = Coordinates.parse("34S", "12E");
-		logger.info(c3.toString());
+		log.info(c3.toString());
 		Assert.assertTrue(c1.equals(c3));
 		Assert.assertFalse(c2.equals(c3));
 	}
@@ -48,14 +46,14 @@ public class FERegionTest {
 	@Test
 	public void testRegion() {
 		final Region r1 = instance.getGeographicRegion(new Coordinates(12.5, 42.5));
-		logger.info(r1.toString());
+		log.info(r1.toString());
 		Assert.assertFalse(r1 == null);
 		Assert.assertFalse(r1.equals(new Object()));
 		final Region r2 = instance.getGeographicRegion(new Coordinates(-12.5, -42.5));
-		logger.info(r2.toString());
+		log.info(r2.toString());
 		Assert.assertFalse(r1.equals(r2));
 		final Region r3 = instance.getGeographicRegion("12E", "42");
-		logger.info(r3.toString());
+		log.info(r3.toString());
 		Assert.assertTrue(r1.equals(r3));
 		Assert.assertFalse(r2.equals(r3));
 		Assert.assertEquals(381, r1.getNumber());
@@ -1237,7 +1235,7 @@ public class FERegionTest {
 	public void testGetAllRegions() {
 		final Map<Integer, Region> allRegions = instance.getAllGeographicRegions();
 		Assert.assertEquals(757, allRegions.size());
-		logger.log(Level.FINE, "{0}", allRegions);
+		log.log(Level.FINE, "{0}", allRegions);
 	}
 
 	@Test
@@ -1252,7 +1250,7 @@ public class FERegionTest {
 	public void testGetLatitudeLongitudeMap() {
 		for (int i = 1; i <= 757; i++) {
 			final Map<Integer, Set<LongitudeRange>> map = instance.getLatitudeLongitudeMap(i);
-			logger.log(Level.FINE, "{0} -> {1}", new Object[] { i, map });
+			log.log(Level.FINE, "{0} -> {1}", new Object[] { i, map });
 //			System.out.println(i + " -> " + map);
 		}
 		Assert.assertTrue(true);
@@ -1260,7 +1258,7 @@ public class FERegionTest {
 
 	private void testGetName(final String arg0, final String arg1, final String expectedName) {
 		final Region region = instance.getGeographicRegion(arg0, arg1);
-		logger.info(region.toString());
+		log.info(region.toString());
 		Assert.assertEquals("arg0: \"" + arg0 + "\", arg1: \"" + arg1 + '"', expectedName, region.getName());
 	}
 

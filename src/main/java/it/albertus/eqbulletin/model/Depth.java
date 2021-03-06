@@ -4,15 +4,13 @@ import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import it.albertus.util.logging.LoggerFactory;
+import lombok.extern.java.Log;
 
+@Log
 public class Depth implements Serializable, Comparable<Depth> {
 
 	private static final long serialVersionUID = 894681925414643001L;
-
-	private static final Logger logger = LoggerFactory.getLogger(Depth.class);
 
 	private static final LinkedHashMap<Short, Depth> cache = new LinkedHashMap<Short, Depth>(16, 0.75f, true) {
 		private static final long serialVersionUID = -3229317830656593292L;
@@ -22,7 +20,7 @@ public class Depth implements Serializable, Comparable<Depth> {
 		@Override
 		protected boolean removeEldestEntry(final Entry<Short, Depth> eldest) {
 			final int size = size();
-			logger.log(Level.FINER, "Depth cache size: {0}.", size);
+			log.log(Level.FINER, "Depth cache size: {0}.", size);
 			return size > MAX_ENTRIES;
 		}
 	};

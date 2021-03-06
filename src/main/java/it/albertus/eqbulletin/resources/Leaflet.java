@@ -4,21 +4,19 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import it.albertus.util.IOUtils;
-import it.albertus.util.logging.LoggerFactory;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.extern.java.Log;
 
+@Log
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Leaflet {
 
 	public static final String LAYERS;
 
 	private static final String RESOURCE_NAME = "leaflet-layers.js";
-
-	private static final Logger logger = LoggerFactory.getLogger(Leaflet.class);
 
 	static {
 		String layers = null;
@@ -27,7 +25,7 @@ public class Leaflet {
 			layers = out.toString(StandardCharsets.UTF_8.name());
 		}
 		catch (final Exception e) {
-			logger.log(Level.SEVERE, e, () -> "Cannot read resource \"/" + Leaflet.class.getPackage().getName().replace('.', '/') + '/' + RESOURCE_NAME + "\":");
+			log.log(Level.SEVERE, e, () -> "Cannot read resource \"/" + Leaflet.class.getPackage().getName().replace('.', '/') + '/' + RESOURCE_NAME + "\":");
 		}
 		LAYERS = layers;
 	}

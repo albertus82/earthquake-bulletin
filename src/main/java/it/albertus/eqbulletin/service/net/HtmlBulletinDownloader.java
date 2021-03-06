@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 
 import org.jsoup.Jsoup;
@@ -26,11 +25,10 @@ import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.eqbulletin.service.SearchRequest;
 import it.albertus.eqbulletin.service.decode.DecodeException;
 import it.albertus.eqbulletin.service.decode.html.HtmlBulletinDecoder;
-import it.albertus.util.logging.LoggerFactory;
+import lombok.extern.java.Log;
 
+@Log
 public class HtmlBulletinDownloader implements BulletinDownloader {
-
-	private static final Logger logger = LoggerFactory.getLogger(HtmlBulletinDownloader.class);
 
 	private InputStream connectionInputStream;
 
@@ -40,7 +38,7 @@ public class HtmlBulletinDownloader implements BulletinDownloader {
 			return Optional.of(new Bulletin(doDownload(request, canceled)));
 		}
 		catch (final CancelException e) {
-			logger.log(Level.FINE, "Operation canceled:", e);
+			log.log(Level.FINE, "Operation canceled:", e);
 			return Optional.empty();
 		}
 	}
@@ -75,7 +73,7 @@ public class HtmlBulletinDownloader implements BulletinDownloader {
 					throw new CancelException();
 				}
 				final Collection<Earthquake> partial = downloadPage(uri, headers, canceled);
-				logger.log(Level.FINE, "partial.size() = {0,number,#}", partial.size());
+				log.log(Level.FINE, "partial.size() = {0,number,#}", partial.size());
 				if (partial.isEmpty()) {
 					break;
 				}
@@ -136,7 +134,7 @@ public class HtmlBulletinDownloader implements BulletinDownloader {
 				connectionInputStream.close();
 			}
 			catch (final Exception e) {
-				logger.log(Level.FINE, e.toString(), e);
+				log.log(Level.FINE, e.toString(), e);
 			}
 		}
 	}

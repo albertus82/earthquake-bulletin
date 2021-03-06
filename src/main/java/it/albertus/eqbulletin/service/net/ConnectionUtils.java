@@ -4,17 +4,15 @@ import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import it.albertus.util.StringUtils;
-import it.albertus.util.logging.LoggerFactory;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.extern.java.Log;
 
+@Log
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ConnectionUtils {
-
-	private static final Logger logger = LoggerFactory.getLogger(ConnectionUtils.class);
 
 	public static Charset detectCharset(final URLConnection connection) {
 		return detectCharset(connection.getContentType());
@@ -27,16 +25,16 @@ public class ConnectionUtils {
 				final String charsetName = StringUtils.substringAfter(contentType, "charset=").trim();
 				try {
 					final Charset charset = Charset.forName(charsetName);
-					logger.log(Level.FINE, "Charset detected: {0}", charset);
+					log.log(Level.FINE, "Charset detected: {0}", charset);
 					return charset;
 				}
 				catch (final IllegalArgumentException e) {
-					logger.log(Level.WARNING, e, () -> "Cannot detect charset for name \"" + charsetName + "\":");
+					log.log(Level.WARNING, e, () -> "Cannot detect charset for name \"" + charsetName + "\":");
 				}
 			}
 		}
 		final Charset charset = StandardCharsets.ISO_8859_1;
-		logger.log(Level.FINE, "Using default HTTP 1.1 charset: {0}", charset);
+		log.log(Level.FINE, "Using default HTTP 1.1 charset: {0}", charset);
 		return charset;
 	}
 

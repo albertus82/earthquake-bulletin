@@ -6,7 +6,6 @@ import static it.albertus.jface.DisplayThreadExecutor.Mode.SYNC;
 import java.io.Serializable;
 import java.util.Optional;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
@@ -19,14 +18,13 @@ import it.albertus.eqbulletin.model.MomentTensor;
 import it.albertus.eqbulletin.service.job.MomentTensorDownloadJob;
 import it.albertus.eqbulletin.service.net.MomentTensorDownloader;
 import it.albertus.jface.DisplayThreadExecutor;
-import it.albertus.util.logging.LoggerFactory;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.extern.java.Log;
 
+@Log
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MomentTensorAsyncOperation extends AsyncOperation {
-
-	private static final Logger logger = LoggerFactory.getLogger(MomentTensorAsyncOperation.class);
 
 	public static void execute(final Earthquake earthquake, final Shell shell) {
 		if (earthquake != null && earthquake.getMomentTensorUri().isPresent() && shell != null && !shell.isDisposed()) {
@@ -35,11 +33,11 @@ public class MomentTensorAsyncOperation extends AsyncOperation {
 			final String guid = earthquake.getGuid();
 			final MomentTensor cachedObject = cache.get(guid);
 			if (cachedObject == null) {
-				logger.log(Level.FINE, "Cache miss for key \"{0}\". Cache size: {1}.", new Serializable[] { guid, cache.getSize() });
+				log.log(Level.FINE, "Cache miss for key \"{0}\". Cache size: {1}.", new Serializable[] { guid, cache.getSize() });
 				cacheMiss(earthquake, shell);
 			}
 			else {
-				logger.log(Level.FINE, "Cache hit for key \"{0}\". Cache size: {1}.", new Serializable[] { guid, cache.getSize() });
+				log.log(Level.FINE, "Cache hit for key \"{0}\". Cache size: {1}.", new Serializable[] { guid, cache.getSize() });
 				cacheHit(cachedObject, earthquake, shell);
 			}
 		}
@@ -88,7 +86,7 @@ public class MomentTensorAsyncOperation extends AsyncOperation {
 					}
 				}
 				catch (final Exception e) {
-					logger.log(Level.WARNING, e.toString(), e);
+					log.log(Level.WARNING, e.toString(), e);
 				}
 				finally {
 					new DisplayThreadExecutor(shell, SYNC).execute(() -> setDefaultCursor(shell));

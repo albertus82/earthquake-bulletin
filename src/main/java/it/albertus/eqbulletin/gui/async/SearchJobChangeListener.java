@@ -7,7 +7,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
@@ -28,11 +27,10 @@ import it.albertus.eqbulletin.service.SearchRequest;
 import it.albertus.eqbulletin.service.job.SearchJob;
 import it.albertus.jface.DisplayThreadExecutor;
 import it.albertus.jface.EnhancedErrorDialog;
-import it.albertus.util.logging.LoggerFactory;
+import lombok.extern.java.Log;
 
+@Log
 class SearchJobChangeListener extends JobChangeAdapter {
-
-	private static final Logger logger = LoggerFactory.getLogger(SearchJobChangeListener.class);
 
 	private final SearchRequest request;
 	private final EarthquakeBulletinGui gui;
@@ -44,7 +42,7 @@ class SearchJobChangeListener extends JobChangeAdapter {
 
 	@Override
 	public void running(final IJobChangeEvent event) {
-		logger.log(Level.FINE, "Running {0}: {1}", new Object[] { event.getJob(), request });
+		log.log(Level.FINE, "Running {0}: {1}", new Object[] { event.getJob(), request });
 		new DisplayThreadExecutor(gui.getShell(), ASYNC).execute(() -> {
 			AsyncOperation.setAppStartingCursor(gui.getShell());
 			final Button searchButton = gui.getSearchForm().getSearchButton();
@@ -55,7 +53,7 @@ class SearchJobChangeListener extends JobChangeAdapter {
 
 	@Override
 	public void done(final IJobChangeEvent event) {
-		logger.log(Level.FINE, "Done {0}: {1}", new Object[] { event.getJob(), event.getResult() });
+		log.log(Level.FINE, "Done {0}: {1}", new Object[] { event.getJob(), event.getResult() });
 		if (event.getResult().getSeverity() != IStatus.CANCEL) {
 			try {
 				if (!event.getResult().isOK()) {
@@ -97,7 +95,7 @@ class SearchJobChangeListener extends JobChangeAdapter {
 		new DisplayThreadExecutor(table.getShell(), ASYNC).execute(() -> {
 			final Earthquake[] oldDataArray = (Earthquake[]) table.getTableViewer().getInput();
 			if (!Arrays.equals(oldDataArray, newDataArray)) {
-				logger.fine("Data has changed, performing table update.");
+				log.fine("Data has changed, performing table update.");
 				table.getTableViewer().setInput(newDataArray);
 				icon.updateToolTipText(newDataArray.length > 0 ? newDataArray[0] : null);
 				if (!eventsContainsMapEvent(events, map)) {
@@ -128,7 +126,7 @@ class SearchJobChangeListener extends JobChangeAdapter {
 	}
 
 	private static void showErrorDialog(final AsyncOperationException e, final TrayIcon trayIcon) {
-		logger.log(e.getLoggingLevel(), e.getMessage(), e);
+		log.log(e.getLoggingLevel(), e.getMessage(), e);
 		if (trayIcon != null && !trayIcon.getShell().isDisposed()) {
 			new DisplayThreadExecutor(trayIcon.getShell(), SYNC).execute(() -> {
 				if (trayIcon.getTrayItem() == null || !trayIcon.getTrayItem().getVisible()) { // Show error dialog only if not minimized in the tray.

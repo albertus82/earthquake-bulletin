@@ -8,7 +8,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -24,16 +23,15 @@ import it.albertus.eqbulletin.gui.Images;
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.jface.EnhancedErrorDialog;
 import it.albertus.jface.SwtUtils;
-import it.albertus.util.logging.LoggerFactory;
+import lombok.extern.java.Log;
 
+@Log
 public class BulletinExporter implements IRunnableWithProgress {
 
 	private static final String TASK_NAME = "Exporting earthquake bulletin";
 
 	private static final char CSV_FIELD_SEPARATOR = ';';
 	private static final String[] CSV_FILE_EXTENSIONS = { "*.CSV;*.csv" };
-
-	private static final Logger logger = LoggerFactory.getLogger(BulletinExporter.class);
 
 	private final String fileName;
 	private final String data;
@@ -71,13 +69,13 @@ public class BulletinExporter implements IRunnableWithProgress {
 			}
 			catch (final InvocationTargetException e) {
 				final String message = Messages.get("err.job.csv.save");
-				logger.log(Level.WARNING, message, e);
+				log.log(Level.WARNING, message, e);
 				SwtUtils.unblockShell(shell);
 				EnhancedErrorDialog.openError(shell, Messages.get("lbl.window.title"), message, IStatus.WARNING, e.getCause() != null ? e.getCause() : e, Images.getAppIconArray());
 			}
 			catch (final Exception e) {
 				final String message = Messages.get("err.job.csv.create");
-				logger.log(Level.SEVERE, message, e);
+				log.log(Level.SEVERE, message, e);
 				SwtUtils.unblockShell(shell);
 				EnhancedErrorDialog.openError(shell, Messages.get("lbl.window.title"), message, IStatus.ERROR, e, Images.getAppIconArray());
 			}

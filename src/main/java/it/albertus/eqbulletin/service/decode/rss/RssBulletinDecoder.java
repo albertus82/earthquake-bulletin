@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import it.albertus.eqbulletin.model.Depth;
 import it.albertus.eqbulletin.model.Earthquake;
@@ -22,14 +21,13 @@ import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.eqbulletin.service.GeofonUtils;
 import it.albertus.eqbulletin.service.decode.rss.xml.Item;
 import it.albertus.eqbulletin.service.decode.rss.xml.RssBulletin;
-import it.albertus.util.logging.LoggerFactory;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.extern.java.Log;
 
+@Log
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class RssBulletinDecoder {
-
-	private static final Logger logger = LoggerFactory.getLogger(RssBulletinDecoder.class);
 
 	private static final DateTimeFormatter dateTimeFormatter = new DateTimeFormatterBuilder().appendPattern("yyyy-MM-dd HH:mm:ss").parseDefaulting(ChronoField.MILLI_OF_SECOND, 0).toFormatter().withZone(ZoneOffset.UTC);
 
@@ -70,7 +68,7 @@ public class RssBulletinDecoder {
 				link = new URI(pageUrl.trim());
 			}
 			catch (final URISyntaxException e) {
-				logger.log(Level.WARNING, Messages.get("err.url.malformed", pageUrl), e);
+				log.log(Level.WARNING, Messages.get("err.url.malformed", pageUrl), e);
 			}
 		}
 
@@ -81,7 +79,7 @@ public class RssBulletinDecoder {
 				enclosureUri = new URI(imageUrl.trim());
 			}
 			catch (final URISyntaxException e) {
-				logger.log(Level.WARNING, Messages.get("err.url.malformed", imageUrl), e);
+				log.log(Level.WARNING, Messages.get("err.url.malformed", imageUrl), e);
 			}
 		}
 

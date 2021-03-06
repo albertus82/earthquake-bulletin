@@ -1,7 +1,6 @@
 package it.albertus.eqbulletin.gui;
 
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.eclipse.jface.util.Util;
 import org.eclipse.jface.window.IShellProvider;
@@ -30,7 +29,7 @@ import it.albertus.jface.SwtUtils;
 import it.albertus.jface.cocoa.CocoaEnhancerException;
 import it.albertus.jface.cocoa.CocoaUIEnhancer;
 import it.albertus.jface.sysinfo.SystemInformationDialog;
-import it.albertus.util.logging.LoggerFactory;
+import lombok.extern.java.Log;
 
 /**
  * Solo i <tt>MenuItem</tt> che fanno parte di una barra dei men&ugrave; con
@@ -39,6 +38,7 @@ import it.albertus.util.logging.LoggerFactory;
  * combinazioni di tasti, gli acceleratori non funzioneranno e le relative
  * combinazioni di tasti saranno ignorate.
  */
+@Log
 public class MenuBar extends AbstractMenu implements IShellProvider {
 
 	private static final String LBL_MENU_HEADER_FILE = "lbl.menu.header.file";
@@ -51,8 +51,6 @@ public class MenuBar extends AbstractMenu implements IShellProvider {
 	private static final String LBL_MENU_HEADER_HELP_WINDOWS = "lbl.menu.header.help.windows";
 	private static final String LBL_MENU_ITEM_SYSTEM_INFO = "lbl.menu.item.system.info";
 	private static final String LBL_MENU_ITEM_ABOUT = "lbl.menu.item.about";
-
-	private static final Logger logger = LoggerFactory.getLogger(MenuBar.class);
 
 	private final Shell shell;
 
@@ -84,7 +82,7 @@ public class MenuBar extends AbstractMenu implements IShellProvider {
 				cocoaMenuCreated = true;
 			}
 			catch (final CocoaEnhancerException cee) {
-				logger.log(Level.WARNING, Messages.get("err.cocoa.enhancer"), cee);
+				log.log(Level.WARNING, Messages.get("err.cocoa.enhancer"), cee);
 			}
 		}
 
