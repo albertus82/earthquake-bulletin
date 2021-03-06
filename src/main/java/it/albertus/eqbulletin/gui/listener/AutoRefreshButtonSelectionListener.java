@@ -7,14 +7,13 @@ import org.eclipse.swt.widgets.Button;
 import it.albertus.eqbulletin.gui.SearchForm;
 import it.albertus.eqbulletin.gui.async.SearchAsyncOperation;
 import it.albertus.eqbulletin.resources.Messages;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 public class AutoRefreshButtonSelectionListener extends SelectionAdapter {
 
-	private final SearchForm form;
-
-	public AutoRefreshButtonSelectionListener(final SearchForm form) {
-		this.form = form;
-	}
+	private final @NonNull SearchForm form;
 
 	@Override
 	public void widgetSelected(final SelectionEvent se) {

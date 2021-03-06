@@ -4,14 +4,13 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 
 import it.albertus.eqbulletin.gui.SearchForm;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 public class FormTextModifyListener implements ModifyListener {
 
-	private final SearchForm form;
-
-	public FormTextModifyListener(final SearchForm form) {
-		this.form = form;
-	}
+	private final @NonNull SearchForm form;
 
 	@Override
 	public void modifyText(final ModifyEvent e) {

@@ -7,17 +7,16 @@ import org.eclipse.swt.widgets.Table;
 import it.albertus.eqbulletin.gui.ResultsTable;
 import it.albertus.eqbulletin.gui.ResultsTable.ContextMenu;
 import it.albertus.eqbulletin.model.Earthquake;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 public class ResultsTableContextMenuDetectListener implements MenuDetectListener {
 
-	private final ResultsTable resultsTable;
-
-	public ResultsTableContextMenuDetectListener(final ResultsTable resultsTable) {
-		this.resultsTable = resultsTable;
-	}
+	private final @NonNull ResultsTable resultsTable;
 
 	@Override
-	public void menuDetected(final MenuDetectEvent mde) {
+	public void menuDetected(final MenuDetectEvent e) {
 		final Earthquake selection = (Earthquake) resultsTable.getTableViewer().getStructuredSelection().getFirstElement();
 		final ContextMenu contextMenu = resultsTable.getContextMenu();
 		contextMenu.getShowMapMenuItem().setEnabled(selection != null && selection.getEnclosureUri().isPresent());

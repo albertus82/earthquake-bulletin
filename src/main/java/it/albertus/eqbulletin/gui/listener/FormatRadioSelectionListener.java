@@ -9,21 +9,18 @@ import org.eclipse.swt.widgets.Text;
 import it.albertus.eqbulletin.gui.SearchForm;
 import it.albertus.eqbulletin.model.Format;
 import it.albertus.jface.validation.ControlValidator;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 public class FormatRadioSelectionListener extends SelectionAdapter {
 
-	private final SearchForm form;
-	private final Format format;
-	private final Button radio;
-
-	public FormatRadioSelectionListener(final SearchForm form, final Button radio, final Format format) {
-		this.form = form;
-		this.radio = radio;
-		this.format = format;
-	}
+	private final @NonNull SearchForm form;
+	private final @NonNull Button radio;
+	private final @NonNull Format format;
 
 	@Override
-	public void widgetSelected(final SelectionEvent se) {
+	public void widgetSelected(final SelectionEvent e) {
 		if (radio.getSelection()) {
 			if (Format.RSS.equals(format)) {
 				form.getPeriodLabel().setEnabled(false);

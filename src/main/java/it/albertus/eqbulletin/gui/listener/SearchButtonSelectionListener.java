@@ -8,14 +8,13 @@ import org.eclipse.swt.widgets.Button;
 import it.albertus.eqbulletin.gui.EarthquakeBulletinGui;
 import it.albertus.eqbulletin.gui.async.SearchAsyncOperation;
 import it.albertus.eqbulletin.resources.Messages;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 public class SearchButtonSelectionListener extends SelectionAdapter {
 
-	private final EarthquakeBulletinGui gui;
-
-	public SearchButtonSelectionListener(final EarthquakeBulletinGui gui) {
-		this.gui = gui;
-	}
+	private final @NonNull EarthquakeBulletinGui gui;
 
 	@Override
 	public void widgetSelected(final SelectionEvent se) {

@@ -25,18 +25,17 @@ import it.albertus.eqbulletin.resources.Messages.Language;
 import it.albertus.jface.EnhancedErrorDialog;
 import it.albertus.jface.preference.IPreferencesConfiguration;
 import it.albertus.jface.preference.Preferences;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 
 @Log
+@RequiredArgsConstructor
 public class PreferencesListener extends SelectionAdapter implements Listener {
 
 	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getPreferencesConfiguration();
 
-	private final EarthquakeBulletinGui gui;
-
-	public PreferencesListener(final EarthquakeBulletinGui gui) {
-		this.gui = gui;
-	}
+	private final @NonNull EarthquakeBulletinGui gui;
 
 	@Override
 	public void widgetSelected(final SelectionEvent event) {

@@ -1,8 +1,8 @@
 package it.albertus.eqbulletin.gui.listener;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -10,14 +10,13 @@ import org.eclipse.swt.widgets.Shell;
 
 import it.albertus.eqbulletin.gui.CloseDialog;
 import it.albertus.eqbulletin.gui.EarthquakeBulletinGui;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
-public class CloseListener implements Listener, SelectionListener {
+@RequiredArgsConstructor
+public class CloseListener extends SelectionAdapter implements Listener {
 
-	private final EarthquakeBulletinGui gui;
-
-	public CloseListener(final EarthquakeBulletinGui gui) {
-		this.gui = gui;
-	}
+	private final @NonNull EarthquakeBulletinGui gui;
 
 	private boolean canClose() {
 		return !CloseDialog.mustShow() || CloseDialog.open(gui.getShell()) == SWT.YES;
@@ -56,8 +55,5 @@ public class CloseListener implements Listener, SelectionListener {
 			event.doit = false;
 		}
 	}
-
-	@Override
-	public void widgetDefaultSelected(final SelectionEvent event) {/* Ignore */}
 
 }

@@ -11,14 +11,13 @@ import it.albertus.eqbulletin.gui.SearchForm;
 import it.albertus.jface.maps.CoordinateUtils;
 import it.albertus.jface.maps.MapBounds;
 import it.albertus.jface.maps.MapBoundsDialog;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 public class AreaMapSelectionListener extends SelectionAdapter {
 
-	private final SearchForm form;
-
-	public AreaMapSelectionListener(final SearchForm form) {
-		this.form = form;
-	}
+	private final @NonNull SearchForm form;
 
 	@Override
 	public void widgetSelected(final SelectionEvent se) {

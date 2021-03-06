@@ -3,14 +3,13 @@ package it.albertus.eqbulletin.gui.listener;
 import org.eclipse.swt.events.VerifyEvent;
 
 import it.albertus.jface.listener.TrimVerifyListener;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 public class FormTextDateVerifyListener extends TrimVerifyListener {
 
-	private final String allowedChars;
-
-	public FormTextDateVerifyListener(final String allowedChars) {
-		this.allowedChars = allowedChars;
-	}
+	private final @NonNull String allowedChars;
 
 	@Override
 	public void verifyText(final VerifyEvent ve) {

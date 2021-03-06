@@ -7,14 +7,13 @@ import org.eclipse.swt.events.TraverseListener;
 
 import it.albertus.eqbulletin.gui.EarthquakeBulletinGui;
 import it.albertus.eqbulletin.gui.async.SearchAsyncOperation;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 public class FormFieldTraverseListener implements TraverseListener {
 
-	private final EarthquakeBulletinGui gui;
-
-	public FormFieldTraverseListener(final EarthquakeBulletinGui gui) {
-		this.gui = gui;
-	}
+	private final @NonNull EarthquakeBulletinGui gui;
 
 	@Override
 	public void keyTraversed(final TraverseEvent e) {

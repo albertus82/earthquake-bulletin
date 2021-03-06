@@ -5,14 +5,13 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 
 import it.albertus.eqbulletin.gui.SearchForm;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 public class ClearButtonSelectionListener extends SelectionAdapter {
 
-	private final SearchForm form;
-
-	public ClearButtonSelectionListener(final SearchForm form) {
-		this.form = form;
-	}
+	private final @NonNull SearchForm form;
 
 	@Override
 	public void widgetSelected(final SelectionEvent se) {

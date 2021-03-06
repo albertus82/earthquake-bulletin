@@ -5,14 +5,13 @@ import org.eclipse.swt.events.TypedEvent;
 
 import it.albertus.eqbulletin.gui.EarthquakeBulletinGui;
 import it.albertus.eqbulletin.gui.ResultsTable;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 public class FileMenuListener implements ArmMenuListener {
 
-	private final EarthquakeBulletinGui gui;
-
-	public FileMenuListener(final EarthquakeBulletinGui gui) {
-		this.gui = gui;
-	}
+	private final @NonNull EarthquakeBulletinGui gui;
 
 	@Override
 	public void menuHidden(final MenuEvent e) {
