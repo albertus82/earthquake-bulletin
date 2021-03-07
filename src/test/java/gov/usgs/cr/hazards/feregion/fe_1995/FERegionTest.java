@@ -32,35 +32,57 @@ public class FERegionTest {
 	public void testCoordinates() {
 		final Coordinates c1 = new Coordinates(12, -34);
 		log.info(c1.toString());
-		Assert.assertFalse(c1 == null);
-		Assert.assertFalse(c1.equals(new Object()));
+		Assert.assertNotNull(c1);
+		Assert.assertNotEquals(c1, new Object());
 		final Coordinates c2 = new Coordinates(-156, 78);
 		log.info(c2.toString());
-		Assert.assertFalse(c1.equals(c2));
+		Assert.assertNotEquals(c1, c2);
 		final Coordinates c3 = Coordinates.parse("34S", "12E");
 		log.info(c3.toString());
-		Assert.assertTrue(c1.equals(c3));
-		Assert.assertFalse(c2.equals(c3));
+		Assert.assertEquals(c1, c3);
+		Assert.assertNotEquals(c2, c3);
 	}
 
 	@Test
 	public void testRegion() {
 		final Region r1 = instance.getGeographicRegion(new Coordinates(12.5, 42.5));
 		log.info(r1.toString());
-		Assert.assertFalse(r1 == null);
-		Assert.assertFalse(r1.equals(new Object()));
+		Assert.assertNotNull(r1);
+		Assert.assertNotEquals(r1, new Object());
 		final Region r2 = instance.getGeographicRegion(new Coordinates(-12.5, -42.5));
 		log.info(r2.toString());
-		Assert.assertFalse(r1.equals(r2));
+		Assert.assertNotEquals(r1, r2);
 		final Region r3 = instance.getGeographicRegion("12E", "42");
 		log.info(r3.toString());
-		Assert.assertTrue(r1.equals(r3));
-		Assert.assertFalse(r2.equals(r3));
+		Assert.assertEquals(r1, r3);
+		Assert.assertNotEquals(r2, r3);
 		Assert.assertEquals(381, r1.getNumber());
 		Assert.assertEquals("CENTRAL ITALY", r1.getName());
 		Assert.assertEquals(0, r1.compareTo(r3));
 		Assert.assertTrue(r1.getNumber() + " < " + r2.getNumber(), r1.compareTo(r2) < 0);
 		Assert.assertTrue(r2.getNumber() + " > " + r1.getNumber(), r2.compareTo(r1) > 0);
+		final Region r4 = new Region(333, "AAA");
+		log.info(r4.toString());
+		final Region r5 = new Region(333, "bbb");
+		log.info(r5.toString());
+		Assert.assertEquals(r4, r5);
+		Assert.assertEquals(r4.hashCode(), r5.hashCode());
+		final Region r6 = new Region(555, "CCC");
+		log.info(r6.toString());
+		final Region r7 = new Region(555, "CCC");
+		log.info(r7.toString());
+		Assert.assertEquals(r6, r7);
+		Assert.assertEquals(r6.hashCode(), r7.hashCode());
+		final Region r8 = new Region(111, "ddd");
+		log.info(r8.toString());
+		final Region r9 = new Region(222, "ddd");
+		log.info(r9.toString());
+		Assert.assertNotEquals(r8, r9);
+		final Region r10 = new Region(444, "EEE");
+		log.info(r10.toString());
+		final Region r11 = new Region(222, "fff");
+		log.info(r11.toString());
+		Assert.assertNotEquals(r10, r11);
 	}
 
 	@Test
@@ -1251,7 +1273,7 @@ public class FERegionTest {
 		for (int i = 1; i <= 757; i++) {
 			final Map<Integer, Set<LongitudeRange>> map = instance.getLatitudeLongitudeMap(i);
 			log.log(Level.FINE, "{0} -> {1}", new Object[] { i, map });
-//			System.out.println(i + " -> " + map);
+			//			System.out.println(i + " -> " + map);
 		}
 		Assert.assertTrue(true);
 	}
