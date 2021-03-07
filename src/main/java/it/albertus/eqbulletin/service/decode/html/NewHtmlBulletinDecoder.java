@@ -1,10 +1,7 @@
 package it.albertus.eqbulletin.service.decode.html;
 
 import java.net.URI;
-import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -26,10 +23,6 @@ import it.albertus.eqbulletin.service.GeofonUtils;
 import lombok.NonNull;
 
 public class NewHtmlBulletinDecoder extends AbstractHtmlBulletinDecoder {
-
-	private static final String DEGREE_SIGN = "\u00B0";
-
-	private static final DateTimeFormatter dateTimeFormatter = new DateTimeFormatterBuilder().appendPattern("yyyy-MM-dd HH:mm:ss").parseDefaulting(ChronoField.MILLI_OF_SECOND, 0).toFormatter().withZone(ZoneOffset.UTC);
 
 	@Override
 	public List<Earthquake> decode(final Document document) {
