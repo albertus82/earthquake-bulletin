@@ -11,6 +11,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.TreeSet;
 import java.util.function.Function;
@@ -37,6 +38,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
@@ -94,13 +96,21 @@ public class AboutDialog extends Dialog {
 	private void createContents(final Shell shell) {
 		GridLayoutFactory.swtDefaults().applyTo(shell);
 
-		Composite header = new Composite(shell, SWT.NONE);
+		final Composite header = new Composite(shell, SWT.NONE);
 		GridDataFactory.swtDefaults().applyTo(header);
 		GridLayoutFactory.swtDefaults().numColumns(2).applyTo(header);
 
 		final Label icon = new Label(header, SWT.NONE);
 		GridDataFactory.swtDefaults().align(SWT.TRAIL, SWT.CENTER).span(1, 2).grab(true, false).applyTo(icon);
-		icon.setImage(Images.getAppIconMap().get(new Rectangle(0, 0, 48, 48)));
+		for (final Entry<Rectangle, Image> entry : Images.getAppIconMap().entrySet()) {
+			final int dlus = 26;
+			final int pixels = SwtUtils.convertVerticalDLUsToPixels(icon, dlus);
+			if (entry.getKey().height <= pixels) {
+				log.log(Level.FINE, "{0} DLUs -> {1} pixels -> {2}", new Object[] { dlus, pixels, entry });
+				icon.setImage(entry.getValue());
+				break;
+			}
+		}
 
 		final LinkSelectionListener linkSelectionListener = new LinkSelectionListener();
 
