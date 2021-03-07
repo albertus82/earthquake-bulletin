@@ -25,10 +25,14 @@ import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.eqbulletin.service.SearchRequest;
 import it.albertus.eqbulletin.service.decode.DecodeException;
 import it.albertus.eqbulletin.service.decode.html.HtmlBulletinDecoder;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 
 @Log
+@RequiredArgsConstructor
 public class HtmlBulletinDownloader implements BulletinDownloader {
+
+	private final HtmlBulletinDecoder decoder;
 
 	private InputStream connectionInputStream;
 
@@ -116,7 +120,7 @@ public class HtmlBulletinDownloader implements BulletinDownloader {
 			if (canceled.getAsBoolean()) {
 				throw new CancelException();
 			}
-			return HtmlBulletinDecoder.decode(document);
+			return decoder.decode(document);
 		}
 		catch (final RuntimeException e) {
 			throw new DecodeException(Messages.get("err.job.decode"), e);

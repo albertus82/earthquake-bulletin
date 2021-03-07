@@ -20,9 +20,9 @@ import java.util.logging.Level;
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.swt.widgets.Composite;
 
+import it.albertus.eqbulletin.cache.BeachBallCache;
 import it.albertus.eqbulletin.cache.MapImageCache;
 import it.albertus.eqbulletin.cache.MomentTensorCache;
-import it.albertus.eqbulletin.cache.BeachBallCache;
 import it.albertus.eqbulletin.config.LanguageConfig;
 import it.albertus.eqbulletin.config.LoggingConfig;
 import it.albertus.eqbulletin.config.TimeZoneConfig;
@@ -37,6 +37,7 @@ import it.albertus.eqbulletin.model.Format;
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.eqbulletin.resources.Messages.Language;
 import it.albertus.eqbulletin.service.GeofonUtils;
+import it.albertus.eqbulletin.service.decode.html.HtmlBulletinVersion;
 import it.albertus.eqbulletin.service.net.ConnectionFactory;
 import it.albertus.jface.SwtUtils;
 import it.albertus.jface.preference.FieldEditorDetails;
@@ -58,6 +59,7 @@ import it.albertus.jface.preference.field.FloatFieldEditor;
 import it.albertus.jface.preference.field.ListFieldEditor;
 import it.albertus.jface.preference.field.PasswordFieldEditor;
 import it.albertus.jface.preference.field.ScaleIntegerFieldEditor;
+import it.albertus.jface.preference.field.ValidatedComboFieldEditor;
 import it.albertus.jface.preference.page.IPageDefinition;
 import it.albertus.util.logging.LoggingDefaultConfig;
 import it.albertus.util.logging.LoggingSupport;
@@ -116,7 +118,8 @@ public enum Preference implements IPreference {
 	LOGGING_FILES_LIMIT(new PreferenceDetailsBuilder(LOGGING).parent(LOGGING_FILES_ENABLED).defaultValue(LoggingDefaultConfig.DEFAULT_LOGGING_FILES_LIMIT_KB).build(), new FieldEditorDetailsBuilder(ScaleIntegerFieldEditor.class).scaleMinimum(512).scaleMaximum(8192).scalePageIncrement(512).build()),
 	LOGGING_FILES_COUNT(new PreferenceDetailsBuilder(LOGGING).parent(LOGGING_FILES_ENABLED).defaultValue(LoggingDefaultConfig.DEFAULT_LOGGING_FILES_COUNT).build(), new FieldEditorDetailsBuilder(ScaleIntegerFieldEditor.class).scaleMinimum(1).scaleMaximum(9).scalePageIncrement(1).build()),
 
-	GEOFON_BASE_URL(new PreferenceDetailsBuilder(ADVANCED).defaultValue(GeofonUtils.DEFAULT_GEOFON_BASE_URL).build(), new FieldEditorDetailsBuilder(EnhancedStringFieldEditor.class).textLimit(253).emptyStringAllowed(false).boldCustomValues(false).build()),
+	GEOFON_BASE_URL(new PreferenceDetailsBuilder(ADVANCED).defaultValue(GeofonUtils.DEFAULT_GEOFON_BASE_URL).build(), new FieldEditorDetailsBuilder(ValidatedComboFieldEditor.class).emptyStringAllowed(false).boldCustomValues(true).labelsAndValues(new StaticLabelsAndValues(GeofonUtils.NEW_GEOFON_BASE_URL, GeofonUtils.NEW_GEOFON_BASE_URL).put(GeofonUtils.OLD_GEOFON_BASE_URL, GeofonUtils.OLD_GEOFON_BASE_URL)).build()),
+	HTML_BULLETIN_VERSION(new PreferenceDetailsBuilder(ADVANCED).defaultValue(HtmlBulletinVersion.DEFAULT.name()).build(), new FieldEditorDetailsBuilder(DefaultRadioGroupFieldEditor.class).labelsAndValues(getDecoderRadioOptions()).radioNumColumns(2).radioUseGroup(true).build()),
 	MT_MAX_DIALOGS(new PreferenceDetailsBuilder(ADVANCED).defaultValue(MomentTensorDialog.Defaults.MAX_DIALOGS).build(), new FieldEditorDetailsBuilder(ScaleIntegerFieldEditor.class).scaleMinimum(1).scaleMaximum(Byte.MAX_VALUE).scalePageIncrement(10).build()),
 	MT_LIMIT_HEIGHT(new PreferenceDetailsBuilder(ADVANCED).defaultValue(MomentTensorDialog.Defaults.LIMIT_HEIGHT).build(), new FieldEditorDetailsBuilder(DefaultBooleanFieldEditor.class).build());
 
@@ -206,6 +209,16 @@ public enum Preference implements IPreference {
 		for (final Format format : values) {
 			final String value = format.getValue();
 			options.add(format::getLabel, value);
+		}
+		return options;
+	}
+
+	public static LocalizedLabelsAndValues getDecoderRadioOptions() {
+		final HtmlBulletinVersion[] values = HtmlBulletinVersion.values();
+		final LocalizedLabelsAndValues options = new LocalizedLabelsAndValues(values.length);
+		for (final HtmlBulletinVersion version : values) {
+			final String value = version.name();
+			options.add(version::getLabel, value);
 		}
 		return options;
 	}

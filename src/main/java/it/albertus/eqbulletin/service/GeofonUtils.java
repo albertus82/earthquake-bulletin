@@ -15,9 +15,12 @@ import lombok.extern.java.Log;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class GeofonUtils {
 
-	public static final String DEFAULT_GEOFON_BASE_URL = "https://geofon.gfz-potsdam.de";
+	public static final String OLD_GEOFON_BASE_URL = "https://geofon.gfz-potsdam.de/old";
+	public static final String NEW_GEOFON_BASE_URL = "https://geofon.gfz-potsdam.de";
 
-	private static final String MOMENT_TENSOR_FILENAME = "mt.txt";
+	public static final String DEFAULT_GEOFON_BASE_URL = OLD_GEOFON_BASE_URL;
+
+	public static final String MOMENT_TENSOR_FILENAME = "mt.txt";
 	private static final String BEACH_BALL_FILENAME = "bb.png";
 
 	private static final String MSG_KEY_ERR_URL_MALFORMED = "err.url.malformed";
@@ -53,7 +56,7 @@ public class GeofonUtils {
 	}
 
 	private static String getBaseUrl() {
-		return EarthquakeBulletinConfig.getPreferencesConfiguration().getString(Preference.GEOFON_BASE_URL, GeofonUtils.DEFAULT_GEOFON_BASE_URL);
+		return EarthquakeBulletinConfig.getPreferencesConfiguration().getString(Preference.GEOFON_BASE_URL, DEFAULT_GEOFON_BASE_URL);
 	}
 
 }
