@@ -12,24 +12,23 @@ import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterOutputStream;
 
 import it.albertus.eqbulletin.model.MomentTensor;
+import lombok.AccessLevel;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 
 @Log
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 class PackedMomentTensor implements Serializable {
 
 	private static final long serialVersionUID = 6571208579436743965L;
 
 	private static final Charset charset = StandardCharsets.UTF_8;
 
-	private final byte[] bytes;
+	private final @NonNull byte[] bytes;
 	private final String etag;
 
-	private PackedMomentTensor(final byte[] bytes, final String etag) {
-		this.bytes = bytes;
-		this.etag = etag;
-	}
-
-	static PackedMomentTensor pack(final MomentTensor momentTensor) {
+	static PackedMomentTensor pack(@NonNull final MomentTensor momentTensor) {
 		final String text = momentTensor.getText();
 		log.log(Level.FINE, "Original text.length() = {0,number,#} chars.", text.length());
 		try (final ByteArrayOutputStream baos = new ByteArrayOutputStream()) {

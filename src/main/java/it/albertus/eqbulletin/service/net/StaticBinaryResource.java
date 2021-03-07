@@ -2,6 +2,9 @@ package it.albertus.eqbulletin.service.net;
 
 import java.util.Arrays;
 
+import lombok.Getter;
+
+@Getter
 public class StaticBinaryResource extends StaticResource {
 
 	private static final long serialVersionUID = -6680655185888306718L;
@@ -11,10 +14,6 @@ public class StaticBinaryResource extends StaticResource {
 	protected StaticBinaryResource(final byte[] bytes, final String etag) {
 		super(etag);
 		this.bytes = bytes;
-	}
-
-	public byte[] getBytes() {
-		return bytes;
 	}
 
 	@Override

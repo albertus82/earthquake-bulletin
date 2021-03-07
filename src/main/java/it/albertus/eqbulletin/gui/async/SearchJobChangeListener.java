@@ -27,18 +27,17 @@ import it.albertus.eqbulletin.service.SearchRequest;
 import it.albertus.eqbulletin.service.job.SearchJob;
 import it.albertus.jface.DisplayThreadExecutor;
 import it.albertus.jface.EnhancedErrorDialog;
+import lombok.AccessLevel;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 
 @Log
+@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 class SearchJobChangeListener extends JobChangeAdapter {
 
-	private final SearchRequest request;
-	private final EarthquakeBulletinGui gui;
-
-	SearchJobChangeListener(final SearchRequest request, final EarthquakeBulletinGui gui) {
-		this.request = request;
-		this.gui = gui;
-	}
+	private final @NonNull SearchRequest request;
+	private final @NonNull EarthquakeBulletinGui gui;
 
 	@Override
 	public void running(final IJobChangeEvent event) {

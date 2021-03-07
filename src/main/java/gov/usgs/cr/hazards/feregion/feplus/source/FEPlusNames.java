@@ -9,6 +9,9 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.TreeMap;
 
+import lombok.Getter;
+
+@Getter
 public class FEPlusNames {
 
 	private final Map<Integer, Map<FEPlusNameType, String>> nameMap = new TreeMap<>();
@@ -44,10 +47,6 @@ public class FEPlusNames {
 				}
 			}
 		}
-	}
-
-	public Map<Integer, Map<FEPlusNameType, String>> getNameMap() {
-		return nameMap;
 	}
 
 }

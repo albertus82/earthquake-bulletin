@@ -1,5 +1,8 @@
 package it.albertus.eqbulletin.service.net;
 
+import lombok.Getter;
+
+@Getter
 public class StaticTextResource extends StaticResource {
 
 	private static final long serialVersionUID = 8206511103979270982L;
@@ -9,10 +12,6 @@ public class StaticTextResource extends StaticResource {
 	protected StaticTextResource(final String text, final String etag) {
 		super(etag);
 		this.text = text;
-	}
-
-	public String getText() {
-		return text;
 	}
 
 	@Override

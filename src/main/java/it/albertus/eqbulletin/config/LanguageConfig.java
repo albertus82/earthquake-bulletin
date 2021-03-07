@@ -4,16 +4,16 @@ import java.util.Locale;
 
 import it.albertus.eqbulletin.gui.preference.Preference;
 import it.albertus.jface.preference.IPreferencesConfiguration;
+import lombok.AccessLevel;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 public class LanguageConfig implements ILanguageConfig {
 
 	public static final String DEFAULT_LANGUAGE = Locale.getDefault().getLanguage();
 
-	private IPreferencesConfiguration configuration;
-
-	LanguageConfig(final IPreferencesConfiguration configuration) {
-		this.configuration = configuration;
-	}
+	private final @NonNull IPreferencesConfiguration configuration;
 
 	@Override
 	public String getLanguage() {

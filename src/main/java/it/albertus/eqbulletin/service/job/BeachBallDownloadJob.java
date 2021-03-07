@@ -9,16 +9,17 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 
-import it.albertus.eqbulletin.model.Earthquake;
 import it.albertus.eqbulletin.model.BeachBall;
+import it.albertus.eqbulletin.model.Earthquake;
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.eqbulletin.service.net.BeachBallDownloader;
+import lombok.Getter;
 
 public class BeachBallDownloadJob extends Job implements DownloadJob<BeachBall> {
 
 	private final Earthquake earthquake;
 
-	private Optional<BeachBall> downloadedObject = Optional.empty();
+	@Getter private Optional<BeachBall> downloadedObject = Optional.empty();
 
 	private BeachBallDownloader downloader;
 
@@ -46,11 +47,6 @@ public class BeachBallDownloadJob extends Job implements DownloadJob<BeachBall> 
 		catch (final Exception e) {
 			return new Status(IStatus.ERROR, getClass().getName(), Messages.get("err.job.mtimage"), e);
 		}
-	}
-
-	@Override
-	public Optional<BeachBall> getDownloadedObject() {
-		return downloadedObject;
 	}
 
 	@Override

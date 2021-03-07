@@ -18,10 +18,10 @@ import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Objects;
 import java.util.logging.Level;
 
 import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
+import lombok.NonNull;
 import lombok.extern.java.Log;
 
 @Log
@@ -44,7 +44,7 @@ public class CacheManager<T extends Cache<?, ?>> {
 		}
 	}
 
-	T deserialize(final String pathname, final Class<T> clazz) {
+	T deserialize(@NonNull final String pathname, final Class<T> clazz) {
 		final File file = new File(pathname);
 		if (file.isFile()) {
 			try (final InputStream fis = new FileInputStream(file); final InputStream bis = new BufferedInputStream(fis); final ObjectInput oi = new LookAheadObjectInputStream(bis, clazz)) {
@@ -83,9 +83,8 @@ public class CacheManager<T extends Cache<?, ?>> {
 		private final Class<T> clazz;
 		private boolean first = true;
 
-		private LookAheadObjectInputStream(final InputStream in, final Class<T> clazz) throws IOException {
+		private LookAheadObjectInputStream(final InputStream in, @NonNull final Class<T> clazz) throws IOException {
 			super(in);
-			Objects.requireNonNull(clazz);
 			this.clazz = clazz;
 		}
 

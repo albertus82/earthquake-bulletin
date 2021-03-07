@@ -1,7 +1,11 @@
 package it.albertus.eqbulletin.model;
 
 import it.albertus.eqbulletin.resources.Messages;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
+@Getter
+@RequiredArgsConstructor
 public enum Format {
 
 	HTML("html"),
@@ -12,16 +16,8 @@ public enum Format {
 
 	private final String value;
 
-	Format(final String value) {
-		this.value = value;
-	}
-
 	public String getLabel() {
 		return Messages.get("lbl.form.format." + name().toLowerCase());
-	}
-
-	public String getValue() {
-		return value;
 	}
 
 	public static Format forValue(final String value) {

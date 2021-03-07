@@ -5,6 +5,9 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.swt.SWT;
 
+import lombok.Getter;
+
+@Getter
 public class AsyncOperationException extends Exception {
 
 	private static final long serialVersionUID = 1940542061335327247L;
@@ -19,10 +22,6 @@ public class AsyncOperationException extends Exception {
 	public AsyncOperationException(final String message, final Throwable cause) {
 		super(message, cause);
 		this.severity = IStatus.ERROR;
-	}
-
-	public int getSeverity() {
-		return severity;
 	}
 
 	public Level getLoggingLevel() {

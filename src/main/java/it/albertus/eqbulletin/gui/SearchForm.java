@@ -54,7 +54,6 @@ import it.albertus.jface.decoration.ControlValidatorDecoration;
 import it.albertus.jface.listener.FloatVerifyListener;
 import it.albertus.jface.listener.IntegerVerifyListener;
 import it.albertus.jface.maps.MapBounds;
-import it.albertus.jface.maps.MapBoundsDialog;
 import it.albertus.jface.maps.leaflet.LeafletMapBoundsDialog;
 import it.albertus.jface.maps.leaflet.LeafletMapControl;
 import it.albertus.jface.preference.IPreference;
@@ -64,7 +63,9 @@ import it.albertus.jface.validation.FloatTextValidator;
 import it.albertus.jface.validation.IntegerTextValidator;
 import it.albertus.jface.validation.Validator;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.extern.java.Log;
 
 @Log
@@ -103,61 +104,61 @@ public class SearchForm implements IShellProvider, Multilanguage {
 
 	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getPreferencesConfiguration();
 
-	private final Shell shell;
+	@Getter private final Shell shell;
 
 	private final Composite formComposite;
 
-	private final Label periodLabel;
-	private final Label periodFromLabel;
-	private final Label periodToLabel;
-	private final CDateTime periodFromDateTime;
-	private final CDateTime periodToDateTime;
-	private final Label periodFromNote;
-	private final Label periodToNote;
+	@Getter private final Label periodLabel;
+	@Getter private final Label periodFromLabel;
+	@Getter private final Label periodToLabel;
+	@Getter private final CDateTime periodFromDateTime;
+	@Getter private final CDateTime periodToDateTime;
+	@Getter private final Label periodFromNote;
+	@Getter private final Label periodToNote;
 
 	private final Group areaGroup;
 
 	private final Label latitudeLabel;
 	private final Label latitudeFromLabel;
-	private final Text latitudeFromText;
+	@Getter private final Text latitudeFromText;
 	private final Label latitudeFromNote;
 	private final Label latitudeToLabel;
-	private final Text latitudeToText;
+	@Getter private final Text latitudeToText;
 	private final Label latitudeToNote;
 
 	private final Label longitudeLabel;
 	private final Label longitudeFromLabel;
-	private final Text longitudeFromText;
+	@Getter private final Text longitudeFromText;
 	private final Label longitudeFromNote;
 	private final Label longitudeToLabel;
-	private final Text longitudeToText;
+	@Getter private final Text longitudeToText;
 	private final Label longitudeToNote;
 
 	private final Label minimumMagnitudeLabel;
-	private final Text minimumMagnitudeText;
-	private final Button restrictButton;
+	@Getter private final Text minimumMagnitudeText;
+	@Getter private final Button restrictButton;
 
 	private final Label outputFormatLabel;
 	private final Composite radioComposite;
-	private final Map<Format, Button> formatRadios = new EnumMap<>(Format.class);
-	private final Label resultsLabel;
-	private final Text resultsText;
+	@Getter private final Map<Format, Button> formatRadios = new EnumMap<>(Format.class);
+	@Getter private final Label resultsLabel;
+	@Getter private final Text resultsText;
 
 	private final Group criteriaGroup;
 
 	private final Composite buttonsComposite;
-	private final Button searchButton;
+	@Getter private final Button searchButton;
 	private final Label resultsNote;
-	private final Button autoRefreshButton;
-	private final Text autoRefreshText;
+	@Getter private final Button autoRefreshButton;
+	@Getter private final Text autoRefreshText;
 	private final Button clearButton;
 	private final Button openMapButton;
 
-	private final LeafletMapBoundsDialog mapBoundsDialog;
+	@Getter private final LeafletMapBoundsDialog mapBoundsDialog;
 
-	private final Collection<ControlValidator<Text>> validators = new ArrayList<>();
+	@Getter private final Collection<ControlValidator<Text>> validators = new ArrayList<>();
 
-	SearchForm(final EarthquakeBulletinGui gui) {
+	SearchForm(@NonNull final EarthquakeBulletinGui gui) {
 		shell = gui.getShell();
 
 		final TraverseListener formFieldTraverseListener = new FormFieldTraverseListener(gui);
@@ -477,95 +478,6 @@ public class SearchForm implements IShellProvider, Multilanguage {
 			}
 		}
 		return value;
-	}
-
-	@Override
-	public Shell getShell() {
-		return shell;
-	}
-
-	public Label getPeriodLabel() {
-		return periodLabel;
-	}
-
-	public Label getPeriodFromLabel() {
-		return periodFromLabel;
-	}
-
-	public Label getPeriodToLabel() {
-		return periodToLabel;
-	}
-
-	public CDateTime getPeriodFromDateTime() {
-		return periodFromDateTime;
-	}
-
-	public CDateTime getPeriodToDateTime() {
-		return periodToDateTime;
-	}
-
-	public Label getPeriodFromNote() {
-		return periodFromNote;
-	}
-
-	public Label getPeriodToNote() {
-		return periodToNote;
-	}
-
-	public Text getLatitudeFromText() {
-		return latitudeFromText;
-	}
-
-	public Text getLatitudeToText() {
-		return latitudeToText;
-	}
-
-	public Text getLongitudeFromText() {
-		return longitudeFromText;
-	}
-
-	public Text getLongitudeToText() {
-		return longitudeToText;
-	}
-
-	public Text getMinimumMagnitudeText() {
-		return minimumMagnitudeText;
-	}
-
-	public Button getRestrictButton() {
-		return restrictButton;
-	}
-
-	public Map<Format, Button> getFormatRadios() {
-		return formatRadios;
-	}
-
-	public Label getResultsLabel() {
-		return resultsLabel;
-	}
-
-	public Text getResultsText() {
-		return resultsText;
-	}
-
-	public Button getSearchButton() {
-		return searchButton;
-	}
-
-	public Button getAutoRefreshButton() {
-		return autoRefreshButton;
-	}
-
-	public Text getAutoRefreshText() {
-		return autoRefreshText;
-	}
-
-	public MapBoundsDialog getMapBoundsDialog() {
-		return mapBoundsDialog;
-	}
-
-	public Collection<ControlValidator<Text>> getValidators() {
-		return validators;
 	}
 
 }

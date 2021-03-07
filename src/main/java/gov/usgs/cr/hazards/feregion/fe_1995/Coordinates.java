@@ -5,6 +5,9 @@ import static it.albertus.jface.maps.CoordinateUtils.DEGREE_SIGN;
 import java.io.Serializable;
 import java.util.Locale;
 
+import lombok.NonNull;
+import lombok.Value;
+
 /**
  * This class represents geographical coordinates (longitude & latitude) in
  * decimal degrees.
@@ -16,12 +19,16 @@ import java.util.Locale;
  *      revision of the Flinn-Engdahl (F-E) seismic and geographical
  *      regionalization scheme and programs</a>
  */
+@Value
 public class Coordinates implements Serializable {
 
 	private static final long serialVersionUID = 592347022653444918L;
 
-	private final double longitude;
-	private final double latitude;
+	/** The longitude value */
+	double longitude;
+
+	/** The latitude value */
+	double latitude;
 
 	/**
 	 * Constructs a new {@code Coordinates} object given <em>longitude</em> and
@@ -60,7 +67,7 @@ public class Coordinates implements Serializable {
 	 *         geographical coordinates
 	 * @throws IllegalCoordinateException if the provided arguments are invalid
 	 */
-	public static Coordinates parse(String longitude, String latitude) {
+	public static Coordinates parse(@NonNull String longitude, @NonNull String latitude) {
 		longitude = longitude.toUpperCase(Locale.ROOT);
 		latitude = latitude.toUpperCase(Locale.ROOT);
 
@@ -92,58 +99,10 @@ public class Coordinates implements Serializable {
 		return new Coordinates(lng, lat);
 	}
 
-	/**
-	 * Returns the longitude coordinate.
-	 * 
-	 * @return the longitude value
-	 */
-	public double getLongitude() {
-		return longitude;
-	}
-
-	/**
-	 * Returns the latitude coordinate.
-	 * 
-	 * @return the latitude value
-	 */
-	public double getLatitude() {
-		return latitude;
-	}
-
 	/** Returns a string representation of the geographical coordinates. */
 	@Override
 	public String toString() {
 		return Double.toString(Math.abs(latitude)) + DEGREE_SIGN + (latitude < 0 ? 'S' : 'N') + ' ' + Math.abs(longitude) + DEGREE_SIGN + (longitude < 0 ? 'W' : 'E');
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		long temp;
-		temp = Double.doubleToLongBits(latitude);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
-		temp = Double.doubleToLongBits(longitude);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
-		return result;
-	}
-
-	@Override
-	public boolean equals(final Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (!(obj instanceof Coordinates)) {
-			return false;
-		}
-		Coordinates other = (Coordinates) obj;
-		if (Double.doubleToLongBits(latitude) != Double.doubleToLongBits(other.latitude)) {
-			return false;
-		}
-		return Double.doubleToLongBits(longitude) == Double.doubleToLongBits(other.longitude);
 	}
 
 }

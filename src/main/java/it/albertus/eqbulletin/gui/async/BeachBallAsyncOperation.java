@@ -16,13 +16,14 @@ import it.albertus.eqbulletin.service.job.BeachBallDownloadJob;
 import it.albertus.eqbulletin.service.net.BeachBallDownloader;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.extern.java.Log;
 
 @Log
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class BeachBallAsyncOperation extends AsyncOperation {
 
-	private static Job currentJob;
+	@Setter private static Job currentJob;
 
 	public static synchronized void execute(final Earthquake earthquake) {
 		if (earthquake != null && earthquake.getMomentTensorUri().isPresent()) {
@@ -83,10 +84,6 @@ public class BeachBallAsyncOperation extends AsyncOperation {
 			};
 			threadFactory.newThread(checkForUpdate).start();
 		}
-	}
-
-	private static void setCurrentJob(final Job job) {
-		currentJob = job;
 	}
 
 	private static void cancelCurrentJob() {

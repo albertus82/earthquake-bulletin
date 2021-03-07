@@ -17,6 +17,9 @@ import org.eclipse.swt.widgets.Shell;
 import it.albertus.eqbulletin.config.TimeZoneConfig;
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.jface.Multilanguage;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
 import lombok.extern.java.Log;
 
 @Log
@@ -25,12 +28,12 @@ public class StatusBar implements IShellProvider, Multilanguage {
 	private static final String SPACER = "      ";
 
 	private final StatusLineManager manager;
-	private final Shell shell;
+	@Getter private final Shell shell;
 
-	private TemporalAccessor lastUpdateTime;
-	private int itemCount;
+	@Setter private TemporalAccessor lastUpdateTime;
+	@Setter private int itemCount;
 
-	StatusBar(final EarthquakeBulletinGui gui) {
+	StatusBar(@NonNull final EarthquakeBulletinGui gui) {
 		shell = gui.getShell();
 		gui.createStatusLine(shell);
 		manager = gui.getStatusLineManager();
@@ -40,29 +43,16 @@ public class StatusBar implements IShellProvider, Multilanguage {
 	}
 
 	@Override
-	public Shell getShell() {
-		return shell;
-	}
-
-	@Override
 	public void updateLanguage() {
 		refresh();
 		localizeContextMenu(manager);
 	}
 
-	public void setLastUpdateTime(final TemporalAccessor lastUpdateTime) {
-		this.lastUpdateTime = lastUpdateTime;
-	}
-
-	public void setItemCount(final int itemCount) {
-		this.itemCount = itemCount;
-	}
-
 	public void refresh() {
 		final StringBuilder message = new StringBuilder(Messages.get(itemCount == 1 ? "lbl.status.bar.item.count" : "lbl.status.bar.items.count", itemCount));
-		message.append(SPACER);
 		if (lastUpdateTime != null) {
 			final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.FULL).withLocale(getLocale()).withZone(TimeZoneConfig.getZoneId());
+			message.append(SPACER);
 			message.append(Messages.get("lbl.status.bar.last.updated", dateTimeFormatter.format(lastUpdateTime)));
 		}
 		manager.setMessage(message.toString());

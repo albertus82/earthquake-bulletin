@@ -82,7 +82,7 @@ public class HtmlBulletinDecoder {
 
 			final Optional<Element> depthSpan = spans.stream().filter(e -> e.hasClass("pull-right")).findFirst();
 			final short depth = Short.parseShort(depthSpan.orElseThrow(() -> new IllegalArgumentException(String.valueOf(spans))).text().replace("*", "").trim());
-			final Status status = null; // Removed from the web page on 08/10/2019
+			final Status status = null; // the status was sadly removed from the HTML page on 2019-10-08
 			final String region = divs.get(4).text();
 
 			final URI enclosureUri = GeofonUtils.getEventMapUri(guid, time.get(ChronoField.YEAR));

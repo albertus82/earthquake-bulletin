@@ -12,15 +12,17 @@ import it.albertus.eqbulletin.service.BulletinProvider;
 import it.albertus.eqbulletin.service.SearchRequest;
 import it.albertus.eqbulletin.service.decode.DecodeException;
 import it.albertus.eqbulletin.service.net.FetchException;
+import lombok.Getter;
+import lombok.Setter;
 
 public class SearchJob extends Job {
 
 	private final SearchRequest request;
 	private final BulletinProvider provider;
 
-	private volatile boolean canceled;
+	@Setter private volatile boolean canceled;
 
-	private Optional<Bulletin> bulletin = Optional.empty();
+	@Getter private Optional<Bulletin> bulletin = Optional.empty();
 
 	public SearchJob(final SearchRequest request, final BulletinProvider provider) {
 		super(SearchJob.class.getSimpleName());
@@ -45,10 +47,6 @@ public class SearchJob extends Job {
 		}
 	}
 
-	public Optional<Bulletin> getBulletin() {
-		return bulletin;
-	}
-
 	@Override
 	protected void canceling() {
 		if (provider != null) {
@@ -64,10 +62,6 @@ public class SearchJob extends Job {
 	@Override
 	public boolean shouldRun() {
 		return !canceled;
-	}
-
-	public void setCanceled(final boolean canceled) {
-		this.canceled = canceled;
 	}
 
 }

@@ -23,9 +23,13 @@ import it.albertus.eqbulletin.gui.Images;
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.jface.EnhancedErrorDialog;
 import it.albertus.jface.SwtUtils;
+import lombok.AccessLevel;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 
 @Log
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class BulletinExporter implements IRunnableWithProgress {
 
 	private static final String TASK_NAME = "Exporting earthquake bulletin";
@@ -33,13 +37,8 @@ public class BulletinExporter implements IRunnableWithProgress {
 	private static final char CSV_FIELD_SEPARATOR = ';';
 	private static final String[] CSV_FILE_EXTENSIONS = { "*.CSV;*.csv" };
 
-	private final String fileName;
-	private final String data;
-
-	private BulletinExporter(final String fileName, final String data) {
-		this.fileName = fileName;
-		this.data = data;
-	}
+	private final @NonNull String fileName;
+	private final @NonNull String data;
 
 	@Override
 	public void run(final IProgressMonitor monitor) throws InvocationTargetException {

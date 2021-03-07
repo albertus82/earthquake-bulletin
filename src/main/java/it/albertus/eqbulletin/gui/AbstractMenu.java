@@ -4,7 +4,9 @@ import org.eclipse.swt.widgets.MenuItem;
 
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.jface.Multilanguage;
+import lombok.Getter;
 
+@Getter
 abstract class AbstractMenu implements Multilanguage {
 
 	protected static final String LBL_MENU_ITEM_COPY_LINK = "lbl.menu.item.copy.link";
@@ -32,34 +34,6 @@ abstract class AbstractMenu implements Multilanguage {
 		openBrowserMenuItem.setText(Messages.get(LBL_MENU_ITEM_OPEN_BROWSER));
 		showMapMenuItem.setText(Messages.get(LBL_MENU_ITEM_SHOW_MAP));
 		showMomentTensorMenuItem.setText(Messages.get(LBL_MENU_ITEM_SHOW_MOMENT_TENSOR));
-	}
-
-	public MenuItem getCopyLinkMenuItem() {
-		return copyLinkMenuItem;
-	}
-
-	public MenuItem getExportCsvMenuItem() {
-		return exportCsvMenuItem;
-	}
-
-	public MenuItem getGoogleMapsBrowserMenuItem() {
-		return googleMapsBrowserMenuItem;
-	}
-
-	public MenuItem getEpicenterMapPopupMenuItem() {
-		return epicenterMapPopupMenuItem;
-	}
-
-	public MenuItem getOpenBrowserMenuItem() {
-		return openBrowserMenuItem;
-	}
-
-	public MenuItem getShowMapMenuItem() {
-		return showMapMenuItem;
-	}
-
-	public MenuItem getShowMomentTensorMenuItem() {
-		return showMomentTensorMenuItem;
 	}
 
 }

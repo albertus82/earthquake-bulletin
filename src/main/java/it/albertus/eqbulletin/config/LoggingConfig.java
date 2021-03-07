@@ -14,7 +14,10 @@ import it.albertus.jface.preference.IPreferencesConfiguration;
 import it.albertus.util.logging.LoggingDefaultConfig;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 public class LoggingConfig extends LoggingDefaultConfig {
 
 	@NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -23,11 +26,7 @@ public class LoggingConfig extends LoggingDefaultConfig {
 		public static final Level LOGGING_LEVEL = WARNING;
 	}
 
-	private final IPreferencesConfiguration configuration;
-
-	LoggingConfig(final IPreferencesConfiguration configuration) {
-		this.configuration = configuration;
-	}
+	private final @NonNull IPreferencesConfiguration configuration;
 
 	@Override
 	public boolean isFileHandlerEnabled() {

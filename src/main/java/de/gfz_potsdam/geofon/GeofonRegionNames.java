@@ -8,9 +8,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.TreeMap;
 
+import lombok.Getter;
+
+@Getter
 public class GeofonRegionNames {
 
-	private final Map<Integer, String> names = new TreeMap<>();
+	private final Map<Integer, String> map = new TreeMap<>();
 
 	/**
 	 * Initializes the internal names database. Reuse the same instance whenever
@@ -22,13 +25,9 @@ public class GeofonRegionNames {
 			int fenum = 1;
 			String line;
 			while ((line = br.readLine()) != null) {
-				names.put(fenum++, line.trim());
+				map.put(fenum++, line.trim());
 			}
 		}
-	}
-
-	public Map<Integer, String> getMap() {
-		return names;
 	}
 
 }

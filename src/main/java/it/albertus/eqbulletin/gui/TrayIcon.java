@@ -32,7 +32,9 @@ import it.albertus.jface.listener.TrayRestoreListener;
 import it.albertus.jface.preference.IPreferencesConfiguration;
 import it.albertus.util.MapUtils;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.extern.java.Log;
 
 @Log
@@ -47,10 +49,10 @@ public class TrayIcon implements IShellProvider, Multilanguage {
 
 	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getPreferencesConfiguration();
 
-	private final Shell shell;
+	@Getter private final Shell shell;
 
 	private Tray tray;
-	private TrayItem trayItem;
+	@Getter private TrayItem trayItem;
 
 	private final Map<Integer, ToolTip> toolTips = MapUtils.newHashMapWithExpectedSize(icons.length);
 	private Menu trayMenu;
@@ -61,7 +63,7 @@ public class TrayIcon implements IShellProvider, Multilanguage {
 	private Image image;
 	private String toolTipText = Messages.get("lbl.tray.tooltip");
 
-	TrayIcon(final EarthquakeBulletinGui gui) {
+	TrayIcon(@NonNull final EarthquakeBulletinGui gui) {
 		shell = gui.getShell();
 		shell.addShellListener(new ShellAdapter() {
 			@Override
@@ -91,7 +93,7 @@ public class TrayIcon implements IShellProvider, Multilanguage {
 
 	private void iconify(final EarthquakeBulletinGui gui) {
 		if (tray == null || trayItem == null || trayItem.isDisposed()) {
-			/* Inizializzazione */
+			// Initialization
 			try {
 				tray = shell.getDisplay().getSystemTray();
 
@@ -198,15 +200,6 @@ public class TrayIcon implements IShellProvider, Multilanguage {
 			showMenuItem.setText(Messages.get("lbl.tray.show"));
 			exitMenuItem.setText(Messages.get("lbl.tray.close"));
 		}
-	}
-
-	public TrayItem getTrayItem() {
-		return trayItem;
-	}
-
-	@Override
-	public Shell getShell() {
-		return shell;
 	}
 
 }

@@ -22,13 +22,14 @@ import it.albertus.eqbulletin.service.net.MapImageDownloader;
 import it.albertus.jface.DisplayThreadExecutor;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.extern.java.Log;
 
 @Log
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MapImageAsyncOperation extends AsyncOperation {
 
-	private static Job currentJob;
+	@Setter private static Job currentJob;
 
 	public static synchronized void execute(final Earthquake earthquake, final Shell shell) {
 		if (earthquake != null && earthquake.getEnclosureUri().isPresent() && shell != null && !shell.isDisposed()) {
@@ -104,10 +105,6 @@ public class MapImageAsyncOperation extends AsyncOperation {
 		else {
 			setDefaultCursor(shell);
 		}
-	}
-
-	private static void setCurrentJob(final Job job) {
-		currentJob = job;
 	}
 
 	private static void cancelCurrentJob() {

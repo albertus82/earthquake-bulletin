@@ -5,7 +5,11 @@ import org.eclipse.swt.widgets.Control;
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.jface.preference.page.BasePreferencePage;
 import it.albertus.util.logging.LoggingSupport;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class LoggingPreferencePage extends BasePreferencePage {
 
 	private String overriddenMessage = Messages.get("lbl.preferences.logging.overridden");
@@ -18,14 +22,6 @@ public class LoggingPreferencePage extends BasePreferencePage {
 		else {
 			return null;
 		}
-	}
-
-	public final String getOverriddenMessage() {
-		return overriddenMessage;
-	}
-
-	public final void setOverriddenMessage(final String overriddenMessage) {
-		this.overriddenMessage = overriddenMessage;
 	}
 
 }

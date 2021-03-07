@@ -13,12 +13,13 @@ import it.albertus.eqbulletin.model.Earthquake;
 import it.albertus.eqbulletin.model.MapImage;
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.eqbulletin.service.net.MapImageDownloader;
+import lombok.Getter;
 
 public class MapImageDownloadJob extends Job implements DownloadJob<MapImage> {
 
 	private final Earthquake earthquake;
 
-	private Optional<MapImage> downloadedObject = Optional.empty();
+	@Getter private Optional<MapImage> downloadedObject = Optional.empty();
 
 	private MapImageDownloader downloader;
 
@@ -46,11 +47,6 @@ public class MapImageDownloadJob extends Job implements DownloadJob<MapImage> {
 		catch (final Exception e) {
 			return new Status(IStatus.ERROR, getClass().getName(), Messages.get("err.job.map"), e);
 		}
-	}
-
-	@Override
-	public Optional<MapImage> getDownloadedObject() {
-		return downloadedObject;
 	}
 
 	@Override

@@ -1,5 +1,8 @@
 package it.albertus.eqbulletin.gui;
 
+import static javax.swing.SortOrder.ASCENDING;
+import static javax.swing.SortOrder.DESCENDING;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.text.NumberFormat;
@@ -8,6 +11,8 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.function.Supplier;
+
+import javax.swing.SortOrder;
 
 import org.eclipse.jface.resource.FontRegistry;
 import org.eclipse.jface.resource.JFaceResources;
@@ -64,7 +69,9 @@ import it.albertus.jface.closeable.CloseableResource;
 import it.albertus.jface.maps.CoordinateUtils;
 import it.albertus.jface.preference.IPreferencesConfiguration;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 public class ResultsTable implements IShellProvider, Multilanguage {
 
@@ -95,25 +102,20 @@ public class ResultsTable implements IShellProvider, Multilanguage {
 
 	private static class EarthquakeViewerComparator extends ViewerComparator {
 
-		private enum Direction {
-			ASCENDING,
-			DESCENDING
-		}
-
 		private int propertyIndex = 0;
-		private Direction direction = Direction.DESCENDING;
+		private SortOrder direction = DESCENDING;
 
 		private int getDirection() {
-			return Direction.DESCENDING.equals(direction) ? SWT.DOWN : SWT.UP;
+			return DESCENDING.equals(direction) ? SWT.DOWN : SWT.UP;
 		}
 
 		private void setColumn(final int columnIndex) {
 			if (columnIndex == propertyIndex) {
-				direction = Direction.ASCENDING.equals(direction) ? Direction.DESCENDING : Direction.ASCENDING;
+				direction = ASCENDING.equals(direction) ? DESCENDING : ASCENDING;
 			}
 			else {
 				propertyIndex = columnIndex;
-				direction = Direction.DESCENDING;
+				direction = DESCENDING;
 			}
 		}
 
@@ -168,24 +170,24 @@ public class ResultsTable implements IShellProvider, Multilanguage {
 			default:
 				rc = 0;
 			}
-			if (direction == Direction.DESCENDING) {
+			if (direction == DESCENDING) {
 				rc = -rc;
 			}
 			return rc;
 		}
 	}
 
-	private final Shell shell;
+	@Getter private final Shell shell;
 
-	private final TableViewer tableViewer;
+	@Getter private final TableViewer tableViewer;
 	private final EarthquakeViewerComparator comparator;
 	private final HashMap<Integer, Supplier<String>> labelsMap = new HashMap<>();
 
-	private final ContextMenu contextMenu;
+	@Getter private final ContextMenu contextMenu;
 
 	private boolean initialized = false;
 
-	ResultsTable(final Composite parent, final Object layoutData, final EarthquakeBulletinGui gui) {
+	ResultsTable(@NonNull final Composite parent, final Object layoutData) {
 		shell = parent.getShell();
 		tableViewer = new TableViewer(parent, SWT.BORDER | SWT.FULL_SELECTION) {
 			// Auto resize columns on content change
@@ -207,21 +209,18 @@ public class ResultsTable implements IShellProvider, Multilanguage {
 		};
 		final Table table = tableViewer.getTable();
 		createColumns(table);
-		table.setLayoutData(layoutData);
+		if (layoutData != null) {
+			table.setLayoutData(layoutData);
+		}
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
-		table.addListener(SWT.DefaultSelection, new ShowMapListener(gui::getResultsTable));
+		table.addListener(SWT.DefaultSelection, new ShowMapListener(() -> this));
 		tableViewer.setContentProvider(new ArrayContentProvider());
 		ColumnViewerToolTipSupport.enableFor(tableViewer);
 		comparator = new EarthquakeViewerComparator();
 		tableViewer.setComparator(comparator);
 
-		contextMenu = new ContextMenu(gui);
-	}
-
-	@Override
-	public Shell getShell() {
-		return shell;
+		contextMenu = new ContextMenu(this);
 	}
 
 	private void createColumns(final Table table) {
@@ -492,74 +491,64 @@ public class ResultsTable implements IShellProvider, Multilanguage {
 		}
 	}
 
-	public TableViewer getTableViewer() {
-		return tableViewer;
-	}
-
-	public ContextMenu getContextMenu() {
-		return contextMenu;
-	}
-
 	public void exportCsv() {
 		if (tableViewer != null && tableViewer.getTable() != null && tableViewer.getTable().getItemCount() > 0) {
 			BulletinExporter.export(tableViewer.getTable());
 		}
 	}
 
+	@Getter
 	public class ContextMenu extends AbstractMenu {
+
 		private final Menu menu;
 
-		private ContextMenu(final EarthquakeBulletinGui gui) {
+		private ContextMenu(@NonNull final ResultsTable rt) {
 			final Table table = tableViewer.getTable();
 			menu = new Menu(table);
 
 			// Show map...
 			showMapMenuItem = new MenuItem(menu, SWT.PUSH);
 			showMapMenuItem.setText(Messages.get(LBL_MENU_ITEM_SHOW_MAP));
-			showMapMenuItem.addListener(SWT.Selection, new ShowMapListener(gui::getResultsTable));
+			showMapMenuItem.addListener(SWT.Selection, new ShowMapListener(() -> rt));
 			menu.setDefaultItem(showMapMenuItem);
 
 			// Show moment tensor solution...
 			showMomentTensorMenuItem = new MenuItem(menu, SWT.PUSH);
 			showMomentTensorMenuItem.setText(Messages.get(LBL_MENU_ITEM_SHOW_MOMENT_TENSOR));
-			showMomentTensorMenuItem.addListener(SWT.Selection, new ShowMomentTensorListener(gui::getResultsTable));
+			showMomentTensorMenuItem.addListener(SWT.Selection, new ShowMomentTensorListener(() -> rt));
 
 			new MenuItem(menu, SWT.SEPARATOR);
 
 			// Open in browser...
 			openBrowserMenuItem = new MenuItem(menu, SWT.PUSH);
 			openBrowserMenuItem.setText(Messages.get(LBL_MENU_ITEM_OPEN_BROWSER));
-			openBrowserMenuItem.addSelectionListener(new OpenInBrowserSelectionListener(gui::getResultsTable));
+			openBrowserMenuItem.addSelectionListener(new OpenInBrowserSelectionListener(() -> rt));
 
 			// Copy link...
 			copyLinkMenuItem = new MenuItem(menu, SWT.PUSH);
 			copyLinkMenuItem.setText(Messages.get(LBL_MENU_ITEM_COPY_LINK));
-			copyLinkMenuItem.addSelectionListener(new CopyLinkSelectionListener(gui::getResultsTable));
+			copyLinkMenuItem.addSelectionListener(new CopyLinkSelectionListener(() -> rt));
 
 			new MenuItem(menu, SWT.SEPARATOR);
 
 			// Epicenter map popup...
 			epicenterMapPopupMenuItem = new MenuItem(menu, SWT.PUSH);
 			epicenterMapPopupMenuItem.setText(Messages.get(LBL_MENU_ITEM_EPICENTER_MAP_POPUP));
-			epicenterMapPopupMenuItem.addSelectionListener(new EpicenterMapSelectionListener(gui::getResultsTable));
+			epicenterMapPopupMenuItem.addSelectionListener(new EpicenterMapSelectionListener(() -> rt));
 
 			// Google Maps in browser...
 			googleMapsBrowserMenuItem = new MenuItem(menu, SWT.PUSH);
 			googleMapsBrowserMenuItem.setText(Messages.get(LBL_MENU_ITEM_GOOGLE_MAPS_BROWSER));
-			googleMapsBrowserMenuItem.addSelectionListener(new GoogleMapsBrowserSelectionListener(gui::getResultsTable));
+			googleMapsBrowserMenuItem.addSelectionListener(new GoogleMapsBrowserSelectionListener(() -> rt));
 
 			new MenuItem(menu, SWT.SEPARATOR);
 
 			exportCsvMenuItem = new MenuItem(menu, SWT.PUSH);
 			exportCsvMenuItem.setText(Messages.get(LBL_MENU_ITEM_EXPORT_CSV) + SwtUtils.getMod1ShortcutLabel(SwtUtils.KEY_SAVE));
-			exportCsvMenuItem.addSelectionListener(new ExportCsvSelectionListener(gui::getResultsTable));
+			exportCsvMenuItem.addSelectionListener(new ExportCsvSelectionListener(() -> rt));
 			exportCsvMenuItem.setAccelerator(SWT.MOD1 | SwtUtils.KEY_SAVE);
 
-			table.addMenuDetectListener(new ResultsTableContextMenuDetectListener(ResultsTable.this));
-		}
-
-		public Menu getMenu() {
-			return menu;
+			table.addMenuDetectListener(new ResultsTableContextMenuDetectListener(rt));
 		}
 	}
 
@@ -577,6 +566,7 @@ public class ResultsTable implements IShellProvider, Multilanguage {
 	}
 
 	private class TableMouseMoveListener implements MouseMoveListener {
+
 		private String guid = null;
 
 		@Override

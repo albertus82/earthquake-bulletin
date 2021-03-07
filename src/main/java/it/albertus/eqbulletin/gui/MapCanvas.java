@@ -45,7 +45,9 @@ import it.albertus.jface.Multilanguage;
 import it.albertus.jface.closeable.CloseableResource;
 import it.albertus.jface.preference.IPreferencesConfiguration;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.extern.java.Log;
 
 @Log
@@ -64,11 +66,11 @@ public class MapCanvas implements IShellProvider, Multilanguage {
 
 	private final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getPreferencesConfiguration();
 
-	private final Shell shell;
+	@Getter private final Shell shell;
 
 	private final Canvas canvas;
 
-	private Earthquake earthquake;
+	@Getter private Earthquake earthquake;
 	private MapImage mapImage;
 
 	private Image image;
@@ -83,7 +85,7 @@ public class MapCanvas implements IShellProvider, Multilanguage {
 
 	private static MapCanvas instance;
 
-	MapCanvas(final Composite parent) {
+	MapCanvas(@NonNull final Composite parent) {
 		shell = parent.getShell();
 
 		canvas = new Canvas(parent, SWT.BORDER);
@@ -197,10 +199,6 @@ public class MapCanvas implements IShellProvider, Multilanguage {
 			paintImage(zoomLevel);
 			this.zoomLevel = zoomLevel;
 		}
-	}
-
-	public Earthquake getEarthquake() {
-		return earthquake;
 	}
 
 	public void refresh() {
@@ -399,11 +397,6 @@ public class MapCanvas implements IShellProvider, Multilanguage {
 				}
 			}
 		}
-	}
-
-	@Override
-	public Shell getShell() {
-		return shell;
 	}
 
 }
