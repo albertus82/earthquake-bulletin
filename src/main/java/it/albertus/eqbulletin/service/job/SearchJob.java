@@ -12,7 +12,6 @@ import it.albertus.eqbulletin.service.BulletinProvider;
 import it.albertus.eqbulletin.service.SearchRequest;
 import it.albertus.eqbulletin.service.decode.DecodeException;
 import it.albertus.eqbulletin.service.net.FetchException;
-import lombok.Getter;
 import lombok.Setter;
 
 public class SearchJob extends Job {
@@ -22,7 +21,7 @@ public class SearchJob extends Job {
 
 	@Setter private volatile boolean canceled;
 
-	@Getter private Optional<Bulletin> bulletin = Optional.empty();
+	private Bulletin bulletin;
 
 	public SearchJob(final SearchRequest request, final BulletinProvider provider) {
 		super(SearchJob.class.getSimpleName());
@@ -35,7 +34,7 @@ public class SearchJob extends Job {
 	protected IStatus run(final IProgressMonitor monitor) {
 		monitor.beginTask(getName(), IProgressMonitor.UNKNOWN);
 		try {
-			bulletin = provider.getBulletin(request, monitor::isCanceled);
+			bulletin = provider.getBulletin(request, monitor::isCanceled).orElse(null);
 			monitor.done();
 			return Status.OK_STATUS;
 		}
@@ -45,6 +44,10 @@ public class SearchJob extends Job {
 		catch (final Exception | LinkageError e) {
 			return new Status(IStatus.ERROR, getClass().getName(), e.toString(), e);
 		}
+	}
+
+	public Optional<Bulletin> getBulletin() {
+		return Optional.ofNullable(bulletin);
 	}
 
 	@Override

@@ -13,13 +13,12 @@ import it.albertus.eqbulletin.model.Earthquake;
 import it.albertus.eqbulletin.model.MomentTensor;
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.eqbulletin.service.net.MomentTensorDownloader;
-import lombok.Getter;
 
 public class MomentTensorDownloadJob extends Job implements DownloadJob<MomentTensor> {
 
 	private final Earthquake earthquake;
 
-	@Getter private Optional<MomentTensor> downloadedObject = Optional.empty();
+	private MomentTensor downloadedObject;
 
 	public MomentTensorDownloadJob(final Earthquake earthquake) {
 		super(MomentTensorDownloadJob.class.getSimpleName());
@@ -31,7 +30,7 @@ public class MomentTensorDownloadJob extends Job implements DownloadJob<MomentTe
 	public IStatus run(final IProgressMonitor monitor) {
 		monitor.beginTask(getName(), IProgressMonitor.UNKNOWN);
 		try {
-			downloadedObject = new MomentTensorDownloader().download(earthquake);
+			downloadedObject = new MomentTensorDownloader().download(earthquake).orElse(null);
 			monitor.done();
 			return Status.OK_STATUS;
 		}
@@ -44,6 +43,11 @@ public class MomentTensorDownloadJob extends Job implements DownloadJob<MomentTe
 		catch (final Exception e) {
 			return new Status(IStatus.ERROR, getClass().getName(), Messages.get("err.job.mt"), e);
 		}
+	}
+
+	@Override
+	public Optional<MomentTensor> getDownloadedObject() {
+		return Optional.ofNullable(downloadedObject);
 	}
 
 }

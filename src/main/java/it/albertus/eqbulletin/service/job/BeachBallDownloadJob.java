@@ -13,13 +13,12 @@ import it.albertus.eqbulletin.model.BeachBall;
 import it.albertus.eqbulletin.model.Earthquake;
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.eqbulletin.service.net.BeachBallDownloader;
-import lombok.Getter;
 
 public class BeachBallDownloadJob extends Job implements DownloadJob<BeachBall> {
 
 	private final Earthquake earthquake;
 
-	@Getter private Optional<BeachBall> downloadedObject = Optional.empty();
+	private BeachBall downloadedObject;
 
 	private BeachBallDownloader downloader;
 
@@ -34,7 +33,7 @@ public class BeachBallDownloadJob extends Job implements DownloadJob<BeachBall> 
 		monitor.beginTask(getName(), IProgressMonitor.UNKNOWN);
 		try {
 			downloader = new BeachBallDownloader();
-			downloadedObject = downloader.download(earthquake, monitor::isCanceled);
+			downloadedObject = downloader.download(earthquake, monitor::isCanceled).orElse(null);
 			monitor.done();
 			return monitor.isCanceled() ? Status.CANCEL_STATUS : Status.OK_STATUS;
 		}
@@ -47,6 +46,11 @@ public class BeachBallDownloadJob extends Job implements DownloadJob<BeachBall> 
 		catch (final Exception e) {
 			return new Status(IStatus.ERROR, getClass().getName(), Messages.get("err.job.mtimage"), e);
 		}
+	}
+
+	@Override
+	public Optional<BeachBall> getDownloadedObject() {
+		return Optional.ofNullable(downloadedObject);
 	}
 
 	@Override
