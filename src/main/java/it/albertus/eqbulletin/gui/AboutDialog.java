@@ -35,6 +35,7 @@ import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -70,6 +71,7 @@ public class AboutDialog extends Dialog {
 	private static final int SCROLLABLE_VERTICAL_SIZE_DLUS = 25;
 
 	private static final String SYM_NAME_FONT_DEFAULT = AboutDialog.class.getName() + ".default";
+	private static final String SYM_NAME_FONT_APPNAME = AboutDialog.class.getName() + ".appname";
 
 	public AboutDialog(@NonNull final Shell parent) {
 		this(parent, SWT.SHEET | SWT.RESIZE);
@@ -89,18 +91,30 @@ public class AboutDialog extends Dialog {
 		shell.open();
 	}
 
-	private static void createContents(final Shell shell) {
+	private void createContents(final Shell shell) {
 		GridLayoutFactory.swtDefaults().applyTo(shell);
+
+		Composite header = new Composite(shell, SWT.NONE);
+		GridDataFactory.swtDefaults().applyTo(header);
+		GridLayoutFactory.swtDefaults().numColumns(2).applyTo(header);
+
+		final Label icon = new Label(header, SWT.NONE);
+		GridDataFactory.swtDefaults().align(SWT.TRAIL, SWT.CENTER).span(1, 2).grab(true, false).applyTo(icon);
+		icon.setImage(Images.getAppIconMap().get(new Rectangle(0, 0, 48, 48)));
 
 		final LinkSelectionListener linkSelectionListener = new LinkSelectionListener();
 
-		final Link info = new Link(shell, SWT.WRAP);
+		final Link appName = new Link(header, SWT.WRAP);
 		final FontRegistry fontRegistry = JFaceResources.getFontRegistry();
-		if (!fontRegistry.hasValueFor(SYM_NAME_FONT_DEFAULT)) {
-			fontRegistry.put(SYM_NAME_FONT_DEFAULT, info.getFont().getFontData());
+		if (!fontRegistry.hasValueFor(SYM_NAME_FONT_APPNAME)) {
+			final FontData[] fontData = appName.getFont().getFontData();
+			for (final FontData fd : fontData) {
+				fd.setHeight(Math.round(fd.getHeight() * 1.5f));
+			}
+			fontRegistry.put(SYM_NAME_FONT_APPNAME, fontData);
 		}
-		info.setFont(fontRegistry.getBold(SYM_NAME_FONT_DEFAULT));
-		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.CENTER).grab(true, false).applyTo(info);
+		appName.setFont(fontRegistry.getBold(SYM_NAME_FONT_APPNAME));
+		GridDataFactory.swtDefaults().align(SWT.LEAD, SWT.CENTER).grab(true, false).applyTo(appName);
 		Date versionDate;
 		try {
 			versionDate = Version.getDate();
@@ -109,8 +123,19 @@ public class AboutDialog extends Dialog {
 			log.log(Level.WARNING, "Invalid version date:", e);
 			versionDate = new Date();
 		}
-		info.setText(buildAnchor(Messages.get("project.url"), Messages.get("msg.application.name")) + ' ' + Messages.get("msg.version", Version.getNumber(), DateFormat.getDateInstance(DateFormat.MEDIUM, Messages.getLanguage().getLocale()).format(versionDate)));
-		info.addSelectionListener(linkSelectionListener);
+		appName.setText(buildAnchor(Messages.get("project.url"), Messages.get("msg.application.name")));
+		appName.addSelectionListener(linkSelectionListener);
+
+		final Label appVersion = new Label(header, SWT.NONE);
+		appVersion.setText(Messages.get("msg.version", Version.getNumber(), DateFormat.getDateInstance(DateFormat.MEDIUM, Messages.getLanguage().getLocale()).format(versionDate)));
+		if (!fontRegistry.hasValueFor(SYM_NAME_FONT_DEFAULT)) {
+			fontRegistry.put(SYM_NAME_FONT_DEFAULT, appVersion.getFont().getFontData());
+		}
+		appVersion.setFont(fontRegistry.getBold(SYM_NAME_FONT_DEFAULT));
+		GridDataFactory.swtDefaults().align(SWT.LEAD, SWT.CENTER).grab(true, false).applyTo(appVersion);
+
+		final Label separator = new Label(shell, SWT.HORIZONTAL | SWT.SEPARATOR);
+		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(separator);
 
 		final Link acknowledgementsLocations = new Link(shell, SWT.WRAP);
 		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.CENTER).grab(true, false).applyTo(acknowledgementsLocations);
@@ -158,7 +183,7 @@ public class AboutDialog extends Dialog {
 		shell.setDefaultButton(okButton);
 	}
 
-	private static void constrainShellSize(final Shell shell) {
+	private void constrainShellSize(final Shell shell) {
 		final Point preferredSize = shell.computeSize(SWT.DEFAULT, SWT.DEFAULT, true);
 		final int clientWidth = shell.getMonitor().getClientArea().width;
 		final int desiredWidth;
@@ -169,7 +194,8 @@ public class AboutDialog extends Dialog {
 			desiredWidth = preferredSize.x;
 		}
 		shell.setSize(desiredWidth, shell.getSize().y);
-		shell.setMinimumSize(desiredWidth, preferredSize.y);
+		final int minimumWidth = desiredWidth;
+		shell.setMinimumSize(minimumWidth, preferredSize.y);
 	}
 
 	private static String buildAnchor(final String href, final String label) {
