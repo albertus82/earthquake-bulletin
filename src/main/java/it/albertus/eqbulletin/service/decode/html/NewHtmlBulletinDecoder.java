@@ -63,15 +63,15 @@ public class NewHtmlBulletinDecoder extends AbstractHtmlBulletinDecoder {
 			final String guid = decodeGuid(anchor);
 			final URI link = decodeLink(anchor);
 			final float magnitude = decodeMagnitude(spans);
-			float[] lonLat = decodeLonLat(divs);
-			final short depth = decodeDepth(spans);
+			final Coordinates coordinates = decodeCoordinates(divs);
+			final Depth depth = decodeDepth(spans);
 			final Status status = null; // the status was sadly removed from the HTML page on 2019-10-08
 			final String region = decodeRegion(divs);
 			final int year = time.get(ChronoField.YEAR);
 			final URI enclosureUri = decodeEnclosureUri(guid, year);
 			final URI momentTensorUri = decodeMomentTensorUri(anchor, guid, year);
 
-			return new Earthquake(guid, time, magnitude, Latitude.valueOf(lonLat[1]), Longitude.valueOf(lonLat[0]), Depth.valueOf(depth), status, region, link, enclosureUri, momentTensorUri);
+			return new Earthquake(guid, time, magnitude, coordinates.getLatitude(), coordinates.getLongitude(), depth, status, region, link, enclosureUri, momentTensorUri);
 		}
 		catch (final Exception e) {
 			throw new IllegalArgumentException(anchor.toString(), e);
@@ -94,7 +94,7 @@ public class NewHtmlBulletinDecoder extends AbstractHtmlBulletinDecoder {
 		return Float.parseFloat(spans.first().text());
 	}
 
-	private static float[] decodeLonLat(@NonNull final Elements divs) {
+	private static Coordinates decodeCoordinates(@NonNull final Elements divs) {
 		final String[] lonLat = divs.get(4).attr("title").split(",");
 
 		final String[] splitLat = lonLat[1].split(DEGREE_SIGN);
@@ -109,12 +109,13 @@ public class NewHtmlBulletinDecoder extends AbstractHtmlBulletinDecoder {
 			longitude = -longitude;
 		}
 
-		return new float[] { longitude, latitude };
+		return new Coordinates(Latitude.valueOf(latitude), Longitude.valueOf(longitude));
 	}
 
-	private static short decodeDepth(@NonNull final Elements spans) {
+	private static Depth decodeDepth(@NonNull final Elements spans) {
 		final Optional<Element> depthSpan = spans.stream().filter(e -> e.hasClass("pull-right")).findFirst();
-		return Short.parseShort(depthSpan.orElseThrow(() -> new IllegalArgumentException(String.valueOf(spans))).text().replace("*", "").trim());
+		final short depth = Short.parseShort(depthSpan.orElseThrow(() -> new IllegalArgumentException(String.valueOf(spans))).text().replace("*", "").trim());
+		return Depth.valueOf(depth);
 	}
 
 	private static String decodeRegion(@NonNull final Elements divs) {

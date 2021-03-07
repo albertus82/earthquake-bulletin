@@ -57,14 +57,14 @@ public class OldHtmlBulletinDecoder extends AbstractHtmlBulletinDecoder {
 			final String guid = decodeGuid(eventLink.get());
 			final URI link = decodeLink(eventLink.get());
 			final float magnitude = decodeMagnitude(row);
-			final float[] lonLat = decodeLonLat(row);
-			final short depth = decodeDepth(row);
+			final Coordinates coordinates = decodeCoordinates(row);
+			final Depth depth = decodeDepth(row);
 			final Status status = decodeStatus(row);
 			final String region = decodeRegion(row);
 			final URI enclosureUri = decodeEnclosureUri(guid, time.get(ChronoField.YEAR));
 			final URI momentTensorUri = decodeMomentTensorUri(row);
 
-			return new Earthquake(guid, time, magnitude, Latitude.valueOf(lonLat[1]), Longitude.valueOf(lonLat[0]), Depth.valueOf(depth), status, region, link, enclosureUri, momentTensorUri);
+			return new Earthquake(guid, time, magnitude, coordinates.getLatitude(), coordinates.getLongitude(), depth, status, region, link, enclosureUri, momentTensorUri);
 		}
 		catch (final Exception e) {
 			throw new IllegalArgumentException(row.toString(), e);
@@ -87,7 +87,7 @@ public class OldHtmlBulletinDecoder extends AbstractHtmlBulletinDecoder {
 		return Float.parseFloat(row.child(1).text());
 	}
 
-	private static float[] decodeLonLat(@NonNull final Element row) {
+	private static Coordinates decodeCoordinates(@NonNull final Element row) {
 		final String[] splitLat = row.child(2).text().split(DEGREE_SIGN);
 		float latitude = Float.parseFloat(splitLat[0]);
 		if ("S".equalsIgnoreCase(splitLat[1])) {
@@ -100,11 +100,11 @@ public class OldHtmlBulletinDecoder extends AbstractHtmlBulletinDecoder {
 			longitude = -longitude;
 		}
 
-		return new float[] { longitude, latitude };
+		return new Coordinates(Latitude.valueOf(latitude), Longitude.valueOf(longitude));
 	}
 
-	private static short decodeDepth(@NonNull final Element row) {
-		return Short.parseShort(row.child(4).text());
+	private static Depth decodeDepth(@NonNull final Element row) {
+		return Depth.valueOf(Short.parseShort(row.child(4).text()));
 	}
 
 	private static Status decodeStatus(@NonNull final Element row) {
