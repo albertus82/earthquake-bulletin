@@ -4,6 +4,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
+import java.util.Locale;
 
 import it.albertus.eqbulletin.resources.Messages;
 
@@ -22,7 +23,7 @@ public enum HtmlBulletinVersion {
 	public static final HtmlBulletinVersion DEFAULT = OLD;
 
 	public String getLabel() {
-		return Messages.get("label.html.bulletin.version." + name().toLowerCase(), DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(Messages.getLanguage().getLocale()).format(SWITCH_DATETIME));
+		return Messages.get("label.html.bulletin.version." + name().toLowerCase(Locale.ROOT), DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(Messages.getLanguage().getLocale()).format(SWITCH_DATETIME));
 	}
 
 	public static HtmlBulletinVersion forValue(final String value) {

@@ -1,5 +1,7 @@
 package it.albertus.eqbulletin.gui.preference;
 
+import java.util.Locale;
+
 import org.eclipse.jface.resource.ImageDescriptor;
 
 import it.albertus.eqbulletin.resources.Messages;
@@ -28,7 +30,7 @@ public enum PageDefinition implements IPageDefinition {
 	PageDefinition(final PageDefinitionDetails pageDefinitionDetails) {
 		this.pageDefinitionDetails = pageDefinitionDetails;
 		if (pageDefinitionDetails.getNodeId() == null) {
-			pageDefinitionDetails.setNodeId(name().toLowerCase().replace('_', '.'));
+			pageDefinitionDetails.setNodeId(name().toLowerCase(Locale.ROOT).replace('_', '.'));
 		}
 		if (pageDefinitionDetails.getLabel() == null) {
 			pageDefinitionDetails.setLabel(() -> Messages.get(LABEL_KEY_PREFIX + pageDefinitionDetails.getNodeId()));

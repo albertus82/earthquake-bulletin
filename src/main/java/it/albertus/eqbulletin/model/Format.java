@@ -1,5 +1,7 @@
 package it.albertus.eqbulletin.model;
 
+import java.util.Locale;
+
 import it.albertus.eqbulletin.resources.Messages;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +19,7 @@ public enum Format {
 	private final String value;
 
 	public String getLabel() {
-		return Messages.get("label.form.format." + name().toLowerCase());
+		return Messages.get("label.form.format." + name().toLowerCase(Locale.ROOT));
 	}
 
 	public static Format forValue(final String value) {

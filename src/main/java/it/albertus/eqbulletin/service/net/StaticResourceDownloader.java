@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Locale;
 import java.util.function.BooleanSupplier;
 import java.util.logging.Level;
 import java.util.zip.GZIPInputStream;
@@ -65,7 +66,7 @@ public abstract class StaticResourceDownloader<T extends StaticResource> {
 
 	private T parseResponseContent(final URLConnection connection, final T cached, final BooleanSupplier canceled) throws IOException {
 		final String responseContentEncoding = connection.getContentEncoding();
-		final boolean gzip = responseContentEncoding != null && responseContentEncoding.toLowerCase().contains("gzip");
+		final boolean gzip = responseContentEncoding != null && responseContentEncoding.toLowerCase(Locale.ROOT).contains("gzip");
 		try (final InputStream raw = connection.getInputStream(); final InputStream in = gzip ? new GZIPInputStream(raw) : raw) {
 			connectionInputStream = raw;
 			if (canceled.getAsBoolean()) {

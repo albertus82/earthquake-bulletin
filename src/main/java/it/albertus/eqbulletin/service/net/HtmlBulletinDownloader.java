@@ -9,6 +9,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
 import java.util.logging.Level;
@@ -103,7 +104,7 @@ public class HtmlBulletinDownloader implements BulletinDownloader {
 		try {
 			final URLConnection connection = ConnectionFactory.makeGetRequest(uri.toURL(), headers);
 			final String responseContentEncoding = connection.getContentEncoding();
-			final boolean gzip = responseContentEncoding != null && responseContentEncoding.toLowerCase().contains("gzip");
+			final boolean gzip = responseContentEncoding != null && responseContentEncoding.toLowerCase(Locale.ROOT).contains("gzip");
 			try (final InputStream raw = connection.getInputStream(); final InputStream in = gzip ? new GZIPInputStream(raw) : raw) {
 				connectionInputStream = raw;
 				if (canceled.getAsBoolean()) {

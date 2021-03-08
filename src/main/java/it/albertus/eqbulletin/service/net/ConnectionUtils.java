@@ -3,6 +3,7 @@ package it.albertus.eqbulletin.service.net;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.Locale;
 import java.util.logging.Level;
 
 import it.albertus.util.StringUtils;
@@ -20,7 +21,7 @@ public class ConnectionUtils {
 
 	public static Charset detectCharset(String contentType) {
 		if (contentType != null) {
-			contentType = contentType.toLowerCase();
+			contentType = contentType.toLowerCase(Locale.ROOT);
 			if (contentType.contains("charset=")) {
 				final String charsetName = StringUtils.substringAfter(contentType, "charset=").trim();
 				try {

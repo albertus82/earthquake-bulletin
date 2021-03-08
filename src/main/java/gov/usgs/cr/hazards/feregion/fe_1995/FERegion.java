@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -204,7 +205,7 @@ public class FERegion {
 	 * @throws IOException if the <tt>asc</tt> resources aren't readable
 	 */
 	public static void main(final String... args) {
-		System.exit(new CommandLine(new FERegionCommand()).setCommandName(FERegion.class.getSimpleName().toLowerCase()).execute(args));
+		System.exit(new CommandLine(new FERegionCommand()).setCommandName(FERegion.class.getSimpleName().toLowerCase(Locale.ROOT)).execute(args));
 	}
 }
 

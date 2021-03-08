@@ -9,6 +9,7 @@ import java.net.URISyntaxException;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.util.Collection;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
 import java.util.logging.Level;
@@ -85,7 +86,7 @@ public class RssBulletinDownloader implements BulletinDownloader {
 		try {
 			final URLConnection connection = ConnectionFactory.makeGetRequest(request.toURIs().get(0).toURL(), headers);
 			final String responseContentEncoding = connection.getContentEncoding();
-			final boolean gzip = responseContentEncoding != null && responseContentEncoding.toLowerCase().contains("gzip");
+			final boolean gzip = responseContentEncoding != null && responseContentEncoding.toLowerCase(Locale.ROOT).contains("gzip");
 			try (final InputStream raw = connection.getInputStream(); final InputStream in = gzip ? new GZIPInputStream(raw) : raw) {
 				connectionInputStream = raw;
 				if (canceled.getAsBoolean()) {

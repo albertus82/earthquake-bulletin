@@ -134,7 +134,7 @@ public enum Preference implements IPreference {
 		this.preferenceDetails = preferenceDetails;
 		this.fieldEditorDetails = fieldEditorDetails;
 		if (preferenceDetails.getName() == null) {
-			preferenceDetails.setName(name().toLowerCase().replace('_', '.'));
+			preferenceDetails.setName(name().toLowerCase(Locale.ROOT).replace('_', '.'));
 		}
 		if (preferenceDetails.getLabel() == null) {
 			preferenceDetails.setLabel(() -> Messages.get(LABEL_KEY_PREFIX + preferenceDetails.getName()));

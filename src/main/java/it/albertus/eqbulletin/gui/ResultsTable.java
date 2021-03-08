@@ -94,7 +94,7 @@ public class ResultsTable implements IShellProvider, Multilanguage {
 	private static final int COL_IDX_MT = 6;
 	private static final int COL_IDX_REGION = 7;
 
-	private static final String SYM_NAME_FONT_DEFAULT = ResultsTable.class.getName().toLowerCase() + ".default";
+	private static final String SYM_NAME_FONT_DEFAULT = ResultsTable.class.getName() + ".default";
 
 	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getPreferencesConfiguration();
 
