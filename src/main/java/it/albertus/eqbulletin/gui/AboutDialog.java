@@ -106,7 +106,7 @@ public class AboutDialog extends Dialog {
 
 		createHeaderComposite(shell, GridDataFactory.swtDefaults().create());
 
-		createAcknowledgementsGroup(shell, GridDataFactory.swtDefaults().grab(true, false).create());
+		createAcknowledgementsGroup(shell, GridDataFactory.fillDefaults().grab(true, false).create());
 
 		addInvisibleSeparator(shell);
 
@@ -154,7 +154,7 @@ public class AboutDialog extends Dialog {
 		if (layoutData != null) {
 			headerComposite.setLayoutData(layoutData);
 		}
-		GridLayoutFactory.swtDefaults().numColumns(2).applyTo(headerComposite);
+		GridLayoutFactory.swtDefaults().numColumns(3).applyTo(headerComposite);
 
 		final Label iconLabel = new Label(headerComposite, SWT.NONE);
 		GridDataFactory.swtDefaults().span(1, 2).grab(true, false).applyTo(iconLabel);
@@ -166,6 +166,8 @@ public class AboutDialog extends Dialog {
 				break;
 			}
 		}
+
+		GridDataFactory.swtDefaults().span(1, 2).applyTo(new Label(headerComposite, SWT.NONE)); // Invisible separator
 
 		final Link appNameLink = new Link(headerComposite, SWT.WRAP);
 		final FontRegistry fontRegistry = JFaceResources.getFontRegistry();
