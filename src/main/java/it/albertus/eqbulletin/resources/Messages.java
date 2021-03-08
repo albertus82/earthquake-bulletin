@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import java.util.function.Supplier;
 
 import org.eclipse.swt.widgets.Widget;
 
@@ -54,7 +55,14 @@ public final class Messages {
 	}
 
 	public static String get(@NonNull final Widget widget) {
-		return get(String.valueOf(widget.getData()));
+		final Object widgetData = widget.getData();
+		if (widgetData instanceof Supplier<?>) {
+			final Supplier<?> supplier = (Supplier<?>) widgetData;
+			return String.valueOf(supplier.get());
+		}
+		else {
+			return get(String.valueOf(widgetData));
+		}
 	}
 
 	public static String get(final String key) {

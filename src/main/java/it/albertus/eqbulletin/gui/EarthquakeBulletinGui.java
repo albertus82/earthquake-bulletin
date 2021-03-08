@@ -72,18 +72,12 @@ public class EarthquakeBulletinGui extends ApplicationWindow implements Multilan
 
 	private final Collection<Multilanguage> multilanguages = new ArrayList<>();
 
-	@Getter
-	private TrayIcon trayIcon;
-	@Getter
-	private MenuBar menuBar;
-	@Getter
-	private SearchForm searchForm;
-	@Getter
-	private ResultsTable resultsTable;
-	@Getter
-	private MapCanvas mapCanvas;
-	@Getter
-	private StatusBar statusBar;
+	@Getter private TrayIcon trayIcon;
+	@Getter private MenuBar menuBar;
+	@Getter private SearchForm searchForm;
+	@Getter private ResultsTable resultsTable;
+	@Getter private MapCanvas mapCanvas;
+	@Getter private StatusBar statusBar;
 
 	private SashForm sashForm;
 

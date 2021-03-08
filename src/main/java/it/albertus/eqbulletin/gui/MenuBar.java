@@ -29,6 +29,7 @@ import it.albertus.jface.SwtUtils;
 import it.albertus.jface.cocoa.CocoaEnhancerException;
 import it.albertus.jface.cocoa.CocoaUIEnhancer;
 import it.albertus.jface.sysinfo.SystemInformationDialog;
+import lombok.NonNull;
 import lombok.extern.java.Log;
 
 /**
@@ -41,33 +42,9 @@ import lombok.extern.java.Log;
 @Log
 public class MenuBar extends AbstractMenu implements IShellProvider {
 
-	private static final String LBL_MENU_HEADER_FILE = "label.menu.header.file";
-	private static final String LBL_MENU_ITEM_EXIT = "label.menu.item.exit";
-	private static final String LBL_MENU_HEADER_EVENT = "label.menu.header.event";
-	private static final String LBL_MENU_HEADER_TOOLS = "label.menu.header.tools";
-	private static final String LBL_MENU_ITEM_FEREGION = "label.menu.item.feregion";
-	private static final String LBL_MENU_ITEM_PREFERENCES = "label.menu.item.preferences";
-	private static final String LBL_MENU_HEADER_HELP = "label.menu.header.help";
-	private static final String LBL_MENU_HEADER_HELP_WINDOWS = "label.menu.header.help.windows";
-	private static final String LBL_MENU_ITEM_SYSTEM_INFO = "label.menu.item.system.info";
-	private static final String LBL_MENU_ITEM_ABOUT = "label.menu.item.about";
+	private final @NonNull Shell shell;
 
-	private final Shell shell;
-
-	private final MenuItem fileMenuHeader;
-	private MenuItem fileExitItem;
-
-	private final MenuItem eventMenuHeader;
-
-	private final MenuItem toolsMenuHeader;
-	private final MenuItem toolsFERegionMenuItem;
-	private MenuItem toolsPreferencesMenuItem;
-
-	private final MenuItem helpMenuHeader;
-	private final MenuItem helpSystemInfoItem;
-	private MenuItem helpAboutItem;
-
-	MenuBar(final EarthquakeBulletinGui gui) {
+	MenuBar(@NonNull final EarthquakeBulletinGui gui) {
 		this.shell = gui.getShell();
 
 		final CloseListener closeListener = new CloseListener(gui);
@@ -90,20 +67,17 @@ public class MenuBar extends AbstractMenu implements IShellProvider {
 
 		// File
 		final Menu fileMenu = new Menu(shell, SWT.DROP_DOWN);
-		fileMenuHeader = new MenuItem(bar, SWT.CASCADE);
-		fileMenuHeader.setText(Messages.get(LBL_MENU_HEADER_FILE));
+		final MenuItem fileMenuHeader = newLocalizedMenuItem(bar, SWT.CASCADE, "label.menu.header.file");
 		fileMenuHeader.setMenu(fileMenu);
 
-		exportCsvMenuItem = new MenuItem(fileMenu, SWT.PUSH);
-		exportCsvMenuItem.setText(Messages.get(LBL_MENU_ITEM_EXPORT_CSV) + SwtUtils.getMod1ShortcutLabel(SwtUtils.KEY_SAVE));
+		exportCsvMenuItem = newLocalizedMenuItem(fileMenu, SWT.PUSH, () -> Messages.get(LABEL_MENU_ITEM_EXPORT_CSV) + SwtUtils.getMod1ShortcutLabel(SwtUtils.KEY_SAVE));
 		exportCsvMenuItem.setAccelerator(SWT.MOD1 | SwtUtils.KEY_SAVE);
 		exportCsvMenuItem.addSelectionListener(new ExportCsvSelectionListener(gui::getResultsTable));
 
 		if (!cocoaMenuCreated) {
 			new MenuItem(fileMenu, SWT.SEPARATOR);
 
-			fileExitItem = new MenuItem(fileMenu, SWT.PUSH);
-			fileExitItem.setText(Messages.get(LBL_MENU_ITEM_EXIT));
+			final MenuItem fileExitItem = newLocalizedMenuItem(fileMenu, SWT.PUSH, "label.menu.item.exit");
 			fileExitItem.addSelectionListener(new CloseListener(gui));
 		}
 
@@ -113,55 +87,46 @@ public class MenuBar extends AbstractMenu implements IShellProvider {
 
 		// Event
 		final Menu eventMenu = new Menu(shell, SWT.DROP_DOWN);
-		eventMenuHeader = new MenuItem(bar, SWT.CASCADE);
-		eventMenuHeader.setText(Messages.get(LBL_MENU_HEADER_EVENT));
+		final MenuItem eventMenuHeader = newLocalizedMenuItem(bar, SWT.CASCADE, "label.menu.header.event");
 		eventMenuHeader.setMenu(eventMenu);
 		final EventMenuListener eventMenuListener = new EventMenuListener(gui);
 		eventMenu.addMenuListener(eventMenuListener);
 		eventMenuHeader.addArmListener(eventMenuListener);
 
 		// Show map...
-		showMapMenuItem = new MenuItem(eventMenu, SWT.PUSH);
-		showMapMenuItem.setText(Messages.get(LBL_MENU_ITEM_SHOW_MAP));
+		showMapMenuItem = newLocalizedMenuItem(eventMenu, SWT.PUSH, LABEL_MENU_ITEM_SHOW_MAP);
 		showMapMenuItem.addListener(SWT.Selection, new ShowMapListener(gui::getResultsTable));
 
 		// Show moment tensor...
-		showMomentTensorMenuItem = new MenuItem(eventMenu, SWT.PUSH);
-		showMomentTensorMenuItem.setText(Messages.get(LBL_MENU_ITEM_SHOW_MOMENT_TENSOR));
+		showMomentTensorMenuItem = newLocalizedMenuItem(eventMenu, SWT.PUSH, LABEL_MENU_ITEM_SHOW_MOMENT_TENSOR);
 		showMomentTensorMenuItem.addListener(SWT.Selection, new ShowMomentTensorListener(gui::getResultsTable));
 
 		new MenuItem(eventMenu, SWT.SEPARATOR);
 
 		// Open in browser...
-		openBrowserMenuItem = new MenuItem(eventMenu, SWT.PUSH);
-		openBrowserMenuItem.setText(Messages.get(LBL_MENU_ITEM_OPEN_BROWSER));
+		openBrowserMenuItem = newLocalizedMenuItem(eventMenu, SWT.PUSH, LABEL_MENU_ITEM_OPEN_BROWSER);
 		openBrowserMenuItem.addSelectionListener(new OpenInBrowserSelectionListener(gui::getResultsTable));
 
 		// Copy link...
-		copyLinkMenuItem = new MenuItem(eventMenu, SWT.PUSH);
-		copyLinkMenuItem.setText(Messages.get(LBL_MENU_ITEM_COPY_LINK));
+		copyLinkMenuItem = newLocalizedMenuItem(eventMenu, SWT.PUSH, LABEL_MENU_ITEM_COPY_LINK);
 		copyLinkMenuItem.addSelectionListener(new CopyLinkSelectionListener(gui::getResultsTable));
 
 		new MenuItem(eventMenu, SWT.SEPARATOR);
 
 		// Epicenter map popup...
-		epicenterMapPopupMenuItem = new MenuItem(eventMenu, SWT.PUSH);
-		epicenterMapPopupMenuItem.setText(Messages.get(LBL_MENU_ITEM_EPICENTER_MAP_POPUP));
+		epicenterMapPopupMenuItem = newLocalizedMenuItem(eventMenu, SWT.PUSH, LABEL_MENU_ITEM_EPICENTER_MAP_POPUP);
 		epicenterMapPopupMenuItem.addSelectionListener(new EpicenterMapSelectionListener(gui::getResultsTable));
 
 		// Google Maps in browser...
-		googleMapsBrowserMenuItem = new MenuItem(eventMenu, SWT.PUSH);
-		googleMapsBrowserMenuItem.setText(Messages.get(LBL_MENU_ITEM_GOOGLE_MAPS_BROWSER));
+		googleMapsBrowserMenuItem = newLocalizedMenuItem(eventMenu, SWT.PUSH, LABEL_MENU_ITEM_GOOGLE_MAPS_BROWSER);
 		googleMapsBrowserMenuItem.addSelectionListener(new GoogleMapsBrowserSelectionListener(gui::getResultsTable));
 
 		// Tools
 		final Menu toolsMenu = new Menu(shell, SWT.DROP_DOWN);
-		toolsMenuHeader = new MenuItem(bar, SWT.CASCADE);
-		toolsMenuHeader.setText(Messages.get(LBL_MENU_HEADER_TOOLS));
+		final MenuItem toolsMenuHeader = newLocalizedMenuItem(bar, SWT.CASCADE, "label.menu.header.tools");
 		toolsMenuHeader.setMenu(toolsMenu);
 
-		toolsFERegionMenuItem = new MenuItem(toolsMenu, SWT.PUSH);
-		toolsFERegionMenuItem.setText(Messages.get(LBL_MENU_ITEM_FEREGION));
+		final MenuItem toolsFERegionMenuItem = newLocalizedMenuItem(toolsMenu, SWT.PUSH, "label.menu.item.feregion");
 		toolsFERegionMenuItem.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
@@ -172,19 +137,16 @@ public class MenuBar extends AbstractMenu implements IShellProvider {
 		if (!cocoaMenuCreated) {
 			new MenuItem(toolsMenu, SWT.SEPARATOR);
 
-			toolsPreferencesMenuItem = new MenuItem(toolsMenu, SWT.PUSH);
-			toolsPreferencesMenuItem.setText(Messages.get(LBL_MENU_ITEM_PREFERENCES));
+			final MenuItem toolsPreferencesMenuItem = newLocalizedMenuItem(toolsMenu, SWT.PUSH, "label.menu.item.preferences");
 			toolsPreferencesMenuItem.addSelectionListener(new PreferencesListener(gui));
 		}
 
 		// Help
 		final Menu helpMenu = new Menu(shell, SWT.DROP_DOWN);
-		helpMenuHeader = new MenuItem(bar, SWT.CASCADE);
-		helpMenuHeader.setText(Messages.get(Util.isWindows() ? LBL_MENU_HEADER_HELP_WINDOWS : LBL_MENU_HEADER_HELP));
+		final MenuItem helpMenuHeader = newLocalizedMenuItem(bar, SWT.CASCADE, Util.isWindows() ? "label.menu.header.help.windows" : "label.menu.header.help");
 		helpMenuHeader.setMenu(helpMenu);
 
-		helpSystemInfoItem = new MenuItem(helpMenu, SWT.PUSH);
-		helpSystemInfoItem.setText(Messages.get(LBL_MENU_ITEM_SYSTEM_INFO));
+		final MenuItem helpSystemInfoItem = newLocalizedMenuItem(helpMenu, SWT.PUSH, "label.menu.item.system.info");
 		helpSystemInfoItem.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
@@ -195,8 +157,7 @@ public class MenuBar extends AbstractMenu implements IShellProvider {
 		if (!cocoaMenuCreated) {
 			new MenuItem(helpMenu, SWT.SEPARATOR);
 
-			helpAboutItem = new MenuItem(helpMenu, SWT.PUSH);
-			helpAboutItem.setText(Messages.get(LBL_MENU_ITEM_ABOUT));
+			final MenuItem helpAboutItem = newLocalizedMenuItem(helpMenu, SWT.PUSH, "label.menu.item.about");
 			helpAboutItem.addSelectionListener(new AboutListener(gui));
 		}
 
@@ -205,30 +166,6 @@ public class MenuBar extends AbstractMenu implements IShellProvider {
 		helpMenuHeader.addArmListener(helpMenuListener);
 
 		shell.setMenuBar(bar);
-	}
-
-	@Override
-	public void updateLanguage() {
-		super.updateLanguage();
-		fileMenuHeader.setText(Messages.get(LBL_MENU_HEADER_FILE));
-		if (fileExitItem != null && !fileExitItem.isDisposed()) {
-			fileExitItem.setText(Messages.get(LBL_MENU_ITEM_EXIT));
-		}
-		eventMenuHeader.setText(Messages.get(LBL_MENU_HEADER_EVENT));
-		if (toolsMenuHeader != null && !toolsMenuHeader.isDisposed()) {
-			toolsMenuHeader.setText(Messages.get(LBL_MENU_HEADER_TOOLS));
-		}
-		if (toolsFERegionMenuItem != null && !toolsFERegionMenuItem.isDisposed()) {
-			toolsFERegionMenuItem.setText(Messages.get(LBL_MENU_ITEM_FEREGION));
-		}
-		if (toolsPreferencesMenuItem != null && !toolsPreferencesMenuItem.isDisposed()) {
-			toolsPreferencesMenuItem.setText(Messages.get(LBL_MENU_ITEM_PREFERENCES));
-		}
-		helpMenuHeader.setText(Messages.get(Util.isWindows() ? LBL_MENU_HEADER_HELP_WINDOWS : LBL_MENU_HEADER_HELP));
-		helpSystemInfoItem.setText(Messages.get(LBL_MENU_ITEM_SYSTEM_INFO));
-		if (helpAboutItem != null && !helpAboutItem.isDisposed()) {
-			helpAboutItem.setText(Messages.get(LBL_MENU_ITEM_ABOUT));
-		}
 	}
 
 	@Override

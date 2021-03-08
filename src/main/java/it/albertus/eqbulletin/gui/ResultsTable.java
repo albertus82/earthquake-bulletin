@@ -507,44 +507,37 @@ public class ResultsTable implements IShellProvider, Multilanguage {
 			menu = new Menu(table);
 
 			// Show map...
-			showMapMenuItem = new MenuItem(menu, SWT.PUSH);
-			showMapMenuItem.setText(Messages.get(LBL_MENU_ITEM_SHOW_MAP));
+			showMapMenuItem = newLocalizedMenuItem(menu, SWT.PUSH, LABEL_MENU_ITEM_SHOW_MAP);
 			showMapMenuItem.addListener(SWT.Selection, new ShowMapListener(() -> rt));
 			menu.setDefaultItem(showMapMenuItem);
 
 			// Show moment tensor solution...
-			showMomentTensorMenuItem = new MenuItem(menu, SWT.PUSH);
-			showMomentTensorMenuItem.setText(Messages.get(LBL_MENU_ITEM_SHOW_MOMENT_TENSOR));
+			showMomentTensorMenuItem = newLocalizedMenuItem(menu, SWT.PUSH, LABEL_MENU_ITEM_SHOW_MOMENT_TENSOR);
 			showMomentTensorMenuItem.addListener(SWT.Selection, new ShowMomentTensorListener(() -> rt));
 
 			new MenuItem(menu, SWT.SEPARATOR);
 
 			// Open in browser...
-			openBrowserMenuItem = new MenuItem(menu, SWT.PUSH);
-			openBrowserMenuItem.setText(Messages.get(LBL_MENU_ITEM_OPEN_BROWSER));
+			openBrowserMenuItem = newLocalizedMenuItem(menu, SWT.PUSH, LABEL_MENU_ITEM_OPEN_BROWSER);
 			openBrowserMenuItem.addSelectionListener(new OpenInBrowserSelectionListener(() -> rt));
 
 			// Copy link...
-			copyLinkMenuItem = new MenuItem(menu, SWT.PUSH);
-			copyLinkMenuItem.setText(Messages.get(LBL_MENU_ITEM_COPY_LINK));
+			copyLinkMenuItem = newLocalizedMenuItem(menu, SWT.PUSH, LABEL_MENU_ITEM_COPY_LINK);
 			copyLinkMenuItem.addSelectionListener(new CopyLinkSelectionListener(() -> rt));
 
 			new MenuItem(menu, SWT.SEPARATOR);
 
 			// Epicenter map popup...
-			epicenterMapPopupMenuItem = new MenuItem(menu, SWT.PUSH);
-			epicenterMapPopupMenuItem.setText(Messages.get(LBL_MENU_ITEM_EPICENTER_MAP_POPUP));
+			epicenterMapPopupMenuItem = newLocalizedMenuItem(menu, SWT.PUSH, LABEL_MENU_ITEM_EPICENTER_MAP_POPUP);
 			epicenterMapPopupMenuItem.addSelectionListener(new EpicenterMapSelectionListener(() -> rt));
 
 			// Google Maps in browser...
-			googleMapsBrowserMenuItem = new MenuItem(menu, SWT.PUSH);
-			googleMapsBrowserMenuItem.setText(Messages.get(LBL_MENU_ITEM_GOOGLE_MAPS_BROWSER));
+			googleMapsBrowserMenuItem = newLocalizedMenuItem(menu, SWT.PUSH, LABEL_MENU_ITEM_GOOGLE_MAPS_BROWSER);
 			googleMapsBrowserMenuItem.addSelectionListener(new GoogleMapsBrowserSelectionListener(() -> rt));
 
 			new MenuItem(menu, SWT.SEPARATOR);
 
-			exportCsvMenuItem = new MenuItem(menu, SWT.PUSH);
-			exportCsvMenuItem.setText(Messages.get(LBL_MENU_ITEM_EXPORT_CSV) + SwtUtils.getMod1ShortcutLabel(SwtUtils.KEY_SAVE));
+			exportCsvMenuItem = newLocalizedMenuItem(menu, SWT.PUSH, () -> Messages.get(LABEL_MENU_ITEM_EXPORT_CSV) + SwtUtils.getMod1ShortcutLabel(SwtUtils.KEY_SAVE));
 			exportCsvMenuItem.addSelectionListener(new ExportCsvSelectionListener(() -> rt));
 			exportCsvMenuItem.setAccelerator(SWT.MOD1 | SwtUtils.KEY_SAVE);
 
