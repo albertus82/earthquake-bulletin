@@ -69,7 +69,7 @@ import lombok.extern.java.Log;
 public class AboutDialog extends Dialog {
 
 	private static final float MONITOR_SIZE_DIVISOR = 1.2f;
-	private static final float TITLE_FONT_SIZE_MULTIPLIER = 1.5f;
+	private static final float TITLE_FONT_SIZE_MULTIPLIER = 1.6f;
 
 	private static final int ICON_VERTICAL_SIZE_DLUS = 26;
 	private static final int SCROLLABLE_VERTICAL_SIZE_DLUS = 25;
