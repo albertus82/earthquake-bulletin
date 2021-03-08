@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 public class LoggingPreferencePage extends BasePreferencePage {
 
-	private String overriddenMessage = Messages.get("lbl.preferences.logging.overridden");
+	private String overriddenMessage = Messages.get("label.preferences.logging.overridden");
 
 	@Override
 	protected Control createHeader() {

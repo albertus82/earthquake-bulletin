@@ -226,7 +226,7 @@ public class ResultsTable implements IShellProvider, Multilanguage {
 	private void createColumns(final Table table) {
 		int i = 0;
 		for (final String suffix : new String[] { "time", "magnitude", "latitude", "longitude", "depth", "status", "mt", "region" }) {
-			labelsMap.put(i++, () -> Messages.get("lbl.table." + suffix));
+			labelsMap.put(i++, () -> Messages.get("label.table." + suffix));
 		}
 
 		createTimeColumn();

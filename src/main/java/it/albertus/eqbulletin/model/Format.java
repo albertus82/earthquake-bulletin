@@ -17,7 +17,7 @@ public enum Format {
 	private final String value;
 
 	public String getLabel() {
-		return Messages.get("lbl.form.format." + name().toLowerCase());
+		return Messages.get("label.form.format." + name().toLowerCase());
 	}
 
 	public static Format forValue(final String value) {

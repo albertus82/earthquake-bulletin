@@ -61,7 +61,7 @@ public class TrayIcon implements IShellProvider, Multilanguage {
 
 	/* To be accessed only from this class */
 	private Image image;
-	private String toolTipText = Messages.get("lbl.tray.tooltip");
+	private String toolTipText = Messages.get("label.tray.tooltip");
 
 	TrayIcon(@NonNull final EarthquakeBulletinGui gui) {
 		shell = gui.getShell();
@@ -114,14 +114,14 @@ public class TrayIcon implements IShellProvider, Multilanguage {
 
 					trayMenu = new Menu(shell, SWT.POP_UP);
 					showMenuItem = new MenuItem(trayMenu, SWT.PUSH);
-					showMenuItem.setText(Messages.get("lbl.tray.show"));
+					showMenuItem.setText(Messages.get("label.tray.show"));
 					showMenuItem.addSelectionListener(trayRestoreListener);
 					trayMenu.setDefaultItem(showMenuItem);
 
 					new MenuItem(trayMenu, SWT.SEPARATOR);
 
 					exitMenuItem = new MenuItem(trayMenu, SWT.PUSH);
-					exitMenuItem.setText(Messages.get("lbl.tray.close"));
+					exitMenuItem.setText(Messages.get("label.tray.close"));
 					exitMenuItem.addSelectionListener(new CloseListener(gui));
 					trayItem.addMenuDetectListener(e -> trayMenu.setVisible(true));
 
@@ -132,7 +132,7 @@ public class TrayIcon implements IShellProvider, Multilanguage {
 				}
 			}
 			catch (final Exception e) {
-				log.log(Level.SEVERE, Messages.get("err.tray.init"), e);
+				log.log(Level.SEVERE, Messages.get("error.tray.init"), e);
 			}
 		}
 
@@ -172,7 +172,7 @@ public class TrayIcon implements IShellProvider, Multilanguage {
 	}
 
 	public void updateToolTipText(final Earthquake earthquake) {
-		final StringBuilder buf = new StringBuilder(Messages.get("lbl.tray.tooltip"));
+		final StringBuilder buf = new StringBuilder(Messages.get("label.tray.tooltip"));
 		if (earthquake != null) {
 			buf.append(System.lineSeparator());
 			buf.append(earthquake.getSummary());
@@ -197,8 +197,8 @@ public class TrayIcon implements IShellProvider, Multilanguage {
 	@Override
 	public void updateLanguage() {
 		if (trayMenu != null) {
-			showMenuItem.setText(Messages.get("lbl.tray.show"));
-			exitMenuItem.setText(Messages.get("lbl.tray.close"));
+			showMenuItem.setText(Messages.get("label.tray.show"));
+			exitMenuItem.setText(Messages.get("label.tray.close"));
 		}
 	}
 

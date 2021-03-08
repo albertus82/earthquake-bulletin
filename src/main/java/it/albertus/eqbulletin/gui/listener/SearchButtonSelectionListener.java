@@ -25,7 +25,7 @@ public class SearchButtonSelectionListener extends SelectionAdapter {
 		else {
 			SearchAsyncOperation.cancelCurrentJob(); // Cancel
 			final Button searchButton = gui.getSearchForm().getSearchButton();
-			searchButton.setText(Messages.get("lbl.form.button.submit"));
+			searchButton.setText(Messages.get("label.form.button.submit"));
 			searchButton.setEnabled(true);
 		}
 	}

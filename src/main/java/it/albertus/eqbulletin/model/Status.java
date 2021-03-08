@@ -9,7 +9,7 @@ public enum Status {
 	M;
 
 	public String getDescription() {
-		return Messages.get("lbl.status." + name().toLowerCase());
+		return Messages.get("label.status." + name().toLowerCase());
 	}
 
 }

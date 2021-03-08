@@ -57,7 +57,7 @@ public class EarthquakeBulletinConfig extends Configuration {
 				}
 			}
 			catch (final IOException e) {
-				throw new InitializationException(Messages.get("err.open.cfg", CFG_FILE_NAME), e);
+				throw new InitializationException(Messages.get("error.open.cfg", CFG_FILE_NAME), e);
 			}
 		}
 		return instance;

@@ -68,7 +68,7 @@ public class RssBulletinDecoder {
 				link = new URI(pageUrl.trim());
 			}
 			catch (final URISyntaxException e) {
-				log.log(Level.WARNING, Messages.get("err.url.malformed", pageUrl), e);
+				log.log(Level.WARNING, Messages.get("error.url.malformed", pageUrl), e);
 			}
 		}
 
@@ -79,7 +79,7 @@ public class RssBulletinDecoder {
 				enclosureUri = new URI(imageUrl.trim());
 			}
 			catch (final URISyntaxException e) {
-				log.log(Level.WARNING, Messages.get("err.url.malformed", imageUrl), e);
+				log.log(Level.WARNING, Messages.get("error.url.malformed", imageUrl), e);
 			}
 		}
 

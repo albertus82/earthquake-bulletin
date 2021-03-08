@@ -41,16 +41,16 @@ import lombok.extern.java.Log;
 @Log
 public class MenuBar extends AbstractMenu implements IShellProvider {
 
-	private static final String LBL_MENU_HEADER_FILE = "lbl.menu.header.file";
-	private static final String LBL_MENU_ITEM_EXIT = "lbl.menu.item.exit";
-	private static final String LBL_MENU_HEADER_EVENT = "lbl.menu.header.event";
-	private static final String LBL_MENU_HEADER_TOOLS = "lbl.menu.header.tools";
-	private static final String LBL_MENU_ITEM_FEREGION = "lbl.menu.item.feregion";
-	private static final String LBL_MENU_ITEM_PREFERENCES = "lbl.menu.item.preferences";
-	private static final String LBL_MENU_HEADER_HELP = "lbl.menu.header.help";
-	private static final String LBL_MENU_HEADER_HELP_WINDOWS = "lbl.menu.header.help.windows";
-	private static final String LBL_MENU_ITEM_SYSTEM_INFO = "lbl.menu.item.system.info";
-	private static final String LBL_MENU_ITEM_ABOUT = "lbl.menu.item.about";
+	private static final String LBL_MENU_HEADER_FILE = "label.menu.header.file";
+	private static final String LBL_MENU_ITEM_EXIT = "label.menu.item.exit";
+	private static final String LBL_MENU_HEADER_EVENT = "label.menu.header.event";
+	private static final String LBL_MENU_HEADER_TOOLS = "label.menu.header.tools";
+	private static final String LBL_MENU_ITEM_FEREGION = "label.menu.item.feregion";
+	private static final String LBL_MENU_ITEM_PREFERENCES = "label.menu.item.preferences";
+	private static final String LBL_MENU_HEADER_HELP = "label.menu.header.help";
+	private static final String LBL_MENU_HEADER_HELP_WINDOWS = "label.menu.header.help.windows";
+	private static final String LBL_MENU_ITEM_SYSTEM_INFO = "label.menu.item.system.info";
+	private static final String LBL_MENU_ITEM_ABOUT = "label.menu.item.about";
 
 	private final Shell shell;
 
@@ -82,7 +82,7 @@ public class MenuBar extends AbstractMenu implements IShellProvider {
 				cocoaMenuCreated = true;
 			}
 			catch (final CocoaEnhancerException cee) {
-				log.log(Level.WARNING, Messages.get("err.cocoa.enhancer"), cee);
+				log.log(Level.WARNING, Messages.get("error.cocoa.enhancer"), cee);
 			}
 		}
 

@@ -35,13 +35,13 @@ public class MomentTensorDownloadJob extends Job implements DownloadJob<MomentTe
 			return Status.OK_STATUS;
 		}
 		catch (final FileNotFoundException e) {
-			return new Status(IStatus.INFO, getClass().getName(), Messages.get("err.job.mt.not.found"), e);
+			return new Status(IStatus.INFO, getClass().getName(), Messages.get("error.job.mt.not.found"), e);
 		}
 		catch (final IOException e) {
-			return new Status(IStatus.WARNING, getClass().getName(), Messages.get("err.job.mt"), e);
+			return new Status(IStatus.WARNING, getClass().getName(), Messages.get("error.job.mt"), e);
 		}
 		catch (final Exception e) {
-			return new Status(IStatus.ERROR, getClass().getName(), Messages.get("err.job.mt"), e);
+			return new Status(IStatus.ERROR, getClass().getName(), Messages.get("error.job.mt"), e);
 		}
 	}
 

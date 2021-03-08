@@ -23,7 +23,7 @@ public class GeofonUtils {
 	public static final String MOMENT_TENSOR_FILENAME = "mt.txt";
 	private static final String BEACH_BALL_FILENAME = "bb.png";
 
-	private static final String MSG_KEY_ERR_URL_MALFORMED = "err.url.malformed";
+	private static final String MSG_KEY_ERR_URL_MALFORMED = "error.url.malformed";
 
 	public static URI toURI(final String spec) {
 		try {

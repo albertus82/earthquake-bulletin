@@ -94,7 +94,7 @@ public class HtmlBulletinDownloader implements BulletinDownloader {
 			}
 		}
 		catch (final URISyntaxException e) {
-			throw new FetchException(Messages.get("err.job.fetch"), e);
+			throw new FetchException(Messages.get("error.job.fetch"), e);
 		}
 	}
 
@@ -114,7 +114,7 @@ public class HtmlBulletinDownloader implements BulletinDownloader {
 			}
 		}
 		catch (final IOException | RuntimeException e) {
-			throw new FetchException(Messages.get("err.job.fetch"), e);
+			throw new FetchException(Messages.get("error.job.fetch"), e);
 		}
 		try {
 			if (canceled.getAsBoolean()) {
@@ -123,7 +123,7 @@ public class HtmlBulletinDownloader implements BulletinDownloader {
 			return decoder.decode(document);
 		}
 		catch (final RuntimeException e) {
-			throw new DecodeException(Messages.get("err.job.decode"), e);
+			throw new DecodeException(Messages.get("error.job.decode"), e);
 		}
 	}
 

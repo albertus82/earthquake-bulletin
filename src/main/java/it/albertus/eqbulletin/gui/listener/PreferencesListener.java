@@ -52,9 +52,9 @@ public class PreferencesListener extends SelectionAdapter implements Listener {
 			preferences.openDialog(shell);
 		}
 		catch (final IOException e) {
-			final String message = Messages.get("err.preferences.dialog.open");
+			final String message = Messages.get("error.preferences.dialog.open");
 			log.log(Level.WARNING, message, e);
-			EnhancedErrorDialog.openError(shell, Messages.get("lbl.window.title"), message, IStatus.WARNING, e, Images.getAppIconArray());
+			EnhancedErrorDialog.openError(shell, Messages.get("label.window.title"), message, IStatus.WARNING, e, Images.getAppIconArray());
 		}
 
 		// Check if must update texts...
@@ -78,8 +78,8 @@ public class PreferencesListener extends SelectionAdapter implements Listener {
 
 		if (preferences.isRestartRequired()) {
 			final MessageBox messageBox = new MessageBox(shell, SWT.ICON_INFORMATION);
-			messageBox.setText(Messages.get("lbl.window.title"));
-			messageBox.setMessage(Messages.get("lbl.preferences.restart"));
+			messageBox.setText(Messages.get("label.window.title"));
+			messageBox.setMessage(Messages.get("label.preferences.restart"));
 			messageBox.open();
 		}
 	}

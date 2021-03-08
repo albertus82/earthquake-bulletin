@@ -22,7 +22,7 @@ public class AutoRefreshButtonSelectionListener extends SelectionAdapter {
 		if (!checked) {
 			SearchAsyncOperation.cancelCurrentJob();
 			final Button searchButton = form.getSearchButton();
-			searchButton.setText(Messages.get("lbl.form.button.submit"));
+			searchButton.setText(Messages.get("label.form.button.submit"));
 			searchButton.setEnabled(true);
 		}
 	}

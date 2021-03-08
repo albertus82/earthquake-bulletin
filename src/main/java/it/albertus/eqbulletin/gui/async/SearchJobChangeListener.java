@@ -45,7 +45,7 @@ class SearchJobChangeListener extends JobChangeAdapter {
 		new DisplayThreadExecutor(gui.getShell(), ASYNC).execute(() -> {
 			AsyncOperation.setAppStartingCursor(gui.getShell());
 			final Button searchButton = gui.getSearchForm().getSearchButton();
-			searchButton.setText(Messages.get("lbl.form.button.stop"));
+			searchButton.setText(Messages.get("label.form.button.stop"));
 			searchButton.setEnabled(true);
 		});
 	}
@@ -76,7 +76,7 @@ class SearchJobChangeListener extends JobChangeAdapter {
 				}
 				new DisplayThreadExecutor(gui.getShell(), ASYNC).execute(() -> {
 					AsyncOperation.setDefaultCursor(gui.getShell());
-					gui.getSearchForm().getSearchButton().setText(Messages.get("lbl.form.button.submit"));
+					gui.getSearchForm().getSearchButton().setText(Messages.get("label.form.button.submit"));
 				});
 			}
 		}
@@ -129,7 +129,7 @@ class SearchJobChangeListener extends JobChangeAdapter {
 		if (trayIcon != null && !trayIcon.getShell().isDisposed()) {
 			new DisplayThreadExecutor(trayIcon.getShell(), SYNC).execute(() -> {
 				if (trayIcon.getTrayItem() == null || !trayIcon.getTrayItem().getVisible()) { // Show error dialog only if not minimized in the tray.
-					final Window dialog = new EnhancedErrorDialog(trayIcon.getShell(), Messages.get("lbl.window.title"), e.getMessage(), e.getSeverity(), e.getCause() != null ? e.getCause() : e, Images.getAppIconArray());
+					final Window dialog = new EnhancedErrorDialog(trayIcon.getShell(), Messages.get("label.window.title"), e.getMessage(), e.getSeverity(), e.getCause() != null ? e.getCause() : e, Images.getAppIconArray());
 					dialog.setBlockOnOpen(true); // Avoid stacking of error dialogs when auto refresh is enabled.
 					dialog.open();
 				}

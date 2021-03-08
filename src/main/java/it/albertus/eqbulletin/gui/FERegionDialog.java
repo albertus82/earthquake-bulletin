@@ -84,7 +84,7 @@ public class FERegionDialog extends Dialog {
 		catch (final IOException e) {
 			throw new UncheckedIOException(e);
 		}
-		setText(Messages.get("lbl.feregion.dialog.title"));
+		setText(Messages.get("label.feregion.dialog.title"));
 	}
 
 	public FERegionDialog(final Shell parent) {
@@ -104,11 +104,11 @@ public class FERegionDialog extends Dialog {
 		final Group coordinatesGroup = new Group(dialogArea, SWT.NONE);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(coordinatesGroup);
 		GridLayoutFactory.swtDefaults().numColumns(8).applyTo(coordinatesGroup);
-		coordinatesGroup.setText(Messages.get("lbl.feregion.dialog.coordinates"));
+		coordinatesGroup.setText(Messages.get("label.feregion.dialog.coordinates"));
 
 		final Label latitudeLabel = new Label(coordinatesGroup, SWT.NONE);
 		GridDataFactory.swtDefaults().applyTo(latitudeLabel);
-		latitudeLabel.setText(Messages.get("lbl.feregion.dialog.latitude"));
+		latitudeLabel.setText(Messages.get("label.feregion.dialog.latitude"));
 		latitudeSpinner = new Spinner(coordinatesGroup, SWT.BORDER);
 		latitudeSpinner.setDigits(DIGITS);
 		latitudeSpinner.setMinimum(LATITUDE_MIN_VALUE * FACTOR);
@@ -126,7 +126,7 @@ public class FERegionDialog extends Dialog {
 
 		final Label longitudeLabel = new Label(coordinatesGroup, SWT.NONE);
 		GridDataFactory.swtDefaults().applyTo(longitudeLabel);
-		longitudeLabel.setText(Messages.get("lbl.feregion.dialog.longitude"));
+		longitudeLabel.setText(Messages.get("label.feregion.dialog.longitude"));
 		longitudeSpinner = new Spinner(coordinatesGroup, SWT.BORDER);
 		longitudeSpinner.setDigits(DIGITS);
 		longitudeSpinner.setMinimum(LONGITUDE_MIN_VALUE * FACTOR);
@@ -146,11 +146,11 @@ public class FERegionDialog extends Dialog {
 		final Group regionGroup = new Group(dialogArea, SWT.NONE);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(regionGroup);
 		GridLayoutFactory.swtDefaults().numColumns(4).applyTo(regionGroup);
-		regionGroup.setText(Messages.get("lbl.feregion.dialog.region"));
+		regionGroup.setText(Messages.get("label.feregion.dialog.region"));
 
 		final Label regionNumberLabel = new Label(regionGroup, SWT.NONE);
 		GridDataFactory.swtDefaults().applyTo(regionNumberLabel);
-		regionNumberLabel.setText(Messages.get("lbl.feregion.dialog.region.number"));
+		regionNumberLabel.setText(Messages.get("label.feregion.dialog.region.number"));
 
 		regionNumberText = new Text(regionGroup, SWT.READ_ONLY | SWT.BORDER | SWT.RIGHT);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.FILL).grab(false, false).applyTo(regionNumberText);
@@ -159,7 +159,7 @@ public class FERegionDialog extends Dialog {
 
 		final Label regionNameLabel = new Label(regionGroup, SWT.NONE);
 		GridDataFactory.swtDefaults().applyTo(regionNameLabel);
-		regionNameLabel.setText(Messages.get("lbl.feregion.dialog.region.name"));
+		regionNameLabel.setText(Messages.get("label.feregion.dialog.region.name"));
 
 		regionNameText = new Text(regionGroup, SWT.READ_ONLY | SWT.BORDER);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.FILL).grab(true, false).applyTo(regionNameText);
@@ -222,7 +222,7 @@ public class FERegionDialog extends Dialog {
 		final Button closeButton = new Button(buttonBar, SWT.PUSH);
 		final int buttonWidth = SwtUtils.convertHorizontalDLUsToPixels(closeButton, IDialogConstants.BUTTON_WIDTH);
 		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.CENTER).grab(true, false).minSize(buttonWidth, SWT.DEFAULT).applyTo(closeButton);
-		closeButton.setText(Messages.get("lbl.button.close"));
+		closeButton.setText(Messages.get("label.button.close"));
 		closeButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent e) {

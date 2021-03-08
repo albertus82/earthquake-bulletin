@@ -67,16 +67,16 @@ public class BulletinExporter implements IRunnableWithProgress {
 				ModalContext.run(exporter, true, new NullProgressMonitor(), shell.getDisplay());
 			}
 			catch (final InvocationTargetException e) {
-				final String message = Messages.get("err.job.csv.save");
+				final String message = Messages.get("error.job.csv.save");
 				log.log(Level.WARNING, message, e);
 				SwtUtils.unblockShell(shell);
-				EnhancedErrorDialog.openError(shell, Messages.get("lbl.window.title"), message, IStatus.WARNING, e.getCause() != null ? e.getCause() : e, Images.getAppIconArray());
+				EnhancedErrorDialog.openError(shell, Messages.get("label.window.title"), message, IStatus.WARNING, e.getCause() != null ? e.getCause() : e, Images.getAppIconArray());
 			}
 			catch (final Exception e) {
-				final String message = Messages.get("err.job.csv.create");
+				final String message = Messages.get("error.job.csv.create");
 				log.log(Level.SEVERE, message, e);
 				SwtUtils.unblockShell(shell);
-				EnhancedErrorDialog.openError(shell, Messages.get("lbl.window.title"), message, IStatus.ERROR, e, Images.getAppIconArray());
+				EnhancedErrorDialog.openError(shell, Messages.get("label.window.title"), message, IStatus.ERROR, e, Images.getAppIconArray());
 			}
 			finally {
 				SwtUtils.unblockShell(shell);

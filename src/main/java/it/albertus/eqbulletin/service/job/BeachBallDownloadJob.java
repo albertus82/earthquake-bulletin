@@ -38,13 +38,13 @@ public class BeachBallDownloadJob extends Job implements DownloadJob<BeachBall> 
 			return monitor.isCanceled() ? Status.CANCEL_STATUS : Status.OK_STATUS;
 		}
 		catch (final FileNotFoundException e) {
-			return new Status(IStatus.INFO, getClass().getName(), Messages.get("err.job.mtimage.not.found"), e);
+			return new Status(IStatus.INFO, getClass().getName(), Messages.get("error.job.mtimage.not.found"), e);
 		}
 		catch (final IOException e) {
-			return new Status(IStatus.WARNING, getClass().getName(), Messages.get("err.job.mtimage"), e);
+			return new Status(IStatus.WARNING, getClass().getName(), Messages.get("error.job.mtimage"), e);
 		}
 		catch (final Exception e) {
-			return new Status(IStatus.ERROR, getClass().getName(), Messages.get("err.job.mtimage"), e);
+			return new Status(IStatus.ERROR, getClass().getName(), Messages.get("error.job.mtimage"), e);
 		}
 	}
 

@@ -22,7 +22,7 @@ public enum HtmlBulletinVersion {
 	public static final HtmlBulletinVersion DEFAULT = OLD;
 
 	public String getLabel() {
-		return Messages.get("lbl.html.bulletin.version." + name().toLowerCase(), DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(Messages.getLanguage().getLocale()).format(SWITCH_DATETIME));
+		return Messages.get("label.html.bulletin.version." + name().toLowerCase(), DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(Messages.getLanguage().getLocale()).format(SWITCH_DATETIME));
 	}
 
 	public static HtmlBulletinVersion forValue(final String value) {

@@ -38,13 +38,13 @@ public class MapImageDownloadJob extends Job implements DownloadJob<MapImage> {
 			return monitor.isCanceled() ? Status.CANCEL_STATUS : Status.OK_STATUS;
 		}
 		catch (final FileNotFoundException e) {
-			return new Status(IStatus.INFO, getClass().getName(), Messages.get("err.job.map.not.found"), e);
+			return new Status(IStatus.INFO, getClass().getName(), Messages.get("error.job.map.not.found"), e);
 		}
 		catch (final IOException e) {
-			return new Status(IStatus.WARNING, getClass().getName(), Messages.get("err.job.map"), e);
+			return new Status(IStatus.WARNING, getClass().getName(), Messages.get("error.job.map"), e);
 		}
 		catch (final Exception e) {
-			return new Status(IStatus.ERROR, getClass().getName(), Messages.get("err.job.map"), e);
+			return new Status(IStatus.ERROR, getClass().getName(), Messages.get("error.job.map"), e);
 		}
 	}
 

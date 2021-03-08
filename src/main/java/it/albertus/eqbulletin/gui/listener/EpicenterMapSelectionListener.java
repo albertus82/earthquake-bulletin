@@ -31,7 +31,7 @@ public class EpicenterMapSelectionListener extends SelectionAdapter {
 		final Earthquake selection = (Earthquake) tableViewer.getStructuredSelection().getFirstElement();
 		if (selection != null && !tableViewer.getTable().isDisposed()) {
 			final LeafletMapDialog epicenterMapDialog = new LeafletMapDialog(tableViewer.getTable().getShell());
-			epicenterMapDialog.setText(Messages.get("lbl.map.epicenter.title"));
+			epicenterMapDialog.setText(Messages.get("label.map.epicenter.title"));
 			epicenterMapDialog.setImages(Images.getAppIconArray());
 			epicenterMapDialog.getOptions().setZoom(DEFAULT_ZOOM_LEVEL);
 			epicenterMapDialog.getOptions().getControls().put(LeafletMapControl.ZOOM, "");

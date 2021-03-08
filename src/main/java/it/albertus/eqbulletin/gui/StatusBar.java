@@ -49,11 +49,11 @@ public class StatusBar implements IShellProvider, Multilanguage {
 	}
 
 	public void refresh() {
-		final StringBuilder message = new StringBuilder(Messages.get(itemCount == 1 ? "lbl.status.bar.item.count" : "lbl.status.bar.items.count", itemCount));
+		final StringBuilder message = new StringBuilder(Messages.get(itemCount == 1 ? "label.status.bar.item.count" : "label.status.bar.items.count", itemCount));
 		if (lastUpdateTime != null) {
 			final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.FULL).withLocale(getLocale()).withZone(TimeZoneConfig.getZoneId());
 			message.append(SPACER);
-			message.append(Messages.get("lbl.status.bar.last.updated", dateTimeFormatter.format(lastUpdateTime)));
+			message.append(Messages.get("label.status.bar.last.updated", dateTimeFormatter.format(lastUpdateTime)));
 		}
 		manager.setMessage(message.toString());
 	}
@@ -72,7 +72,7 @@ public class StatusBar implements IShellProvider, Multilanguage {
 						if (f2.getName().toLowerCase().contains("copy") && MenuItem.class.isAssignableFrom(f2.getType())) {
 							f2.setAccessible(true);
 							final MenuItem copyMenuItem = (MenuItem) f2.get(statusLine);
-							copyMenuItem.setText(Messages.get("lbl.menu.item.copy"));
+							copyMenuItem.setText(Messages.get("label.menu.item.copy"));
 						}
 					}
 				}

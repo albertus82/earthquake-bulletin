@@ -95,7 +95,7 @@ public class MapCanvas implements IShellProvider, Multilanguage {
 		final Menu contextMenu = new Menu(canvas);
 
 		zoomMenuItem = new MenuItem(contextMenu, SWT.CASCADE);
-		zoomMenuItem.setData("lbl.menu.item.zoom");
+		zoomMenuItem.setData("label.menu.item.zoom");
 		zoomMenuItem.setText(Messages.get(zoomMenuItem.getData().toString()));
 
 		final Menu zoomSubMenu = new Menu(zoomMenuItem);
@@ -104,7 +104,7 @@ public class MapCanvas implements IShellProvider, Multilanguage {
 		for (final int level : zoomLevels) {
 			final MenuItem item = new MenuItem(zoomSubMenu, SWT.RADIO);
 			zoomSubMenuItems.put(level, item);
-			item.setData("lbl.menu.item.zoom." + (level == AUTO_SCALE ? "auto" : "custom"));
+			item.setData("label.menu.item.zoom." + (level == AUTO_SCALE ? "auto" : "custom"));
 			item.setText(Messages.get(item.getData().toString(), level));
 			item.addSelectionListener(new SelectionAdapter() {
 				@Override
@@ -129,7 +129,7 @@ public class MapCanvas implements IShellProvider, Multilanguage {
 		new MenuItem(contextMenu, SWT.SEPARATOR);
 
 		downloadMenuItem = new MenuItem(contextMenu, SWT.PUSH);
-		downloadMenuItem.setData("lbl.menu.item.save.map");
+		downloadMenuItem.setData("label.menu.item.save.map");
 		downloadMenuItem.setText(Messages.get(downloadMenuItem.getData().toString()));
 		downloadMenuItem.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -335,9 +335,9 @@ public class MapCanvas implements IShellProvider, Multilanguage {
 					Files.write(Paths.get(fileName), mapImage.getBytes());
 				}
 				catch (final Exception e) {
-					final String message = Messages.get("err.image.save", fileName);
+					final String message = Messages.get("error.image.save", fileName);
 					log.log(Level.WARNING, message, e);
-					EnhancedErrorDialog.openError(canvas.getShell(), Messages.get("lbl.window.title"), message, IStatus.WARNING, e, Images.getAppIconArray());
+					EnhancedErrorDialog.openError(canvas.getShell(), Messages.get("label.window.title"), message, IStatus.WARNING, e, Images.getAppIconArray());
 				}
 			}
 		}

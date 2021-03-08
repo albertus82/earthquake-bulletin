@@ -9,13 +9,13 @@ import lombok.Getter;
 @Getter
 abstract class AbstractMenu implements Multilanguage {
 
-	protected static final String LBL_MENU_ITEM_COPY_LINK = "lbl.menu.item.copy.link";
-	protected static final String LBL_MENU_ITEM_EXPORT_CSV = "lbl.menu.item.export.csv";
-	protected static final String LBL_MENU_ITEM_GOOGLE_MAPS_BROWSER = "lbl.menu.item.google.maps.browser";
-	protected static final String LBL_MENU_ITEM_EPICENTER_MAP_POPUP = "lbl.menu.item.epicenter.map.popup";
-	protected static final String LBL_MENU_ITEM_OPEN_BROWSER = "lbl.menu.item.open.browser";
-	protected static final String LBL_MENU_ITEM_SHOW_MAP = "lbl.menu.item.show.map";
-	protected static final String LBL_MENU_ITEM_SHOW_MOMENT_TENSOR = "lbl.menu.item.show.moment.tensor";
+	protected static final String LBL_MENU_ITEM_COPY_LINK = "label.menu.item.copy.link";
+	protected static final String LBL_MENU_ITEM_EXPORT_CSV = "label.menu.item.export.csv";
+	protected static final String LBL_MENU_ITEM_GOOGLE_MAPS_BROWSER = "label.menu.item.google.maps.browser";
+	protected static final String LBL_MENU_ITEM_EPICENTER_MAP_POPUP = "label.menu.item.epicenter.map.popup";
+	protected static final String LBL_MENU_ITEM_OPEN_BROWSER = "label.menu.item.open.browser";
+	protected static final String LBL_MENU_ITEM_SHOW_MAP = "label.menu.item.show.map";
+	protected static final String LBL_MENU_ITEM_SHOW_MOMENT_TENSOR = "label.menu.item.show.moment.tensor";
 
 	protected MenuItem copyLinkMenuItem;
 	protected MenuItem exportCsvMenuItem;

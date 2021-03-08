@@ -87,7 +87,7 @@ public class AboutDialog extends Dialog {
 
 	public AboutDialog(@NonNull final Shell parent, final int style) {
 		super(parent, style);
-		this.setText(Messages.get("lbl.about.title"));
+		this.setText(Messages.get("label.about.title"));
 	}
 
 	public void open() {
@@ -138,11 +138,11 @@ public class AboutDialog extends Dialog {
 			log.log(Level.WARNING, "Invalid version date:", e);
 			versionDate = new Date();
 		}
-		appNameLink.setText(buildAnchor(Messages.get("project.url"), Messages.get("msg.application.name")));
+		appNameLink.setText(buildAnchor(Messages.get("message.project.url"), Messages.get("message.application.name")));
 		appNameLink.addSelectionListener(linkSelectionListener);
 
 		final Label appVersionLabel = new Label(headerComposite, SWT.NONE);
-		appVersionLabel.setText(Messages.get("msg.version", Version.getNumber(), DateFormat.getDateInstance(DateFormat.MEDIUM, Messages.getLanguage().getLocale()).format(versionDate)));
+		appVersionLabel.setText(Messages.get("message.version", Version.getNumber(), DateFormat.getDateInstance(DateFormat.MEDIUM, Messages.getLanguage().getLocale()).format(versionDate)));
 		if (!fontRegistry.hasValueFor(SYM_NAME_FONT_DEFAULT)) {
 			fontRegistry.put(SYM_NAME_FONT_DEFAULT, appVersionLabel.getFont().getFontData());
 		}
@@ -151,26 +151,26 @@ public class AboutDialog extends Dialog {
 
 		final Group acknowledgementsGroup = new Group(shell, SWT.NONE);
 		acknowledgementsGroup.setForeground(acknowledgementsGroup.getDisplay().getSystemColor(SWT.COLOR_WIDGET_DARK_SHADOW));
-		acknowledgementsGroup.setText(Messages.get("lbl.about.acknowledgements"));
+		acknowledgementsGroup.setText(Messages.get("label.about.acknowledgements"));
 		GridDataFactory.swtDefaults().grab(true, false).applyTo(acknowledgementsGroup);
 		GridLayoutFactory.swtDefaults().applyTo(acknowledgementsGroup);
 
 		final Link acknowledgementsLocationsLink = new Link(acknowledgementsGroup, SWT.WRAP);
 		GridDataFactory.swtDefaults().grab(true, false).applyTo(acknowledgementsLocationsLink);
-		acknowledgementsLocationsLink.setText(Messages.get("lbl.about.acknowledgements.locations", buildAnchor(Messages.get("url.geofon"), Messages.get("lbl.geofon")), buildAnchor(Messages.get("url.gfz"), Messages.get("lbl.gfz")), buildAnchor(Messages.get("url.gevn"), Messages.get("lbl.gevn"))));
+		acknowledgementsLocationsLink.setText(Messages.get("label.about.acknowledgements.locations", buildAnchor(Messages.get("message.geofon.url"), Messages.get("label.geofon")), buildAnchor(Messages.get("message.gfz.url"), Messages.get("label.gfz")), buildAnchor(Messages.get("message.gevn.url"), Messages.get("label.gevn"))));
 		acknowledgementsLocationsLink.addSelectionListener(linkSelectionListener);
 
 		addInvisibleSeparator(acknowledgementsGroup);
 
 		final Label acknowledgementsDataLabel = new Label(acknowledgementsGroup, SWT.WRAP);
 		GridDataFactory.swtDefaults().grab(true, false).applyTo(acknowledgementsDataLabel);
-		acknowledgementsDataLabel.setText(Messages.get("lbl.about.acknowledgements.data", Messages.get("lbl.geofon"), Messages.get("lbl.gfz")));
+		acknowledgementsDataLabel.setText(Messages.get("label.about.acknowledgements.data", Messages.get("label.geofon"), Messages.get("label.gfz")));
 
 		addInvisibleSeparator(shell);
 
 		final Link appLicenseLink = new Link(shell, SWT.WRAP);
 		GridDataFactory.swtDefaults().grab(true, false).applyTo(appLicenseLink);
-		appLicenseLink.setText(Messages.get("lbl.about.license", buildAnchor(Messages.get("url.gpl"), Messages.get("lbl.gpl"))));
+		appLicenseLink.setText(Messages.get("label.about.license", buildAnchor(Messages.get("message.gpl.url"), Messages.get("label.gpl"))));
 		appLicenseLink.addSelectionListener(linkSelectionListener);
 
 		appLicenseText = new Text(shell, SWT.BORDER | SWT.V_SCROLL);
@@ -183,7 +183,7 @@ public class AboutDialog extends Dialog {
 
 		final Label thirdPartySoftwareLabel = new Label(shell, SWT.WRAP);
 		GridDataFactory.swtDefaults().grab(true, false).applyTo(thirdPartySoftwareLabel);
-		thirdPartySoftwareLabel.setText(Messages.get("lbl.about.thirdparty"));
+		thirdPartySoftwareLabel.setText(Messages.get("label.about.3rdparty"));
 
 		thirdPartyScrolledComposite = new ScrolledComposite(shell, SWT.V_SCROLL | SWT.H_SCROLL);
 		thirdPartyScrolledComposite.setLayout(new FillLayout());
@@ -194,7 +194,7 @@ public class AboutDialog extends Dialog {
 		GridDataFactory.fillDefaults().grab(true, true).hint(SWT.DEFAULT, SwtUtils.convertVerticalDLUsToPixels(thirdPartyScrolledComposite, SCROLLABLE_VERTICAL_SIZE_DLUS)).applyTo(thirdPartyScrolledComposite);
 
 		final Button okButton = new Button(shell, SWT.PUSH);
-		okButton.setText(Messages.get("lbl.button.ok"));
+		okButton.setText(Messages.get("label.button.ok"));
 		final int buttonWidth = SwtUtils.convertHorizontalDLUsToPixels(okButton, IDialogConstants.BUTTON_WIDTH);
 		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.CENTER).grab(true, false).minSize(buttonWidth, SWT.DEFAULT).applyTo(okButton);
 		okButton.setFocus();
@@ -278,18 +278,18 @@ public class AboutDialog extends Dialog {
 			table.setHeaderVisible(true);
 
 			final TableViewerColumn nameColumn = new TableViewerColumn(tableViewer, SWT.NONE);
-			nameColumn.getColumn().setText(Messages.get("lbl.about.thirdparty.name"));
+			nameColumn.getColumn().setText(Messages.get("label.about.3rdparty.name"));
 			nameColumn.setLabelProvider(new TextColumnLabelProvider(ThirdPartySoftware::getName));
 
 			final TableViewerColumn authorColumn = new TableViewerColumn(tableViewer, SWT.NONE);
-			authorColumn.getColumn().setText(Messages.get("lbl.about.thirdparty.author"));
+			authorColumn.getColumn().setText(Messages.get("label.about.3rdparty.author"));
 			authorColumn.setLabelProvider(new TextColumnLabelProvider(ThirdPartySoftware::getAuthor));
 
 			final TableViewerColumn licenseColumn = new TableViewerColumn(tableViewer, SWT.NONE);
-			licenseColumn.setLabelProvider(new LinkStyledCellLabelProvider(Messages.get("lbl.about.thirdparty.license"), ThirdPartySoftware::getLicenseUri));
+			licenseColumn.setLabelProvider(new LinkStyledCellLabelProvider(Messages.get("label.about.3rdparty.license"), ThirdPartySoftware::getLicenseUri));
 
 			final TableViewerColumn homePageColumn = new TableViewerColumn(tableViewer, SWT.NONE);
-			homePageColumn.setLabelProvider(new LinkStyledCellLabelProvider(Messages.get("lbl.about.thirdparty.homepage"), ThirdPartySoftware::getHomePageUri));
+			homePageColumn.setLabelProvider(new LinkStyledCellLabelProvider(Messages.get("label.about.3rdparty.homepage"), ThirdPartySoftware::getHomePageUri));
 
 			tableViewer.add(ThirdPartySoftware.loadFromProperties().toArray());
 

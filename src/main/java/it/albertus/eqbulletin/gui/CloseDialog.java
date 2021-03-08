@@ -21,8 +21,8 @@ public class CloseDialog {
 
 	private CloseDialog(final Shell shell) {
 		messageBox = new MessageBox(shell, SWT.YES | SWT.NO | SWT.ICON_QUESTION);
-		messageBox.setText(Messages.get("msg.confirm.close.text"));
-		messageBox.setMessage(Messages.get("msg.confirm.close.message"));
+		messageBox.setText(Messages.get("message.confirm.close.text"));
+		messageBox.setMessage(Messages.get("message.confirm.close.message"));
 	}
 
 	public static int open(final Shell shell) {

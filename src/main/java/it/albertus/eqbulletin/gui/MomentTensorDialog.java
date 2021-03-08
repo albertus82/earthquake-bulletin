@@ -85,8 +85,8 @@ public class MomentTensorDialog extends Dialog {
 				log.log(Level.FINE, "Moment tensor dialog limit reached ({0}). Sending alert to the user...", maxDialogs);
 				removeInstance();
 				final MessageBox mb = new MessageBox(getParent(), SWT.ICON_WARNING);
-				mb.setText(Messages.get("err.mt.too.many.dialogs.title"));
-				mb.setMessage(Messages.get("err.mt.too.many.dialogs.text"));
+				mb.setText(Messages.get("error.mt.too.many.dialogs.title"));
+				mb.setMessage(Messages.get("error.mt.too.many.dialogs.text"));
 				mb.open();
 			}
 		}
@@ -149,7 +149,7 @@ public class MomentTensorDialog extends Dialog {
 		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.CENTER).grab(true, false).applyTo(buttonComposite);
 
 		final Button closeButton = new Button(buttonComposite, SWT.PUSH);
-		closeButton.setText(JFaceMessages.get("lbl.button.close"));
+		closeButton.setText(JFaceMessages.get("label.button.close"));
 		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.FILL).grab(true, false).minSize(SwtUtils.convertHorizontalDLUsToPixels(closeButton, IDialogConstants.BUTTON_WIDTH), SWT.DEFAULT).applyTo(closeButton);
 		closeButton.addSelectionListener(new SelectionAdapter() {
 			@Override
