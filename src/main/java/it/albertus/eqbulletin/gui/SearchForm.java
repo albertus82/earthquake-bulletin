@@ -47,7 +47,6 @@ import it.albertus.eqbulletin.gui.preference.Preference;
 import it.albertus.eqbulletin.model.Format;
 import it.albertus.eqbulletin.resources.Leaflet;
 import it.albertus.eqbulletin.resources.Messages;
-import it.albertus.jface.JFaceMessages;
 import it.albertus.jface.Multilanguage;
 import it.albertus.jface.SwtUtils;
 import it.albertus.jface.decoration.ControlValidatorDecoration;
@@ -91,9 +90,9 @@ public class SearchForm implements IShellProvider, Multilanguage {
 
 	private static final byte CDATETIME_INDENT_RIGHT = 3;
 
-	private static final String MSG_KEY_ERR_INTEGER_MIN = "error.preferences.integer.min";
-	private static final String MSG_KEY_ERR_INTEGER_RANGE = "error.preferences.integer.range";
-	private static final String MSG_KEY_ERR_DECIMAL_RANGE = "error.preferences.decimal.range";
+	private static final String ERROR_FORM_INTEGER_MIN = "error.form.integer.min";
+	private static final String ERROR_FORM_INTEGER_RANGE = "error.form.integer.range";
+	private static final String ERROR_FORM_DECIMAL_RANGE = "error.form.decimal.range";
 
 	@NoArgsConstructor(access = AccessLevel.PRIVATE)
 	public static class Defaults {
@@ -331,31 +330,31 @@ public class SearchForm implements IShellProvider, Multilanguage {
 
 		// Decorators
 		ControlValidator<Text> validator = new FloatTextValidator(latitudeFromText, true, LATITUDE_MIN_VALUE, LATITUDE_MAX_VALUE);
-		new FormControlValidatorDecoration(validator, () -> JFaceMessages.get(MSG_KEY_ERR_DECIMAL_RANGE, LATITUDE_MIN_VALUE, LATITUDE_MAX_VALUE));
+		new FormControlValidatorDecoration(validator, () -> Messages.get(ERROR_FORM_DECIMAL_RANGE, LATITUDE_MIN_VALUE, LATITUDE_MAX_VALUE));
 		validators.add(validator);
 
 		validator = new FloatTextValidator(latitudeToText, true, LATITUDE_MIN_VALUE, LATITUDE_MAX_VALUE);
-		new FormControlValidatorDecoration(validator, () -> JFaceMessages.get(MSG_KEY_ERR_DECIMAL_RANGE, LATITUDE_MIN_VALUE, LATITUDE_MAX_VALUE));
+		new FormControlValidatorDecoration(validator, () -> Messages.get(ERROR_FORM_DECIMAL_RANGE, LATITUDE_MIN_VALUE, LATITUDE_MAX_VALUE));
 		validators.add(validator);
 
 		validator = new FloatTextValidator(longitudeFromText, true, LONGITUDE_MIN_VALUE, LONGITUDE_MAX_VALUE);
-		new FormControlValidatorDecoration(validator, () -> JFaceMessages.get(MSG_KEY_ERR_DECIMAL_RANGE, LONGITUDE_MIN_VALUE, LONGITUDE_MAX_VALUE));
+		new FormControlValidatorDecoration(validator, () -> Messages.get(ERROR_FORM_DECIMAL_RANGE, LONGITUDE_MIN_VALUE, LONGITUDE_MAX_VALUE));
 		validators.add(validator);
 
 		validator = new FloatTextValidator(longitudeToText, true, LONGITUDE_MIN_VALUE, LONGITUDE_MAX_VALUE);
-		new FormControlValidatorDecoration(validator, () -> JFaceMessages.get(MSG_KEY_ERR_DECIMAL_RANGE, LONGITUDE_MIN_VALUE, LONGITUDE_MAX_VALUE));
+		new FormControlValidatorDecoration(validator, () -> Messages.get(ERROR_FORM_DECIMAL_RANGE, LONGITUDE_MIN_VALUE, LONGITUDE_MAX_VALUE));
 		validators.add(validator);
 
 		validator = new FloatTextValidator(minimumMagnitudeText, true, MAGNITUDE_MIN_VALUE, MAGNITUDE_MAX_VALUE);
-		new FormControlValidatorDecoration(validator, () -> JFaceMessages.get(MSG_KEY_ERR_DECIMAL_RANGE, MAGNITUDE_MIN_VALUE, MAGNITUDE_MAX_VALUE));
+		new FormControlValidatorDecoration(validator, () -> Messages.get(ERROR_FORM_DECIMAL_RANGE, MAGNITUDE_MIN_VALUE, MAGNITUDE_MAX_VALUE));
 		validators.add(validator);
 
 		validator = new IntegerTextValidator(resultsText, true, RESULTS_MIN_VALUE, RESULTS_MAX_VALUE);
-		new FormControlValidatorDecoration(validator, () -> JFaceMessages.get(MSG_KEY_ERR_INTEGER_RANGE, RESULTS_MIN_VALUE, RESULTS_MAX_VALUE));
+		new FormControlValidatorDecoration(validator, () -> Messages.get(ERROR_FORM_INTEGER_RANGE, RESULTS_MIN_VALUE, RESULTS_MAX_VALUE));
 		validators.add(validator);
 
 		validator = new IntegerTextValidator(autoRefreshText, true, AUTOREFRESH_MIN_VALUE, null);
-		new ControlValidatorDecoration(validator, () -> JFaceMessages.get(MSG_KEY_ERR_INTEGER_MIN, AUTOREFRESH_MIN_VALUE));
+		new ControlValidatorDecoration(validator, () -> Messages.get(ERROR_FORM_INTEGER_MIN, AUTOREFRESH_MIN_VALUE));
 		validators.add(validator);
 
 		// Text modify listeners

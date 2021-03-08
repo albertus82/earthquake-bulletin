@@ -28,7 +28,6 @@ import it.albertus.eqbulletin.gui.preference.Preference;
 import it.albertus.eqbulletin.model.Earthquake;
 import it.albertus.eqbulletin.model.MomentTensor;
 import it.albertus.eqbulletin.resources.Messages;
-import it.albertus.jface.JFaceMessages;
 import it.albertus.jface.SwtUtils;
 import it.albertus.jface.closeable.CloseableResource;
 import it.albertus.jface.preference.IPreferencesConfiguration;
@@ -149,7 +148,7 @@ public class MomentTensorDialog extends Dialog {
 		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.CENTER).grab(true, false).applyTo(buttonComposite);
 
 		final Button closeButton = new Button(buttonComposite, SWT.PUSH);
-		closeButton.setText(JFaceMessages.get("label.button.close"));
+		closeButton.setText(Messages.get("label.button.close"));
 		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.FILL).grab(true, false).minSize(SwtUtils.convertHorizontalDLUsToPixels(closeButton, IDialogConstants.BUTTON_WIDTH), SWT.DEFAULT).applyTo(closeButton);
 		closeButton.addSelectionListener(new SelectionAdapter() {
 			@Override
