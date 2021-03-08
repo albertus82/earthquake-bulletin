@@ -78,6 +78,8 @@ public class AboutDialog extends Dialog {
 	private static final String SYM_NAME_FONT_APPNAME = AboutDialog.class.getName() + ".appname";
 	private static final String SYM_NAME_FONT_DEFAULT = AboutDialog.class.getName() + ".default";
 
+	private final LinkSelectionListener linkSelectionListener = new LinkSelectionListener();
+
 	private Text appLicenseText;
 	private ScrolledComposite thirdPartyScrolledComposite;
 
@@ -102,69 +104,9 @@ public class AboutDialog extends Dialog {
 	private void createContents(@NonNull final Shell shell) {
 		GridLayoutFactory.swtDefaults().applyTo(shell);
 
-		final Composite headerComposite = new Composite(shell, SWT.NONE);
-		GridDataFactory.swtDefaults().applyTo(headerComposite);
-		GridLayoutFactory.swtDefaults().numColumns(2).applyTo(headerComposite);
+		createHeaderComposite(shell, GridDataFactory.swtDefaults().create());
 
-		final Label iconLabel = new Label(headerComposite, SWT.NONE);
-		GridDataFactory.swtDefaults().span(1, 2).grab(true, false).applyTo(iconLabel);
-		for (final Entry<Rectangle, Image> entry : Images.getAppIconMap().entrySet()) {
-			final int pixels = SwtUtils.convertVerticalDLUsToPixels(iconLabel, ICON_VERTICAL_SIZE_DLUS);
-			if (entry.getKey().height <= pixels) {
-				log.log(Level.FINE, "{0} DLUs -> {1} pixels -> {2}", new Object[] { ICON_VERTICAL_SIZE_DLUS, pixels, entry });
-				iconLabel.setImage(entry.getValue());
-				break;
-			}
-		}
-
-		final LinkSelectionListener linkSelectionListener = new LinkSelectionListener();
-
-		final Link appNameLink = new Link(headerComposite, SWT.WRAP);
-		final FontRegistry fontRegistry = JFaceResources.getFontRegistry();
-		if (!fontRegistry.hasValueFor(SYM_NAME_FONT_APPNAME)) {
-			final FontData[] fontData = appNameLink.getFont().getFontData();
-			for (final FontData fd : fontData) {
-				fd.setHeight(Math.round(fd.getHeight() * TITLE_FONT_SIZE_MULTIPLIER));
-			}
-			fontRegistry.put(SYM_NAME_FONT_APPNAME, fontData);
-		}
-		appNameLink.setFont(fontRegistry.getBold(SYM_NAME_FONT_APPNAME));
-		GridDataFactory.swtDefaults().grab(true, false).applyTo(appNameLink);
-		Date versionDate;
-		try {
-			versionDate = Version.getDate();
-		}
-		catch (final ParseException e) {
-			log.log(Level.WARNING, "Invalid version date:", e);
-			versionDate = new Date();
-		}
-		appNameLink.setText(buildAnchor(Messages.get("message.project.url"), Messages.get("message.application.name")));
-		appNameLink.addSelectionListener(linkSelectionListener);
-
-		final Label appVersionLabel = new Label(headerComposite, SWT.NONE);
-		appVersionLabel.setText(Messages.get("message.version", Version.getNumber(), DateFormat.getDateInstance(DateFormat.MEDIUM, Messages.getLanguage().getLocale()).format(versionDate)));
-		if (!fontRegistry.hasValueFor(SYM_NAME_FONT_DEFAULT)) {
-			fontRegistry.put(SYM_NAME_FONT_DEFAULT, appVersionLabel.getFont().getFontData());
-		}
-		appVersionLabel.setFont(fontRegistry.getBold(SYM_NAME_FONT_DEFAULT));
-		GridDataFactory.swtDefaults().grab(true, false).applyTo(appVersionLabel);
-
-		final Group acknowledgementsGroup = new Group(shell, SWT.NONE);
-		acknowledgementsGroup.setForeground(acknowledgementsGroup.getDisplay().getSystemColor(SWT.COLOR_WIDGET_DARK_SHADOW));
-		acknowledgementsGroup.setText(Messages.get("label.about.acknowledgements"));
-		GridDataFactory.swtDefaults().grab(true, false).applyTo(acknowledgementsGroup);
-		GridLayoutFactory.swtDefaults().applyTo(acknowledgementsGroup);
-
-		final Link acknowledgementsLocationsLink = new Link(acknowledgementsGroup, SWT.WRAP);
-		GridDataFactory.swtDefaults().grab(true, false).applyTo(acknowledgementsLocationsLink);
-		acknowledgementsLocationsLink.setText(Messages.get("label.about.acknowledgements.locations", buildAnchor(Messages.get("message.geofon.url"), Messages.get("label.geofon")), buildAnchor(Messages.get("message.gfz.url"), Messages.get("label.gfz")), buildAnchor(Messages.get("message.gevn.url"), Messages.get("label.gevn"))));
-		acknowledgementsLocationsLink.addSelectionListener(linkSelectionListener);
-
-		addInvisibleSeparator(acknowledgementsGroup);
-
-		final Label acknowledgementsDataLabel = new Label(acknowledgementsGroup, SWT.WRAP);
-		GridDataFactory.swtDefaults().grab(true, false).applyTo(acknowledgementsDataLabel);
-		acknowledgementsDataLabel.setText(Messages.get("label.about.acknowledgements.data", Messages.get("label.geofon"), Messages.get("label.gfz")));
+		createAcknowledgementsGroup(shell, GridDataFactory.swtDefaults().grab(true, false).create());
 
 		addInvisibleSeparator(shell);
 
@@ -205,6 +147,76 @@ public class AboutDialog extends Dialog {
 			}
 		});
 		shell.setDefaultButton(okButton);
+	}
+
+	private void createHeaderComposite(@NonNull final Composite parent, final Object layoutData) {
+		final Composite headerComposite = new Composite(parent, SWT.NONE);
+		if (layoutData != null) {
+			headerComposite.setLayoutData(layoutData);
+		}
+		GridLayoutFactory.swtDefaults().numColumns(2).applyTo(headerComposite);
+
+		final Label iconLabel = new Label(headerComposite, SWT.NONE);
+		GridDataFactory.swtDefaults().span(1, 2).grab(true, false).applyTo(iconLabel);
+		for (final Entry<Rectangle, Image> entry : Images.getAppIconMap().entrySet()) {
+			final int pixels = SwtUtils.convertVerticalDLUsToPixels(iconLabel, ICON_VERTICAL_SIZE_DLUS);
+			if (entry.getKey().height <= pixels) {
+				log.log(Level.FINE, "{0} DLUs -> {1} pixels -> {2}", new Object[] { ICON_VERTICAL_SIZE_DLUS, pixels, entry });
+				iconLabel.setImage(entry.getValue());
+				break;
+			}
+		}
+
+		final Link appNameLink = new Link(headerComposite, SWT.WRAP);
+		final FontRegistry fontRegistry = JFaceResources.getFontRegistry();
+		if (!fontRegistry.hasValueFor(SYM_NAME_FONT_APPNAME)) {
+			final FontData[] fontData = appNameLink.getFont().getFontData();
+			for (final FontData fd : fontData) {
+				fd.setHeight(Math.round(fd.getHeight() * TITLE_FONT_SIZE_MULTIPLIER));
+			}
+			fontRegistry.put(SYM_NAME_FONT_APPNAME, fontData);
+		}
+		appNameLink.setFont(fontRegistry.getBold(SYM_NAME_FONT_APPNAME));
+		GridDataFactory.swtDefaults().grab(true, false).applyTo(appNameLink);
+		Date versionDate;
+		try {
+			versionDate = Version.getDate();
+		}
+		catch (final ParseException e) {
+			log.log(Level.WARNING, "Invalid version date:", e);
+			versionDate = new Date();
+		}
+		appNameLink.setText(buildAnchor(Messages.get("message.project.url"), Messages.get("message.application.name")));
+		appNameLink.addSelectionListener(linkSelectionListener);
+
+		final Label appVersionLabel = new Label(headerComposite, SWT.NONE);
+		appVersionLabel.setText(Messages.get("message.version", Version.getNumber(), DateFormat.getDateInstance(DateFormat.MEDIUM, Messages.getLanguage().getLocale()).format(versionDate)));
+		if (!fontRegistry.hasValueFor(SYM_NAME_FONT_DEFAULT)) {
+			fontRegistry.put(SYM_NAME_FONT_DEFAULT, appVersionLabel.getFont().getFontData());
+		}
+		appVersionLabel.setFont(fontRegistry.getBold(SYM_NAME_FONT_DEFAULT));
+		GridDataFactory.swtDefaults().grab(true, false).applyTo(appVersionLabel);
+	}
+
+	private void createAcknowledgementsGroup(@NonNull final Composite parent, final Object layoutData) {
+		final Group acknowledgementsGroup = new Group(parent, SWT.NONE);
+		if (layoutData != null) {
+			acknowledgementsGroup.setLayoutData(layoutData);
+		}
+		acknowledgementsGroup.setForeground(acknowledgementsGroup.getDisplay().getSystemColor(SWT.COLOR_WIDGET_DARK_SHADOW));
+		acknowledgementsGroup.setText(Messages.get("label.about.acknowledgements"));
+		GridLayoutFactory.swtDefaults().applyTo(acknowledgementsGroup);
+
+		final Link acknowledgementsLocationsLink = new Link(acknowledgementsGroup, SWT.WRAP);
+		GridDataFactory.swtDefaults().grab(true, false).applyTo(acknowledgementsLocationsLink);
+		acknowledgementsLocationsLink.setText(Messages.get("label.about.acknowledgements.locations", buildAnchor(Messages.get("message.geofon.url"), Messages.get("label.geofon")), buildAnchor(Messages.get("message.gfz.url"), Messages.get("label.gfz")), buildAnchor(Messages.get("message.gevn.url"), Messages.get("label.gevn"))));
+		acknowledgementsLocationsLink.addSelectionListener(linkSelectionListener);
+
+		addInvisibleSeparator(acknowledgementsGroup);
+
+		final Label acknowledgementsDataLabel = new Label(acknowledgementsGroup, SWT.WRAP);
+		GridDataFactory.swtDefaults().grab(true, false).applyTo(acknowledgementsDataLabel);
+		acknowledgementsDataLabel.setText(Messages.get("label.about.acknowledgements.data", Messages.get("label.geofon"), Messages.get("label.gfz")));
 	}
 
 	private void constrainShellSize(@NonNull final Shell shell) {
