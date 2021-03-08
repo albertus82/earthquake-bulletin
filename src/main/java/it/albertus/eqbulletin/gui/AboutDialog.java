@@ -77,6 +77,9 @@ public class AboutDialog extends Dialog {
 	private static final String SYM_NAME_FONT_APPNAME = AboutDialog.class.getName() + ".appname";
 	private static final String SYM_NAME_FONT_DEFAULT = AboutDialog.class.getName() + ".default";
 
+	private Text appLicenseText;
+	private ScrolledComposite thirdPartyScrolledComposite;
+
 	public AboutDialog(@NonNull final Shell parent) {
 		this(parent, SWT.SHEET | SWT.RESIZE);
 	}
@@ -98,34 +101,34 @@ public class AboutDialog extends Dialog {
 	private void createContents(@NonNull final Shell shell) {
 		GridLayoutFactory.swtDefaults().applyTo(shell);
 
-		final Composite header = new Composite(shell, SWT.NONE);
-		GridDataFactory.swtDefaults().applyTo(header);
-		GridLayoutFactory.swtDefaults().numColumns(2).applyTo(header);
+		final Composite headerComposite = new Composite(shell, SWT.NONE);
+		GridDataFactory.swtDefaults().applyTo(headerComposite);
+		GridLayoutFactory.swtDefaults().numColumns(2).applyTo(headerComposite);
 
-		final Label icon = new Label(header, SWT.NONE);
-		GridDataFactory.swtDefaults().span(1, 2).grab(true, false).applyTo(icon);
+		final Label iconLabel = new Label(headerComposite, SWT.NONE);
+		GridDataFactory.swtDefaults().span(1, 2).grab(true, false).applyTo(iconLabel);
 		for (final Entry<Rectangle, Image> entry : Images.getAppIconMap().entrySet()) {
-			final int pixels = SwtUtils.convertVerticalDLUsToPixels(icon, ICON_VERTICAL_SIZE_DLUS);
+			final int pixels = SwtUtils.convertVerticalDLUsToPixels(iconLabel, ICON_VERTICAL_SIZE_DLUS);
 			if (entry.getKey().height <= pixels) {
 				log.log(Level.FINE, "{0} DLUs -> {1} pixels -> {2}", new Object[] { ICON_VERTICAL_SIZE_DLUS, pixels, entry });
-				icon.setImage(entry.getValue());
+				iconLabel.setImage(entry.getValue());
 				break;
 			}
 		}
 
 		final LinkSelectionListener linkSelectionListener = new LinkSelectionListener();
 
-		final Link appName = new Link(header, SWT.WRAP);
+		final Link appNameLink = new Link(headerComposite, SWT.WRAP);
 		final FontRegistry fontRegistry = JFaceResources.getFontRegistry();
 		if (!fontRegistry.hasValueFor(SYM_NAME_FONT_APPNAME)) {
-			final FontData[] fontData = appName.getFont().getFontData();
+			final FontData[] fontData = appNameLink.getFont().getFontData();
 			for (final FontData fd : fontData) {
 				fd.setHeight(Math.round(fd.getHeight() * TITLE_FONT_SIZE_MULTIPLIER));
 			}
 			fontRegistry.put(SYM_NAME_FONT_APPNAME, fontData);
 		}
-		appName.setFont(fontRegistry.getBold(SYM_NAME_FONT_APPNAME));
-		GridDataFactory.swtDefaults().grab(true, false).applyTo(appName);
+		appNameLink.setFont(fontRegistry.getBold(SYM_NAME_FONT_APPNAME));
+		GridDataFactory.swtDefaults().grab(true, false).applyTo(appNameLink);
 		Date versionDate;
 		try {
 			versionDate = Version.getDate();
@@ -134,42 +137,42 @@ public class AboutDialog extends Dialog {
 			log.log(Level.WARNING, "Invalid version date:", e);
 			versionDate = new Date();
 		}
-		appName.setText(buildAnchor(Messages.get("project.url"), Messages.get("msg.application.name")));
-		appName.addSelectionListener(linkSelectionListener);
+		appNameLink.setText(buildAnchor(Messages.get("project.url"), Messages.get("msg.application.name")));
+		appNameLink.addSelectionListener(linkSelectionListener);
 
-		final Label appVersion = new Label(header, SWT.NONE);
-		appVersion.setText(Messages.get("msg.version", Version.getNumber(), DateFormat.getDateInstance(DateFormat.MEDIUM, Messages.getLanguage().getLocale()).format(versionDate)));
+		final Label appVersionLabel = new Label(headerComposite, SWT.NONE);
+		appVersionLabel.setText(Messages.get("msg.version", Version.getNumber(), DateFormat.getDateInstance(DateFormat.MEDIUM, Messages.getLanguage().getLocale()).format(versionDate)));
 		if (!fontRegistry.hasValueFor(SYM_NAME_FONT_DEFAULT)) {
-			fontRegistry.put(SYM_NAME_FONT_DEFAULT, appVersion.getFont().getFontData());
+			fontRegistry.put(SYM_NAME_FONT_DEFAULT, appVersionLabel.getFont().getFontData());
 		}
-		appVersion.setFont(fontRegistry.getBold(SYM_NAME_FONT_DEFAULT));
-		GridDataFactory.swtDefaults().grab(true, false).applyTo(appVersion);
+		appVersionLabel.setFont(fontRegistry.getBold(SYM_NAME_FONT_DEFAULT));
+		GridDataFactory.swtDefaults().grab(true, false).applyTo(appVersionLabel);
 
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(new Label(shell, SWT.HORIZONTAL | SWT.SEPARATOR)); // Horizontal rule
 
-		final Link acknowledgementsLocations = new Link(shell, SWT.WRAP);
-		GridDataFactory.swtDefaults().grab(true, false).applyTo(acknowledgementsLocations);
-		acknowledgementsLocations.setText(Messages.get("lbl.about.acknowledgements.locations", buildAnchor(Messages.get("url.geofon"), Messages.get("lbl.geofon")), buildAnchor(Messages.get("url.gfz"), Messages.get("lbl.gfz")), buildAnchor(Messages.get("url.gevn"), Messages.get("lbl.gevn"))));
-		acknowledgementsLocations.addSelectionListener(linkSelectionListener);
+		final Link acknowledgementsLocationsLink = new Link(shell, SWT.WRAP);
+		GridDataFactory.swtDefaults().grab(true, false).applyTo(acknowledgementsLocationsLink);
+		acknowledgementsLocationsLink.setText(Messages.get("lbl.about.acknowledgements.locations", buildAnchor(Messages.get("url.geofon"), Messages.get("lbl.geofon")), buildAnchor(Messages.get("url.gfz"), Messages.get("lbl.gfz")), buildAnchor(Messages.get("url.gevn"), Messages.get("lbl.gevn"))));
+		acknowledgementsLocationsLink.addSelectionListener(linkSelectionListener);
 
 		addInvisibleSeparator(shell);
 
-		final Label acknowledgementsData = new Label(shell, SWT.WRAP);
-		GridDataFactory.swtDefaults().grab(true, false).applyTo(acknowledgementsData);
-		acknowledgementsData.setText(Messages.get("lbl.about.acknowledgements.data", Messages.get("lbl.geofon"), Messages.get("lbl.gfz")));
+		final Label acknowledgementsDataLabel = new Label(shell, SWT.WRAP);
+		GridDataFactory.swtDefaults().grab(true, false).applyTo(acknowledgementsDataLabel);
+		acknowledgementsDataLabel.setText(Messages.get("lbl.about.acknowledgements.data", Messages.get("lbl.geofon"), Messages.get("lbl.gfz")));
 
 		addInvisibleSeparator(shell);
 
-		final Link linkLicense = new Link(shell, SWT.WRAP);
-		GridDataFactory.swtDefaults().grab(true, false).applyTo(linkLicense);
-		linkLicense.setText(Messages.get("lbl.about.license", buildAnchor(Messages.get("url.gpl"), Messages.get("lbl.gpl"))));
-		linkLicense.addSelectionListener(linkSelectionListener);
+		final Link appLicenseLink = new Link(shell, SWT.WRAP);
+		GridDataFactory.swtDefaults().grab(true, false).applyTo(appLicenseLink);
+		appLicenseLink.setText(Messages.get("lbl.about.license", buildAnchor(Messages.get("url.gpl"), Messages.get("lbl.gpl"))));
+		appLicenseLink.addSelectionListener(linkSelectionListener);
 
-		final Text appLicense = new Text(shell, SWT.BORDER | SWT.V_SCROLL);
-		appLicense.setText(loadTextResource("/META-INF/LICENSE.txt"));
-		appLicense.setEditable(false);
-		appLicense.setBackground(shell.getDisplay().getSystemColor(SWT.COLOR_LIST_BACKGROUND));
-		GridDataFactory.fillDefaults().grab(true, true).hint(SWT.DEFAULT, SwtUtils.convertVerticalDLUsToPixels(appLicense, SCROLLABLE_VERTICAL_SIZE_DLUS)).applyTo(appLicense);
+		appLicenseText = new Text(shell, SWT.BORDER | SWT.V_SCROLL);
+		appLicenseText.setText(loadTextResource("/META-INF/LICENSE.txt"));
+		appLicenseText.setEditable(false);
+		appLicenseText.setBackground(shell.getDisplay().getSystemColor(SWT.COLOR_LIST_BACKGROUND));
+		GridDataFactory.fillDefaults().grab(true, true).hint(SWT.DEFAULT, SwtUtils.convertVerticalDLUsToPixels(appLicenseText, SCROLLABLE_VERTICAL_SIZE_DLUS)).applyTo(appLicenseText);
 
 		addInvisibleSeparator(shell);
 
@@ -177,13 +180,13 @@ public class AboutDialog extends Dialog {
 		GridDataFactory.swtDefaults().grab(true, false).applyTo(thirdPartySoftwareLabel);
 		thirdPartySoftwareLabel.setText(Messages.get("lbl.about.thirdparty"));
 
-		final ScrolledComposite scrolledComposite = new ScrolledComposite(shell, SWT.V_SCROLL | SWT.H_SCROLL);
-		scrolledComposite.setLayout(new FillLayout());
-		scrolledComposite.setExpandVertical(true);
-		scrolledComposite.setExpandHorizontal(true);
-		final ThirdPartySoftwareTable thirdPartySoftwareTable = new ThirdPartySoftwareTable(scrolledComposite, null);
-		scrolledComposite.setContent(thirdPartySoftwareTable.getTableViewer().getControl());
-		GridDataFactory.fillDefaults().grab(true, true).hint(SWT.DEFAULT, SwtUtils.convertVerticalDLUsToPixels(scrolledComposite, SCROLLABLE_VERTICAL_SIZE_DLUS)).applyTo(scrolledComposite);
+		thirdPartyScrolledComposite = new ScrolledComposite(shell, SWT.V_SCROLL | SWT.H_SCROLL);
+		thirdPartyScrolledComposite.setLayout(new FillLayout());
+		thirdPartyScrolledComposite.setExpandVertical(true);
+		thirdPartyScrolledComposite.setExpandHorizontal(true);
+		final ThirdPartySoftwareTable thirdPartySoftwareTable = new ThirdPartySoftwareTable(thirdPartyScrolledComposite, null);
+		thirdPartyScrolledComposite.setContent(thirdPartySoftwareTable.getTableViewer().getControl());
+		GridDataFactory.fillDefaults().grab(true, true).hint(SWT.DEFAULT, SwtUtils.convertVerticalDLUsToPixels(thirdPartyScrolledComposite, SCROLLABLE_VERTICAL_SIZE_DLUS)).applyTo(thirdPartyScrolledComposite);
 
 		final Button okButton = new Button(shell, SWT.PUSH);
 		okButton.setText(Messages.get("lbl.button.ok"));
@@ -200,18 +203,30 @@ public class AboutDialog extends Dialog {
 	}
 
 	private void constrainShellSize(@NonNull final Shell shell) {
-		final Point preferredSize = shell.computeSize(SWT.DEFAULT, SWT.DEFAULT, true);
+		int appLicenseTextWidth = appLicenseText.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x;
+		log.log(Level.FINE, "appLicenseTextWidth: {0}", appLicenseTextWidth);
+		if (appLicenseText.getVerticalBar() != null && !appLicenseText.getVerticalBar().isDisposed()) {
+			appLicenseTextWidth += Math.round(appLicenseText.getVerticalBar().getSize().x * 1.5f);
+		}
+		int thirdPartyScrolledCompositeWidth = thirdPartyScrolledComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x;
+		log.log(Level.FINE, "thirdPartyScrolledCompositeWidth: {0}", thirdPartyScrolledCompositeWidth);
+		if (thirdPartyScrolledComposite.getVerticalBar() != null && !thirdPartyScrolledComposite.getVerticalBar().isDisposed()) {
+			thirdPartyScrolledCompositeWidth += Math.round(thirdPartyScrolledComposite.getVerticalBar().getSize().x * 1.5f);
+		}
 		final int clientWidth = shell.getMonitor().getClientArea().width;
-		final int desiredWidth;
-		if (preferredSize.x > clientWidth / MONITOR_SIZE_DIVISOR) {
-			desiredWidth = (int) (clientWidth / MONITOR_SIZE_DIVISOR);
+		log.log(Level.FINE, "clientWidth: {0}", clientWidth);
+		int shellInitialWidth = Math.max(appLicenseTextWidth, thirdPartyScrolledCompositeWidth);
+		if (shellInitialWidth > clientWidth / MONITOR_SIZE_DIVISOR) {
+			shellInitialWidth = Math.round(clientWidth / MONITOR_SIZE_DIVISOR);
 		}
-		else {
-			desiredWidth = preferredSize.x;
-		}
-		shell.setSize(desiredWidth, shell.getSize().y);
-		final int minimumWidth = desiredWidth;
-		shell.setMinimumSize(minimumWidth, preferredSize.y);
+
+		final Point shellInitialSize = new Point(shellInitialWidth, shell.getSize().y);
+		log.log(Level.FINE, "shellInitialSize: {0}", shellInitialSize);
+		shell.setSize(shellInitialSize);
+
+		final Point shellMinimumSize = new Point(appLicenseTextWidth, shell.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).y);
+		log.log(Level.FINE, "shellMinimumSize: {0}", shellMinimumSize);
+		shell.setMinimumSize(shellMinimumSize);
 	}
 
 	private String loadTextResource(@NonNull final String name) {
