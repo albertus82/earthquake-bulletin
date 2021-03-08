@@ -47,6 +47,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Dialog;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Shell;
@@ -148,16 +149,20 @@ public class AboutDialog extends Dialog {
 		appVersionLabel.setFont(fontRegistry.getBold(SYM_NAME_FONT_DEFAULT));
 		GridDataFactory.swtDefaults().grab(true, false).applyTo(appVersionLabel);
 
-		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(new Label(shell, SWT.HORIZONTAL | SWT.SEPARATOR)); // Horizontal rule
+		final Group acknowledgementsGroup = new Group(shell, SWT.NONE);
+		acknowledgementsGroup.setForeground(acknowledgementsGroup.getDisplay().getSystemColor(SWT.COLOR_WIDGET_DARK_SHADOW));
+		acknowledgementsGroup.setText(Messages.get("lbl.about.acknowledgements"));
+		GridDataFactory.swtDefaults().grab(true, false).applyTo(acknowledgementsGroup);
+		GridLayoutFactory.swtDefaults().applyTo(acknowledgementsGroup);
 
-		final Link acknowledgementsLocationsLink = new Link(shell, SWT.WRAP);
+		final Link acknowledgementsLocationsLink = new Link(acknowledgementsGroup, SWT.WRAP);
 		GridDataFactory.swtDefaults().grab(true, false).applyTo(acknowledgementsLocationsLink);
 		acknowledgementsLocationsLink.setText(Messages.get("lbl.about.acknowledgements.locations", buildAnchor(Messages.get("url.geofon"), Messages.get("lbl.geofon")), buildAnchor(Messages.get("url.gfz"), Messages.get("lbl.gfz")), buildAnchor(Messages.get("url.gevn"), Messages.get("lbl.gevn"))));
 		acknowledgementsLocationsLink.addSelectionListener(linkSelectionListener);
 
-		addInvisibleSeparator(shell);
+		addInvisibleSeparator(acknowledgementsGroup);
 
-		final Label acknowledgementsDataLabel = new Label(shell, SWT.WRAP);
+		final Label acknowledgementsDataLabel = new Label(acknowledgementsGroup, SWT.WRAP);
 		GridDataFactory.swtDefaults().grab(true, false).applyTo(acknowledgementsDataLabel);
 		acknowledgementsDataLabel.setText(Messages.get("lbl.about.acknowledgements.data", Messages.get("lbl.geofon"), Messages.get("lbl.gfz")));
 
