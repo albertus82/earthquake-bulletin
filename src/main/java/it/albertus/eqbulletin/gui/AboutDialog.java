@@ -68,12 +68,14 @@ import lombok.extern.java.Log;
 @Log
 public class AboutDialog extends Dialog {
 
-	private static final double MONITOR_SIZE_DIVISOR = 1.2;
+	private static final float MONITOR_SIZE_DIVISOR = 1.2f;
+	private static final float TITLE_FONT_SIZE_MULTIPLIER = 1.5f;
 
+	private static final int ICON_VERTICAL_SIZE_DLUS = 26;
 	private static final int SCROLLABLE_VERTICAL_SIZE_DLUS = 25;
 
-	private static final String SYM_NAME_FONT_DEFAULT = AboutDialog.class.getName() + ".default";
 	private static final String SYM_NAME_FONT_APPNAME = AboutDialog.class.getName() + ".appname";
+	private static final String SYM_NAME_FONT_DEFAULT = AboutDialog.class.getName() + ".default";
 
 	public AboutDialog(@NonNull final Shell parent) {
 		this(parent, SWT.SHEET | SWT.RESIZE);
@@ -93,7 +95,7 @@ public class AboutDialog extends Dialog {
 		shell.open();
 	}
 
-	private void createContents(final Shell shell) {
+	private void createContents(@NonNull final Shell shell) {
 		GridLayoutFactory.swtDefaults().applyTo(shell);
 
 		final Composite header = new Composite(shell, SWT.NONE);
@@ -101,12 +103,11 @@ public class AboutDialog extends Dialog {
 		GridLayoutFactory.swtDefaults().numColumns(2).applyTo(header);
 
 		final Label icon = new Label(header, SWT.NONE);
-		GridDataFactory.swtDefaults().align(SWT.TRAIL, SWT.CENTER).span(1, 2).grab(true, false).applyTo(icon);
+		GridDataFactory.swtDefaults().span(1, 2).grab(true, false).applyTo(icon);
 		for (final Entry<Rectangle, Image> entry : Images.getAppIconMap().entrySet()) {
-			final int dlus = 26;
-			final int pixels = SwtUtils.convertVerticalDLUsToPixels(icon, dlus);
+			final int pixels = SwtUtils.convertVerticalDLUsToPixels(icon, ICON_VERTICAL_SIZE_DLUS);
 			if (entry.getKey().height <= pixels) {
-				log.log(Level.FINE, "{0} DLUs -> {1} pixels -> {2}", new Object[] { dlus, pixels, entry });
+				log.log(Level.FINE, "{0} DLUs -> {1} pixels -> {2}", new Object[] { ICON_VERTICAL_SIZE_DLUS, pixels, entry });
 				icon.setImage(entry.getValue());
 				break;
 			}
@@ -119,12 +120,12 @@ public class AboutDialog extends Dialog {
 		if (!fontRegistry.hasValueFor(SYM_NAME_FONT_APPNAME)) {
 			final FontData[] fontData = appName.getFont().getFontData();
 			for (final FontData fd : fontData) {
-				fd.setHeight(Math.round(fd.getHeight() * 1.5f));
+				fd.setHeight(Math.round(fd.getHeight() * TITLE_FONT_SIZE_MULTIPLIER));
 			}
 			fontRegistry.put(SYM_NAME_FONT_APPNAME, fontData);
 		}
 		appName.setFont(fontRegistry.getBold(SYM_NAME_FONT_APPNAME));
-		GridDataFactory.swtDefaults().align(SWT.LEAD, SWT.CENTER).grab(true, false).applyTo(appName);
+		GridDataFactory.swtDefaults().grab(true, false).applyTo(appName);
 		Date versionDate;
 		try {
 			versionDate = Version.getDate();
@@ -142,22 +143,25 @@ public class AboutDialog extends Dialog {
 			fontRegistry.put(SYM_NAME_FONT_DEFAULT, appVersion.getFont().getFontData());
 		}
 		appVersion.setFont(fontRegistry.getBold(SYM_NAME_FONT_DEFAULT));
-		GridDataFactory.swtDefaults().align(SWT.LEAD, SWT.CENTER).grab(true, false).applyTo(appVersion);
+		GridDataFactory.swtDefaults().grab(true, false).applyTo(appVersion);
 
-		final Label separator = new Label(shell, SWT.HORIZONTAL | SWT.SEPARATOR);
-		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(separator);
+		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(new Label(shell, SWT.HORIZONTAL | SWT.SEPARATOR)); // Horizontal rule
 
 		final Link acknowledgementsLocations = new Link(shell, SWT.WRAP);
-		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.CENTER).grab(true, false).applyTo(acknowledgementsLocations);
+		GridDataFactory.swtDefaults().grab(true, false).applyTo(acknowledgementsLocations);
 		acknowledgementsLocations.setText(Messages.get("lbl.about.acknowledgements.locations", buildAnchor(Messages.get("url.geofon"), Messages.get("lbl.geofon")), buildAnchor(Messages.get("url.gfz"), Messages.get("lbl.gfz")), buildAnchor(Messages.get("url.gevn"), Messages.get("lbl.gevn"))));
 		acknowledgementsLocations.addSelectionListener(linkSelectionListener);
 
+		addInvisibleSeparator(shell);
+
 		final Label acknowledgementsData = new Label(shell, SWT.WRAP);
-		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.CENTER).grab(true, false).applyTo(acknowledgementsData);
+		GridDataFactory.swtDefaults().grab(true, false).applyTo(acknowledgementsData);
 		acknowledgementsData.setText(Messages.get("lbl.about.acknowledgements.data", Messages.get("lbl.geofon"), Messages.get("lbl.gfz")));
 
+		addInvisibleSeparator(shell);
+
 		final Link linkLicense = new Link(shell, SWT.WRAP);
-		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.CENTER).grab(true, false).applyTo(linkLicense);
+		GridDataFactory.swtDefaults().grab(true, false).applyTo(linkLicense);
 		linkLicense.setText(Messages.get("lbl.about.license", buildAnchor(Messages.get("url.gpl"), Messages.get("lbl.gpl"))));
 		linkLicense.addSelectionListener(linkSelectionListener);
 
@@ -167,8 +171,10 @@ public class AboutDialog extends Dialog {
 		appLicense.setBackground(shell.getDisplay().getSystemColor(SWT.COLOR_LIST_BACKGROUND));
 		GridDataFactory.fillDefaults().grab(true, true).hint(SWT.DEFAULT, SwtUtils.convertVerticalDLUsToPixels(appLicense, SCROLLABLE_VERTICAL_SIZE_DLUS)).applyTo(appLicense);
 
+		addInvisibleSeparator(shell);
+
 		final Label thirdPartySoftwareLabel = new Label(shell, SWT.WRAP);
-		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.CENTER).grab(true, false).applyTo(thirdPartySoftwareLabel);
+		GridDataFactory.swtDefaults().grab(true, false).applyTo(thirdPartySoftwareLabel);
 		thirdPartySoftwareLabel.setText(Messages.get("lbl.about.thirdparty"));
 
 		final ScrolledComposite scrolledComposite = new ScrolledComposite(shell, SWT.V_SCROLL | SWT.H_SCROLL);
@@ -193,7 +199,7 @@ public class AboutDialog extends Dialog {
 		shell.setDefaultButton(okButton);
 	}
 
-	private void constrainShellSize(final Shell shell) {
+	private void constrainShellSize(@NonNull final Shell shell) {
 		final Point preferredSize = shell.computeSize(SWT.DEFAULT, SWT.DEFAULT, true);
 		final int clientWidth = shell.getMonitor().getClientArea().width;
 		final int desiredWidth;
@@ -208,13 +214,9 @@ public class AboutDialog extends Dialog {
 		shell.setMinimumSize(minimumWidth, preferredSize.y);
 	}
 
-	private static String buildAnchor(final String href, final String label) {
-		return new StringBuilder("<a href=\"").append(href).append("\">").append(label).append("</a>").toString();
-	}
-
-	private static String loadTextResource(final String name) {
+	private String loadTextResource(@NonNull final String name) {
 		final StringBuilder text = new StringBuilder();
-		try (final InputStream is = AboutDialog.class.getResourceAsStream(name); final InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8); final BufferedReader br = new BufferedReader(isr)) {
+		try (final InputStream is = getClass().getResourceAsStream(name); final InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8); final BufferedReader br = new BufferedReader(isr)) {
 			String line;
 			while ((line = br.readLine()) != null) {
 				text.append(System.lineSeparator()).append(line);
@@ -224,6 +226,15 @@ public class AboutDialog extends Dialog {
 			log.log(Level.WARNING, e.toString(), e);
 		}
 		return text.length() <= System.lineSeparator().length() ? "" : text.substring(System.lineSeparator().length());
+	}
+
+	private static String buildAnchor(@NonNull final String href, @NonNull final String label) {
+		return new StringBuilder("<a href=\"").append(href).append("\">").append(label).append("</a>").toString();
+	}
+
+	private static void addInvisibleSeparator(@NonNull final Composite parent) {
+		final Label separator = new Label(parent, SWT.HORIZONTAL | SWT.SEPARATOR | SWT.SHADOW_NONE); // Invisible separator
+		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(separator);
 	}
 
 	@Getter
@@ -342,8 +353,7 @@ public class AboutDialog extends Dialog {
 		}
 
 		@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-		private static class LinkStyledCellLabelProvider extends StyledCellLabelProvider { // NOSONAR This class has 6 parents which is greater than 5 authorized.
-																							// Inheritance tree of classes should not be too deep (java:S110)
+		private static class LinkStyledCellLabelProvider extends StyledCellLabelProvider { // NOSONAR This class has 6 parents which is greater than 5 authorized. Inheritance tree of classes should not be too deep (java:S110)
 
 			private final String label;
 			private final Function<ThirdPartySoftware, URI> toolTipTextFunction;
