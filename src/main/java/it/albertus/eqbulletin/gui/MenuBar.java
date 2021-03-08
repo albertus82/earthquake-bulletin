@@ -58,8 +58,8 @@ public class MenuBar extends AbstractMenu implements IShellProvider {
 				new CocoaUIEnhancer(shell.getDisplay()).hookApplicationMenu(closeListener, aboutListener, preferencesListener);
 				cocoaMenuCreated = true;
 			}
-			catch (final CocoaEnhancerException cee) {
-				log.log(Level.WARNING, Messages.get("error.cocoa.enhancer"), cee);
+			catch (final CocoaEnhancerException e) {
+				log.log(Level.WARNING, Messages.get("error.cocoa.enhancer"), e);
 			}
 		}
 
