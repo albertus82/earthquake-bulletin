@@ -87,7 +87,7 @@ public class AboutDialog extends Dialog {
 		this(parent, SWT.SHEET | SWT.RESIZE);
 	}
 
-	public AboutDialog(@NonNull final Shell parent, final int style) {
+	private AboutDialog(@NonNull final Shell parent, final int style) {
 		super(parent, style);
 		this.setText(Messages.get("label.about.title"));
 	}
