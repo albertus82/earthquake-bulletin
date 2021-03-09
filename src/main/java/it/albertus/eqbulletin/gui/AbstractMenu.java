@@ -5,6 +5,7 @@ import org.eclipse.swt.widgets.MenuItem;
 
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.jface.Multilanguage;
+import it.albertus.jface.i18n.LocalizedWidgets;
 import it.albertus.util.ISupplier;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -33,7 +34,7 @@ abstract class AbstractMenu implements Multilanguage {
 
 	@Override
 	public void updateLanguage() {
-		localizedWidgets.updateTexts();
+		localizedWidgets.resetAllTexts();
 	}
 
 	protected MenuItem newLocalizedMenuItem(@NonNull final Menu parent, final int style, @NonNull final String messageKey) {

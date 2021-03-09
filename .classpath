@@ -16,7 +16,7 @@
 	<classpathentry kind="lib" path="lib/compile/common/javax.activation-api-1.2.0.jar" sourcepath="lib/compile/common/src/javax.activation-api-1.2.0-sources.jar"/>
 	<classpathentry kind="lib" path="lib/compile/common/jaxb-api-2.3.1.jar" sourcepath="lib/compile/common/src/jaxb-api-2.3.1-sources.jar"/>
 	<classpathentry kind="lib" path="lib/compile/common/jaxb-runtime-2.3.1.jar" sourcepath="lib/compile/common/src/jaxb-runtime-2.3.1-sources.jar"/>
-	<classpathentry kind="lib" path="lib/compile/common/jface-utils-17.2.0.jar" sourcepath="lib/compile/common/src/jface-utils-17.2.0-sources.jar"/>
+	<classpathentry kind="lib" path="lib/compile/common/jface-utils-17.3.0.jar" sourcepath="lib/compile/common/src/jface-utils-17.3.0-sources.jar"/>
 	<classpathentry kind="lib" path="lib/compile/common/jsoup-1.13.1.jar" sourcepath="lib/compile/common/src/jsoup-1.13.1-sources.jar"/>
 	<classpathentry kind="lib" path="lib/compile/common/org.eclipse.core.commands-3.9.800.jar" sourcepath="lib/compile/common/src/org.eclipse.core.commands-3.9.800-sources.jar"/>
 	<classpathentry kind="lib" path="lib/compile/common/org.eclipse.core.jobs-3.10.1000.jar" sourcepath="lib/compile/common/src/org.eclipse.core.jobs-3.10.1000-sources.jar"/>

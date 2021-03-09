@@ -51,6 +51,7 @@ import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.jface.Multilanguage;
 import it.albertus.jface.SwtUtils;
 import it.albertus.jface.decoration.ControlValidatorDecoration;
+import it.albertus.jface.i18n.LocalizedWidgets;
 import it.albertus.jface.listener.FloatVerifyListener;
 import it.albertus.jface.listener.IntegerVerifyListener;
 import it.albertus.jface.maps.MapBounds;
@@ -149,45 +150,45 @@ public class SearchForm implements IShellProvider, Multilanguage {
 		GridLayoutFactory.swtDefaults().margins(0, 0).numColumns(2).applyTo(formComposite);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.TOP).grab(true, false).applyTo(formComposite);
 
-		final Group criteriaGroup = newLocalizedWidget(new Group(formComposite, SWT.NONE), "label.form.criteria.group");
+		final Group criteriaGroup = localizeWidget(new Group(formComposite, SWT.NONE), "label.form.criteria.group");
 		GridLayoutFactory.swtDefaults().numColumns(7).applyTo(criteriaGroup);
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(criteriaGroup);
 
-		periodLabel = newLocalizedWidget(new Label(criteriaGroup, SWT.NONE), "label.form.criteria.period");
-		periodFromLabel = newLocalizedWidget(new Label(criteriaGroup, SWT.NONE), "label.form.criteria.period.from");
+		periodLabel = localizeWidget(new Label(criteriaGroup, SWT.NONE), "label.form.criteria.period");
+		periodFromLabel = localizeWidget(new Label(criteriaGroup, SWT.NONE), "label.form.criteria.period.from");
 		periodFromDateTime = new CDateTime(criteriaGroup, CDT.DROP_DOWN | CDT.BORDER);
 		periodFromDateTime.setPattern(DATE_PATTERN);
 		periodFromDateTime.setLocale(Messages.Language.ENGLISH.equals(Messages.getLanguage()) ? Locale.US : Messages.getLanguage().getLocale());
 		periodFromDateTime.addTraverseListener(formFieldTraverseListener);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).indent(CDATETIME_INDENT_RIGHT, 0).applyTo(periodFromDateTime);
-		periodFromNote = newLocalizedWidget(new Label(criteriaGroup, SWT.NONE), "label.form.criteria.period.from.note");
-		periodToLabel = newLocalizedWidget(new Label(criteriaGroup, SWT.NONE), "label.form.criteria.period.to");
+		periodFromNote = localizeWidget(new Label(criteriaGroup, SWT.NONE), "label.form.criteria.period.from.note");
+		periodToLabel = localizeWidget(new Label(criteriaGroup, SWT.NONE), "label.form.criteria.period.to");
 		periodToDateTime = new CDateTime(criteriaGroup, CDT.DROP_DOWN | CDT.BORDER);
 		periodToDateTime.setPattern(DATE_PATTERN);
 		periodToDateTime.setLocale(Messages.Language.ENGLISH.equals(Messages.getLanguage()) ? Locale.US : Messages.getLanguage().getLocale());
 		periodToDateTime.addTraverseListener(formFieldTraverseListener);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).indent(CDATETIME_INDENT_RIGHT, 0).applyTo(periodToDateTime);
-		periodToNote = newLocalizedWidget(new Label(criteriaGroup, SWT.NONE), "label.form.criteria.period.to.note");
+		periodToNote = localizeWidget(new Label(criteriaGroup, SWT.NONE), "label.form.criteria.period.to.note");
 
-		final Group areaGroup = newLocalizedWidget(new Group(criteriaGroup, SWT.NONE), "label.form.criteria.area");
+		final Group areaGroup = localizeWidget(new Group(criteriaGroup, SWT.NONE), "label.form.criteria.area");
 		GridLayoutFactory.swtDefaults().numColumns(8).applyTo(areaGroup);
 		GridDataFactory.fillDefaults().span(7, 1).applyTo(areaGroup);
 
-		newLocalizedWidget(new Label(areaGroup, SWT.NONE), "label.form.criteria.latitude");
-		newLocalizedWidget(new Label(areaGroup, SWT.NONE), "label.form.criteria.latitude.from");
+		localizeWidget(new Label(areaGroup, SWT.NONE), "label.form.criteria.latitude");
+		localizeWidget(new Label(areaGroup, SWT.NONE), "label.form.criteria.latitude.from");
 		latitudeFromText = new Text(areaGroup, SWT.BORDER);
 		latitudeFromText.setTextLimit(COORDINATES_TEXT_LIMIT);
 		latitudeFromText.addTraverseListener(formFieldTraverseListener);
 		latitudeFromText.addVerifyListener(coordinatesVerifyListener);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(latitudeFromText);
-		newLocalizedWidget(new Label(areaGroup, SWT.NONE), "label.form.criteria.latitude.from.note");
-		newLocalizedWidget(new Label(areaGroup, SWT.NONE), "label.form.criteria.latitude.to");
+		localizeWidget(new Label(areaGroup, SWT.NONE), "label.form.criteria.latitude.from.note");
+		localizeWidget(new Label(areaGroup, SWT.NONE), "label.form.criteria.latitude.to");
 		latitudeToText = new Text(areaGroup, SWT.BORDER);
 		latitudeToText.setTextLimit(COORDINATES_TEXT_LIMIT);
 		latitudeToText.addTraverseListener(formFieldTraverseListener);
 		latitudeToText.addVerifyListener(coordinatesVerifyListener);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(latitudeToText);
-		newLocalizedWidget(new Label(areaGroup, SWT.NONE), "label.form.criteria.latitude.to.note");
+		localizeWidget(new Label(areaGroup, SWT.NONE), "label.form.criteria.latitude.to.note");
 
 		openMapButton = new Button(areaGroup, SWT.NONE);
 		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.FILL).span(1, 2).applyTo(openMapButton);
@@ -202,34 +203,34 @@ public class SearchForm implements IShellProvider, Multilanguage {
 		}
 		openMapButton.addSelectionListener(new AreaMapSelectionListener(this));
 
-		newLocalizedWidget(new Label(areaGroup, SWT.NONE), "label.form.criteria.longitude");
-		newLocalizedWidget(new Label(areaGroup, SWT.NONE), "label.form.criteria.longitude.from");
+		localizeWidget(new Label(areaGroup, SWT.NONE), "label.form.criteria.longitude");
+		localizeWidget(new Label(areaGroup, SWT.NONE), "label.form.criteria.longitude.from");
 		longitudeFromText = new Text(areaGroup, SWT.BORDER);
 		longitudeFromText.setTextLimit(COORDINATES_TEXT_LIMIT);
 		longitudeFromText.addTraverseListener(formFieldTraverseListener);
 		longitudeFromText.addVerifyListener(coordinatesVerifyListener);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(longitudeFromText);
-		newLocalizedWidget(new Label(areaGroup, SWT.NONE), "label.form.criteria.longitude.from.note");
-		newLocalizedWidget(new Label(areaGroup, SWT.NONE), "label.form.criteria.longitude.to");
+		localizeWidget(new Label(areaGroup, SWT.NONE), "label.form.criteria.longitude.from.note");
+		localizeWidget(new Label(areaGroup, SWT.NONE), "label.form.criteria.longitude.to");
 		longitudeToText = new Text(areaGroup, SWT.BORDER);
 		longitudeToText.setTextLimit(COORDINATES_TEXT_LIMIT);
 		longitudeToText.addTraverseListener(formFieldTraverseListener);
 		longitudeToText.addVerifyListener(coordinatesVerifyListener);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(longitudeToText);
-		newLocalizedWidget(new Label(areaGroup, SWT.NONE), "label.form.criteria.longitude.to.note");
+		localizeWidget(new Label(areaGroup, SWT.NONE), "label.form.criteria.longitude.to.note");
 
-		final Label minimumMagnitudeLabel = newLocalizedWidget(new Label(criteriaGroup, SWT.NONE), "label.form.criteria.magnitude");
+		final Label minimumMagnitudeLabel = localizeWidget(new Label(criteriaGroup, SWT.NONE), "label.form.criteria.magnitude");
 		GridDataFactory.swtDefaults().span(2, 1).applyTo(minimumMagnitudeLabel);
 		minimumMagnitudeText = new Text(criteriaGroup, SWT.BORDER);
 		minimumMagnitudeText.setTextLimit(MAGNITUDE_TEXT_LIMIT);
 		minimumMagnitudeText.addTraverseListener(formFieldTraverseListener);
 		minimumMagnitudeText.addVerifyListener(new FloatVerifyListener(false));
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(minimumMagnitudeText);
-		restrictButton = newLocalizedWidget(new Button(criteriaGroup, SWT.CHECK), "label.form.criteria.restrict");
+		restrictButton = localizeWidget(new Button(criteriaGroup, SWT.CHECK), "label.form.criteria.restrict");
 		restrictButton.setSelection(configuration.getBoolean(Preference.CRITERIA_RESTRICT, Defaults.CRITERIA_RESTRICT));
 		GridDataFactory.swtDefaults().span(4, 1).applyTo(restrictButton);
 
-		newLocalizedWidget(new Label(criteriaGroup, SWT.NONE), "label.form.format");
+		localizeWidget(new Label(criteriaGroup, SWT.NONE), "label.form.format");
 		final Composite radioComposite = new Composite(criteriaGroup, SWT.NONE);
 		radioComposite.setLayout(new RowLayout(SWT.HORIZONTAL));
 		GridDataFactory.swtDefaults().grab(false, false).span(2, 1).applyTo(radioComposite);
@@ -248,21 +249,21 @@ public class SearchForm implements IShellProvider, Multilanguage {
 			radio.setSelection(format.equals(selectedFormat));
 			formatRadios.put(format, radio);
 		}
-		resultsLabel = newLocalizedWidget(new Label(criteriaGroup, SWT.NONE), "label.form.limit");
+		resultsLabel = localizeWidget(new Label(criteriaGroup, SWT.NONE), "label.form.limit");
 		GridDataFactory.swtDefaults().grab(false, false).span(2, 1).applyTo(resultsLabel);
 		resultsText = new Text(criteriaGroup, SWT.BORDER);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(resultsText);
 		resultsText.setTextLimit(RESULTS_TEXT_LIMIT);
 		resultsText.addTraverseListener(formFieldTraverseListener);
 		resultsText.addVerifyListener(new IntegerVerifyListener(false));
-		newLocalizedWidget(new Label(criteriaGroup, SWT.NONE), "label.form.limit.note");
+		localizeWidget(new Label(criteriaGroup, SWT.NONE), "label.form.limit.note");
 
 		// Buttons
 		final Composite buttonsComposite = new Composite(formComposite, SWT.NONE);
 		GridLayoutFactory.swtDefaults().applyTo(buttonsComposite);
 		GridDataFactory.fillDefaults().grab(false, true).applyTo(buttonsComposite);
 
-		autoRefreshButton = newLocalizedWidget(new Button(buttonsComposite, SWT.CHECK), "label.form.button.autorefresh");
+		autoRefreshButton = localizeWidget(new Button(buttonsComposite, SWT.CHECK), "label.form.button.autorefresh");
 		autoRefreshButton.setSelection(configuration.getBoolean(Preference.AUTOREFRESH_ENABLED, Defaults.AUTOREFRESH_ENABLED));
 		GridDataFactory.swtDefaults().applyTo(autoRefreshButton);
 
@@ -272,10 +273,10 @@ public class SearchForm implements IShellProvider, Multilanguage {
 		autoRefreshText.addVerifyListener(new IntegerVerifyListener(false));
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(autoRefreshText);
 
-		searchButton = newLocalizedWidget(new Button(buttonsComposite, SWT.NONE), "label.form.button.submit");
+		searchButton = localizeWidget(new Button(buttonsComposite, SWT.NONE), "label.form.button.submit");
 		GridDataFactory.fillDefaults().grab(true, true).minSize(SwtUtils.convertHorizontalDLUsToPixels(searchButton, IDialogConstants.BUTTON_WIDTH), SWT.DEFAULT).applyTo(searchButton);
 
-		final Button clearButton = newLocalizedWidget(new Button(buttonsComposite, SWT.NONE), "label.form.button.clear");
+		final Button clearButton = localizeWidget(new Button(buttonsComposite, SWT.NONE), "label.form.button.clear");
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(clearButton);
 
 		// Listeners
@@ -365,10 +366,10 @@ public class SearchForm implements IShellProvider, Multilanguage {
 		if (!openMapButton.getText().isEmpty()) {
 			openMapButton.setText(Messages.get("label.form.button.map"));
 		}
-		localizedWidgets.updateTexts();
+		localizedWidgets.resetAllTexts();
 	}
 
-	private <T extends Widget> T newLocalizedWidget(@NonNull final T widget, @NonNull final String messageKey) {
+	private <T extends Widget> T localizeWidget(@NonNull final T widget, @NonNull final String messageKey) {
 		return localizedWidgets.putAndReturn(widget, () -> Messages.get(messageKey)).getKey();
 	}
 
