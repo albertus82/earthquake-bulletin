@@ -7,20 +7,15 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.eclipse.swt.widgets.Widget;
 
 import it.albertus.util.ISupplier;
-import it.albertus.util.logging.LoggerFactory;
 
 public class LocalizedWidgets implements Iterable<Widget> {
 
 	private static final String METHOD_KEY = LocalizedWidgets.class.getName() + ".method";
 	private static final String SUPPLIER_KEY = LocalizedWidgets.class.getName() + ".supplier";
-
-	private static final Logger log = LoggerFactory.getLogger(LocalizedWidgets.class);
 
 	private static final Map<Class<? extends Widget>, Method> setTextMethods = new HashMap<Class<? extends Widget>, Method>();
 
@@ -50,7 +45,6 @@ public class LocalizedWidgets implements Iterable<Widget> {
 			try {
 				method = widgetClass.getMethod("setText", String.class);
 				setTextMethods.put(widgetClass, method);
-				log.log(Level.FINE, "{0}", method);
 			}
 			catch (final NoSuchMethodException e) {
 				throw new IllegalArgumentException(String.valueOf(widget), e);
