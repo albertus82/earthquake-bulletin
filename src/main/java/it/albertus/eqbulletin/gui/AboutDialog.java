@@ -169,17 +169,20 @@ public class AboutDialog extends Dialog {
 
 		GridDataFactory.swtDefaults().span(1, 2).applyTo(new Label(headerComposite, SWT.NONE)); // Invisible separator
 
-		final Link appNameLink = new Link(headerComposite, SWT.WRAP);
+		final Label applicationNameLabel = new Label(headerComposite, SWT.WRAP);
 		final FontRegistry fontRegistry = JFaceResources.getFontRegistry();
 		if (!fontRegistry.hasValueFor(SYM_NAME_FONT_APPNAME)) {
-			final FontData[] fontData = appNameLink.getFont().getFontData();
+			final FontData[] fontData = applicationNameLabel.getFont().getFontData();
 			for (final FontData fd : fontData) {
 				fd.setHeight(Math.round(fd.getHeight() * TITLE_FONT_SIZE_MULTIPLIER));
 			}
 			fontRegistry.put(SYM_NAME_FONT_APPNAME, fontData);
 		}
-		appNameLink.setFont(fontRegistry.getBold(SYM_NAME_FONT_APPNAME));
-		GridDataFactory.swtDefaults().grab(true, false).applyTo(appNameLink);
+		applicationNameLabel.setFont(fontRegistry.getBold(SYM_NAME_FONT_APPNAME));
+		GridDataFactory.swtDefaults().grab(true, false).applyTo(applicationNameLabel);
+		applicationNameLabel.setText(Messages.get("message.application.name"));
+
+		final Link versionAndHomePageLink = new Link(headerComposite, SWT.NONE);
 		Date versionDate;
 		try {
 			versionDate = Version.getDate();
@@ -188,16 +191,15 @@ public class AboutDialog extends Dialog {
 			log.log(Level.WARNING, "Invalid version date:", e);
 			versionDate = new Date();
 		}
-		appNameLink.setText(buildAnchor(Messages.get("message.project.url"), Messages.get("message.application.name")));
-		appNameLink.addSelectionListener(linkSelectionListener);
-
-		final Label appVersionLabel = new Label(headerComposite, SWT.NONE);
-		appVersionLabel.setText(Messages.get("message.version", Version.getNumber(), DateFormat.getDateInstance(DateFormat.MEDIUM, Messages.getLanguage().getLocale()).format(versionDate)));
+		final String version = Messages.get("message.version", Version.getNumber(), DateFormat.getDateInstance(DateFormat.MEDIUM, Messages.getLanguage().getLocale()).format(versionDate));
+		final String homePageAnchor = buildAnchor(Messages.get("message.project.url"), Messages.get("label.about.home.page"));
+		versionAndHomePageLink.setText(version + " - " + homePageAnchor);
 		if (!fontRegistry.hasValueFor(SYM_NAME_FONT_DEFAULT)) {
-			fontRegistry.put(SYM_NAME_FONT_DEFAULT, appVersionLabel.getFont().getFontData());
+			fontRegistry.put(SYM_NAME_FONT_DEFAULT, versionAndHomePageLink.getFont().getFontData());
 		}
-		appVersionLabel.setFont(fontRegistry.getBold(SYM_NAME_FONT_DEFAULT));
-		GridDataFactory.swtDefaults().grab(true, false).applyTo(appVersionLabel);
+		versionAndHomePageLink.setFont(fontRegistry.getBold(SYM_NAME_FONT_DEFAULT));
+		GridDataFactory.swtDefaults().grab(true, false).applyTo(versionAndHomePageLink);
+		versionAndHomePageLink.addSelectionListener(linkSelectionListener);
 	}
 
 	private void createAcknowledgementsGroup(@NonNull final Composite parent, final Object layoutData) {
