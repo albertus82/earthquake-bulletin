@@ -29,11 +29,11 @@ abstract class AbstractMenu implements Multilanguage {
 	protected MenuItem showMapMenuItem;
 	protected MenuItem showMomentTensorMenuItem;
 
-	@Getter(AccessLevel.NONE) private final LocalizedControls localizedControls = new LocalizedControls();
+	@Getter(AccessLevel.NONE) private final LocalizedWidgets localizedWidgets = new LocalizedWidgets();
 
 	@Override
 	public void updateLanguage() {
-		localizedControls.updateTexts();
+		localizedWidgets.updateTexts();
 	}
 
 	protected MenuItem newLocalizedMenuItem(@NonNull final Menu parent, final int style, @NonNull final String messageKey) {
@@ -41,7 +41,9 @@ abstract class AbstractMenu implements Multilanguage {
 	}
 
 	protected MenuItem newLocalizedMenuItem(@NonNull final Menu parent, final int style, @NonNull final ISupplier<String> textSupplier) {
-		return localizedControls.newLocalizedMenuItem(parent, style, textSupplier);
+		final MenuItem widget = new MenuItem(parent, style);
+		localizedWidgets.add(widget, textSupplier);
+		return widget;
 	}
 
 }

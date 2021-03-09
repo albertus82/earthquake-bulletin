@@ -135,7 +135,7 @@ public class SearchForm implements IShellProvider, Multilanguage {
 
 	private final Collection<ControlValidator<Text>> validators = new ArrayList<>();
 
-	@Getter(AccessLevel.NONE) private final LocalizedControls localizedControls = new LocalizedControls();
+	@Getter(AccessLevel.NONE) private final LocalizedWidgets localizedWidgets = new LocalizedWidgets();
 
 	SearchForm(@NonNull final EarthquakeBulletinGui gui) {
 		shell = gui.getShell();
@@ -364,19 +364,25 @@ public class SearchForm implements IShellProvider, Multilanguage {
 		if (!openMapButton.getText().isEmpty()) {
 			openMapButton.setText(Messages.get("label.form.button.map"));
 		}
-		localizedControls.updateTexts();
+		localizedWidgets.updateTexts();
 	}
 
 	private Label newLocalizedLabel(@NonNull final Composite parent, final int style, @NonNull final String messageKey) {
-		return localizedControls.newLocalizedLabel(parent, style, () -> Messages.get(messageKey));
+		final Label widget = new Label(parent, style);
+		localizedWidgets.add(widget, () -> Messages.get(messageKey));
+		return widget;
 	}
 
 	private Button newLocalizedButton(@NonNull final Composite parent, final int style, @NonNull final String messageKey) {
-		return localizedControls.newLocalizedButton(parent, style, () -> Messages.get(messageKey));
+		final Button widget = new Button(parent, style);
+		localizedWidgets.add(widget, () -> Messages.get(messageKey));
+		return widget;
 	}
 
 	private Group newLocalizedGroup(@NonNull final Composite parent, final int style, @NonNull final String messageKey) {
-		return localizedControls.newLocalizedGroup(parent, style, () -> Messages.get(messageKey));
+		final Group widget = new Group(parent, style);
+		localizedWidgets.add(widget, () -> Messages.get(messageKey));
+		return widget;
 	}
 
 	private static String getConfiguredFloatString(final IPreference preference) {
