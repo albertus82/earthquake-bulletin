@@ -56,6 +56,16 @@ public class LocalizedWidgets implements Iterable<Widget> {
 		return widgets.add(widget);
 	}
 
+	/**
+	 * Fluent version of {@link #add(Widget, ISupplier)}.
+	 * 
+	 * @return the widget argument
+	 */
+	public <T extends Widget> T addAndReturn(final T widget, final ISupplier<String> supplier) {
+		add(widget, supplier);
+		return widget;
+	}
+
 	/** @see Collection#remove(Object) */
 	public boolean remove(final Widget widget) {
 		return widgets.remove(widget);

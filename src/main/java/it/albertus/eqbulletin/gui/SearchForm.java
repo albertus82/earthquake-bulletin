@@ -369,8 +369,7 @@ public class SearchForm implements IShellProvider, Multilanguage {
 	}
 
 	private <T extends Widget> T newLocalizedWidget(@NonNull final T widget, @NonNull final String messageKey) {
-		localizedWidgets.add(widget, () -> Messages.get(messageKey));
-		return widget;
+		return localizedWidgets.addAndReturn(widget, () -> Messages.get(messageKey));
 	}
 
 	private static String getConfiguredFloatString(final IPreference preference) {
