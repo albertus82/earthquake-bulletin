@@ -40,7 +40,7 @@ public class MomentTensorDialog extends Dialog {
 
 	@NoArgsConstructor(access = AccessLevel.PRIVATE)
 	public static class Defaults {
-		public static final boolean LIMIT_HEIGHT = false;
+		public static final boolean LIMIT_HEIGHT = true;
 		public static final byte MAX_DIALOGS = 0xF;
 	}
 
