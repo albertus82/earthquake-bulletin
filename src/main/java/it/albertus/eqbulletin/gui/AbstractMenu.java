@@ -1,14 +1,11 @@
 package it.albertus.eqbulletin.gui;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.function.Supplier;
-
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.jface.Multilanguage;
+import it.albertus.util.ISupplier;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
@@ -32,31 +29,19 @@ abstract class AbstractMenu implements Multilanguage {
 	protected MenuItem showMapMenuItem;
 	protected MenuItem showMomentTensorMenuItem;
 
-	@Getter(AccessLevel.NONE) private final Collection<MenuItem> localizedMenuItems = new ArrayList<>();
+	@Getter(AccessLevel.NONE) private final LocalizedControls localizedControls = new LocalizedControls();
 
 	@Override
 	public void updateLanguage() {
-		for (final MenuItem menuItem : localizedMenuItems) {
-			if (menuItem != null && !menuItem.isDisposed()) {
-				menuItem.setText(Messages.get(menuItem));
-			}
-		}
+		localizedControls.updateTexts();
 	}
 
 	protected MenuItem newLocalizedMenuItem(@NonNull final Menu parent, final int style, @NonNull final String messageKey) {
-		final MenuItem menuItem = new MenuItem(parent, style);
-		menuItem.setData(messageKey);
-		menuItem.setText(Messages.get(menuItem));
-		localizedMenuItems.add(menuItem);
-		return menuItem;
+		return newLocalizedMenuItem(parent, style, () -> Messages.get(messageKey));
 	}
 
-	protected MenuItem newLocalizedMenuItem(@NonNull final Menu parent, final int style, @NonNull final Supplier<String> messageSupplier) {
-		final MenuItem menuItem = new MenuItem(parent, style);
-		menuItem.setData(messageSupplier);
-		menuItem.setText(Messages.get(menuItem));
-		localizedMenuItems.add(menuItem);
-		return menuItem;
+	protected MenuItem newLocalizedMenuItem(@NonNull final Menu parent, final int style, @NonNull final ISupplier<String> textSupplier) {
+		return localizedControls.newLocalizedMenuItem(parent, style, textSupplier);
 	}
 
 }

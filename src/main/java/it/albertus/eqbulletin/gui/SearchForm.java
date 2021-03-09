@@ -135,9 +135,7 @@ public class SearchForm implements IShellProvider, Multilanguage {
 
 	private final Collection<ControlValidator<Text>> validators = new ArrayList<>();
 
-	@Getter(AccessLevel.NONE) private final Collection<Label> localizedLabels = new ArrayList<>();
-	@Getter(AccessLevel.NONE) private final Collection<Button> localizedButtons = new ArrayList<>();
-	@Getter(AccessLevel.NONE) private final Collection<Group> localizedGroups = new ArrayList<>();
+	@Getter(AccessLevel.NONE) private final LocalizedControls localizedControls = new LocalizedControls();
 
 	SearchForm(@NonNull final EarthquakeBulletinGui gui) {
 		shell = gui.getShell();
@@ -366,45 +364,19 @@ public class SearchForm implements IShellProvider, Multilanguage {
 		if (!openMapButton.getText().isEmpty()) {
 			openMapButton.setText(Messages.get("label.form.button.map"));
 		}
-		for (final Label control : localizedLabels) {
-			if (control != null && !control.isDisposed()) {
-				control.setText(Messages.get(control));
-			}
-		}
-		for (final Button control : localizedButtons) {
-			if (control != null && !control.isDisposed()) {
-				control.setText(Messages.get(control));
-			}
-		}
-		for (final Group control : localizedGroups) {
-			if (control != null && !control.isDisposed()) {
-				control.setText(Messages.get(control));
-			}
-		}
+		localizedControls.updateTexts();
 	}
 
 	private Label newLocalizedLabel(@NonNull final Composite parent, final int style, @NonNull final String messageKey) {
-		final Label control = new Label(parent, style);
-		control.setData(messageKey);
-		control.setText(Messages.get(control));
-		localizedLabels.add(control);
-		return control;
+		return localizedControls.newLocalizedLabel(parent, style, () -> Messages.get(messageKey));
 	}
 
 	private Button newLocalizedButton(@NonNull final Composite parent, final int style, @NonNull final String messageKey) {
-		final Button control = new Button(parent, style);
-		control.setData(messageKey);
-		control.setText(Messages.get(control));
-		localizedButtons.add(control);
-		return control;
+		return localizedControls.newLocalizedButton(parent, style, () -> Messages.get(messageKey));
 	}
 
 	private Group newLocalizedGroup(@NonNull final Composite parent, final int style, @NonNull final String messageKey) {
-		final Group control = new Group(parent, style);
-		control.setData(messageKey);
-		control.setText(Messages.get(control));
-		localizedGroups.add(control);
-		return control;
+		return localizedControls.newLocalizedGroup(parent, style, () -> Messages.get(messageKey));
 	}
 
 	private static String getConfiguredFloatString(final IPreference preference) {
