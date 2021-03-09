@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AboutListener extends SelectionAdapter implements Listener {
 
-	private final @NonNull IShellProvider provider;
+	@NonNull private final IShellProvider provider;
 
 	@Override
 	public void widgetSelected(final SelectionEvent e) {

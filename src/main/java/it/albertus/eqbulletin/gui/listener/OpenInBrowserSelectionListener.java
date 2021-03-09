@@ -16,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class OpenInBrowserSelectionListener extends SelectionAdapter {
 
-	private final @NonNull Supplier<ResultsTable> resultsTableSupplier;
+	@NonNull private final Supplier<ResultsTable> resultsTableSupplier;
 
 	@Override
 	public void widgetSelected(final SelectionEvent se) {

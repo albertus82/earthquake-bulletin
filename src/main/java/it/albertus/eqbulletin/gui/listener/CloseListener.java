@@ -16,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CloseListener extends SelectionAdapter implements Listener {
 
-	private final @NonNull EarthquakeBulletinGui gui;
+	@NonNull private final EarthquakeBulletinGui gui;
 
 	private boolean canClose() {
 		return !CloseDialog.mustShow() || CloseDialog.open(gui.getShell()) == SWT.YES;

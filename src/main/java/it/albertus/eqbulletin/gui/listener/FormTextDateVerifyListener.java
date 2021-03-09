@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class FormTextDateVerifyListener extends TrimVerifyListener {
 
-	private final @NonNull String allowedChars;
+	@NonNull private final String allowedChars;
 
 	@Override
 	public void verifyText(final VerifyEvent ve) {

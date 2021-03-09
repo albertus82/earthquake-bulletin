@@ -35,7 +35,7 @@ public class PreferencesListener extends SelectionAdapter implements Listener {
 
 	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getPreferencesConfiguration();
 
-	private final @NonNull EarthquakeBulletinGui gui;
+	@NonNull private final EarthquakeBulletinGui gui;
 
 	@Override
 	public void widgetSelected(final SelectionEvent event) {

@@ -29,6 +29,7 @@ import it.albertus.jface.SwtUtils;
 import it.albertus.jface.cocoa.CocoaEnhancerException;
 import it.albertus.jface.cocoa.CocoaUIEnhancer;
 import it.albertus.jface.sysinfo.SystemInformationDialog;
+import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.java.Log;
 
@@ -40,9 +41,10 @@ import lombok.extern.java.Log;
  * combinazioni di tasti saranno ignorate.
  */
 @Log
+@Getter
 public class MenuBar extends AbstractMenu implements IShellProvider {
 
-	private final @NonNull Shell shell;
+	@NonNull private final Shell shell;
 
 	MenuBar(@NonNull final EarthquakeBulletinGui gui) {
 		this.shell = gui.getShell();
@@ -166,11 +168,6 @@ public class MenuBar extends AbstractMenu implements IShellProvider {
 		helpMenuHeader.addArmListener(helpMenuListener);
 
 		shell.setMenuBar(bar);
-	}
-
-	@Override
-	public Shell getShell() {
-		return shell;
 	}
 
 }

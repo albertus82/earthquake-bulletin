@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ResultsTableContextMenuDetectListener implements MenuDetectListener {
 
-	private final @NonNull ResultsTable resultsTable;
+	@NonNull private final ResultsTable resultsTable;
 
 	@Override
 	public void menuDetected(final MenuDetectEvent e) {

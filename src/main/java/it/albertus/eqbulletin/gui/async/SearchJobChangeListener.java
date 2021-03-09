@@ -36,8 +36,8 @@ import lombok.extern.java.Log;
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 class SearchJobChangeListener extends JobChangeAdapter {
 
-	private final @NonNull SearchRequest request;
-	private final @NonNull EarthquakeBulletinGui gui;
+	@NonNull private final SearchRequest request;
+	@NonNull private final EarthquakeBulletinGui gui;
 
 	@Override
 	public void running(final IJobChangeEvent event) {

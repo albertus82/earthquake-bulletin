@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class FormTextModifyListener implements ModifyListener {
 
-	private final @NonNull SearchForm form;
+	@NonNull private final SearchForm form;
 
 	@Override
 	public void modifyText(final ModifyEvent e) {

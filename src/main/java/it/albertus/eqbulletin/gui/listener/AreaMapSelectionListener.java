@@ -17,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AreaMapSelectionListener extends SelectionAdapter {
 
-	private final @NonNull SearchForm form;
+	@NonNull private final SearchForm form;
 
 	@Override
 	public void widgetSelected(final SelectionEvent se) {

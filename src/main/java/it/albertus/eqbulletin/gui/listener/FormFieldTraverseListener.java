@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class FormFieldTraverseListener implements TraverseListener {
 
-	private final @NonNull EarthquakeBulletinGui gui;
+	@NonNull private final EarthquakeBulletinGui gui;
 
 	@Override
 	public void keyTraversed(final TraverseEvent e) {

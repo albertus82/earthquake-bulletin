@@ -37,8 +37,8 @@ public class BulletinExporter implements IRunnableWithProgress {
 	private static final char CSV_FIELD_SEPARATOR = ';';
 	private static final String[] CSV_FILE_EXTENSIONS = { "*.CSV;*.csv" };
 
-	private final @NonNull String fileName;
-	private final @NonNull String data;
+	@NonNull private final String fileName;
+	@NonNull private final String data;
 
 	@Override
 	public void run(final IProgressMonitor monitor) throws InvocationTargetException {

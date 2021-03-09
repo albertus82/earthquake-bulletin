@@ -25,7 +25,7 @@ class PackedMomentTensor implements Serializable {
 
 	private static final Charset charset = StandardCharsets.UTF_8;
 
-	private final @NonNull byte[] bytes;
+	@NonNull private final byte[] bytes;
 	private final String etag;
 
 	static PackedMomentTensor pack(@NonNull final MomentTensor momentTensor) {
