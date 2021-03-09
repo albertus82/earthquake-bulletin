@@ -41,7 +41,7 @@ abstract class AbstractMenu implements Multilanguage {
 	}
 
 	protected MenuItem newLocalizedMenuItem(@NonNull final Menu parent, final int style, @NonNull final ISupplier<String> textSupplier) {
-		return localizedWidgets.addAndReturn(new MenuItem(parent, style), textSupplier);
+		return localizedWidgets.putAndReturn(new MenuItem(parent, style), textSupplier).getKey();
 	}
 
 }
