@@ -68,6 +68,7 @@ import lombok.NonNull;
 import lombok.extern.java.Log;
 
 @Log
+@Getter
 public class SearchForm implements IShellProvider, Multilanguage {
 
 	public static final float LATITUDE_MIN_VALUE = MapBounds.LATITUDE_MIN_VALUE;
@@ -103,59 +104,40 @@ public class SearchForm implements IShellProvider, Multilanguage {
 
 	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getPreferencesConfiguration();
 
-	@Getter private final Shell shell;
+	private final Shell shell;
 
-	private final Composite formComposite;
+	private final Label periodLabel;
+	private final Label periodFromLabel;
+	private final Label periodToLabel;
+	private final CDateTime periodFromDateTime;
+	private final CDateTime periodToDateTime;
+	private final Label periodFromNote;
+	private final Label periodToNote;
 
-	@Getter private final Label periodLabel;
-	@Getter private final Label periodFromLabel;
-	@Getter private final Label periodToLabel;
-	@Getter private final CDateTime periodFromDateTime;
-	@Getter private final CDateTime periodToDateTime;
-	@Getter private final Label periodFromNote;
-	@Getter private final Label periodToNote;
+	private final Text latitudeFromText;
+	private final Text latitudeToText;
+	@Getter(AccessLevel.NONE) private Button openMapButton;
+	private final Text longitudeFromText;
+	private final Text longitudeToText;
 
-	private final Group areaGroup;
+	private final Text minimumMagnitudeText;
+	private final Button restrictButton;
 
-	private final Label latitudeLabel;
-	private final Label latitudeFromLabel;
-	@Getter private final Text latitudeFromText;
-	private final Label latitudeFromNote;
-	private final Label latitudeToLabel;
-	@Getter private final Text latitudeToText;
-	private final Label latitudeToNote;
+	private final Map<Format, Button> formatRadios = new EnumMap<>(Format.class);
+	private final Label resultsLabel;
+	private final Text resultsText;
 
-	private final Label longitudeLabel;
-	private final Label longitudeFromLabel;
-	@Getter private final Text longitudeFromText;
-	private final Label longitudeFromNote;
-	private final Label longitudeToLabel;
-	@Getter private final Text longitudeToText;
-	private final Label longitudeToNote;
+	private final Button searchButton;
+	private final Button autoRefreshButton;
+	private final Text autoRefreshText;
 
-	private final Label minimumMagnitudeLabel;
-	@Getter private final Text minimumMagnitudeText;
-	@Getter private final Button restrictButton;
+	private final LeafletMapBoundsDialog mapBoundsDialog;
 
-	private final Label outputFormatLabel;
-	private final Composite radioComposite;
-	@Getter private final Map<Format, Button> formatRadios = new EnumMap<>(Format.class);
-	@Getter private final Label resultsLabel;
-	@Getter private final Text resultsText;
+	private final Collection<ControlValidator<Text>> validators = new ArrayList<>();
 
-	private final Group criteriaGroup;
-
-	private final Composite buttonsComposite;
-	@Getter private final Button searchButton;
-	private final Label resultsNote;
-	@Getter private final Button autoRefreshButton;
-	@Getter private final Text autoRefreshText;
-	private final Button clearButton;
-	private final Button openMapButton;
-
-	@Getter private final LeafletMapBoundsDialog mapBoundsDialog;
-
-	@Getter private final Collection<ControlValidator<Text>> validators = new ArrayList<>();
+	@Getter(AccessLevel.NONE) private final Collection<Label> localizedLabels = new ArrayList<>();
+	@Getter(AccessLevel.NONE) private final Collection<Button> localizedButtons = new ArrayList<>();
+	@Getter(AccessLevel.NONE) private final Collection<Group> localizedGroups = new ArrayList<>();
 
 	SearchForm(@NonNull final EarthquakeBulletinGui gui) {
 		shell = gui.getShell();
@@ -164,61 +146,49 @@ public class SearchForm implements IShellProvider, Multilanguage {
 		final ModifyListener formTextModifyListener = new FormTextModifyListener(this);
 		final VerifyListener coordinatesVerifyListener = new FloatVerifyListener(true);
 
-		formComposite = new Composite(shell, SWT.NONE);
+		final Composite formComposite = new Composite(shell, SWT.NONE);
 		GridLayoutFactory.swtDefaults().margins(0, 0).numColumns(2).applyTo(formComposite);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.TOP).grab(true, false).applyTo(formComposite);
 
-		criteriaGroup = new Group(formComposite, SWT.NONE);
-		criteriaGroup.setText(Messages.get("label.form.criteria.group"));
+		final Group criteriaGroup = newLocalizedGroup(formComposite, SWT.NONE, "label.form.criteria.group");
 		GridLayoutFactory.swtDefaults().numColumns(7).applyTo(criteriaGroup);
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(criteriaGroup);
 
-		periodLabel = new Label(criteriaGroup, SWT.NONE);
-		periodLabel.setText(Messages.get("label.form.criteria.period"));
-		periodFromLabel = new Label(criteriaGroup, SWT.NONE);
-		periodFromLabel.setText(Messages.get("label.form.criteria.period.from"));
+		periodLabel = newLocalizedLabel(criteriaGroup, SWT.NONE, "label.form.criteria.period");
+		periodFromLabel = newLocalizedLabel(criteriaGroup, SWT.NONE, "label.form.criteria.period.from");
 		periodFromDateTime = new CDateTime(criteriaGroup, CDT.DROP_DOWN | CDT.BORDER);
 		periodFromDateTime.setPattern(DATE_PATTERN);
 		periodFromDateTime.setLocale(Messages.Language.ENGLISH.equals(Messages.getLanguage()) ? Locale.US : Messages.getLanguage().getLocale());
 		periodFromDateTime.addTraverseListener(formFieldTraverseListener);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).indent(CDATETIME_INDENT_RIGHT, 0).applyTo(periodFromDateTime);
-		periodFromNote = new Label(criteriaGroup, SWT.NONE);
-		periodFromNote.setText(Messages.get("label.form.criteria.period.from.note"));
-		periodToLabel = new Label(criteriaGroup, SWT.NONE);
-		periodToLabel.setText(Messages.get("label.form.criteria.period.to"));
+		periodFromNote = newLocalizedLabel(criteriaGroup, SWT.NONE, "label.form.criteria.period.from.note");
+		periodToLabel = newLocalizedLabel(criteriaGroup, SWT.NONE, "label.form.criteria.period.to");
 		periodToDateTime = new CDateTime(criteriaGroup, CDT.DROP_DOWN | CDT.BORDER);
 		periodToDateTime.setPattern(DATE_PATTERN);
 		periodToDateTime.setLocale(Messages.Language.ENGLISH.equals(Messages.getLanguage()) ? Locale.US : Messages.getLanguage().getLocale());
 		periodToDateTime.addTraverseListener(formFieldTraverseListener);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).indent(CDATETIME_INDENT_RIGHT, 0).applyTo(periodToDateTime);
-		periodToNote = new Label(criteriaGroup, SWT.NONE);
-		periodToNote.setText(Messages.get("label.form.criteria.period.to.note"));
+		periodToNote = newLocalizedLabel(criteriaGroup, SWT.NONE, "label.form.criteria.period.to.note");
 
-		areaGroup = new Group(criteriaGroup, SWT.NONE);
-		areaGroup.setText(Messages.get("label.form.criteria.area"));
+		final Group areaGroup = newLocalizedGroup(criteriaGroup, SWT.NONE, "label.form.criteria.area");
 		GridLayoutFactory.swtDefaults().numColumns(8).applyTo(areaGroup);
 		GridDataFactory.fillDefaults().span(7, 1).applyTo(areaGroup);
 
-		latitudeLabel = new Label(areaGroup, SWT.NONE);
-		latitudeLabel.setText(Messages.get("label.form.criteria.latitude"));
-		latitudeFromLabel = new Label(areaGroup, SWT.NONE);
-		latitudeFromLabel.setText(Messages.get("label.form.criteria.latitude.from"));
+		newLocalizedLabel(areaGroup, SWT.NONE, "label.form.criteria.latitude");
+		newLocalizedLabel(areaGroup, SWT.NONE, "label.form.criteria.latitude.from");
 		latitudeFromText = new Text(areaGroup, SWT.BORDER);
 		latitudeFromText.setTextLimit(COORDINATES_TEXT_LIMIT);
 		latitudeFromText.addTraverseListener(formFieldTraverseListener);
 		latitudeFromText.addVerifyListener(coordinatesVerifyListener);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(latitudeFromText);
-		latitudeFromNote = new Label(areaGroup, SWT.NONE);
-		latitudeFromNote.setText(Messages.get("label.form.criteria.latitude.from.note"));
-		latitudeToLabel = new Label(areaGroup, SWT.NONE);
-		latitudeToLabel.setText(Messages.get("label.form.criteria.latitude.to"));
+		newLocalizedLabel(areaGroup, SWT.NONE, "label.form.criteria.latitude.from.note");
+		newLocalizedLabel(areaGroup, SWT.NONE, "label.form.criteria.latitude.to");
 		latitudeToText = new Text(areaGroup, SWT.BORDER);
 		latitudeToText.setTextLimit(COORDINATES_TEXT_LIMIT);
 		latitudeToText.addTraverseListener(formFieldTraverseListener);
 		latitudeToText.addVerifyListener(coordinatesVerifyListener);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(latitudeToText);
-		latitudeToNote = new Label(areaGroup, SWT.NONE);
-		latitudeToNote.setText(Messages.get("label.form.criteria.latitude.to.note"));
+		newLocalizedLabel(areaGroup, SWT.NONE, "label.form.criteria.latitude.to.note");
 
 		openMapButton = new Button(areaGroup, SWT.NONE);
 		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.FILL).span(1, 2).applyTo(openMapButton);
@@ -233,43 +203,35 @@ public class SearchForm implements IShellProvider, Multilanguage {
 		}
 		openMapButton.addSelectionListener(new AreaMapSelectionListener(this));
 
-		longitudeLabel = new Label(areaGroup, SWT.NONE);
-		longitudeLabel.setText(Messages.get("label.form.criteria.longitude"));
-		longitudeFromLabel = new Label(areaGroup, SWT.NONE);
-		longitudeFromLabel.setText(Messages.get("label.form.criteria.longitude.from"));
+		newLocalizedLabel(areaGroup, SWT.NONE, "label.form.criteria.longitude");
+		newLocalizedLabel(areaGroup, SWT.NONE, "label.form.criteria.longitude.from");
 		longitudeFromText = new Text(areaGroup, SWT.BORDER);
 		longitudeFromText.setTextLimit(COORDINATES_TEXT_LIMIT);
 		longitudeFromText.addTraverseListener(formFieldTraverseListener);
 		longitudeFromText.addVerifyListener(coordinatesVerifyListener);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(longitudeFromText);
-		longitudeFromNote = new Label(areaGroup, SWT.NONE);
-		longitudeFromNote.setText(Messages.get("label.form.criteria.longitude.from.note"));
-		longitudeToLabel = new Label(areaGroup, SWT.NONE);
-		longitudeToLabel.setText(Messages.get("label.form.criteria.longitude.to"));
+		newLocalizedLabel(areaGroup, SWT.NONE, "label.form.criteria.longitude.from.note");
+		newLocalizedLabel(areaGroup, SWT.NONE, "label.form.criteria.longitude.to");
 		longitudeToText = new Text(areaGroup, SWT.BORDER);
 		longitudeToText.setTextLimit(COORDINATES_TEXT_LIMIT);
 		longitudeToText.addTraverseListener(formFieldTraverseListener);
 		longitudeToText.addVerifyListener(coordinatesVerifyListener);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(longitudeToText);
-		longitudeToNote = new Label(areaGroup, SWT.NONE);
-		longitudeToNote.setText(Messages.get("label.form.criteria.longitude.to.note"));
+		newLocalizedLabel(areaGroup, SWT.NONE, "label.form.criteria.longitude.to.note");
 
-		minimumMagnitudeLabel = new Label(criteriaGroup, SWT.NONE);
-		minimumMagnitudeLabel.setText(Messages.get("label.form.criteria.magnitude"));
+		final Label minimumMagnitudeLabel = newLocalizedLabel(criteriaGroup, SWT.NONE, "label.form.criteria.magnitude");
 		GridDataFactory.swtDefaults().span(2, 1).applyTo(minimumMagnitudeLabel);
 		minimumMagnitudeText = new Text(criteriaGroup, SWT.BORDER);
 		minimumMagnitudeText.setTextLimit(MAGNITUDE_TEXT_LIMIT);
 		minimumMagnitudeText.addTraverseListener(formFieldTraverseListener);
 		minimumMagnitudeText.addVerifyListener(new FloatVerifyListener(false));
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(minimumMagnitudeText);
-		restrictButton = new Button(criteriaGroup, SWT.CHECK);
-		restrictButton.setText(Messages.get("label.form.criteria.restrict"));
+		restrictButton = newLocalizedButton(criteriaGroup, SWT.CHECK, "label.form.criteria.restrict");
 		restrictButton.setSelection(configuration.getBoolean(Preference.CRITERIA_RESTRICT, Defaults.CRITERIA_RESTRICT));
 		GridDataFactory.swtDefaults().span(4, 1).applyTo(restrictButton);
 
-		outputFormatLabel = new Label(criteriaGroup, SWT.NONE);
-		outputFormatLabel.setText(Messages.get("label.form.format"));
-		radioComposite = new Composite(criteriaGroup, SWT.NONE);
+		newLocalizedLabel(criteriaGroup, SWT.NONE, "label.form.format");
+		final Composite radioComposite = new Composite(criteriaGroup, SWT.NONE);
 		radioComposite.setLayout(new RowLayout(SWT.HORIZONTAL));
 		GridDataFactory.swtDefaults().grab(false, false).span(2, 1).applyTo(radioComposite);
 		Format selectedFormat;
@@ -287,24 +249,21 @@ public class SearchForm implements IShellProvider, Multilanguage {
 			radio.setSelection(format.equals(selectedFormat));
 			formatRadios.put(format, radio);
 		}
-		resultsLabel = new Label(criteriaGroup, SWT.NONE);
-		resultsLabel.setText(Messages.get("label.form.limit"));
+		resultsLabel = newLocalizedLabel(criteriaGroup, SWT.NONE, "label.form.limit");
 		GridDataFactory.swtDefaults().grab(false, false).span(2, 1).applyTo(resultsLabel);
 		resultsText = new Text(criteriaGroup, SWT.BORDER);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(resultsText);
 		resultsText.setTextLimit(RESULTS_TEXT_LIMIT);
 		resultsText.addTraverseListener(formFieldTraverseListener);
 		resultsText.addVerifyListener(new IntegerVerifyListener(false));
-		resultsNote = new Label(criteriaGroup, SWT.NONE);
-		resultsNote.setText(Messages.get("label.form.limit.note"));
+		newLocalizedLabel(criteriaGroup, SWT.NONE, "label.form.limit.note");
 
 		// Buttons
-		buttonsComposite = new Composite(formComposite, SWT.NONE);
+		final Composite buttonsComposite = new Composite(formComposite, SWT.NONE);
 		GridLayoutFactory.swtDefaults().applyTo(buttonsComposite);
 		GridDataFactory.fillDefaults().grab(false, true).applyTo(buttonsComposite);
 
-		autoRefreshButton = new Button(buttonsComposite, SWT.CHECK);
-		autoRefreshButton.setText(Messages.get("label.form.button.autorefresh"));
+		autoRefreshButton = newLocalizedButton(buttonsComposite, SWT.CHECK, "label.form.button.autorefresh");
 		autoRefreshButton.setSelection(configuration.getBoolean(Preference.AUTOREFRESH_ENABLED, Defaults.AUTOREFRESH_ENABLED));
 		GridDataFactory.swtDefaults().applyTo(autoRefreshButton);
 
@@ -314,12 +273,10 @@ public class SearchForm implements IShellProvider, Multilanguage {
 		autoRefreshText.addVerifyListener(new IntegerVerifyListener(false));
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(autoRefreshText);
 
-		searchButton = new Button(buttonsComposite, SWT.NONE);
-		searchButton.setText(Messages.get("label.form.button.submit"));
+		searchButton = newLocalizedButton(buttonsComposite, SWT.NONE, "label.form.button.submit");
 		GridDataFactory.fillDefaults().grab(true, true).minSize(SwtUtils.convertHorizontalDLUsToPixels(searchButton, IDialogConstants.BUTTON_WIDTH), SWT.DEFAULT).applyTo(searchButton);
 
-		clearButton = new Button(buttonsComposite, SWT.NONE);
-		clearButton.setText(Messages.get("label.form.button.clear"));
+		final Button clearButton = newLocalizedButton(buttonsComposite, SWT.NONE, "label.form.button.clear");
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(clearButton);
 
 		// Listeners
@@ -402,41 +359,55 @@ public class SearchForm implements IShellProvider, Multilanguage {
 	public void updateLanguage() {
 		periodFromDateTime.setLocale(Messages.Language.ENGLISH.equals(Messages.getLanguage()) ? Locale.US : Messages.getLanguage().getLocale());
 		periodToDateTime.setLocale(Messages.Language.ENGLISH.equals(Messages.getLanguage()) ? Locale.US : Messages.getLanguage().getLocale());
-		criteriaGroup.setText(Messages.get("label.form.criteria.group"));
-		periodLabel.setText(Messages.get("label.form.criteria.period"));
-		periodFromLabel.setText(Messages.get("label.form.criteria.period.from"));
-		periodFromNote.setText(Messages.get("label.form.criteria.period.from.note"));
-		periodToLabel.setText(Messages.get("label.form.criteria.period.to"));
-		periodToNote.setText(Messages.get("label.form.criteria.period.to.note"));
-		areaGroup.setText(Messages.get("label.form.criteria.area"));
-		latitudeLabel.setText(Messages.get("label.form.criteria.latitude"));
-		latitudeFromLabel.setText(Messages.get("label.form.criteria.latitude.from"));
-		latitudeFromNote.setText(Messages.get("label.form.criteria.latitude.from.note"));
-		latitudeToLabel.setText(Messages.get("label.form.criteria.latitude.to"));
-		latitudeToNote.setText(Messages.get("label.form.criteria.latitude.to.note"));
-		longitudeLabel.setText(Messages.get("label.form.criteria.longitude"));
-		longitudeFromLabel.setText(Messages.get("label.form.criteria.longitude.from"));
-		longitudeFromNote.setText(Messages.get("label.form.criteria.longitude.from.note"));
-		longitudeToLabel.setText(Messages.get("label.form.criteria.longitude.to"));
-		longitudeToNote.setText(Messages.get("label.form.criteria.longitude.to.note"));
-		minimumMagnitudeLabel.setText(Messages.get("label.form.criteria.magnitude"));
-		restrictButton.setText(Messages.get("label.form.criteria.restrict"));
-		outputFormatLabel.setText(Messages.get("label.form.format"));
-		resultsLabel.setText(Messages.get("label.form.limit"));
-		resultsNote.setText(Messages.get("label.form.limit.note"));
-		autoRefreshButton.setText(Messages.get("label.form.button.autorefresh"));
-		searchButton.setText(Messages.get("label.form.button.submit"));
-		clearButton.setText(Messages.get("label.form.button.clear"));
+		mapBoundsDialog.setText(Messages.get("label.map.bounds.title"));
 		if (openMapButton.getToolTipText() != null && !openMapButton.getToolTipText().isEmpty()) {
 			openMapButton.setToolTipText(Messages.get("label.form.button.map.tooltip"));
 		}
 		if (!openMapButton.getText().isEmpty()) {
 			openMapButton.setText(Messages.get("label.form.button.map"));
 		}
-		mapBoundsDialog.setText(Messages.get("label.map.bounds.title"));
+		for (final Label control : localizedLabels) {
+			if (control != null && !control.isDisposed()) {
+				control.setText(Messages.get(control));
+			}
+		}
+		for (final Button control : localizedButtons) {
+			if (control != null && !control.isDisposed()) {
+				control.setText(Messages.get(control));
+			}
+		}
+		for (final Group control : localizedGroups) {
+			if (control != null && !control.isDisposed()) {
+				control.setText(Messages.get(control));
+			}
+		}
 	}
 
-	private String getConfiguredFloatString(final IPreference preference) {
+	private Label newLocalizedLabel(@NonNull final Composite parent, final int style, @NonNull final String messageKey) {
+		final Label control = new Label(parent, style);
+		control.setData(messageKey);
+		control.setText(Messages.get(control));
+		localizedLabels.add(control);
+		return control;
+	}
+
+	private Button newLocalizedButton(@NonNull final Composite parent, final int style, @NonNull final String messageKey) {
+		final Button control = new Button(parent, style);
+		control.setData(messageKey);
+		control.setText(Messages.get(control));
+		localizedButtons.add(control);
+		return control;
+	}
+
+	private Group newLocalizedGroup(@NonNull final Composite parent, final int style, @NonNull final String messageKey) {
+		final Group control = new Group(parent, style);
+		control.setData(messageKey);
+		control.setText(Messages.get(control));
+		localizedGroups.add(control);
+		return control;
+	}
+
+	private static String getConfiguredFloatString(final IPreference preference) {
 		String value = "";
 		try {
 			final Float number = configuration.getFloat(preference);
@@ -450,7 +421,7 @@ public class SearchForm implements IShellProvider, Multilanguage {
 		return value;
 	}
 
-	private String getConfiguredIntegerString(final IPreference preference) {
+	private static String getConfiguredIntegerString(final IPreference preference) {
 		String value = "";
 		try {
 			final Integer number = configuration.getInt(preference);
@@ -464,7 +435,7 @@ public class SearchForm implements IShellProvider, Multilanguage {
 		return value;
 	}
 
-	private Date getConfiguredDate(final IPreference preference) {
+	private static Date getConfiguredDate(final IPreference preference) {
 		Date value = null;
 		final String dateStr = configuration.getString(preference);
 		if (dateStr != null && !dateStr.trim().isEmpty()) {

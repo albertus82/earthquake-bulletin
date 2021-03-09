@@ -9,6 +9,7 @@ import org.eclipse.swt.widgets.MenuItem;
 
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.jface.Multilanguage;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
 
@@ -31,12 +32,14 @@ abstract class AbstractMenu implements Multilanguage {
 	protected MenuItem showMapMenuItem;
 	protected MenuItem showMomentTensorMenuItem;
 
-	private final Collection<MenuItem> localizedMenuItems = new ArrayList<>();
+	@Getter(AccessLevel.NONE) private final Collection<MenuItem> localizedMenuItems = new ArrayList<>();
 
 	@Override
 	public void updateLanguage() {
 		for (final MenuItem menuItem : localizedMenuItems) {
-			menuItem.setText(Messages.get(menuItem));
+			if (menuItem != null && !menuItem.isDisposed()) {
+				menuItem.setText(Messages.get(menuItem));
+			}
 		}
 	}
 
