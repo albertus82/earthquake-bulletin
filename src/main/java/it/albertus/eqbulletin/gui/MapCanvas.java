@@ -43,7 +43,9 @@ import it.albertus.jface.EnhancedErrorDialog;
 import it.albertus.jface.ImageUtils;
 import it.albertus.jface.Multilanguage;
 import it.albertus.jface.closeable.CloseableResource;
+import it.albertus.jface.i18n.LocalizedWidgets;
 import it.albertus.jface.preference.IPreferencesConfiguration;
+import it.albertus.util.ISupplier;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -79,9 +81,7 @@ public class MapCanvas implements IShellProvider, Multilanguage {
 
 	private Image resized;
 
-	private final MenuItem downloadMenuItem;
-	private final MenuItem zoomMenuItem;
-	private final Map<Integer, MenuItem> zoomSubMenuItems = new HashMap<>();
+	private final LocalizedWidgets localizedWidgets = new LocalizedWidgets();
 
 	private static MapCanvas instance;
 
@@ -94,18 +94,15 @@ public class MapCanvas implements IShellProvider, Multilanguage {
 
 		final Menu contextMenu = new Menu(canvas);
 
-		zoomMenuItem = new MenuItem(contextMenu, SWT.CASCADE);
-		zoomMenuItem.setData("label.menu.item.zoom");
-		zoomMenuItem.setText(Messages.get(zoomMenuItem.getData().toString()));
+		final MenuItem zoomMenuItem = newLocalizedMenuItem(contextMenu, SWT.CASCADE, "label.menu.item.zoom");
 
 		final Menu zoomSubMenu = new Menu(zoomMenuItem);
 		zoomMenuItem.setMenu(zoomSubMenu);
 
+		final Map<Integer, MenuItem> zoomSubMenuItems = new HashMap<>();
 		for (final int level : zoomLevels) {
-			final MenuItem item = new MenuItem(zoomSubMenu, SWT.RADIO);
+			final MenuItem item = newLocalizedMenuItem(zoomSubMenu, SWT.RADIO, () -> Messages.get("label.menu.item.zoom." + (level == AUTO_SCALE ? "auto" : "custom"), level));
 			zoomSubMenuItems.put(level, item);
-			item.setData("label.menu.item.zoom." + (level == AUTO_SCALE ? "auto" : "custom"));
-			item.setText(Messages.get(item.getData().toString(), level));
 			item.addSelectionListener(new SelectionAdapter() {
 				@Override
 				public void widgetSelected(final SelectionEvent e) {
@@ -128,17 +125,15 @@ public class MapCanvas implements IShellProvider, Multilanguage {
 
 		new MenuItem(contextMenu, SWT.SEPARATOR);
 
-		downloadMenuItem = new MenuItem(contextMenu, SWT.PUSH);
-		downloadMenuItem.setData("label.menu.item.save.map");
-		downloadMenuItem.setText(Messages.get(downloadMenuItem.getData().toString()));
-		downloadMenuItem.addSelectionListener(new SelectionAdapter() {
+		final MenuItem saveMenuItem = newLocalizedMenuItem(contextMenu, SWT.PUSH, "label.menu.item.save.map");
+		saveMenuItem.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
 				saveImage();
 			}
 		});
 		canvas.setMenu(contextMenu);
-		canvas.addMenuDetectListener(e -> downloadMenuItem.setEnabled(canSaveImage()));
+		canvas.addMenuDetectListener(e -> saveMenuItem.setEnabled(canSaveImage()));
 
 		canvas.addMouseWheelListener(e -> {
 			if (image != null && e.count != 0) {
@@ -345,15 +340,19 @@ public class MapCanvas implements IShellProvider, Multilanguage {
 
 	@Override
 	public void updateLanguage() {
-		downloadMenuItem.setText(Messages.get(downloadMenuItem.getData().toString()));
-		zoomMenuItem.setText(Messages.get(zoomMenuItem.getData().toString()));
-		for (final Entry<Integer, MenuItem> entry : zoomSubMenuItems.entrySet()) {
-			entry.getValue().setText(Messages.get(entry.getValue().getData().toString(), entry.getKey()));
-		}
+		localizedWidgets.resetAllTexts();
 	}
 
 	private Color getBackgroundColor() {
 		return canvas.getDisplay().getSystemColor(SWT.COLOR_WHITE);
+	}
+
+	private MenuItem newLocalizedMenuItem(@NonNull final Menu parent, final int style, @NonNull final String messageKey) {
+		return newLocalizedMenuItem(parent, style, () -> Messages.get(messageKey));
+	}
+
+	private MenuItem newLocalizedMenuItem(@NonNull final Menu parent, final int style, @NonNull final ISupplier<String> textSupplier) {
+		return localizedWidgets.putAndReturn(new MenuItem(parent, style), textSupplier).getKey();
 	}
 
 	public static Collection<Integer> getZoomLevels() {
