@@ -10,13 +10,14 @@ import java.util.logging.Level;
 import org.eclipse.jface.action.StatusLineManager;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.window.IShellProvider;
-import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 
 import it.albertus.eqbulletin.config.TimeZoneConfig;
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.jface.Multilanguage;
+import it.albertus.jface.i18n.LocalizedWidgets;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -33,11 +34,18 @@ public class StatusBar implements IShellProvider, Multilanguage {
 	@Setter private TemporalAccessor lastUpdateTime;
 	@Setter private int itemCount;
 
+	private final LocalizedWidgets localizedWidgets = new LocalizedWidgets();
+
 	StatusBar(@NonNull final EarthquakeBulletinGui gui) {
 		shell = gui.getShell();
 		gui.createStatusLine(shell);
 		manager = gui.getStatusLineManager();
-		localizeContextMenu(manager);
+		try {
+			localizedWidgets.put(getCopyMenuItem(manager), () -> Messages.get("label.menu.item.copy"));
+		}
+		catch (final Exception e) {
+			log.log(Level.WARNING, "Cannot localize the status bar:", e);
+		}
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(manager.getControl());
 		refresh();
 	}
@@ -45,7 +53,7 @@ public class StatusBar implements IShellProvider, Multilanguage {
 	@Override
 	public void updateLanguage() {
 		refresh();
-		localizeContextMenu(manager);
+		localizedWidgets.resetAllTexts();
 	}
 
 	public void refresh() {
@@ -62,25 +70,15 @@ public class StatusBar implements IShellProvider, Multilanguage {
 		return Messages.getLanguage().getLocale();
 	}
 
-	private static void localizeContextMenu(final StatusLineManager manager) {
-		try {
-			for (final Field f1 : manager.getClass().getDeclaredFields()) {
-				if (Composite.class.isAssignableFrom(f1.getType())) {
-					f1.setAccessible(true);
-					final Composite statusLine = (Composite) f1.get(manager);
-					for (final Field f2 : statusLine.getClass().getDeclaredFields()) {
-						if (f2.getName().toLowerCase(Locale.ROOT).contains("copy") && MenuItem.class.isAssignableFrom(f2.getType())) {
-							f2.setAccessible(true);
-							final MenuItem copyMenuItem = (MenuItem) f2.get(statusLine);
-							copyMenuItem.setText(Messages.get("label.menu.item.copy"));
-						}
-					}
-				}
+	private static MenuItem getCopyMenuItem(@NonNull final StatusLineManager manager) throws IllegalAccessException, NoSuchFieldException {
+		final Control statusLine = manager.getControl();
+		for (final Field field : statusLine.getClass().getDeclaredFields()) {
+			if (field.getName().toLowerCase(Locale.ROOT).contains("copy") && MenuItem.class.isAssignableFrom(field.getType())) {
+				field.setAccessible(true);
+				return (MenuItem) field.get(statusLine);
 			}
 		}
-		catch (final IllegalAccessException | RuntimeException e) {
-			log.log(Level.WARNING, e.toString(), e);
-		}
+		throw new NoSuchFieldException();
 	}
 
 }
