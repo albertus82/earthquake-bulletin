@@ -37,7 +37,7 @@ public class GoogleMapsBrowserSelectionListener extends SelectionAdapter {
 		}
 	}
 
-	private static URI getGoogleMapsUri(final Earthquake event) throws URISyntaxException {
+	private static URI getGoogleMapsUri(@NonNull final Earthquake event) throws URISyntaxException {
 		return new URI(String.format("https://maps.google.com/maps?q=%s,%s&ll=%s,%s&z=%d", event.getLatitude().getValue(), event.getLongitude().getValue(), event.getLatitude().getValue(), event.getLongitude().getValue(), ZOOM_LEVEL));
 	}
 

@@ -9,7 +9,6 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Level;
 
@@ -46,6 +45,7 @@ import it.albertus.jface.maps.MapDialog;
 import it.albertus.jface.maps.leaflet.LeafletMapControl;
 import it.albertus.jface.maps.leaflet.LeafletMapDialog;
 import it.albertus.jface.maps.leaflet.LeafletMapOptions;
+import lombok.Value;
 import lombok.extern.java.Log;
 
 @Log
@@ -305,39 +305,13 @@ public class FERegionDialog extends Dialog {
 		browser.execute(script.toString());
 	}
 
+	@Value
 	private static class Rectangle {
 
-		private final int a;
-		private final int b;
-		private final int c;
-		private final int d;
-
-		private Rectangle(final int a, final int b, final int c, final int d) {
-			this.a = a;
-			this.b = b;
-			this.c = c;
-			this.d = d;
-		}
-
-		@Override
-		public int hashCode() {
-			return Objects.hash(a, b, c, d);
-		}
-
-		@Override
-		public boolean equals(final Object obj) {
-			if (this == obj) {
-				return true;
-			}
-			if (obj == null) {
-				return false;
-			}
-			if (!(obj instanceof Rectangle)) {
-				return false;
-			}
-			final Rectangle other = (Rectangle) obj;
-			return a == other.a && b == other.b && c == other.c && d == other.d;
-		}
+		int a;
+		int b;
+		int c;
+		int d;
 
 		@Override
 		public String toString() {

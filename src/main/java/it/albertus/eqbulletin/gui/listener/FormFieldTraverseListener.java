@@ -16,7 +16,7 @@ public class FormFieldTraverseListener implements TraverseListener {
 	@NonNull private final EarthquakeBulletinGui gui;
 
 	@Override
-	public void keyTraversed(final TraverseEvent e) {
+	public void keyTraversed(@NonNull final TraverseEvent e) {
 		final Job currentJob = SearchAsyncOperation.getCurrentJob();
 		if (e.detail == SWT.TRAVERSE_RETURN && (currentJob == null || currentJob.getState() != Job.RUNNING)) {
 			SearchAsyncOperation.execute(gui);
