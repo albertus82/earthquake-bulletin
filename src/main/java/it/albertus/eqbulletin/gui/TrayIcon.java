@@ -28,6 +28,7 @@ import it.albertus.eqbulletin.gui.preference.Preference;
 import it.albertus.eqbulletin.model.Earthquake;
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.jface.Multilanguage;
+import it.albertus.jface.i18n.LocalizedWidgets;
 import it.albertus.jface.listener.TrayRestoreListener;
 import it.albertus.jface.preference.IPreferencesConfiguration;
 import it.albertus.util.MapUtils;
@@ -51,15 +52,13 @@ public class TrayIcon implements IShellProvider, Multilanguage {
 
 	@Getter private final Shell shell;
 
-	private Tray tray;
 	@Getter private TrayItem trayItem;
 
 	private final Map<Integer, ToolTip> toolTips = MapUtils.newHashMapWithExpectedSize(icons.length);
-	private Menu trayMenu;
-	private MenuItem showMenuItem;
-	private MenuItem exitMenuItem;
 
-	/* To be accessed only from this class */
+	private final LocalizedWidgets localizedWidgets = new LocalizedWidgets();
+
+	// To be accessed only from this class
 	private Image image;
 	private String toolTipText = Messages.get("label.tray.tooltip");
 
@@ -92,11 +91,10 @@ public class TrayIcon implements IShellProvider, Multilanguage {
 	}
 
 	private void iconify(final EarthquakeBulletinGui gui) {
-		if (tray == null || trayItem == null || trayItem.isDisposed()) {
-			// Initialization
+		if (trayItem == null || trayItem.isDisposed()) {
+			log.fine("Initializing tray item...");
 			try {
-				tray = shell.getDisplay().getSystemTray();
-
+				final Tray tray = shell.getDisplay().getSystemTray();
 				if (tray != null) {
 					trayItem = new TrayItem(tray, SWT.NONE);
 					image = getImage();
@@ -112,16 +110,14 @@ public class TrayIcon implements IShellProvider, Multilanguage {
 						toolTips.put(icon, toolTip);
 					}
 
-					trayMenu = new Menu(shell, SWT.POP_UP);
-					showMenuItem = new MenuItem(trayMenu, SWT.PUSH);
-					showMenuItem.setText(Messages.get("label.tray.show"));
+					final Menu trayMenu = new Menu(shell, SWT.POP_UP);
+					final MenuItem showMenuItem = newLocalizedMenuItem(trayMenu, SWT.PUSH, "label.tray.show");
 					showMenuItem.addSelectionListener(trayRestoreListener);
 					trayMenu.setDefaultItem(showMenuItem);
 
 					new MenuItem(trayMenu, SWT.SEPARATOR);
 
-					exitMenuItem = new MenuItem(trayMenu, SWT.PUSH);
-					exitMenuItem.setText(Messages.get("label.tray.close"));
+					final MenuItem exitMenuItem = newLocalizedMenuItem(trayMenu, SWT.PUSH, "label.tray.close");
 					exitMenuItem.addSelectionListener(new CloseListener(gui));
 					trayItem.addMenuDetectListener(e -> trayMenu.setVisible(true));
 
@@ -130,13 +126,14 @@ public class TrayIcon implements IShellProvider, Multilanguage {
 						shell.addShellListener(trayRestoreListener);
 					}
 				}
+				log.fine("Tray item initialized successfully.");
 			}
 			catch (final Exception e) {
 				log.log(Level.SEVERE, Messages.get("error.tray.init"), e);
 			}
 		}
 
-		if (tray != null && !tray.isDisposed() && trayItem != null && !trayItem.isDisposed()) {
+		if (trayItem != null && !trayItem.isDisposed()) {
 			shell.setVisible(false);
 			trayItem.setVisible(true);
 			trayItem.setImage(image); // Update icon
@@ -144,7 +141,7 @@ public class TrayIcon implements IShellProvider, Multilanguage {
 		}
 	}
 
-	public void showBalloonToolTip(final Earthquake earthquake) {
+	public void showBalloonToolTip(@NonNull final Earthquake earthquake) {
 		if (trayItem != null && !trayItem.isDisposed()) {
 			final ToolTip toolTip;
 			if (earthquake.getMagnitude() >= configuration.getFloat(Preference.MAGNITUDE_XXL, ResultsTable.Defaults.MAGNITUDE_XXL)) {
@@ -196,10 +193,11 @@ public class TrayIcon implements IShellProvider, Multilanguage {
 
 	@Override
 	public void updateLanguage() {
-		if (trayMenu != null) {
-			showMenuItem.setText(Messages.get("label.tray.show"));
-			exitMenuItem.setText(Messages.get("label.tray.close"));
-		}
+		localizedWidgets.resetAllTexts();
+	}
+
+	private MenuItem newLocalizedMenuItem(@NonNull final Menu parent, final int style, @NonNull final String messageKey) {
+		return localizedWidgets.putAndReturn(new MenuItem(parent, style), () -> Messages.get(messageKey)).getKey();
 	}
 
 }
