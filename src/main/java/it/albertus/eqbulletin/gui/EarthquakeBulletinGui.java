@@ -173,7 +173,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow implements Multilan
 
 		sashForm.setWeights(new int[] { configuration.getInt(SHELL_SASH_WEIGHT + ".0", Defaults.SASH_WEIGHTS[0]), configuration.getInt(SHELL_SASH_WEIGHT + ".1", Defaults.SASH_WEIGHTS[1]) }); // NOSONAR Keep compatibility with older SWT versions.
 
-		statusBar = new StatusBar(this);
+		statusBar = new StatusBar(createStatusLine());
 		multilanguages.add(statusBar);
 
 		return parent;
@@ -294,14 +294,9 @@ public class EarthquakeBulletinGui extends ApplicationWindow implements Multilan
 		shell.setRedraw(true);
 	}
 
-	@Override
-	protected final StatusLineManager getStatusLineManager() { // This method must be visible in this package
-		return super.getStatusLineManager();
-	}
-
-	@Override
-	protected final void createStatusLine(final Shell shell) { // This method must be visible in this package
-		super.createStatusLine(shell);
+	private StatusLineManager createStatusLine() {
+		createStatusLine(getShell());
+		return getStatusLineManager();
 	}
 
 	private class UpdateShellStatusListener implements Listener {

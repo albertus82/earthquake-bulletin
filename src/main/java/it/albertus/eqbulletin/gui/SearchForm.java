@@ -17,7 +17,6 @@ import java.util.logging.Level;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
-import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.nebula.widgets.cdatetime.CDT;
 import org.eclipse.nebula.widgets.cdatetime.CDateTime;
 import org.eclipse.swt.SWT;
@@ -71,7 +70,7 @@ import lombok.extern.java.Log;
 
 @Log
 @Getter
-public class SearchForm implements IShellProvider, Multilanguage {
+public class SearchForm implements Multilanguage {
 
 	public static final float LATITUDE_MIN_VALUE = MapBounds.LATITUDE_MIN_VALUE;
 	public static final float LATITUDE_MAX_VALUE = MapBounds.LATITUDE_MAX_VALUE;
@@ -106,8 +105,6 @@ public class SearchForm implements IShellProvider, Multilanguage {
 
 	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getPreferencesConfiguration();
 
-	private final Shell shell;
-
 	private final Label periodLabel;
 	private final Label periodFromLabel;
 	private final Label periodToLabel;
@@ -140,7 +137,7 @@ public class SearchForm implements IShellProvider, Multilanguage {
 	@Getter(AccessLevel.NONE) private final LocalizedWidgets localizedWidgets = new LocalizedWidgets();
 
 	SearchForm(@NonNull final EarthquakeBulletinGui gui) {
-		shell = gui.getShell();
+		final Shell shell = gui.getShell();
 
 		final TraverseListener formFieldTraverseListener = new FormFieldTraverseListener(gui);
 		final ModifyListener formTextModifyListener = new FormTextModifyListener(this);
