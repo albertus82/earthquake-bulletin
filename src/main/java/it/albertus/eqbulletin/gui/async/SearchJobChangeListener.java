@@ -91,7 +91,7 @@ class SearchJobChangeListener extends JobChangeAdapter {
 		final MapCanvas map = gui.getMapCanvas();
 		final StatusBar bar = gui.getStatusBar();
 
-		new DisplayThreadExecutor(table.getShell(), ASYNC).execute(() -> {
+		new DisplayThreadExecutor(table.getTableViewer().getTable(), ASYNC).execute(() -> {
 			final Earthquake[] oldDataArray = (Earthquake[]) table.getTableViewer().getInput();
 			if (!Arrays.equals(oldDataArray, newDataArray)) {
 				log.fine("Data has changed, performing table update.");

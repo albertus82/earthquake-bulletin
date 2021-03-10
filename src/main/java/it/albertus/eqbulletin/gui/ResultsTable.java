@@ -24,7 +24,6 @@ import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.jface.viewers.ViewerComparator;
-import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
@@ -73,7 +72,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
-public class ResultsTable implements IShellProvider, Multilanguage {
+public class ResultsTable implements Multilanguage {
 
 	@NoArgsConstructor(access = AccessLevel.PRIVATE)
 	public static class Defaults {
@@ -177,7 +176,7 @@ public class ResultsTable implements IShellProvider, Multilanguage {
 		}
 	}
 
-	@Getter private final Shell shell;
+	private final Shell shell;
 
 	@Getter private final TableViewer tableViewer;
 	private final EarthquakeViewerComparator comparator;

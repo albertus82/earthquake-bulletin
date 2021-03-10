@@ -15,7 +15,6 @@ import java.util.TreeSet;
 import java.util.logging.Level;
 
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
@@ -32,7 +31,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
-import org.eclipse.swt.widgets.Shell;
 
 import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
 import it.albertus.eqbulletin.gui.preference.Preference;
@@ -53,7 +51,7 @@ import lombok.NonNull;
 import lombok.extern.java.Log;
 
 @Log
-public class MapCanvas implements IShellProvider, Multilanguage {
+public class MapCanvas implements Multilanguage {
 
 	@NoArgsConstructor(access = AccessLevel.PRIVATE)
 	public static class Defaults {
@@ -67,8 +65,6 @@ public class MapCanvas implements IShellProvider, Multilanguage {
 	private static final LinkedList<Integer> zoomLevels = new LinkedList<>(new TreeSet<>(Arrays.asList(AUTO_SCALE, 10, 12, 15, 20, 25, 30, 40, 50, 60, 80, 100, 120, 150, 200, 250, 300, 400, 500)));
 
 	private final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getPreferencesConfiguration();
-
-	@Getter private final Shell shell;
 
 	private final Canvas canvas;
 
@@ -86,8 +82,6 @@ public class MapCanvas implements IShellProvider, Multilanguage {
 	private static MapCanvas instance;
 
 	MapCanvas(@NonNull final Composite parent) {
-		shell = parent.getShell();
-
 		canvas = new Canvas(parent, SWT.BORDER);
 		canvas.setBackground(getBackgroundColor());
 		canvas.addPaintListener(e -> paintImage(zoomLevel));
