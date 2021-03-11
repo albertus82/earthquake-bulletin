@@ -4,6 +4,7 @@ import static it.albertus.eqbulletin.gui.EarthquakeBulletinGui.SHELL_MAXIMIZED;
 
 import java.util.logging.Level;
 
+import org.eclipse.jface.util.Util;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TrayItem;
@@ -29,10 +30,15 @@ public class EnhancedTrayRestoreListener extends TrayRestoreListener {
 
 	@Override
 	public void widgetSelected(final SelectionEvent e) {
-		if (firstTime && !getShell().isDisposed() && configuration.getBoolean(Preference.MINIMIZE_TRAY, TrayIcon.Defaults.MINIMIZE_TRAY) && configuration.getBoolean(Preference.START_MINIMIZED, EarthquakeBulletinGui.Defaults.START_MINIMIZED) && configuration.getBoolean(SHELL_MAXIMIZED, EarthquakeBulletinGui.Defaults.SHELL_MAXIMIZED)) {
-			firstTime = false;
-			getShell().setMaximized(true);
-			log.log(Level.FINE, "{0}", e);
+		if (!getShell().isDisposed()) {
+			if (firstTime && configuration.getBoolean(Preference.MINIMIZE_TRAY, TrayIcon.Defaults.MINIMIZE_TRAY) && configuration.getBoolean(Preference.START_MINIMIZED, EarthquakeBulletinGui.Defaults.START_MINIMIZED) && configuration.getBoolean(SHELL_MAXIMIZED, EarthquakeBulletinGui.Defaults.SHELL_MAXIMIZED)) {
+				firstTime = false;
+				getShell().setMaximized(true);
+				log.log(Level.FINE, "{0}", e);
+			}
+			if (Util.isGtk()) {
+				getShell().setVisible(true);
+			}
 		}
 		super.widgetSelected(e);
 	}
