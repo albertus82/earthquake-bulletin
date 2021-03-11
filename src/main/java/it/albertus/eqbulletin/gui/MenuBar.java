@@ -3,7 +3,6 @@ package it.albertus.eqbulletin.gui;
 import java.util.logging.Level;
 
 import org.eclipse.jface.util.Util;
-import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -29,7 +28,6 @@ import it.albertus.jface.SwtUtils;
 import it.albertus.jface.cocoa.CocoaEnhancerException;
 import it.albertus.jface.cocoa.CocoaUIEnhancer;
 import it.albertus.jface.sysinfo.SystemInformationDialog;
-import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.java.Log;
 
@@ -41,13 +39,10 @@ import lombok.extern.java.Log;
  * combinazioni di tasti saranno ignorate.
  */
 @Log
-@Getter
-public class MenuBar extends AbstractMenu implements IShellProvider {
-
-	@NonNull private final Shell shell;
+public class MenuBar extends AbstractMenu {
 
 	MenuBar(@NonNull final EarthquakeBulletinGui gui) {
-		this.shell = gui.getShell();
+		final Shell shell = gui.getShell();
 
 		final CloseListener closeListener = new CloseListener(gui);
 		final AboutListener aboutListener = new AboutListener(gui);
