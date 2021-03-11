@@ -137,7 +137,6 @@ public class TrayIcon implements IShellProvider, Multilanguage {
 			shell.setVisible(false);
 			trayItem.setVisible(true);
 			trayItem.setImage(image); // Update icon
-			shell.setMinimized(false);
 		}
 	}
 

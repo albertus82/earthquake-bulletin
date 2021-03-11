@@ -31,6 +31,7 @@ public class EnhancedTrayRestoreListener extends TrayRestoreListener {
 	@Override
 	public void widgetSelected(final SelectionEvent e) {
 		if (!getShell().isDisposed()) {
+			getShell().setMinimized(false);
 			if (firstTime && configuration.getBoolean(Preference.MINIMIZE_TRAY, TrayIcon.Defaults.MINIMIZE_TRAY) && configuration.getBoolean(Preference.START_MINIMIZED, EarthquakeBulletinGui.Defaults.START_MINIMIZED) && configuration.getBoolean(SHELL_MAXIMIZED, EarthquakeBulletinGui.Defaults.SHELL_MAXIMIZED)) {
 				firstTime = false;
 				getShell().setMaximized(true);
