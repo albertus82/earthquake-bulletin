@@ -42,6 +42,9 @@ public class EnhancedTrayRestoreListener extends TrayRestoreListener {
 			}
 		}
 		super.widgetSelected(e);
+		if (Boolean.parseBoolean(String.valueOf(getTrayItem().getData()))) {
+			getShell().setMaximized(true);
+		}
 	}
 
 }
