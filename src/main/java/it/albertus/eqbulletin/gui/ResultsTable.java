@@ -5,6 +5,7 @@ import static javax.swing.SortOrder.DESCENDING;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.text.NumberFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -389,7 +390,7 @@ public class ResultsTable implements Multilanguage {
 						return image;
 					}
 					catch (final IOException e) {
-						throw new IllegalStateException(e);
+						throw new UncheckedIOException(e);
 					}
 				}
 				return null;
