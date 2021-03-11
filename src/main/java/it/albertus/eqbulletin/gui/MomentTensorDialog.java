@@ -40,7 +40,7 @@ public class MomentTensorDialog extends Dialog {
 
 	@NoArgsConstructor(access = AccessLevel.PRIVATE)
 	public static class Defaults {
-		public static final boolean LIMIT_HEIGHT = true;
+		public static final boolean LIMIT_HEIGHT = false;
 		public static final byte MAX_DIALOGS = 0xF;
 	}
 
@@ -103,9 +103,12 @@ public class MomentTensorDialog extends Dialog {
 			}
 			GridLayoutFactory.swtDefaults().applyTo(shell);
 			createContents(shell);
-			shell.pack();
+			final Point preferredSize = shell.computeSize(SWT.DEFAULT, SWT.DEFAULT, true);
 			if (configuration.getBoolean(Preference.MT_LIMIT_HEIGHT, Defaults.LIMIT_HEIGHT)) {
-				shell.setSize(shell.getSize().x, defaultSize.y);
+				shell.setSize(preferredSize.x, defaultSize.y);
+			}
+			else {
+				shell.setSize(preferredSize.x, Math.min(preferredSize.y, shell.getMonitor().getClientArea().height));
 			}
 			shell.open();
 			final Display display = getParent().getDisplay();
