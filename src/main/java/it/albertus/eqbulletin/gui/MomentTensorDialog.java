@@ -95,7 +95,7 @@ public class MomentTensorDialog extends Dialog {
 		try {
 			shell = new Shell(getParent(), getStyle());
 			shell.addDisposeListener(e -> removeInstance()); // No longer available for update on-the-fly.
-			final Point defaultSize = getSize(shell);
+			final Point defaultSize = getSize();
 			shell.setText(getText());
 			final Image[] images = Images.getAppIconArray();
 			if (images != null && images.length > 0) {
@@ -123,7 +123,7 @@ public class MomentTensorDialog extends Dialog {
 		}
 	}
 
-	private static Point getSize(final Shell shell) {
+	private Point getSize() {
 		final Point normalShellSize = shell.getSize();
 		final int size = Math.min(normalShellSize.x, normalShellSize.y);
 		return new Point(size, size);
@@ -142,10 +142,10 @@ public class MomentTensorDialog extends Dialog {
 			final Point textExtent = cr.getResource().textExtent(momentTensorText);
 			GridDataFactory.fillDefaults().grab(true, true).hint(textExtent.x, SWT.DEFAULT).applyTo(text);
 		}
-		createButtonBox(shell);
+		createButtonBox();
 	}
 
-	private static Composite createButtonBox(final Shell shell) {
+	private Composite createButtonBox() {
 		final Composite buttonComposite = new Composite(shell, SWT.NONE);
 		GridLayoutFactory.swtDefaults().applyTo(buttonComposite);
 		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.CENTER).grab(true, false).applyTo(buttonComposite);
