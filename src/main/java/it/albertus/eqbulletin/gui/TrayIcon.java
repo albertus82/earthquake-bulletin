@@ -41,6 +41,8 @@ import lombok.extern.java.Log;
 @Log
 public class TrayIcon implements IShellProvider, Multilanguage {
 
+	public static final String SHELL_WAS_MAXIMIZED = EarthquakeBulletinGui.class.getName() + ".wasMaximizedWhenMinimizedOnTray";
+
 	private static final int[] icons = { SWT.ICON_INFORMATION, SWT.ICON_WARNING, SWT.ICON_ERROR };
 
 	@NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -134,7 +136,7 @@ public class TrayIcon implements IShellProvider, Multilanguage {
 		}
 
 		if (trayItem != null && !trayItem.isDisposed()) {
-			trayItem.setData(shell.getMaximized());
+			shell.setData(SHELL_WAS_MAXIMIZED, shell.getMaximized());
 			shell.setVisible(false);
 			trayItem.setVisible(true);
 			trayItem.setImage(image); // Update icon
