@@ -280,7 +280,7 @@ public class MapCanvas implements Multilanguage {
 
 	private Rectangle getResizedRectangle(final int scalePercent) {
 		final Rectangle imageSize = image.getBounds();
-		final Rectangle canvasSize = canvas.getBounds();
+		final Rectangle canvasSize = canvas.getClientArea();
 
 		final int width;
 		final int height;
