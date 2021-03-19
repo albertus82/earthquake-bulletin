@@ -129,6 +129,13 @@ public class MapCanvas implements Multilanguage {
 		canvas.setMenu(contextMenu);
 		canvas.addMenuDetectListener(e -> saveMenuItem.setEnabled(canSaveImage()));
 
+		configureMouseWheelListener();
+		configureKeyListener();
+
+		setInstance(this);
+	}
+
+	private void configureMouseWheelListener() {
 		canvas.addMouseWheelListener(e -> {
 			if (image != null && e.count != 0) {
 				final float autoscaleRatio = getAutoscaleRatio();
@@ -141,7 +148,9 @@ public class MapCanvas implements Multilanguage {
 				}
 			}
 		});
+	}
 
+	private void configureKeyListener() {
 		canvas.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(final KeyEvent e) {
@@ -157,8 +166,6 @@ public class MapCanvas implements Multilanguage {
 				}
 			}
 		});
-
-		setInstance(this);
 	}
 
 	private void zoomIn(final float autoscaleRatio, final int[] nearestValues) {
