@@ -17,8 +17,7 @@ environment:
 
 install:
   - cinst maven -i --version 3.6.3
-  - PATH C:\ProgramData\chocolatey\lib\maven\bin;%PATH%
-  - refreshenv
+  - PATH %M2_HOME%\bin;%PATH%
 
 build_script:
   - mvn clean verify -B -V
