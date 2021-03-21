@@ -26,6 +26,7 @@
 		<linux.build.finalName>${project.artifactId}</linux.build.finalName>
 		<macos.build.finalName>EarthquakeBulletin</macos.build.finalName>
 		<project.build.basedir>${project.basedir}/target</project.build.basedir>
+		<sonar.coverage.jacoco.xmlReportPaths>${project.build.directory}/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
 	</properties>
 
 	<profiles>
@@ -374,6 +375,11 @@
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>3.8.1</version>
 				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>2.22.2</version>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 
@@ -499,7 +505,6 @@
 						<goals>
 							<goal>report</goal>
 						</goals>
-						<phase>prepare-package</phase>
 					</execution>
 				</executions>
 			</plugin>
