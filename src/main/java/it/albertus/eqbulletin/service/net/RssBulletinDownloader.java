@@ -15,10 +15,6 @@ import java.util.function.BooleanSupplier;
 import java.util.logging.Level;
 import java.util.zip.GZIPInputStream;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-
 import com.sun.net.httpserver.Headers;
 
 import it.albertus.eqbulletin.model.Bulletin;
@@ -30,6 +26,9 @@ import it.albertus.eqbulletin.service.decode.rss.RssBulletinDecoder;
 import it.albertus.eqbulletin.service.decode.rss.xml.RssBulletin;
 import it.albertus.eqbulletin.util.InitializationException;
 import it.albertus.util.IOUtils;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Unmarshaller;
 import lombok.extern.java.Log;
 
 @Log
