@@ -15,10 +15,6 @@ environment:
       VT_API_KEY:
         secure: 3sqJDjLAS708tR/LiAqKLZTnLLrhGJuWVzzI4nCjLbUUsZB+PPRG3y0BWWnMo14CDhBT4v6yjHTA23RdopoHDWJlBcGhKELKZOLhHsnJLU8=
 
-install:
-  - cinst maven -i --version 3.6.3
-  - PATH %M2_HOME%\bin;%PATH%
-
 build_script:
   - mvn clean verify -B -V
 
