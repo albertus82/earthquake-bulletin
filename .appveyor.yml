@@ -17,9 +17,11 @@ environment:
 
 install:
   - cinst maven -i --version 3.6.3
+  - PATH C:\ProgramData\chocolatey\lib\maven\bin;%PATH%
+  - refreshenv
 
 build_script:
-  - C:\ProgramData\chocolatey\lib\maven\bin\mvn clean verify -B -V
+  - mvn clean verify -B -V
 
 after_build:
   - IF "%APPVEYOR_REPO_TAG%" == "true" IF DEFINED VT_API_KEY SET ARTIFACTS_PATH=build\*.* & FOR /R build %%f IN (*.exe *.tar.gz *.zip) DO IF NOT %%~xf == .exec ECHO Submitting file "%%f" to VirusTotal... & curl -v -F "file=@%%f" -F apikey=%VT_API_KEY% https://www.virustotal.com/vtapi/v2/file/scan & ECHO File "%%f" submitted to VirusTotal. & TIMEOUT 15 /NOBREAK
