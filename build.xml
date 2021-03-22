@@ -74,7 +74,7 @@
 	<target name="scripts">
 		<ac:for trim="true" list="${build.platforms.windows}" param="platform">
 			<ac:sequential>
-				<copy quiet="true" todir="${build.packagesDirectory}/@{platform}/app" failonerror="false" filtering="true">
+				<copy todir="${build.packagesDirectory}/@{platform}/app" failonerror="false" filtering="true">
 					<fileset dir="${build.scriptSourceDirectory}">
 						<include name="*.bat" />
 					</fileset>
@@ -83,7 +83,7 @@
 		</ac:for>
 		<ac:for trim="true" list="${build.platforms.linux}" param="platform">
 			<ac:sequential>
-				<copy quiet="true" todir="${build.packagesDirectory}/@{platform}/app" failonerror="false" filtering="true">
+				<copy todir="${build.packagesDirectory}/@{platform}/app" failonerror="false" filtering="true">
 					<fileset dir="${build.scriptSourceDirectory}">
 						<include name="*.sh" />
 					</fileset>
@@ -92,7 +92,7 @@
 		</ac:for>
 		<ac:for trim="true" list="${build.platforms.macos}" param="platform">
 			<ac:sequential>
-				<copy quiet="true" todir="${build.packagesDirectory}/@{platform}/scripts" failonerror="false" filtering="true">
+				<copy todir="${build.packagesDirectory}/@{platform}/scripts" failonerror="false" filtering="true">
 					<fileset dir="${build.scriptSourceDirectory}">
 						<include name="*.command" />
 					</fileset>
