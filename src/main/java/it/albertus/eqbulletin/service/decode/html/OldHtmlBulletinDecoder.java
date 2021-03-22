@@ -39,7 +39,7 @@ public class OldHtmlBulletinDecoder extends AbstractHtmlBulletinDecoder {
 	}
 
 	@Override
-	protected Earthquake decodeItem(final Element row) {
+	protected Earthquake decodeItem(@NonNull final Element row) {
 		try {
 			final ZonedDateTime time = decodeTime(row);
 
