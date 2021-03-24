@@ -44,44 +44,7 @@
 		</ac:for>
 	</target>
 
-	<target name="config">
-		<ac:for trim="true" list="${build.platforms.windows}" param="platform">
-			<ac:sequential>
-				<copy quiet="true" file="${build.configDirectory}/${project.artifactId}.cfg" tofile="${build.packagesDirectory}/@{platform}/config/${windows.cfgFileName}" failonerror="false" />
-				<copy quiet="true" todir="${build.packagesDirectory}/@{platform}/config" includeemptydirs="false" failonerror="false">
-					<fileset dir="${build.configDirectory}" excludes="${project.artifactId}.cfg" />
-				</copy>
-			</ac:sequential>
-		</ac:for>
-		<ac:for trim="true" list="${build.platforms.linux}" param="platform">
-			<ac:sequential>
-				<copy quiet="true" file="${build.configDirectory}/${project.artifactId}.cfg" tofile="${build.packagesDirectory}/@{platform}/app/.${project.artifactId}/${linux.cfgFileName}" failonerror="false" />
-				<copy quiet="true" todir="${build.packagesDirectory}/@{platform}/app/.${project.artifactId}" includeemptydirs="false" failonerror="false">
-					<fileset dir="${build.configDirectory}" excludes="${project.artifactId}.cfg" />
-				</copy>
-			</ac:sequential>
-		</ac:for>
-		<ac:for trim="true" list="${build.platforms.macos}" param="platform">
-			<ac:sequential>
-				<copy quiet="true" file="${build.configDirectory}/${project.artifactId}.cfg" tofile="${build.packagesDirectory}/@{platform}/config/${macos.cfgFileName}" failonerror="false" />
-				<copy quiet="true" todir="${build.packagesDirectory}/@{platform}/config" includeemptydirs="false" failonerror="false">
-					<fileset dir="${build.configDirectory}" excludes="${project.artifactId}.cfg" />
-				</copy>
-			</ac:sequential>
-		</ac:for>
-	</target>
-
 	<target name="scripts">
-		<ac:for trim="true" list="${build.platforms.windows}" param="platform">
-			<ac:sequential>
-				<copy todir="${build.packagesDirectory}/@{platform}/app" failonerror="false" filtering="true">
-					<fileset dir="${build.scriptSourceDirectory}">
-						<include name="*.bat" />
-					</fileset>
-				</copy>
-				<fixcrlf srcdir="${build.packagesDirectory}/@{platform}/app" includes="*.bat" eof="asis" eol="crlf" />
-			</ac:sequential>
-		</ac:for>
 		<ac:for trim="true" list="${build.platforms.linux}" param="platform">
 			<ac:sequential>
 				<copy todir="${build.packagesDirectory}/@{platform}/app" failonerror="false" filtering="true">
@@ -182,10 +145,6 @@
 				<jarbundler vmoptions="${macos.vmoptions}" dir="${build.packagesDirectory}/@{platform}/bundle" name="${project.name}" mainclass="${mainClass}" startonmainthread="true" version="${project.version}" icon="${build.packagesDirectory}/@{platform}/app/${macos.iconFileName}" usejavaxkey="true" jvmversion="${maven.compiler.target}+" stubfile="${jarBundler.directory}/universalJavaApplicationStub" highresolutioncapable="true">
 					<jarfileset dir="${build.packagesDirectory}/@{platform}/app" includes="**/*.jar" />
 				</jarbundler>
-
-				<copy quiet="true" todir="${build.packagesDirectory}/@{platform}/bundle/${project.name}.app/Contents/Library/Preferences" failonerror="false">
-					<fileset dir="${build.packagesDirectory}/@{platform}/config" />
-				</copy>
 
 				<copy todir="${build.packagesDirectory}/@{platform}/bundle/${project.name}.app/Contents/SharedSupport">
 					<fileset dir="${build.packagesDirectory}/@{platform}/docs" />
@@ -464,7 +423,7 @@
 		</ac:for>
 	</target>
 
-	<target name="dist" depends="jars, config, scripts, docs, licenses, icons, dist-linux, dist-macos, dist-windows" />
+	<target name="dist" depends="jars, scripts, docs, licenses, icons, dist-linux, dist-macos, dist-windows" />
 
 	<target name="virustotal">
 		<property name="checksums.file" value="${build.directory}/checksums.md" />
