@@ -54,7 +54,7 @@ public class Images {
 		for (int size = desiredSizePixels; size > 0; size--) {
 			for (final String resourceName : resourceNames) {
 				if (resourceName.toLowerCase(Locale.ROOT).contains("x" + size + ".")) {
-					try (final InputStream stream = ImageUtils.class.getResourceAsStream(resourceName)) {
+					try (final InputStream stream = Images.class.getResourceAsStream(resourceName)) {
 						final ImageData[] data = new ImageLoader().load(stream);
 						if (data != null && data.length == 1) {
 							log.log(Level.FINE, "Found {0}x{0} map icon for desired size {1} pixels.", new Integer[] { size, desiredSizePixels });
