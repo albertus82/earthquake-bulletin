@@ -11,7 +11,6 @@ import java.util.Date;
 import java.util.EnumMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.logging.Level;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -23,8 +22,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.events.VerifyListener;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -190,14 +188,14 @@ public class SearchForm implements Multilanguage {
 		openMapButton = new Button(areaGroup, SWT.NONE);
 		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.FILL).span(1, 2).applyTo(openMapButton);
 		openMapButton.setToolTipText(Messages.get("label.form.button.map.tooltip"));
-		final int buttonVerticalSize = SwtUtils.convertVerticalDLUsToPixels(openMapButton, 25);
-		for (final Entry<Rectangle, Image> entry : Images.getMapIconMap().entrySet()) {
-			if (entry.getKey().height < buttonVerticalSize - buttonVerticalSize / 6.8f) { // leaving some room around the image
-				log.log(Level.FINE, "Open Map button size: {0}; setting OpenStreetMap icon: {1}.", new Object[] { buttonVerticalSize, entry });
-				openMapButton.setImage(entry.getValue());
-				break;
+		openMapButton.addPaintListener(e -> {
+			if (openMapButton.getImage() == null) {
+				final Point buttonSize = openMapButton.getSize();
+				log.log(Level.FINE, "openMapButton.size = {0}", buttonSize);
+				openMapButton.setImage(Images.getMapIcon(Math.round(buttonSize.y * 0.8f)));
+				openMapButton.getParent().layout(true);
 			}
-		}
+		});
 		openMapButton.addSelectionListener(new AreaMapSelectionListener(this));
 
 		localizeWidget(new Label(areaGroup, SWT.NONE), "label.form.criteria.longitude");

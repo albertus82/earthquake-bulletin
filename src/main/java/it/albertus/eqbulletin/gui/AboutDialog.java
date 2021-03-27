@@ -73,7 +73,7 @@ public class AboutDialog extends Dialog {
 	private static final float TITLE_FONT_SIZE_MULTIPLIER = 1.6f;
 
 	private static final int ICON_VERTICAL_SIZE_DLUS = 26;
-	private static final int SCROLLABLE_VERTICAL_SIZE_DLUS = 42; // scrollbar issues below 42 on GTK
+	private static final int SCROLLABLE_VERTICAL_SIZE_DLUS = 46; // scrollbar issues below 46 on GTK
 
 	private static final String SYM_NAME_FONT_APPNAME = AboutDialog.class.getName() + ".appname";
 	private static final String SYM_NAME_FONT_DEFAULT = AboutDialog.class.getName() + ".default";
@@ -213,14 +213,21 @@ public class AboutDialog extends Dialog {
 
 		final Link acknowledgementsLocationsLink = new Link(acknowledgementsGroup, SWT.WRAP);
 		GridDataFactory.swtDefaults().grab(true, false).applyTo(acknowledgementsLocationsLink);
-		acknowledgementsLocationsLink.setText(Messages.get("label.about.acknowledgements.locations", buildAnchor(Messages.get("message.geofon.url"), Messages.get("label.geofon")), buildAnchor(Messages.get("message.gfz.url"), Messages.get("label.gfz")), buildAnchor(Messages.get("message.gevn.url"), Messages.get("label.gevn"))));
+		acknowledgementsLocationsLink.setText(Messages.get("label.about.acknowledgements.locations", buildAnchor(Messages.get("label.about.acknowledgements.locations.geofon.a.href"), Messages.get("label.about.acknowledgements.locations.geofon.a.text")), buildAnchor(Messages.get("label.about.acknowledgements.locations.gfz.a.href"), Messages.get("label.about.acknowledgements.locations.gfz.a.text")), buildAnchor(Messages.get("label.about.acknowledgements.locations.gevn.a.href"), Messages.get("label.about.acknowledgements.locations.gevn.a.text"))));
 		acknowledgementsLocationsLink.addSelectionListener(linkSelectionListener);
 
 		addUnobtrusiveSeparator(acknowledgementsGroup);
 
 		final Label acknowledgementsDataLabel = new Label(acknowledgementsGroup, SWT.WRAP);
 		GridDataFactory.swtDefaults().grab(true, false).applyTo(acknowledgementsDataLabel);
-		acknowledgementsDataLabel.setText(Messages.get("label.about.acknowledgements.data", Messages.get("label.geofon"), Messages.get("label.gfz")));
+		acknowledgementsDataLabel.setText(Messages.get("label.about.acknowledgements.data"));
+
+		addUnobtrusiveSeparator(acknowledgementsGroup);
+
+		final Link acknowledgementsIconLink = new Link(acknowledgementsGroup, SWT.WRAP);
+		GridDataFactory.swtDefaults().grab(true, false).applyTo(acknowledgementsIconLink);
+		acknowledgementsIconLink.setText(Messages.get("label.about.acknowledgements.icon", buildAnchor(Messages.get("label.about.acknowledgements.icon.openstreetmap.a.href"), Messages.get("label.about.acknowledgements.icon.openstreetmap.a.text")), buildAnchor(Messages.get("label.about.acknowledgements.icon.iconfinder.a.href"), Messages.get("label.about.acknowledgements.icon.iconfinder.a.text")), buildAnchor(Messages.get("label.about.acknowledgements.icon.cc-by-30.a.href"), Messages.get("label.about.acknowledgements.icon.cc-by-30.a.text")), buildAnchor(Messages.get("label.about.acknowledgements.icon.tinypng.a.href"), Messages.get("label.about.acknowledgements.icon.tinypng.a.text"))));
+		acknowledgementsIconLink.addSelectionListener(linkSelectionListener);
 	}
 
 	private void constrainShellSize(@NonNull final Shell shell) {
