@@ -53,7 +53,7 @@ public class Images {
 		final Collection<String> resourceNames = reflections.getResources(name -> name.toLowerCase(Locale.ROOT).endsWith(".png")).stream().map(name -> '/' + name).collect(Collectors.toSet());
 		for (int size = desiredSizePixels; size > 0; size--) {
 			for (final String resourceName : resourceNames) {
-				if (resourceName.toLowerCase(Locale.ROOT).contains(size + "x" + size)) {
+				if (resourceName.toLowerCase(Locale.ROOT).contains("x" + size + ".")) {
 					try (final InputStream stream = ImageUtils.class.getResourceAsStream(resourceName)) {
 						final ImageData[] data = new ImageLoader().load(stream);
 						if (data != null && data.length == 1) {
