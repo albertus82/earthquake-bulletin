@@ -161,7 +161,7 @@ public class AboutDialog extends Dialog {
 		for (final Entry<Rectangle, Image> entry : Images.getAppIconMap().entrySet()) {
 			final int pixels = SwtUtils.convertVerticalDLUsToPixels(iconLabel, ICON_VERTICAL_SIZE_DLUS);
 			if (entry.getKey().height <= pixels) {
-				log.log(Level.FINE, "{0} DLUs -> {1} pixels -> {2}", new Object[] { ICON_VERTICAL_SIZE_DLUS, pixels, entry });
+				log.log(Level.FINE, "{0,number,#} DLUs -> {1,number,#} pixels -> {2}", new Object[] { ICON_VERTICAL_SIZE_DLUS, pixels, entry });
 				iconLabel.setImage(entry.getValue());
 				break;
 			}
@@ -266,7 +266,7 @@ public class AboutDialog extends Dialog {
 			}
 		}
 		catch (final Exception e) {
-			log.log(Level.WARNING, e.toString(), e);
+			log.log(Level.WARNING, "Cannot load text resource " + name + ':', e);
 		}
 		return text.length() <= System.lineSeparator().length() ? "" : text.substring(System.lineSeparator().length());
 	}
