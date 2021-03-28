@@ -52,7 +52,7 @@ public class SVG2PNG implements Callable<Integer> {
 			final Path path = Paths.get(output.toString(), size + "x" + size + ".png");
 			try (final InputStream is = getClass().getResourceAsStream("map.svg"); final OutputStream os = Files.newOutputStream(path); final BufferedOutputStream bos = new BufferedOutputStream(os)) {
 				it.transcode(new TranscoderInput(is), new TranscoderOutput(bos));
-				log.log(Level.INFO, "{0}x{0}", size);
+				log.log(Level.INFO, "{0,number,#}x{0,number,#}", size);
 			}
 		}
 		return ExitCode.OK;

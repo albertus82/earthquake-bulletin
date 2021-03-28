@@ -226,23 +226,23 @@ public class AboutDialog extends Dialog {
 
 		final Link acknowledgementsIconLink = new Link(acknowledgementsGroup, SWT.WRAP);
 		GridDataFactory.swtDefaults().grab(true, false).applyTo(acknowledgementsIconLink);
-		acknowledgementsIconLink.setText(Messages.get("label.about.acknowledgements.icon", buildAnchor(Messages.get("label.about.acknowledgements.icon.openstreetmap.a.href"), Messages.get("label.about.acknowledgements.icon.openstreetmap.a.text")), buildAnchor(Messages.get("label.about.acknowledgements.icon.iconfinder.a.href"), Messages.get("label.about.acknowledgements.icon.iconfinder.a.text")), buildAnchor(Messages.get("label.about.acknowledgements.icon.cc-by-30.a.href"), Messages.get("label.about.acknowledgements.icon.cc-by-30.a.text")), buildAnchor(Messages.get("label.about.acknowledgements.icon.tinypng.a.href"), Messages.get("label.about.acknowledgements.icon.tinypng.a.text"))));
+		acknowledgementsIconLink.setText(Messages.get("label.about.acknowledgements.icon", buildAnchor(Messages.get("label.about.acknowledgements.icon.openstreetmap.a.href"), Messages.get("label.about.acknowledgements.icon.openstreetmap.a.text")), buildAnchor(Messages.get("label.about.acknowledgements.icon.iconfinder.a.href"), Messages.get("label.about.acknowledgements.icon.iconfinder.a.text")), buildAnchor(Messages.get("label.about.acknowledgements.icon.cc-by-30.a.href"), Messages.get("label.about.acknowledgements.icon.cc-by-30.a.text"))));
 		acknowledgementsIconLink.addSelectionListener(linkSelectionListener);
 	}
 
 	private void constrainShellSize(@NonNull final Shell shell) {
 		int appLicenseTextWidth = appLicenseText.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x;
-		log.log(Level.FINE, "appLicenseTextWidth: {0}", appLicenseTextWidth);
+		log.log(Level.FINE, "appLicenseTextWidth: {0,number,#}", appLicenseTextWidth);
 		if (appLicenseText.getVerticalBar() != null && !appLicenseText.getVerticalBar().isDisposed()) {
 			appLicenseTextWidth += Math.round(appLicenseText.getVerticalBar().getSize().x * 1.5f);
 		}
 		int thirdPartyScrolledCompositeWidth = thirdPartyScrolledComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x;
-		log.log(Level.FINE, "thirdPartyScrolledCompositeWidth: {0}", thirdPartyScrolledCompositeWidth);
+		log.log(Level.FINE, "thirdPartyScrolledCompositeWidth: {0,number,#}", thirdPartyScrolledCompositeWidth);
 		if (thirdPartyScrolledComposite.getVerticalBar() != null && !thirdPartyScrolledComposite.getVerticalBar().isDisposed()) {
 			thirdPartyScrolledCompositeWidth += Math.round(thirdPartyScrolledComposite.getVerticalBar().getSize().x * 1.5f);
 		}
 		final int clientWidth = shell.getMonitor().getClientArea().width;
-		log.log(Level.FINE, "clientWidth: {0}", clientWidth);
+		log.log(Level.FINE, "clientWidth: {0,number,#}", clientWidth);
 		int shellInitialWidth = Math.max(appLicenseTextWidth, thirdPartyScrolledCompositeWidth);
 		if (shellInitialWidth > clientWidth / MONITOR_SIZE_DIVISOR) {
 			shellInitialWidth = Math.round(clientWidth / MONITOR_SIZE_DIVISOR);

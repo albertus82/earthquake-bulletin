@@ -57,7 +57,7 @@ public class Images {
 					try (final InputStream stream = Images.class.getResourceAsStream(resourceName)) {
 						final ImageData[] data = new ImageLoader().load(stream);
 						if (data != null && data.length == 1) {
-							log.log(Level.FINE, "Found {0}x{0} map icon for desired size {1} pixels.", new Integer[] { size, desiredSizePixels });
+							log.log(Level.FINE, "Found {0,number,#}x{0,number,#} map icon for desired size {1,number,#} pixels.", new Integer[] { size, desiredSizePixels });
 							return new Image(Display.getCurrent(), data[0]);
 						}
 					}
