@@ -43,7 +43,7 @@ Locations were obtained from the [GEOFON](https://geofon.gfz-potsdam.de) program
 
 Seismic data were obtained from the GEOFON data centre of the GFZ German Research Centre for Geosciences.
 
-The stylized [OpenStreetMap](https://www.openstreetmap.org) icon is designed by [Iconfinder](https://www.iconfinder.com/icons/4691290/openstreetmap_icon) ([Creative Commons Attribution 3.0 Unported](https://creativecommons.org/licenses/by/3.0/) license) and has been optimized using [TinyPNG](https://tinypng.com).
+The stylized [OpenStreetMap](https://www.openstreetmap.org) icon has been downloaded from [Iconfinder](https://www.iconfinder.com/icons/4691290/openstreetmap_icon) ([Creative Commons Attribution 3.0 Unported](https://creativecommons.org/licenses/by/3.0/) license).
 
 This application uses or includes portions of the following third party software:
 
