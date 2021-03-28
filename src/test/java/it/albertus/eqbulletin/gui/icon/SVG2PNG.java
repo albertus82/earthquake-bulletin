@@ -36,7 +36,7 @@ public class SVG2PNG implements Callable<Integer> {
 	@Option(names = { "-O", "--output" }) private Path output = Paths.get("target", "generated-resources", getClass().getPackage().getName().replace('.', File.separatorChar), "map");
 
 	public static void main(final String... args) {
-		System.exit(new CommandLine(new SVG2PNG()).setCommandName(SVG2PNG.class.getSimpleName().toLowerCase(Locale.ROOT)).execute(args));
+		System.exit(new CommandLine(new SVG2PNG()).setCommandName(SVG2PNG.class.getSimpleName().toLowerCase(Locale.ROOT)).setOptionsCaseInsensitive(true).execute(args));
 	}
 
 	@Override
