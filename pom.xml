@@ -185,6 +185,7 @@
 			</activation>
 			<properties>
 				<platform>gtk-linux-aarch64</platform>
+				<ignoreWineErrors>true</ignoreWineErrors>
 			</properties>
 			<build>
 				<finalName>${linux.build.finalName}</finalName>
