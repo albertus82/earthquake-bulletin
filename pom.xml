@@ -18,8 +18,6 @@
 		<project.url>${project.url}</project.url>
 		<dependencies.directory>lib</dependencies.directory>
 		<project.build.outputTimestamp>${git.commit.time}</project.build.outputTimestamp>
-		<maven.build.timestamp.format>yyyy-MM-dd</maven.build.timestamp.format>
-		<version.date>${maven.build.timestamp}</version.date>
 		<swt.latest.version>3.116.0</swt.latest.version>
 		<mainClass>it.albertus.eqbulletin.EarthquakeBulletin</mainClass>
 		<windows.build.finalName>EarthquakeBulletin</windows.build.finalName>
@@ -415,7 +413,6 @@
 						</goals>
 						<phase>initialize</phase>
 						<configuration>
-							<prefix>git</prefix>
 							<dateFormat>yyyy-MM-dd'T'HH:mm:ss'Z'</dateFormat>
 						</configuration>
 					</execution>
