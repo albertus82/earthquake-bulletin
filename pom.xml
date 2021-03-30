@@ -409,15 +409,28 @@
 				<version>4.0.4</version>
 				<executions>
 					<execution>
+						<id>default</id>
 						<goals>
 							<goal>revision</goal>
 						</goals>
 						<phase>initialize</phase>
+						<configuration>
+							<prefix>git</prefix>
+							<dateFormat>yyyy-MM-dd'T'HH:mm:ss'Z'</dateFormat>
+						</configuration>
+					</execution>
+					<execution>
+						<id>version</id>
+						<goals>
+							<goal>revision</goal>
+						</goals>
+						<phase>initialize</phase>
+						<configuration>
+							<prefix>version</prefix>
+							<dateFormat>yyyy-MM-dd</dateFormat>
+						</configuration>
 					</execution>
 				</executions>
-				<configuration>
-					<dateFormat>yyyy-MM-dd'T'HH:mm:ss'Z'</dateFormat>
-				</configuration>
 			</plugin>
 
 			<plugin>
