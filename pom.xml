@@ -6,25 +6,35 @@
 
 	<groupId>it.albertus</groupId>
 	<artifactId>earthquake-bulletin</artifactId>
-	<version>2.2.6</version>
+	<version>2.2.7</version>
 	<name>Earthquake Bulletin</name>
 	<url>https://github.com/albertus82/${project.artifactId}</url>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.clean.excludeDefaultDirectories>true</maven.clean.excludeDefaultDirectories>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<project.url>${project.url}</project.url>
+		<project.build.basedir>target</project.build.basedir>
+		<project.build.binSourceDirectory>src/main/bin</project.build.binSourceDirectory>
+		<project.build.iconsSourceDirectory>src/main/icons</project.build.iconsSourceDirectory>
+		<feregion.vm.initialHeapSize>4</feregion.vm.initialHeapSize>
+		<feregion.vm.maxHeapSize>16</feregion.vm.maxHeapSize>
+		<eqbulletin.vm.initialHeapSize>8</eqbulletin.vm.initialHeapSize>
+		<eqbulletin.vm.maxHeapSize>96</eqbulletin.vm.maxHeapSize>
+		<assembly.outputDirectory>${project.build.basedir}</assembly.outputDirectory>
+		<assembly.finalName>${project.artifactId}-${project.version}-${platform}</assembly.finalName>
 		<dependencies.directory>lib</dependencies.directory>
-		<project.build.outputTimestamp>${git.commit.time}</project.build.outputTimestamp>
-		<swt.latest.version>3.116.0</swt.latest.version>
-		<mainClass>it.albertus.eqbulletin.EarthquakeBulletin</mainClass>
+		<thirdparty.license.directory>3rdparty</thirdparty.license.directory>
+		<swt.version>3.116.0</swt.version>
+		<jface.version>3.22.100</jface.version>
+		<eqbulletin.mainClass>it.albertus.eqbulletin.EarthquakeBulletin</eqbulletin.mainClass>
+		<feregion.mainClass>gov.usgs.cr.hazards.feregion.fe_1995.FERegion</feregion.mainClass>
 		<windows.build.finalName>EarthquakeBulletin</windows.build.finalName>
 		<linux.build.finalName>${project.artifactId}</linux.build.finalName>
-		<macos.build.finalName>EarthquakeBulletin</macos.build.finalName>
-		<project.build.basedir>${project.basedir}/target</project.build.basedir>
+		<mac.build.finalName>EarthquakeBulletin</mac.build.finalName>
 		<sonar.coverage.jacoco.xmlReportPaths>${project.build.directory}/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+		<maven.version.rules>${project.baseUri}/maven-version-rules.xml</maven.version.rules>
 	</properties>
 
 	<dependencies>
@@ -32,7 +42,7 @@
 		<dependency>
 			<groupId>org.eclipse.platform</groupId>
 			<artifactId>org.eclipse.jface</artifactId>
-			<version>3.22.100</version>
+			<version>${jface.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>*</groupId>
@@ -117,7 +127,7 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>1.18.18</version>
+			<version>1.18.20</version>
 			<scope>provided</scope>
 		</dependency>
 		<!-- Test -->
@@ -145,16 +155,36 @@
 			</activation>
 			<properties>
 				<platform>cocoa-macosx-x86_64</platform>
+				<assembly.skipAssembly>true</assembly.skipAssembly>
 				<ignoreWineErrors>true</ignoreWineErrors>
 			</properties>
 			<build>
-				<finalName>${macos.build.finalName}</finalName>
+				<finalName>${mac.build.finalName}</finalName>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-dependency-plugin</artifactId>
+						<version>3.1.2</version>
+						<configuration>
+							<includeScope>runtime</includeScope>
+							<outputDirectory>${project.build.directory}/${dependencies.directory}</outputDirectory>
+						</configuration>
+						<executions>
+							<execution>
+								<phase>prepare-package</phase>
+								<goals>
+									<goal>copy-dependencies</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
 			</build>
 			<dependencies>
 				<dependency>
 					<groupId>org.eclipse.platform</groupId>
 					<artifactId>org.eclipse.swt.cocoa.macosx.x86_64</artifactId>
-					<version>${swt.latest.version}</version>
+					<version>${swt.version}</version>
 					<exclusions>
 						<exclusion>
 							<groupId>*</groupId>
@@ -174,6 +204,7 @@
 			</activation>
 			<properties>
 				<platform>gtk-linux-aarch64</platform>
+				<assembly.descriptor>linux.xml</assembly.descriptor>
 				<ignoreWineErrors>true</ignoreWineErrors>
 			</properties>
 			<build>
@@ -183,7 +214,7 @@
 				<dependency>
 					<groupId>org.eclipse.platform</groupId>
 					<artifactId>org.eclipse.swt.gtk.linux.aarch64</artifactId>
-					<version>${swt.latest.version}</version>
+					<version>${swt.version}</version>
 					<exclusions>
 						<exclusion>
 							<groupId>*</groupId>
@@ -203,23 +234,14 @@
 			</activation>
 			<properties>
 				<platform>gtk-linux-armhf</platform>
+				<assembly.descriptor>linux.xml</assembly.descriptor>
 				<ignoreWineErrors>true</ignoreWineErrors>
+				<jface.version>3.12.2</jface.version>
 			</properties>
 			<build>
 				<finalName>${linux.build.finalName}</finalName>
 			</build>
 			<dependencies>
-				<dependency>
-					<groupId>org.eclipse.platform</groupId>
-					<artifactId>org.eclipse.jface</artifactId>
-					<version>3.12.2</version>
-					<exclusions>
-						<exclusion>
-							<groupId>*</groupId>
-							<artifactId>*</artifactId>
-						</exclusion>
-					</exclusions>
-				</dependency>
 				<dependency>
 					<groupId>org.eclipse.platform</groupId>
 					<artifactId>org.eclipse.swt.gtk.linux.armhf</artifactId>
@@ -243,6 +265,7 @@
 			</activation>
 			<properties>
 				<platform>gtk-linux-x86</platform>
+				<assembly.descriptor>linux.xml</assembly.descriptor>
 			</properties>
 			<build>
 				<finalName>${linux.build.finalName}</finalName>
@@ -271,6 +294,7 @@
 			</activation>
 			<properties>
 				<platform>gtk-linux-x86_64</platform>
+				<assembly.descriptor>linux.xml</assembly.descriptor>
 			</properties>
 			<build>
 				<finalName>${linux.build.finalName}</finalName>
@@ -279,7 +303,7 @@
 				<dependency>
 					<groupId>org.eclipse.platform</groupId>
 					<artifactId>org.eclipse.swt.gtk.linux.x86_64</artifactId>
-					<version>${swt.latest.version}</version>
+					<version>${swt.version}</version>
 					<exclusions>
 						<exclusion>
 							<groupId>*</groupId>
@@ -299,6 +323,10 @@
 			</activation>
 			<properties>
 				<platform>win32-win32-x86</platform>
+				<assembly.descriptor>windows.xml</assembly.descriptor>
+				<assembly.outputDirectory>${project.build.directory}</assembly.outputDirectory>
+				<assembly.finalName>assembly</assembly.finalName>
+				<assembly.appendAssemblyId>false</assembly.appendAssemblyId>
 			</properties>
 			<build>
 				<finalName>${windows.build.finalName}</finalName>
@@ -327,6 +355,10 @@
 			</activation>
 			<properties>
 				<platform>win32-win32-x86_64</platform>
+				<assembly.descriptor>windows.xml</assembly.descriptor>
+				<assembly.outputDirectory>${project.build.directory}</assembly.outputDirectory>
+				<assembly.finalName>assembly</assembly.finalName>
+				<assembly.appendAssemblyId>false</assembly.appendAssemblyId>
 			</properties>
 			<build>
 				<finalName>${windows.build.finalName}</finalName>
@@ -335,7 +367,7 @@
 				<dependency>
 					<groupId>org.eclipse.platform</groupId>
 					<artifactId>org.eclipse.swt.win32.win32.x86_64</artifactId>
-					<version>${swt.latest.version}</version>
+					<version>${swt.version}</version>
 					<exclusions>
 						<exclusion>
 							<groupId>*</groupId>
@@ -387,6 +419,7 @@
 				<artifactId>maven-clean-plugin</artifactId>
 				<version>3.1.0</version>
 				<configuration>
+					<excludeDefaultDirectories>true</excludeDefaultDirectories>
 					<filesets>
 						<fileset>
 							<directory>${project.build.basedir}</directory>
@@ -407,24 +440,42 @@
 				<version>4.0.4</version>
 				<executions>
 					<execution>
-						<id>default</id>
 						<goals>
 							<goal>revision</goal>
 						</goals>
 						<phase>initialize</phase>
 						<configuration>
-							<dateFormat>yyyy-MM-dd'T'HH:mm:ss'Z'</dateFormat>
+							<dateFormat>yyyy-MM-dd'T'HH:mm:ssXXX</dateFormat>
 						</configuration>
 					</execution>
 					<execution>
-						<id>version</id>
+						<id>jar</id>
 						<goals>
 							<goal>revision</goal>
 						</goals>
 						<phase>initialize</phase>
 						<configuration>
-							<prefix>version</prefix>
-							<dateFormat>yyyy-MM-dd</dateFormat>
+							<prefix>jar.git</prefix>
+							<dateFormat>yyyy-MM-dd'T'HH:mm:ss'Z'</dateFormat>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>3.2.0</version>
+				<executions>
+					<execution>
+						<phase>initialize</phase>
+						<goals>
+							<goal>regex-property</goal>
+						</goals>
+						<configuration>
+							<value>${git.commit.time}</value> <!-- yyyy-MM-dd'T'HH:mm:ssXXX -->
+							<regex>T.*$</regex>
+							<name>version.date</name> <!-- yyyy-MM-dd -->
 						</configuration>
 					</execution>
 				</executions>
@@ -435,13 +486,14 @@
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>3.2.0</version>
 				<configuration>
+					<outputTimestamp>${jar.git.commit.time}</outputTimestamp>
 					<archive>
 						<manifestEntries>
 							<X-Compile-Source-JDK>${maven.compiler.source}</X-Compile-Source-JDK>
 							<X-Compile-Target-JDK>${maven.compiler.target}</X-Compile-Target-JDK>
 						</manifestEntries>
 						<manifest>
-							<mainClass>${mainClass}</mainClass>
+							<mainClass>${eqbulletin.mainClass}</mainClass>
 							<addClasspath>true</addClasspath>
 							<classpathPrefix>${dependencies.directory}/</classpathPrefix>
 							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
@@ -537,18 +589,21 @@
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<version>3.1.2</version>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>3.3.0</version>
 				<configuration>
-					<includeScope>runtime</includeScope>
-					<outputDirectory>${project.build.directory}/${dependencies.directory}</outputDirectory>
+					<outputTimestamp>${git.commit.time}</outputTimestamp>
+					<finalName>${assembly.finalName}</finalName>
+					<outputDirectory>${assembly.outputDirectory}</outputDirectory>
+					<descriptors>
+						<descriptor>src/assembly/${assembly.descriptor}</descriptor>
+					</descriptors>
 				</configuration>
 				<executions>
 					<execution>
-						<id>copy-dependencies</id>
-						<phase>prepare-package</phase>
+						<phase>package</phase>
 						<goals>
-							<goal>copy-dependencies</goal>
+							<goal>single</goal>
 						</goals>
 					</execution>
 				</executions>
@@ -559,11 +614,17 @@
 				<artifactId>maven-invoker-plugin</artifactId>
 				<version>3.2.2</version>
 				<configuration>
-					<pom>${project.basedir}/pom.xml</pom>
+					<pom>pom.xml</pom>
 					<streamLogs>true</streamLogs>
 					<noLog>true</noLog>
 					<properties>
 						<skipTests>${skipTests}</skipTests>
+						<animal.sniffer.skip>true</animal.sniffer.skip>
+						<maven.gitcommitid.skip>true</maven.gitcommitid.skip>
+						<maven.antrun.skip>true</maven.antrun.skip>
+						<jacoco.skip>true</jacoco.skip>
+						<jar.git.commit.time>${jar.git.commit.time}</jar.git.commit.time>
+						<git.commit.time>${git.commit.time}</git.commit.time>
 					</properties>
 				</configuration>
 				<executions>
@@ -576,6 +637,7 @@
 						<phase>pre-integration-test</phase>
 						<goals>
 							<goal>integration-test</goal>
+							<goal>verify</goal>
 						</goals>
 					</execution>
 					<execution>
@@ -587,6 +649,7 @@
 						<phase>pre-integration-test</phase>
 						<goals>
 							<goal>integration-test</goal>
+							<goal>verify</goal>
 						</goals>
 					</execution>
 					<execution>
@@ -598,6 +661,7 @@
 						<phase>pre-integration-test</phase>
 						<goals>
 							<goal>integration-test</goal>
+							<goal>verify</goal>
 						</goals>
 					</execution>
 					<execution>
@@ -609,6 +673,7 @@
 						<phase>pre-integration-test</phase>
 						<goals>
 							<goal>integration-test</goal>
+							<goal>verify</goal>
 						</goals>
 					</execution>
 					<execution>
@@ -620,6 +685,7 @@
 						<phase>pre-integration-test</phase>
 						<goals>
 							<goal>integration-test</goal>
+							<goal>verify</goal>
 						</goals>
 					</execution>
 					<execution>
@@ -631,6 +697,7 @@
 						<phase>pre-integration-test</phase>
 						<goals>
 							<goal>integration-test</goal>
+							<goal>verify</goal>
 						</goals>
 					</execution>
 					<execution>
@@ -642,6 +709,7 @@
 						<phase>pre-integration-test</phase>
 						<goals>
 							<goal>integration-test</goal>
+							<goal>verify</goal>
 						</goals>
 					</execution>
 				</executions>
@@ -704,7 +772,7 @@
 							<target>
 								<typedef uri="antlib:net.sf.antcontrib" classpathref="maven.plugin.classpath" />
 								<taskdef name="jarbundler" classname="com.ultramixer.jarbundler.JarBundler" classpathref="maven.plugin.classpath" />
-								<ant antfile="${project.basedir}/build.xml" />
+								<ant antfile="build.xml" />
 							</target>
 						</configuration>
 					</execution>

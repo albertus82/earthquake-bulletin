@@ -10,4 +10,4 @@ while [ -h "$PRG" ] ; do
   fi
 done
 PRGDIR=`dirname "$PRG"`
-java -Xms@vm.initialHeapSize@m -Xmx@vm.maxHeapSize@m -jar "$PRGDIR/@linux.jarFileName@"
+java -Xms${eqbulletin.vm.initialHeapSize}m -Xmx${eqbulletin.vm.maxHeapSize}m -jar "$PRGDIR/${project.build.finalName}.${project.packaging}"
