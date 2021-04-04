@@ -72,7 +72,7 @@ public class BulletinExporter implements IRunnableWithProgress {
 				SwtUtils.unblockShell(shell);
 				EnhancedErrorDialog.openError(shell, Messages.get("label.window.title"), message, IStatus.WARNING, e.getCause() != null ? e.getCause() : e, Images.getAppIconArray());
 			}
-			catch (final Exception e) {
+			catch (final Exception e) { // NOSONAR Either re-interrupt this method or rethrow the "InterruptedException" that can be caught here. "InterruptedException" should not be ignored (java:S2142)
 				final String message = Messages.get("error.job.csv.create");
 				log.log(Level.SEVERE, message, e);
 				SwtUtils.unblockShell(shell);
