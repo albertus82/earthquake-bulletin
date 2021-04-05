@@ -702,7 +702,7 @@
 						</configuration>
 					</execution>
 					<execution>
-						<id>packages</id>
+						<id>innosetup</id>
 						<phase>integration-test</phase>
 						<goals>
 							<goal>run</goal>
@@ -711,6 +711,17 @@
 							<target>
 								<typedef uri="antlib:net.sf.antcontrib" classpathref="maven.plugin.classpath" />
 								<ant target="innosetup" />
+							</target>
+						</configuration>
+					</execution>
+					<execution>
+						<id>checksums</id>
+						<phase>post-integration-test</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
 								<ant target="checksums" />
 							</target>
 						</configuration>
