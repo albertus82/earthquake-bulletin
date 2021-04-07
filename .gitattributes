@@ -1,7 +1,0 @@
-*.command     eol=lf
-*.java        eol=crlf
-*.md          eol=crlf
-*.properties  eol=crlf
-*.sh          eol=lf
-*.txt         eol=crlf
-*.xml         eol=crlf
