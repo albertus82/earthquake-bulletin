@@ -10,7 +10,7 @@ jobs:
         os: [ 'windows-latest', 'ubuntu-latest', 'macOS-latest' ]
     runs-on: ${{ matrix.os }}
     env:
-      MAVEN_OPTS: -Dmaven.wagon.http.pool=false
+      MAVEN_OPTS: -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false
     steps:
     - uses: actions/checkout@v2
     - if: startsWith(matrix.os, 'ubuntu')
