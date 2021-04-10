@@ -2,6 +2,8 @@ package it.albertus.eqbulletin.resources;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.MissingResourceException;
@@ -76,6 +78,15 @@ public final class Messages {
 			message = JFaceMessages.get(key, params);
 		}
 		return message;
+	}
+
+	public static Collection<String> getKeys() {
+		if (resources != null) {
+			return Collections.list(resources.getKeys());
+		}
+		else {
+			return Collections.emptyList();
+		}
 	}
 
 }
