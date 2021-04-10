@@ -3,6 +3,7 @@ package it.albertus.eqbulletin.resources;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -10,7 +11,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.Set;
@@ -25,7 +25,6 @@ import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
 
 import it.albertus.eqbulletin.EarthquakeBulletin;
-import it.albertus.jface.JFaceMessages;
 import it.albertus.util.StringUtils;
 import lombok.NonNull;
 import lombok.extern.java.Log;
@@ -50,10 +49,12 @@ public class MessagesTest {
 				Assert.assertNotNull("Missing resource file: " + resourceName, is);
 				p.load(is);
 			}
+			log.log(Level.INFO, "{0} messages found in: {1}", new Serializable[] { p.size(), resourceName });
+			Assert.assertFalse("Empty resource file: " + resourceName, p.isEmpty());
 		}
 		pp.stream().reduce((p1, p2) -> {
-			Assert.assertTrue("Uneven resource files!", p1.keySet().containsAll(p2.keySet()));
-			Assert.assertTrue("Uneven resource files!", p2.keySet().containsAll(p1.keySet()));
+			Assert.assertTrue("Uneven resource files", p1.keySet().containsAll(p2.keySet()));
+			Assert.assertTrue("Uneven resource files", p2.keySet().containsAll(p1.keySet()));
 			return p1;
 		});
 	}
@@ -87,13 +88,13 @@ public class MessagesTest {
 				}
 			});
 		}
-		Assert.assertNotEquals("No message keys found.", 0, keys.size());
-		log.log(Level.INFO, "Found {0} message keys referenced in sources.", keys.size());
-		final Set<String> allKeys = new HashSet<>();
-		allKeys.addAll(Messages.getKeys());
-		allKeys.addAll(JFaceMessages.getKeys());
+		log.log(Level.INFO, "Found {0} message keys referenced in sources", keys.size());
+		Assert.assertFalse("No message keys found in sources", keys.isEmpty());
+		final Collection<String> allKeys = Messages.getKeys();
+		log.log(Level.INFO, "{0} message keys available in resource bundle: {1}", new Serializable[] { allKeys.size(), Messages.class.getSimpleName() });
+		Assert.assertFalse("No message keys found in resource bundle: " + Messages.class.getSimpleName(), allKeys.isEmpty());
 		for (final String key : new TreeSet<>(keys)) {
-			Assert.assertTrue("Missing message key '" + key + "'!", allKeys.contains(key));
+			Assert.assertTrue("Missing message key '" + key + "'", allKeys.contains(key));
 		}
 	}
 
