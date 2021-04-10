@@ -478,6 +478,9 @@
 			<testResource>
 				<directory>src/test/resources</directory>
 				<filtering>false</filtering>
+				<excludes>
+					<exclude>**/*.properties</exclude>
+				</excludes>
 			</testResource>
 			<testResource>
 				<directory>src/test/resources</directory>
