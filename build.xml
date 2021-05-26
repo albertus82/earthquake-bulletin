@@ -104,6 +104,7 @@
 			AppSupportURL=${innoSetup.AppSupportURL}
 			AppUpdatesURL=${innoSetup.AppUpdatesURL}
 			AppMutex=${eqbulletin.mainClass}
+			TimeStampsInUTC=yes
 			PrivilegesRequired=lowest
 			PrivilegesRequiredOverridesAllowed=dialog
 			DefaultDirName={autopf32}\${project.name}
@@ -159,6 +160,7 @@
 			AppSupportURL=${innoSetup.AppSupportURL}
 			AppUpdatesURL=${innoSetup.AppUpdatesURL}
 			AppMutex=${eqbulletin.mainClass}
+			TimeStampsInUTC=yes
 			PrivilegesRequired=lowest
 			PrivilegesRequiredOverridesAllowed=dialog
 			DefaultDirName={autopf64}\${project.name}
