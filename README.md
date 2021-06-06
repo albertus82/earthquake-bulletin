@@ -47,13 +47,14 @@ The stylized [OpenStreetMap](https://www.openstreetmap.org) icon has been downlo
 
 This application uses or includes portions of the following third party software:
 
-|Component                    |Author                     |License                                                     |Home page                                     |
-|-----------------------------|------------------|------------------------------------------------------------|-------------------------------------------------------|
-|Activation, iStack, JAXB     |Eclipse Foundation|[License](https://www.eclipse.org/org/documents/edl-v10.php)|[Home page](https://projects.eclipse.org/projects/ee4j)|
-|Eclipse Platform, Nebula, SWT|Eclipse Foundation|[License](https://www.eclipse.org/legal/epl-2.0/)           |[Home page](https://www.eclipse.org)                   |
-|Inno Setup                   |Jordan Russell    |[License](https://jrsoftware.org/files/is/license.txt)      |[Home page](https://jrsoftware.org/isinfo.php)         |
-|jsoup                        |Jonathan Hedley   |[License](https://jsoup.org/license)                        |[Home page](https://jsoup.org)                         |
-|Launch4j                     |Grzegorz Kowal    |[License](https://opensource.org/licenses/BSD-3-Clause)     |[Home page](http://launch4j.sourceforge.net)           |
-|Picocli                      |Remko Popma       |[License](https://git.io/JUqAY)                             |[Home page](https://picocli.info)                      |
-|Reflections                  |ronmamo           |[License](https://git.io/Jtp8i)                             |[Home page](https://git.io/Jtp81)                      |
-|universalJavaApplicationStub |Tobias Fischer    |[License](https://git.io/JUqAq)                             |[Home page](https://git.io/JUqAF)                      |
+|Component                    |Author               |License                                                 |Home                                          |
+|-----------------------------|---------------------|--------------------------------------------------------|----------------------------------------------|
+|Activation, iStack, JAXB     |Eclipse Foundation   |[License](https://eclip.se/tmpolicA)                    |[Home page](https://eclip.se/tmpolicz)        |
+|Eclipse Platform, Nebula, SWT|Eclipse Foundation   |[License](https://www.eclipse.org/legal/epl-2.0/)       |[Home page](https://www.eclipse.org)          |
+|Inno Setup                   |Jordan Russell       |[License](https://jrsoftware.org/files/is/license.txt)  |[Home page](https://jrsoftware.org/isinfo.php)|
+|jsoup                        |Jonathan Hedley      |[License](https://jsoup.org/license)                    |[Home page](https://jsoup.org)                |
+|Launch4j                     |Grzegorz Kowal       |[License](https://opensource.org/licenses/BSD-3-Clause) |[Home page](http://launch4j.sourceforge.net)  |
+|Picocli                      |Remko Popma          |[License](https://git.io/JUqAY)                         |[Home page](https://picocli.info)             |
+|Reflections                  |ronmamo              |[License](https://git.io/Jtp8i)                         |[Home page](https://git.io/Jtp81)             |
+|Resilience4j                 |Robert Winkler et al.|[License](https://resilience4j.readme.io/docs/apache-20)|[Home page](https://resilience4j.readme.io)   |
+|universalJavaApplicationStub |Tobias Fischer       |[License](https://git.io/JUqAq)                         |[Home page](https://git.io/JUqAF)             |
