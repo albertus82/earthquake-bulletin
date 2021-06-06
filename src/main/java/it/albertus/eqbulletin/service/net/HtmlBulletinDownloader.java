@@ -1,6 +1,5 @@
 package it.albertus.eqbulletin.service.net;
 
-import java.io.IOError;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -31,6 +30,7 @@ import it.albertus.eqbulletin.service.decode.DecodeException;
 import it.albertus.eqbulletin.service.decode.html.HtmlBulletinDecoder;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.java.Log;
 
 @Log
@@ -101,6 +101,7 @@ public class HtmlBulletinDownloader extends ResilientDownloader implements Bulle
 		}
 	}
 
+	@SneakyThrows
 	private List<Earthquake> downloadPage(final URI uri, final Headers headers, final BooleanSupplier canceled) throws CancelException, FetchException, DecodeException {
 		final Document document;
 		try {
@@ -108,9 +109,6 @@ public class HtmlBulletinDownloader extends ResilientDownloader implements Bulle
 		}
 		catch (final IOException | RuntimeException e) {
 			throw new FetchException(Messages.get("error.job.fetch"), e);
-		}
-		catch (final Throwable e) {
-			throw new IOError(e);
 		}
 		try {
 			if (canceled != null && canceled.getAsBoolean()) {

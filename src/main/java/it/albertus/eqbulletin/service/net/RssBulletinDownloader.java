@@ -1,6 +1,5 @@
 package it.albertus.eqbulletin.service.net;
 
-import java.io.IOError;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -33,6 +32,7 @@ import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
 import lombok.NonNull;
+import lombok.SneakyThrows;
 import lombok.extern.java.Log;
 
 @Log
@@ -82,6 +82,7 @@ public class RssBulletinDownloader extends ResilientDownloader implements Bullet
 		}
 	}
 
+	@SneakyThrows
 	private Collection<Earthquake> download(@NonNull final SearchRequest request, final Headers headers, final BooleanSupplier canceled) throws FetchException, DecodeException, CancelException {
 		final String body;
 		try {
@@ -89,9 +90,6 @@ public class RssBulletinDownloader extends ResilientDownloader implements Bullet
 		}
 		catch (final IOException | RuntimeException | URISyntaxException e) {
 			throw new FetchException(Messages.get("error.job.fetch"), e);
-		}
-		catch (final Throwable e) {
-			throw new IOError(e);
 		}
 		try {
 			if (canceled != null && canceled.getAsBoolean()) {

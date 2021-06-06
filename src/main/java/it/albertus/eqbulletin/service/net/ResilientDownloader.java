@@ -5,6 +5,7 @@ import java.time.Duration;
 import java.util.logging.Level;
 
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
+import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
 import io.github.resilience4j.retry.Retry;
 import io.github.resilience4j.retry.RetryConfig;
 import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
@@ -17,8 +18,8 @@ public abstract class ResilientDownloader {
 
 	protected final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getPreferencesConfiguration();
 
-	protected final CircuitBreaker circuitBreaker = CircuitBreaker.ofDefaults(getClass().getSimpleName() + "CircuitBreaker");
-	protected final Retry retry = Retry.of(getClass().getSimpleName() + "Retry", RetryConfig.custom().maxAttempts(configuration.getBoolean(Preference.PROXY_ENABLED, ConnectionFactory.Defaults.PROXY_ENABLED) ? 1 : 3).waitDuration(Duration.ofMillis(1000)).ignoreExceptions(CancelException.class).build());
+	protected final CircuitBreaker circuitBreaker = CircuitBreaker.of(getClass().getSimpleName() + "CircuitBreaker", CircuitBreakerConfig.custom().minimumNumberOfCalls(10).build());
+	protected final Retry retry = Retry.of(getClass().getSimpleName() + "Retry", RetryConfig.custom().maxAttempts(configuration.getBoolean(Preference.PROXY_ENABLED, ConnectionFactory.Defaults.PROXY_ENABLED) ? 1 : 3).waitDuration(Duration.ofSeconds(1)).ignoreExceptions(CancelException.class).build());
 
 	protected InputStream connectionInputStream;
 
