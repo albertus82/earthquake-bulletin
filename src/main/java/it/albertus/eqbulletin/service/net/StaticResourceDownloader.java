@@ -46,7 +46,7 @@ public abstract class StaticResourceDownloader<T extends StaticResource> extends
 	}
 
 	@SneakyThrows
-	protected T doDownload(@NonNull final URL url, final T cached, final BooleanSupplier canceled) throws IOException {
+	protected T doDownload(@NonNull final URL url, final T cached, final BooleanSupplier canceled) throws IOException { // NOSONAR Remove the declaration of thrown exception 'java.io.IOException', as it cannot be thrown from method's body. "throws" declarations should not be superfluous (java:S1130)
 		final Headers headers = new Headers();
 		headers.set("Accept", accept);
 		headers.set("Accept-Encoding", "gzip");
