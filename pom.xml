@@ -123,6 +123,11 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+		<dependency>
+			<groupId>io.github.resilience4j</groupId>
+			<artifactId>resilience4j-all</artifactId>
+			<version>1.7.0</version>
+		</dependency>
 		<!-- Provided -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -205,7 +210,9 @@
 								</goals>
 								<configuration>
 									<target>
-										<taskdef name="jarbundler" classname="com.ultramixer.jarbundler.JarBundler" classpathref="maven.plugin.classpath" />
+										<taskdef name="jarbundler"
+											classname="com.ultramixer.jarbundler.JarBundler"
+											classpathref="maven.plugin.classpath" />
 										<ant target="jarbundler" />
 									</target>
 								</configuration>
@@ -736,7 +743,8 @@
 						</goals>
 						<configuration>
 							<target>
-								<taskdef resource="net/sf/antcontrib/antlib.xml" classpathref="maven.plugin.classpath" />
+								<taskdef resource="net/sf/antcontrib/antlib.xml"
+									classpathref="maven.plugin.classpath" />
 								<ant target="innosetup" />
 							</target>
 						</configuration>

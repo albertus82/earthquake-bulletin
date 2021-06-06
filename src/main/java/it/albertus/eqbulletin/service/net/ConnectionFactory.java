@@ -26,6 +26,7 @@ import it.albertus.jface.preference.IPreferencesConfiguration;
 import it.albertus.util.Version;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.extern.java.Log;
 
 @Log
@@ -52,7 +53,7 @@ public class ConnectionFactory {
 
 	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getPreferencesConfiguration();
 
-	public static HttpURLConnection makeGetRequest(URL url, final Headers headers) throws IOException {
+	public static HttpURLConnection makeGetRequest(@NonNull URL url, final Headers headers) throws IOException {
 		HttpURLConnection urlConnection = prepareConnection(url, headers);
 		byte redirectionCounter = 0;
 		while (httpRedirectionResponseCodes.contains(urlConnection.getResponseCode())) { // Connection starts here
@@ -78,17 +79,19 @@ public class ConnectionFactory {
 		return urlConnection;
 	}
 
-	private static HttpURLConnection prepareConnection(final URL url, final Headers headers) throws IOException {
+	private static HttpURLConnection prepareConnection(@NonNull final URL url, final Headers headers) throws IOException {
 		final HttpURLConnection urlConnection = createConnection(url);
-		for (final Entry<String, List<String>> header : headers.entrySet()) {
-			for (final String value : header.getValue()) {
-				urlConnection.addRequestProperty(header.getKey(), value);
+		if (headers != null) {
+			for (final Entry<String, List<String>> header : headers.entrySet()) {
+				for (final String value : header.getValue()) {
+					urlConnection.addRequestProperty(header.getKey(), value);
+				}
 			}
 		}
 		return urlConnection;
 	}
 
-	private static HttpURLConnection createConnection(final URL url) throws IOException {
+	private static HttpURLConnection createConnection(@NonNull final URL url) throws IOException {
 		final URLConnection connection;
 		if (configuration.getBoolean(Preference.PROXY_ENABLED, Defaults.PROXY_ENABLED)) {
 			Proxy proxy;

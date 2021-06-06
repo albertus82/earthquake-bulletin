@@ -18,11 +18,9 @@ import lombok.extern.java.Log;
 
 @Log
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
-public abstract class StaticResourceDownloader<T extends StaticResource> {
+public abstract class StaticResourceDownloader<T extends StaticResource> extends ResilientDownloader {
 
 	private static final String DEFAULT_ACCEPT = "*/*";
-
-	private InputStream connectionInputStream;
 
 	private final String accept;
 
@@ -89,17 +87,6 @@ public abstract class StaticResourceDownloader<T extends StaticResource> {
 			}
 			else {
 				throw e;
-			}
-		}
-	}
-
-	public void cancel() {
-		if (connectionInputStream != null) {
-			try {
-				connectionInputStream.close();
-			}
-			catch (final Exception e) {
-				log.log(Level.FINE, e.toString(), e);
 			}
 		}
 	}
