@@ -233,9 +233,7 @@
 								</goals>
 								<configuration>
 									<target>
-										<taskdef name="jarbundler"
-											classname="com.ultramixer.jarbundler.JarBundler"
-											classpathref="maven.plugin.classpath" />
+										<taskdef name="jarbundler" classname="com.ultramixer.jarbundler.JarBundler" classpathref="maven.plugin.classpath" />
 										<ant target="jarbundler" />
 									</target>
 								</configuration>
@@ -766,8 +764,7 @@
 						</goals>
 						<configuration>
 							<target>
-								<taskdef resource="net/sf/antcontrib/antlib.xml"
-									classpathref="maven.plugin.classpath" />
+								<taskdef resource="net/sf/antcontrib/antlib.xml" classpathref="maven.plugin.classpath" />
 								<ant target="innosetup" />
 							</target>
 						</configuration>
