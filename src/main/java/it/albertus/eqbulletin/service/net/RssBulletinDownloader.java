@@ -46,7 +46,7 @@ public class RssBulletinDownloader extends ResilientDownloader implements Bullet
 			jaxbContext = JAXBContext.newInstance(RssBulletin.class);
 		}
 		catch (final JAXBException e) {
-			throw new InitializationException("Cannot create instance of " + JAXBContext.class.getName() + " for " + RssBulletin.class.getName() + ':', e);
+			throw new InitializationException("Cannot create instance of " + JAXBContext.class.getName() + " for " + RssBulletin.class.getName(), e);
 		}
 	}
 
@@ -65,9 +65,6 @@ public class RssBulletinDownloader extends ResilientDownloader implements Bullet
 		final Headers headers = new Headers();
 		headers.set("Accept", "text/xml,*/xml;q=0.9,*/*;q=0.8");
 		headers.set("Accept-Encoding", "gzip");
-		if (canceled != null && canceled.getAsBoolean()) {
-			throw new CancelException("Download canceled before connection.");
-		}
 		try {
 			return download(request, headers, canceled);
 		}
@@ -102,6 +99,9 @@ public class RssBulletinDownloader extends ResilientDownloader implements Bullet
 	}
 
 	private String fetch(@NonNull final SearchRequest request, final Headers headers, final BooleanSupplier canceled) throws IOException, URISyntaxException, CancelException {
+		if (canceled != null && canceled.getAsBoolean()) {
+			throw new CancelException();
+		}
 		final URLConnection connection = ConnectionFactory.makeGetRequest(request.toURIs().get(0).toURL(), headers);
 		final String responseContentEncoding = connection.getContentEncoding();
 		final boolean gzip = responseContentEncoding != null && responseContentEncoding.toLowerCase(Locale.ROOT).contains("gzip");

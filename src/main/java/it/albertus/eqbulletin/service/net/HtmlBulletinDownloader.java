@@ -75,9 +75,6 @@ public class HtmlBulletinDownloader extends ResilientDownloader implements Bulle
 			final Collection<URI> uris = request.toURIs();
 			final Optional<Short> limit = request.getLimit();
 			for (final URI uri : uris) {
-				if (canceled != null && canceled.getAsBoolean()) {
-					throw new CancelException();
-				}
 				final Collection<Earthquake> partial = downloadPage(uri, headers, canceled);
 				log.log(Level.FINE, "partial.size() = {0,number,#}", partial.size());
 				if (partial.isEmpty()) {
@@ -121,6 +118,9 @@ public class HtmlBulletinDownloader extends ResilientDownloader implements Bulle
 	}
 
 	private Document fetch(@NonNull final URI uri, final Headers headers, final BooleanSupplier canceled) throws IOException, CancelException {
+		if (canceled != null && canceled.getAsBoolean()) {
+			throw new CancelException();
+		}
 		final URLConnection connection = ConnectionFactory.makeGetRequest(uri.toURL(), headers);
 		final String responseContentEncoding = connection.getContentEncoding();
 		final boolean gzip = responseContentEncoding != null && responseContentEncoding.toLowerCase(Locale.ROOT).contains("gzip");
