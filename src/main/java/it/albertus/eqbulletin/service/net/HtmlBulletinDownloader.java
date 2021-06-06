@@ -2,7 +2,6 @@ package it.albertus.eqbulletin.service.net;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLConnection;
@@ -121,7 +120,7 @@ public class HtmlBulletinDownloader extends ResilientDownloader implements Bulle
 		}
 	}
 
-	private Document fetch(@NonNull final URI uri, final Headers headers, final BooleanSupplier canceled) throws IOException, MalformedURLException, CancelException {
+	private Document fetch(@NonNull final URI uri, final Headers headers, final BooleanSupplier canceled) throws IOException, CancelException {
 		final URLConnection connection = ConnectionFactory.makeGetRequest(uri.toURL(), headers);
 		final String responseContentEncoding = connection.getContentEncoding();
 		final boolean gzip = responseContentEncoding != null && responseContentEncoding.toLowerCase(Locale.ROOT).contains("gzip");

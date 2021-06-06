@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
@@ -102,7 +101,7 @@ public class RssBulletinDownloader extends ResilientDownloader implements Bullet
 		}
 	}
 
-	private String fetch(@NonNull final SearchRequest request, final Headers headers, final BooleanSupplier canceled) throws IOException, MalformedURLException, URISyntaxException, CancelException {
+	private String fetch(@NonNull final SearchRequest request, final Headers headers, final BooleanSupplier canceled) throws IOException, URISyntaxException, CancelException {
 		final URLConnection connection = ConnectionFactory.makeGetRequest(request.toURIs().get(0).toURL(), headers);
 		final String responseContentEncoding = connection.getContentEncoding();
 		final boolean gzip = responseContentEncoding != null && responseContentEncoding.toLowerCase(Locale.ROOT).contains("gzip");
