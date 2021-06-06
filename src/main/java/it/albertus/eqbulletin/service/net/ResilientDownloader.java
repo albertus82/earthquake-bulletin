@@ -18,8 +18,8 @@ public abstract class ResilientDownloader {
 
 	protected final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getPreferencesConfiguration();
 
-	protected final CircuitBreaker circuitBreaker = CircuitBreaker.of(getClass().getSimpleName() + "CircuitBreaker", CircuitBreakerConfig.custom().minimumNumberOfCalls(10).build());
-	protected final Retry retry = Retry.of(getClass().getSimpleName() + "Retry", RetryConfig.custom().maxAttempts(configuration.getBoolean(Preference.PROXY_ENABLED, ConnectionFactory.Defaults.PROXY_ENABLED) ? 1 : 3).waitDuration(Duration.ofSeconds(1)).ignoreExceptions(CancelException.class).build());
+	protected final CircuitBreaker circuitBreaker = CircuitBreaker.of(getClass().getSimpleName() + CircuitBreaker.class.getSimpleName(), CircuitBreakerConfig.custom().minimumNumberOfCalls(10).build());
+	protected final Retry retry = Retry.of(getClass().getSimpleName() + Retry.class.getSimpleName(), RetryConfig.custom().maxAttempts(configuration.getBoolean(Preference.PROXY_AUTH_REQUIRED, ConnectionFactory.Defaults.PROXY_AUTH_REQUIRED) ? 1 : 3).waitDuration(Duration.ofSeconds(1)).ignoreExceptions(CancelException.class).build());
 
 	protected InputStream connectionInputStream;
 
