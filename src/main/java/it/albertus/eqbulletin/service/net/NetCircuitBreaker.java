@@ -9,7 +9,7 @@ public enum NetCircuitBreaker implements Supplier<CircuitBreaker> {
 
 	INSTANCE;
 
-	private final CircuitBreaker circuitBreaker = CircuitBreaker.of(getClass().getSimpleName(), CircuitBreakerConfig.custom().minimumNumberOfCalls(10).build());
+	private final CircuitBreaker circuitBreaker = CircuitBreaker.of(getClass().getSimpleName(), CircuitBreakerConfig.custom().minimumNumberOfCalls(10).ignoreExceptions(CancelException.class).build());
 
 	@Override
 	public CircuitBreaker get() {
