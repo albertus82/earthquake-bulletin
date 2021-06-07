@@ -20,7 +20,6 @@ import org.jsoup.nodes.Document;
 
 import com.sun.net.httpserver.Headers;
 
-import io.github.resilience4j.decorators.Decorators;
 import it.albertus.eqbulletin.model.Bulletin;
 import it.albertus.eqbulletin.model.Earthquake;
 import it.albertus.eqbulletin.resources.Messages;
@@ -101,7 +100,7 @@ public class HtmlBulletinDownloader extends ResilientDownloader implements Bulle
 	private List<Earthquake> downloadPage(final URI uri, final Headers headers, final BooleanSupplier canceled) throws CancelException, FetchException, DecodeException {
 		final Document document;
 		try {
-			document = Decorators.ofCheckedSupplier(() -> fetch(uri, headers, canceled)).withCircuitBreaker(circuitBreaker).withRetry(getRetry()).get();
+			document = newResilientSupplier(() -> fetch(uri, headers, canceled)).get();
 		}
 		catch (final IOException | RuntimeException e) {
 			throw new FetchException(Messages.get("error.job.fetch"), e);

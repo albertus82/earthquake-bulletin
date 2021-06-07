@@ -12,7 +12,6 @@ import java.util.zip.GZIPInputStream;
 
 import com.sun.net.httpserver.Headers;
 
-import io.github.resilience4j.decorators.Decorators;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -53,7 +52,7 @@ public abstract class StaticResourceDownloader<T extends StaticResource> extends
 		if (cached != null && cached.getEtag() != null && !cached.getEtag().trim().isEmpty()) {
 			headers.set("If-None-Match", cached.getEtag());
 		}
-		return Decorators.ofCheckedSupplier(() -> fetch(url, cached, canceled, headers)).withCircuitBreaker(circuitBreaker).withRetry(getRetry()).get();
+		return newResilientSupplier(() -> fetch(url, cached, canceled, headers)).get();
 	}
 
 	private T fetch(@NonNull final URL url, final T cached, final BooleanSupplier canceled, final Headers headers) throws IOException {

@@ -17,7 +17,6 @@ import java.util.zip.GZIPInputStream;
 
 import com.sun.net.httpserver.Headers;
 
-import io.github.resilience4j.decorators.Decorators;
 import it.albertus.eqbulletin.model.Bulletin;
 import it.albertus.eqbulletin.model.Earthquake;
 import it.albertus.eqbulletin.resources.Messages;
@@ -82,7 +81,7 @@ public class RssBulletinDownloader extends ResilientDownloader implements Bullet
 	private Collection<Earthquake> download(@NonNull final SearchRequest request, final Headers headers, final BooleanSupplier canceled) throws FetchException, DecodeException, CancelException {
 		final String body;
 		try {
-			body = Decorators.ofCheckedSupplier(() -> fetch(request, headers, canceled)).withCircuitBreaker(circuitBreaker).withRetry(getRetry()).get();
+			body = newResilientSupplier(() -> fetch(request, headers, canceled)).get();
 		}
 		catch (final IOException | RuntimeException | URISyntaxException e) {
 			throw new FetchException(Messages.get("error.job.fetch"), e);
