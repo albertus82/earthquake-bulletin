@@ -101,7 +101,7 @@ public class HtmlBulletinDownloader extends ResilientDownloader implements Bulle
 	private List<Earthquake> downloadPage(final URI uri, final Headers headers, final BooleanSupplier canceled) throws CancelException, FetchException, DecodeException {
 		final Document document;
 		try {
-			document = Decorators.ofCheckedSupplier(() -> fetch(uri, headers, canceled)).withCircuitBreaker(circuitBreaker).withRetry(retry).get();
+			document = Decorators.ofCheckedSupplier(() -> fetch(uri, headers, canceled)).withCircuitBreaker(circuitBreaker).withRetry(getRetry()).get();
 		}
 		catch (final IOException | RuntimeException e) {
 			throw new FetchException(Messages.get("error.job.fetch"), e);

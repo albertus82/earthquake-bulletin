@@ -82,7 +82,7 @@ public class RssBulletinDownloader extends ResilientDownloader implements Bullet
 	private Collection<Earthquake> download(@NonNull final SearchRequest request, final Headers headers, final BooleanSupplier canceled) throws FetchException, DecodeException, CancelException {
 		final String body;
 		try {
-			body = Decorators.ofCheckedSupplier(() -> fetch(request, headers, canceled)).withCircuitBreaker(circuitBreaker).withRetry(retry).get();
+			body = Decorators.ofCheckedSupplier(() -> fetch(request, headers, canceled)).withCircuitBreaker(circuitBreaker).withRetry(getRetry()).get();
 		}
 		catch (final IOException | RuntimeException | URISyntaxException e) {
 			throw new FetchException(Messages.get("error.job.fetch"), e);
