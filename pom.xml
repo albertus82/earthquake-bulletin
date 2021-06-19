@@ -24,8 +24,8 @@
 		<thirdparty.license.directory>3rdparty</thirdparty.license.directory>
 		<sonar.coverage.jacoco.xmlReportPaths>${project.build.directory}/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
 		<maven.version.rules>${project.baseUri}/maven-version-rules.xml</maven.version.rules>
-		<swt.version>3.116.0</swt.version>
-		<jface.version>3.22.100</jface.version>
+		<swt.version>3.116.100</swt.version>
+		<jface.version>3.22.200</jface.version>
 		<windows.build.finalName>EarthquakeBulletin</windows.build.finalName>
 		<linux.build.finalName>${project.artifactId}</linux.build.finalName>
 		<mac.build.finalName>EarthquakeBulletin</mac.build.finalName>
@@ -95,7 +95,7 @@
 		<dependency>
 			<groupId>org.eclipse.platform</groupId>
 			<artifactId>org.eclipse.core.jobs</artifactId>
-			<version>3.10.1100</version>
+			<version>3.11.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.platform</groupId>
@@ -105,7 +105,7 @@
 		<dependency>
 			<groupId>org.eclipse.platform</groupId>
 			<artifactId>org.eclipse.osgi</artifactId>
-			<version>3.16.200</version>
+			<version>3.16.300</version>
 		</dependency>
 		<dependency>
 			<groupId>info.picocli</groupId>
@@ -149,7 +149,7 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-jdk14</artifactId>
-			<version>1.7.30</version>
+			<version>1.7.31</version>
 		</dependency>
 		<!-- Provided -->
 		<dependency>
