@@ -16,6 +16,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import lombok.NonNull;
+import lombok.Value;
 import lombok.extern.java.Log;
 
 @Log
@@ -1273,7 +1275,6 @@ class FERegionTest {
 		for (int i = 1; i <= 757; i++) {
 			final Map<Integer, Set<LongitudeRange>> map = instance.getLatitudeLongitudeMap(i);
 			log.log(Level.FINE, "{0} -> {1}", new Object[] { i, map });
-			//			System.out.println(i + " -> " + map);
 		}
 		Assertions.assertTrue(true);
 	}
@@ -1284,12 +1285,13 @@ class FERegionTest {
 		Assertions.assertEquals(expectedName, region.getName(), "arg0: \"" + arg0 + "\", arg1: \"" + arg1 + '"');
 	}
 
+	@Value
 	private static class TestCase {
-		private final String lat;
-		private final String lon;
-		private final String name;
+		String lat;
+		String lon;
+		String name;
 
-		private TestCase(final String lat, final String lon, final String name) {
+		private TestCase(@NonNull final String lat, @NonNull final String lon, @NonNull final String name) {
 			this.lat = lat.trim();
 			this.lon = lon.trim();
 			this.name = name.trim();

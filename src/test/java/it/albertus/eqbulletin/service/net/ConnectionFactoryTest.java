@@ -31,8 +31,8 @@ class ConnectionFactoryTest {
 			}
 			else {
 				log.log(Level.INFO, "Proxy address: {0}", addr);
-//				System.setProperty("http.proxyHost", addr.getHostName());
-//				System.setProperty("http.proxyPort", Integer.toString(addr.getPort()));
+				//	System.setProperty("http.proxyHost", addr.getHostName());
+				//	System.setProperty("http.proxyPort", Integer.toString(addr.getPort()));
 			}
 		}
 		// Reset java.net.useSystemProxies to default
