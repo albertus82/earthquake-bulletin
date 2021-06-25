@@ -4,26 +4,26 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-public class GeofonRegionNamesTest {
+class GeofonRegionNamesTest {
 
 	private static GeofonRegionNames grnames;
 
-	@BeforeClass
-	public static void init() throws IOException {
+	@BeforeAll
+	static void init() throws IOException {
 		grnames = new GeofonRegionNames();
 	}
 
 	@Test
-	public void test() {
+	void test() {
 		final Map<Integer, String> names = grnames.getMap();
-		Assert.assertEquals(757, names.size());
+		Assertions.assertEquals(757, names.size());
 		for (final Entry<Integer, String> entry : names.entrySet()) {
-			Assert.assertNotNull(entry.getValue());
-			Assert.assertNotEquals("", entry.getValue());
+			Assertions.assertNotNull(entry.getValue());
+			Assertions.assertNotEquals("", entry.getValue());
 		}
 	}
 

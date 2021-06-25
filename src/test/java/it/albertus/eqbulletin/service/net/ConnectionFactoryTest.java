@@ -7,18 +7,18 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.logging.Level;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import lombok.extern.java.Log;
 
 @Log
-public class ConnectionFactoryTest {
+class ConnectionFactoryTest {
 
 	private static final String TEST_ADDRESS = "https://foo.bar";
 
 	@Test
-	public void testProxy() throws URISyntaxException {
+	void testProxy() throws URISyntaxException {
 		final boolean useSystemProxies = Boolean.parseBoolean(System.getProperty("java.net.useSystemProxies"));
 		log.log(Level.INFO, "BEFORE: useSystemProxies={0}", useSystemProxies);
 		System.setProperty("java.net.useSystemProxies", Boolean.TRUE.toString());
@@ -37,7 +37,7 @@ public class ConnectionFactoryTest {
 		}
 		// Reset java.net.useSystemProxies to default
 		System.setProperty("java.net.useSystemProxies", Boolean.toString(useSystemProxies));
-		Assert.assertTrue(true);
+		Assertions.assertTrue(true);
 	}
 
 }

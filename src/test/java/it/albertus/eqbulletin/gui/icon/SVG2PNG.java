@@ -29,11 +29,16 @@ import picocli.CommandLine.Option;
 @Command
 public class SVG2PNG implements Callable<Integer> {
 
-	@Option(names = { "-F", "--from" }, defaultValue = "16") private short from;
+	// @formatter:off
+	@Option(names = { "-F", "--from" }, defaultValue = "16")
+	private short from;
 
-	@Option(names = { "-T", "--to" }, defaultValue = "256") private short to;
+	@Option(names = { "-T", "--to" }, defaultValue = "256")
+	private short to;
 
-	@Option(names = { "-O", "--output" }) private Path output = Paths.get("target", "generated-resources", getClass().getPackage().getName().replace('.', File.separatorChar), "map");
+	@Option(names = { "-O", "--output" })
+	private Path output = Paths.get("target", "generated-resources", getClass().getPackage().getName().replace('.', File.separatorChar), "map");
+	// @formatter:on
 
 	public static void main(final String... args) {
 		System.exit(new CommandLine(new SVG2PNG()).setCommandName(SVG2PNG.class.getSimpleName().toLowerCase(Locale.ROOT)).setOptionsCaseInsensitive(true).execute(args));

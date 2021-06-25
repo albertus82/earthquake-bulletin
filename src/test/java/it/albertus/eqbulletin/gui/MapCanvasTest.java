@@ -1,35 +1,35 @@
 package it.albertus.eqbulletin.gui;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-public class MapCanvasTest {
+class MapCanvasTest {
 
 	@Test
-	public void testGetZoomNearestValues() {
-		Assert.assertArrayEquals(new int[] { 10, 12 }, MapCanvas.getZoomNearestValues(Integer.MIN_VALUE));
-		Assert.assertArrayEquals(new int[] { 10, 12 }, MapCanvas.getZoomNearestValues(0));
-		Assert.assertArrayEquals(new int[] { 10, 12 }, MapCanvas.getZoomNearestValues(1));
-		Assert.assertArrayEquals(new int[] { 10, 12 }, MapCanvas.getZoomNearestValues(9));
-		Assert.assertArrayEquals(new int[] { 10, 12 }, MapCanvas.getZoomNearestValues(10));
-		Assert.assertArrayEquals(new int[] { 10, 12 }, MapCanvas.getZoomNearestValues(11));
-		Assert.assertArrayEquals(new int[] { 10, 12 }, MapCanvas.getZoomNearestValues(11.9f));
-		Assert.assertArrayEquals(new int[] { 10, 15 }, MapCanvas.getZoomNearestValues(12));
-		Assert.assertArrayEquals(new int[] { 10, 15 }, MapCanvas.getZoomNearestValues(12f));
-		Assert.assertArrayEquals(new int[] { 12, 15 }, MapCanvas.getZoomNearestValues(12.1f));
+	void testGetZoomNearestValues() {
+		Assertions.assertArrayEquals(new int[] { 10, 12 }, MapCanvas.getZoomNearestValues(Integer.MIN_VALUE));
+		Assertions.assertArrayEquals(new int[] { 10, 12 }, MapCanvas.getZoomNearestValues(0));
+		Assertions.assertArrayEquals(new int[] { 10, 12 }, MapCanvas.getZoomNearestValues(1));
+		Assertions.assertArrayEquals(new int[] { 10, 12 }, MapCanvas.getZoomNearestValues(9));
+		Assertions.assertArrayEquals(new int[] { 10, 12 }, MapCanvas.getZoomNearestValues(10));
+		Assertions.assertArrayEquals(new int[] { 10, 12 }, MapCanvas.getZoomNearestValues(11));
+		Assertions.assertArrayEquals(new int[] { 10, 12 }, MapCanvas.getZoomNearestValues(11.9f));
+		Assertions.assertArrayEquals(new int[] { 10, 15 }, MapCanvas.getZoomNearestValues(12));
+		Assertions.assertArrayEquals(new int[] { 10, 15 }, MapCanvas.getZoomNearestValues(12f));
+		Assertions.assertArrayEquals(new int[] { 12, 15 }, MapCanvas.getZoomNearestValues(12.1f));
 
-		Assert.assertArrayEquals(new int[] { 80, 100 }, MapCanvas.getZoomNearestValues(99));
-		Assert.assertArrayEquals(new int[] { 80, 100 }, MapCanvas.getZoomNearestValues(99.9f));
-		Assert.assertArrayEquals(new int[] { 80, 120 }, MapCanvas.getZoomNearestValues(100));
-		Assert.assertArrayEquals(new int[] { 80, 120 }, MapCanvas.getZoomNearestValues(100f));
-		Assert.assertArrayEquals(new int[] { 100, 120 }, MapCanvas.getZoomNearestValues(100.1f));
-		Assert.assertArrayEquals(new int[] { 100, 120 }, MapCanvas.getZoomNearestValues(101));
+		Assertions.assertArrayEquals(new int[] { 80, 100 }, MapCanvas.getZoomNearestValues(99));
+		Assertions.assertArrayEquals(new int[] { 80, 100 }, MapCanvas.getZoomNearestValues(99.9f));
+		Assertions.assertArrayEquals(new int[] { 80, 120 }, MapCanvas.getZoomNearestValues(100));
+		Assertions.assertArrayEquals(new int[] { 80, 120 }, MapCanvas.getZoomNearestValues(100f));
+		Assertions.assertArrayEquals(new int[] { 100, 120 }, MapCanvas.getZoomNearestValues(100.1f));
+		Assertions.assertArrayEquals(new int[] { 100, 120 }, MapCanvas.getZoomNearestValues(101));
 
-		Assert.assertArrayEquals(new int[] { 300, 500 }, MapCanvas.getZoomNearestValues(400));
-		Assert.assertArrayEquals(new int[] { 400, 500 }, MapCanvas.getZoomNearestValues(400.1f));
-		Assert.assertArrayEquals(new int[] { 400, 500 }, MapCanvas.getZoomNearestValues(499.9f));
-		Assert.assertArrayEquals(new int[] { 400, 500 }, MapCanvas.getZoomNearestValues(500));
-		Assert.assertArrayEquals(new int[] { 400, 500 }, MapCanvas.getZoomNearestValues(500.1f));
-		Assert.assertArrayEquals(new int[] { 400, 500 }, MapCanvas.getZoomNearestValues(Integer.MAX_VALUE));
+		Assertions.assertArrayEquals(new int[] { 300, 500 }, MapCanvas.getZoomNearestValues(400));
+		Assertions.assertArrayEquals(new int[] { 400, 500 }, MapCanvas.getZoomNearestValues(400.1f));
+		Assertions.assertArrayEquals(new int[] { 400, 500 }, MapCanvas.getZoomNearestValues(499.9f));
+		Assertions.assertArrayEquals(new int[] { 400, 500 }, MapCanvas.getZoomNearestValues(500));
+		Assertions.assertArrayEquals(new int[] { 400, 500 }, MapCanvas.getZoomNearestValues(500.1f));
+		Assertions.assertArrayEquals(new int[] { 400, 500 }, MapCanvas.getZoomNearestValues(Integer.MAX_VALUE));
 	}
 }

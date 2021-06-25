@@ -12,86 +12,86 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.zip.GZIPInputStream;
 
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import lombok.extern.java.Log;
 
 @Log
-public class FERegionTest {
+class FERegionTest {
 
 	private static FERegion instance;
 
-	@BeforeClass
-	public static void init() throws IOException {
+	@BeforeAll
+	static void init() throws IOException {
 		instance = new FERegion();
 	}
 
 	@Test
-	public void testCoordinates() {
+	void testCoordinates() {
 		final Coordinates c1 = new Coordinates(12, -34);
 		log.info(c1.toString());
-		Assert.assertNotNull(c1);
-		Assert.assertNotEquals(c1, new Object());
+		Assertions.assertNotNull(c1);
+		Assertions.assertNotEquals(c1, new Object());
 		final Coordinates c2 = new Coordinates(-156, 78);
 		log.info(c2.toString());
-		Assert.assertNotEquals(c1, c2);
+		Assertions.assertNotEquals(c1, c2);
 		final Coordinates c3 = Coordinates.parse("34S", "12E");
 		log.info(c3.toString());
-		Assert.assertEquals(c1, c3);
-		Assert.assertNotEquals(c2, c3);
+		Assertions.assertEquals(c1, c3);
+		Assertions.assertNotEquals(c2, c3);
 	}
 
 	@Test
-	public void testRegion() {
+	void testRegion() {
 		final Region r1 = instance.getGeographicRegion(new Coordinates(12.5, 42.5));
 		log.info(r1.toString());
-		Assert.assertNotNull(r1);
-		Assert.assertNotEquals(r1, new Object());
+		Assertions.assertNotNull(r1);
+		Assertions.assertNotEquals(r1, new Object());
 		final Region r2 = instance.getGeographicRegion(new Coordinates(-12.5, -42.5));
 		log.info(r2.toString());
-		Assert.assertNotEquals(r1, r2);
+		Assertions.assertNotEquals(r1, r2);
 		final Region r3 = instance.getGeographicRegion("12E", "42");
 		log.info(r3.toString());
-		Assert.assertEquals(r1, r3);
-		Assert.assertNotEquals(r2, r3);
-		Assert.assertEquals(381, r1.getNumber());
-		Assert.assertEquals("CENTRAL ITALY", r1.getName());
-		Assert.assertEquals(0, r1.compareTo(r3));
-		Assert.assertTrue(r1.getNumber() + " < " + r2.getNumber(), r1.compareTo(r2) < 0);
-		Assert.assertTrue(r2.getNumber() + " > " + r1.getNumber(), r2.compareTo(r1) > 0);
+		Assertions.assertEquals(r1, r3);
+		Assertions.assertNotEquals(r2, r3);
+		Assertions.assertEquals(381, r1.getNumber());
+		Assertions.assertEquals("CENTRAL ITALY", r1.getName());
+		Assertions.assertEquals(0, r1.compareTo(r3));
+		Assertions.assertTrue(r1.compareTo(r2) < 0, r1.getNumber() + " < " + r2.getNumber());
+		Assertions.assertTrue(r2.compareTo(r1) > 0, r2.getNumber() + " > " + r1.getNumber());
 		final Region r4 = new Region(333, "AAA");
 		log.info(r4.toString());
 		final Region r5 = new Region(333, "bbb");
 		log.info(r5.toString());
-		Assert.assertEquals(r4, r5);
-		Assert.assertEquals(r4.hashCode(), r5.hashCode());
+		Assertions.assertEquals(r4, r5);
+		Assertions.assertEquals(r4.hashCode(), r5.hashCode());
 		final Region r6 = new Region(555, "CCC");
 		log.info(r6.toString());
 		final Region r7 = new Region(555, "CCC");
 		log.info(r7.toString());
-		Assert.assertEquals(r6, r7);
-		Assert.assertEquals(r6.hashCode(), r7.hashCode());
+		Assertions.assertEquals(r6, r7);
+		Assertions.assertEquals(r6.hashCode(), r7.hashCode());
 		final Region r8 = new Region(111, "ddd");
 		log.info(r8.toString());
 		final Region r9 = new Region(222, "ddd");
 		log.info(r9.toString());
-		Assert.assertNotEquals(r8, r9);
+		Assertions.assertNotEquals(r8, r9);
 		final Region r10 = new Region(444, "EEE");
 		log.info(r10.toString());
 		final Region r11 = new Region(222, "fff");
 		log.info(r11.toString());
-		Assert.assertNotEquals(r10, r11);
+		Assertions.assertNotEquals(r10, r11);
 	}
 
 	@Test
-	public void compareWithPerlOutput() throws IOException {
+	void compareWithPerlOutput() throws IOException {
 		try (final InputStream is = getClass().getResourceAsStream("perl.out.gz"); final GZIPInputStream gzis = new GZIPInputStream(is); final InputStreamReader isr = new InputStreamReader(gzis, StandardCharsets.US_ASCII); final BufferedReader br = new BufferedReader(isr)) {
 			for (int lon = -180; lon <= 180; lon++) {
 				for (int lat = -90; lat <= 90; lat++) {
 					final String name = instance.getGeographicRegion(Integer.toString(lon), Integer.toString(lat)).getName();
-					Assert.assertEquals("lon: " + lon + ", lat: " + lat, br.readLine(), name);
+					Assertions.assertEquals(br.readLine(), name, "lon: " + lon + ", lat: " + lat);
 				}
 			}
 		}
@@ -99,14 +99,14 @@ public class FERegionTest {
 			for (int lon = -540; lon <= 540; lon += 5) {
 				for (int lat = -90; lat <= 90; lat += 5) {
 					final String name = instance.getGeographicRegion(Integer.toString(lon), Integer.toString(lat)).getName();
-					Assert.assertEquals("lon: " + lon + ", lat: " + lat, br.readLine(), name);
+					Assertions.assertEquals(br.readLine(), name, "lon: " + lon + ", lat: " + lat);
 				}
 			}
 		}
 	}
 
 	@Test
-	public void testCli() {
+	void testCli() {
 		testGetName("0", "0", "OFF S. COAST OF NORTHWEST AFRICA");
 
 		testGetName("180", "+90", "LOMONOSOV RIDGE");
@@ -135,111 +135,111 @@ public class FERegionTest {
 	}
 
 	@Test
-	public void testCliErrors() {
+	void testCliErrors() {
 		try {
 			testGetName("90", "91", null);
-			Assert.assertTrue(false);
+			Assertions.assertTrue(false);
 		}
 		catch (final IllegalCoordinateException e) {
-			Assert.assertTrue(true);
+			Assertions.assertTrue(true);
 		}
 		try {
 			testGetName("0", "90.1", null);
-			Assert.assertTrue(false);
+			Assertions.assertTrue(false);
 		}
 		catch (final IllegalCoordinateException e) {
-			Assert.assertTrue(true);
+			Assertions.assertTrue(true);
 		}
 		try {
 			testGetName("541", "90", null);
-			Assert.assertTrue(false);
+			Assertions.assertTrue(false);
 		}
 		catch (final IllegalCoordinateException e) {
-			Assert.assertTrue(true);
+			Assertions.assertTrue(true);
 		}
 		try {
 			testGetName("540.01", "90", null);
-			Assert.assertTrue(false);
+			Assertions.assertTrue(false);
 		}
 		catch (final IllegalCoordinateException e) {
-			Assert.assertTrue(true);
+			Assertions.assertTrue(true);
 		}
 		try {
 			testGetName("-90", "-91", null);
-			Assert.assertTrue(false);
+			Assertions.assertTrue(false);
 		}
 		catch (final IllegalCoordinateException e) {
-			Assert.assertTrue(true);
+			Assertions.assertTrue(true);
 		}
 		try {
 			testGetName("-540.01", "90", null);
-			Assert.assertTrue(false);
+			Assertions.assertTrue(false);
 		}
 		catch (final IllegalCoordinateException e) {
-			Assert.assertTrue(true);
+			Assertions.assertTrue(true);
 		}
 		try {
 			testGetName("-4873593.4834", "395953", null);
-			Assert.assertTrue(false);
+			Assertions.assertTrue(false);
 		}
 		catch (final IllegalCoordinateException e) {
-			Assert.assertTrue(true);
+			Assertions.assertTrue(true);
 		}
 		try {
 			testGetName("42Sx", "12W", null);
-			Assert.assertTrue(false);
+			Assertions.assertTrue(false);
 		}
 		catch (final IllegalCoordinateException e) {
-			Assert.assertTrue(true);
+			Assertions.assertTrue(true);
 		}
 		try {
 			testGetName("x", "y", null);
-			Assert.assertTrue(false);
+			Assertions.assertTrue(false);
 		}
 		catch (final IllegalCoordinateException e) {
-			Assert.assertTrue(true);
+			Assertions.assertTrue(true);
 		}
 		try {
 			testGetName("12R", "42N", null);
-			Assert.assertTrue(false);
+			Assertions.assertTrue(false);
 		}
 		catch (final IllegalCoordinateException e) {
-			Assert.assertTrue(true);
+			Assertions.assertTrue(true);
 		}
 		try {
 			testGetName("42", "12E", null);
-			Assert.assertTrue(false);
+			Assertions.assertTrue(false);
 		}
 		catch (final IllegalCoordinateException e) {
-			Assert.assertTrue(true);
+			Assertions.assertTrue(true);
 		}
 	}
 
 	@Test
-	public void testGetRegionByNumber() {
+	void testGetRegionByNumber() {
 		try {
 			instance.getGeographicRegion(0);
-			Assert.assertTrue(false);
+			Assertions.assertTrue(false);
 		}
 		catch (final IndexOutOfBoundsException e) {
-			Assert.assertNotNull(e);
+			Assertions.assertNotNull(e);
 		}
 
-		Assert.assertEquals("CENTRAL ALASKA", instance.getGeographicRegion(1).getName());
-		Assert.assertEquals("PYRENEES", instance.getGeographicRegion(378).getName());
-		Assert.assertEquals("GALAPAGOS TRIPLE JUNCTION REGION", instance.getGeographicRegion(757).getName());
+		Assertions.assertEquals("CENTRAL ALASKA", instance.getGeographicRegion(1).getName());
+		Assertions.assertEquals("PYRENEES", instance.getGeographicRegion(378).getName());
+		Assertions.assertEquals("GALAPAGOS TRIPLE JUNCTION REGION", instance.getGeographicRegion(757).getName());
 
 		try {
 			instance.getGeographicRegion(758);
-			Assert.assertTrue(false);
+			Assertions.assertTrue(false);
 		}
 		catch (final IndexOutOfBoundsException e) {
-			Assert.assertNotNull(e);
+			Assertions.assertNotNull(e);
 		}
 	}
 
 	@Test
-	public void testRealCases() {
+	void testRealCases() {
 		final List<TestCase> testCases = new ArrayList<>(1000);
 		testCases.add(new TestCase("11.03N", "124.90E", "Leyte, Philippines"));
 		testCases.add(new TestCase("14.30N", "93.26W", "Near Coast of Chiapas, Mexico"));
@@ -1249,39 +1249,39 @@ public class FERegionTest {
 			final String feRegion = instance.getGeographicRegion(tc.lon, tc.lat).getName();
 			final String actual = feRegion.replace('-', ' ').replace('/', ' ').replace(" ", "");
 
-			Assert.assertEquals("lon: " + tc.lon + ", lat: " + tc.lat + ", expected: \"" + geofon + "\", actual: \"" + feRegion + "\"", expected.substring(0, Math.min(expected.length(), 10)), actual.substring(0, Math.min(actual.length(), 10)));
+			Assertions.assertEquals(expected.substring(0, Math.min(expected.length(), 10)), actual.substring(0, Math.min(actual.length(), 10)), "lon: " + tc.lon + ", lat: " + tc.lat + ", expected: \"" + geofon + "\", actual: \"" + feRegion + "\"");
 		}
 	}
 
 	@Test
-	public void testGetAllRegions() {
+	void testGetAllRegions() {
 		final Map<Integer, Region> allRegions = instance.getAllGeographicRegions();
-		Assert.assertEquals(757, allRegions.size());
+		Assertions.assertEquals(757, allRegions.size());
 		log.log(Level.FINE, "{0}", allRegions);
 	}
 
 	@Test
-	public void testGetSeismicRegionNumber() {
-		Assert.assertEquals(1, instance.getSeismicRegionNumber(17));
-		Assert.assertEquals(30, instance.getSeismicRegionNumber(360));
-		Assert.assertEquals(50, instance.getSeismicRegionNumber(727));
-		Assert.assertEquals(44, instance.getSeismicRegionNumber(757));
+	void testGetSeismicRegionNumber() {
+		Assertions.assertEquals(1, instance.getSeismicRegionNumber(17));
+		Assertions.assertEquals(30, instance.getSeismicRegionNumber(360));
+		Assertions.assertEquals(50, instance.getSeismicRegionNumber(727));
+		Assertions.assertEquals(44, instance.getSeismicRegionNumber(757));
 	}
 
 	@Test
-	public void testGetLatitudeLongitudeMap() {
+	void testGetLatitudeLongitudeMap() {
 		for (int i = 1; i <= 757; i++) {
 			final Map<Integer, Set<LongitudeRange>> map = instance.getLatitudeLongitudeMap(i);
 			log.log(Level.FINE, "{0} -> {1}", new Object[] { i, map });
 			//			System.out.println(i + " -> " + map);
 		}
-		Assert.assertTrue(true);
+		Assertions.assertTrue(true);
 	}
 
 	private void testGetName(final String arg0, final String arg1, final String expectedName) {
 		final Region region = instance.getGeographicRegion(arg0, arg1);
 		log.info(region.toString());
-		Assert.assertEquals("arg0: \"" + arg0 + "\", arg1: \"" + arg1 + '"', expectedName, region.getName());
+		Assertions.assertEquals(expectedName, region.getName(), "arg0: \"" + arg0 + "\", arg1: \"" + arg1 + '"');
 	}
 
 	private static class TestCase {
