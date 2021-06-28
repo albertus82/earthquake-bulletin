@@ -18,23 +18,19 @@ public class Earthquake implements Serializable, Comparable<Earthquake> {
 
 	private static final long serialVersionUID = -6959335170582499256L;
 
-	@NonNull
-	String guid;
-	@NonNull
-	ZonedDateTime time;
+	// @formatter:off
+	@NonNull String guid;
+	@NonNull ZonedDateTime time;
 	float magnitude;
-	@NonNull
-	Latitude latitude;
-	@NonNull
-	Longitude longitude;
-	@NonNull
-	Depth depth;
+	@NonNull Latitude latitude;
+	@NonNull Longitude longitude;
+	@NonNull Depth depth;
 	Status status; // status is nullable because it was removed from the HTML page on 2019-10-08 but it's present in the RSS feed
-	@NonNull
-	String region;
+	@NonNull String region;
 	URI link;
 	URI enclosureUri;
 	URI momentTensorUri;
+	// @formatter:on
 
 	public Optional<Status> getStatus() {
 		return Optional.ofNullable(status);
