@@ -14,8 +14,8 @@ public interface BulletinProvider {
 	 * 
 	 * @param request search filters and other job parameters
 	 * @return an optional bulletin
-	 * @throws FetchException if an error occurs while fetching informations
-	 *         from data source
+	 * @throws FetchException if an error occurs while fetching informations from
+	 *         data source
 	 * @throws DecodeException if an error occurs while decoding earthquake
 	 *         informations fetched from data source
 	 */

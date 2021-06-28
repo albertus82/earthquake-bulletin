@@ -61,10 +61,9 @@ public class Coordinates implements Serializable {
 	 * 
 	 * @param longitude the longitude decimal string value (e.g., 129, 129.524,
 	 *        129.524E)
-	 * @param latitude the latitude decimal string value (e.g., -42, -42.89,
-	 *        42.89S)
-	 * @return a new {@code Coordinates} object built with the provided
-	 *         geographical coordinates
+	 * @param latitude the latitude decimal string value (e.g., -42, -42.89, 42.89S)
+	 * @return a new {@code Coordinates} object built with the provided geographical
+	 *         coordinates
 	 * @throws IllegalCoordinateException if the provided arguments are invalid
 	 */
 	public static Coordinates parse(@NonNull String longitude, @NonNull String latitude) {
