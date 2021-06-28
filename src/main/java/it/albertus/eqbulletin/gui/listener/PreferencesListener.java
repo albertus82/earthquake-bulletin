@@ -35,7 +35,8 @@ public class PreferencesListener extends SelectionAdapter implements Listener {
 
 	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getPreferencesConfiguration();
 
-	@NonNull private final EarthquakeBulletinGui gui;
+	@NonNull
+	private final EarthquakeBulletinGui gui;
 
 	@Override
 	public void widgetSelected(final SelectionEvent event) {
@@ -54,7 +55,7 @@ public class PreferencesListener extends SelectionAdapter implements Listener {
 		catch (final IOException e) {
 			final String message = Messages.get("error.preferences.dialog.open");
 			log.log(Level.WARNING, message, e);
-			EnhancedErrorDialog.openError(shell, Messages.get("label.window.title"), message, IStatus.WARNING, e, Images.getAppIconArray());
+			EnhancedErrorDialog.openError(shell, EarthquakeBulletinGui.getApplicationName(), message, IStatus.WARNING, e, Images.getAppIconArray());
 		}
 
 		// Check if must update texts...
@@ -78,7 +79,7 @@ public class PreferencesListener extends SelectionAdapter implements Listener {
 
 		if (preferences.isRestartRequired()) {
 			final MessageBox messageBox = new MessageBox(shell, SWT.ICON_INFORMATION);
-			messageBox.setText(Messages.get("label.window.title"));
+			messageBox.setText(EarthquakeBulletinGui.getApplicationName());
 			messageBox.setMessage(Messages.get("label.preferences.restart"));
 			messageBox.open();
 		}

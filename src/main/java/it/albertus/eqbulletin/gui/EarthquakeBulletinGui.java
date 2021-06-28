@@ -72,12 +72,18 @@ public class EarthquakeBulletinGui extends ApplicationWindow implements Multilan
 
 	private final Collection<Multilanguage> multilanguages = new ArrayList<>();
 
-	@Getter private TrayIcon trayIcon;
-	@Getter private MenuBar menuBar;
-	@Getter private SearchForm searchForm;
-	@Getter private ResultsTable resultsTable;
-	@Getter private MapCanvas mapCanvas;
-	@Getter private StatusBar statusBar;
+	@Getter
+	private TrayIcon trayIcon;
+	@Getter
+	private MenuBar menuBar;
+	@Getter
+	private SearchForm searchForm;
+	@Getter
+	private ResultsTable resultsTable;
+	@Getter
+	private MapCanvas mapCanvas;
+	@Getter
+	private StatusBar statusBar;
 
 	private SashForm sashForm;
 
@@ -97,7 +103,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow implements Multilan
 	}
 
 	public static void run() {
-		Display.setAppName(Messages.get("message.application.name"));
+		Display.setAppName(getApplicationName());
 		Display.setAppVersion(Version.getNumber());
 		try (final CloseableDevice<Display> cd = new CloseableDevice<>(Display.getDefault())) {
 			// Load configuration from file (and exit on error)
@@ -132,7 +138,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow implements Multilan
 				}
 				else {
 					log.log(Level.SEVERE, message, e);
-					EnhancedErrorDialog.openError(shell, Messages.get("message.application.name"), message, IStatus.ERROR, e, display.getSystemImage(SWT.ICON_ERROR));
+					EnhancedErrorDialog.openError(shell, getApplicationName(), message, IStatus.ERROR, e, display.getSystemImage(SWT.ICON_ERROR));
 				}
 			}
 			catch (final Error e) {
@@ -142,14 +148,14 @@ public class EarthquakeBulletinGui extends ApplicationWindow implements Multilan
 	}
 
 	private static void showError(final InitializationException e) {
-		EnhancedErrorDialog.openError(null, Messages.get("label.window.title"), e.getLocalizedMessage() != null ? e.getLocalizedMessage() : e.getMessage(), IStatus.ERROR, e.getCause() != null ? e.getCause() : e, Images.getAppIconArray());
+		EnhancedErrorDialog.openError(null, getApplicationName(), e.getLocalizedMessage() != null ? e.getLocalizedMessage() : e.getMessage(), IStatus.ERROR, e.getCause() != null ? e.getCause() : e, Images.getAppIconArray());
 	}
 
 	@Override
 	protected void configureShell(final Shell shell) {
 		super.configureShell(shell);
 		shell.setImages(Images.getAppIconArray());
-		shell.setText(Messages.get("label.window.title"));
+		shell.setText(getApplicationName());
 	}
 
 	@Override
@@ -394,6 +400,10 @@ public class EarthquakeBulletinGui extends ApplicationWindow implements Multilan
 				log.log(Level.WARNING, e.toString(), e);
 			}
 		}, "Save shell status").start();
+	}
+
+	public static String getApplicationName() {
+		return Messages.get("message.application.name");
 	}
 
 }

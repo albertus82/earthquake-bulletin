@@ -68,7 +68,8 @@ public class MapCanvas implements Multilanguage {
 
 	private final Canvas canvas;
 
-	@Getter private Earthquake earthquake;
+	@Getter
+	private Earthquake earthquake;
 	private MapImage mapImage;
 
 	private Image image;
@@ -333,7 +334,7 @@ public class MapCanvas implements Multilanguage {
 				catch (final Exception e) {
 					final String message = Messages.get("error.image.save", fileName);
 					log.log(Level.WARNING, message, e);
-					EnhancedErrorDialog.openError(canvas.getShell(), Messages.get("label.window.title"), message, IStatus.WARNING, e, Images.getAppIconArray());
+					EnhancedErrorDialog.openError(canvas.getShell(), EarthquakeBulletinGui.getApplicationName(), message, IStatus.WARNING, e, Images.getAppIconArray());
 				}
 			}
 		}

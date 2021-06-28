@@ -10,8 +10,8 @@ import org.eclipse.core.runtime.jobs.IJobManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
 
+import it.albertus.eqbulletin.gui.EarthquakeBulletinGui;
 import it.albertus.eqbulletin.gui.Images;
-import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.jface.DisplayThreadExecutor;
 import it.albertus.jface.EnhancedErrorDialog;
 import it.albertus.util.DaemonThreadFactory;
@@ -56,7 +56,7 @@ public abstract class AsyncOperation {
 	protected static void showErrorDialog(final AsyncOperationException e, final Shell shell) {
 		log.log(e.getLoggingLevel(), e.getMessage(), e);
 		if (!shell.isDisposed()) {
-			new DisplayThreadExecutor(shell, ASYNC).execute(() -> EnhancedErrorDialog.openError(shell, Messages.get("label.window.title"), e.getMessage(), e.getSeverity(), e.getCause() != null ? e.getCause() : e, Images.getAppIconArray()));
+			new DisplayThreadExecutor(shell, ASYNC).execute(() -> EnhancedErrorDialog.openError(shell, EarthquakeBulletinGui.getApplicationName(), e.getMessage(), e.getSeverity(), e.getCause() != null ? e.getCause() : e, Images.getAppIconArray()));
 		}
 	}
 

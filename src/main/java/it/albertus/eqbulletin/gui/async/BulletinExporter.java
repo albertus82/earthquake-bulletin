@@ -19,6 +19,7 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 
+import it.albertus.eqbulletin.gui.EarthquakeBulletinGui;
 import it.albertus.eqbulletin.gui.Images;
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.jface.EnhancedErrorDialog;
@@ -37,8 +38,10 @@ public class BulletinExporter implements IRunnableWithProgress {
 	private static final char CSV_FIELD_SEPARATOR = ';';
 	private static final String[] CSV_FILE_EXTENSIONS = { "*.CSV;*.csv" };
 
-	@NonNull private final String fileName;
-	@NonNull private final String data;
+	@NonNull
+	private final String fileName;
+	@NonNull
+	private final String data;
 
 	@Override
 	public void run(final IProgressMonitor monitor) throws InvocationTargetException {
@@ -70,13 +73,13 @@ public class BulletinExporter implements IRunnableWithProgress {
 				final String message = Messages.get("error.job.csv.save");
 				log.log(Level.WARNING, message, e);
 				SwtUtils.unblockShell(shell);
-				EnhancedErrorDialog.openError(shell, Messages.get("label.window.title"), message, IStatus.WARNING, e.getCause() != null ? e.getCause() : e, Images.getAppIconArray());
+				EnhancedErrorDialog.openError(shell, EarthquakeBulletinGui.getApplicationName(), message, IStatus.WARNING, e.getCause() != null ? e.getCause() : e, Images.getAppIconArray());
 			}
 			catch (final Exception e) { // NOSONAR Either re-interrupt this method or rethrow the "InterruptedException" that can be caught here. "InterruptedException" should not be ignored (java:S2142)
 				final String message = Messages.get("error.job.csv.create");
 				log.log(Level.SEVERE, message, e);
 				SwtUtils.unblockShell(shell);
-				EnhancedErrorDialog.openError(shell, Messages.get("label.window.title"), message, IStatus.ERROR, e, Images.getAppIconArray());
+				EnhancedErrorDialog.openError(shell, EarthquakeBulletinGui.getApplicationName(), message, IStatus.ERROR, e, Images.getAppIconArray());
 			}
 			finally {
 				SwtUtils.unblockShell(shell);

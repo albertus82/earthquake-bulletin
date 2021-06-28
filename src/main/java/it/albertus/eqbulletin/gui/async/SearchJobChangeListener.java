@@ -36,8 +36,10 @@ import lombok.extern.java.Log;
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 class SearchJobChangeListener extends JobChangeAdapter {
 
-	@NonNull private final SearchRequest request;
-	@NonNull private final EarthquakeBulletinGui gui;
+	@NonNull
+	private final SearchRequest request;
+	@NonNull
+	private final EarthquakeBulletinGui gui;
 
 	@Override
 	public void running(final IJobChangeEvent event) {
@@ -129,7 +131,7 @@ class SearchJobChangeListener extends JobChangeAdapter {
 		if (trayIcon != null && !trayIcon.getShell().isDisposed()) {
 			new DisplayThreadExecutor(trayIcon.getShell(), SYNC).execute(() -> {
 				if (trayIcon.getTrayItem() == null || !trayIcon.getTrayItem().getVisible()) { // Show error dialog only if not minimized in the tray.
-					final Window dialog = new EnhancedErrorDialog(trayIcon.getShell(), Messages.get("label.window.title"), e.getMessage(), e.getSeverity(), e.getCause() != null ? e.getCause() : e, Images.getAppIconArray());
+					final Window dialog = new EnhancedErrorDialog(trayIcon.getShell(), EarthquakeBulletinGui.getApplicationName(), e.getMessage(), e.getSeverity(), e.getCause() != null ? e.getCause() : e, Images.getAppIconArray());
 					dialog.setBlockOnOpen(true); // Avoid stacking of error dialogs when auto refresh is enabled.
 					dialog.open();
 				}

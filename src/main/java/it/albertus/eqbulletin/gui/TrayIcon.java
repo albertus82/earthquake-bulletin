@@ -52,9 +52,11 @@ public class TrayIcon implements IShellProvider, Multilanguage {
 
 	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getPreferencesConfiguration();
 
-	@Getter private final Shell shell;
+	@Getter
+	private final Shell shell;
 
-	@Getter private TrayItem trayItem;
+	@Getter
+	private TrayItem trayItem;
 
 	private final Map<Integer, ToolTip> toolTips = MapUtils.newHashMapWithExpectedSize(icons.length);
 
@@ -62,7 +64,7 @@ public class TrayIcon implements IShellProvider, Multilanguage {
 
 	// To be accessed only from this class
 	private Image image;
-	private String toolTipText = Messages.get("label.tray.tooltip");
+	private String toolTipText = EarthquakeBulletinGui.getApplicationName();
 
 	TrayIcon(@NonNull final EarthquakeBulletinGui gui) {
 		shell = gui.getShell();
@@ -171,7 +173,7 @@ public class TrayIcon implements IShellProvider, Multilanguage {
 	}
 
 	public void updateToolTipText(final Earthquake earthquake) {
-		final StringBuilder buf = new StringBuilder(Messages.get("label.tray.tooltip"));
+		final StringBuilder buf = new StringBuilder(EarthquakeBulletinGui.getApplicationName());
 		if (earthquake != null) {
 			buf.append(System.lineSeparator());
 			buf.append(earthquake.getSummary());
