@@ -13,7 +13,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AutoRefreshButtonSelectionListener extends SelectionAdapter {
 
-	@NonNull private final SearchForm form;
+	@NonNull
+	private final SearchForm form;
 
 	@Override
 	public void widgetSelected(final SelectionEvent se) {

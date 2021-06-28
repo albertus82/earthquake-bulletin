@@ -15,7 +15,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ShowMomentTensorListener implements Listener {
 
-	@NonNull private final Supplier<ResultsTable> resultsTableSupplier;
+	@NonNull
+	private final Supplier<ResultsTable> resultsTableSupplier;
 
 	@Override
 	public void handleEvent(final Event event) {

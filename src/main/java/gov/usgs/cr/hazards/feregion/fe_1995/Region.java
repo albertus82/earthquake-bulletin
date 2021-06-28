@@ -21,7 +21,8 @@ public class Region implements Serializable, Comparable<Region> {
 	private static final long serialVersionUID = -425945377738943037L;
 
 	/** The Flinn-Engdahl region number */
-	@EqualsAndHashCode.Include int number;
+	@EqualsAndHashCode.Include
+	int number;
 
 	/** The Flinn-Engdahl region name */
 	String name;

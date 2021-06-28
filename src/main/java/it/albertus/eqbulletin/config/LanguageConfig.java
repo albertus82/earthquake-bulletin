@@ -13,7 +13,8 @@ public class LanguageConfig implements ILanguageConfig {
 
 	public static final String DEFAULT_LANGUAGE = Locale.getDefault().getLanguage();
 
-	@NonNull private final IPreferencesConfiguration configuration;
+	@NonNull
+	private final IPreferencesConfiguration configuration;
 
 	@Override
 	public String getLanguage() {

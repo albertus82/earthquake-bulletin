@@ -19,7 +19,8 @@ public class SearchJob extends Job {
 	private final SearchRequest request;
 	private final BulletinProvider provider;
 
-	@Setter private volatile boolean canceled;
+	@Setter
+	private volatile boolean canceled;
 
 	private Bulletin bulletin;
 

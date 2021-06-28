@@ -14,7 +14,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SearchButtonSelectionListener extends SelectionAdapter {
 
-	@NonNull private final EarthquakeBulletinGui gui;
+	@NonNull
+	private final EarthquakeBulletinGui gui;
 
 	@Override
 	public void widgetSelected(final SelectionEvent se) {

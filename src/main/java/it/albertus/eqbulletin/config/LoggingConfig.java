@@ -26,7 +26,8 @@ public class LoggingConfig extends LoggingDefaultConfig {
 		public static final Level LOGGING_LEVEL = WARNING;
 	}
 
-	@NonNull private final IPreferencesConfiguration configuration;
+	@NonNull
+	private final IPreferencesConfiguration configuration;
 
 	@Override
 	public boolean isFileHandlerEnabled() {

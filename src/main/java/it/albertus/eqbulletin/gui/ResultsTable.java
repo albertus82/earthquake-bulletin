@@ -179,11 +179,13 @@ public class ResultsTable implements Multilanguage {
 
 	private final Shell shell;
 
-	@Getter private final TableViewer tableViewer;
+	@Getter
+	private final TableViewer tableViewer;
 	private final EarthquakeViewerComparator comparator;
 	private final HashMap<Integer, Supplier<String>> labelsMap = new HashMap<>();
 
-	@Getter private final ContextMenu contextMenu;
+	@Getter
+	private final ContextMenu contextMenu;
 
 	private boolean initialized = false;
 

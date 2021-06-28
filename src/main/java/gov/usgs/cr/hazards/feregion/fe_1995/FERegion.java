@@ -35,8 +35,7 @@ public class FERegion {
 	private final Database database;
 
 	/**
-	 * Initializes the internal database. Reuse the same instance whenever
-	 * possible.
+	 * Initializes the internal database. Reuse the same instance whenever possible.
 	 */
 	public FERegion() throws IOException {
 		database = new Database();
@@ -107,8 +106,8 @@ public class FERegion {
 	}
 
 	/**
-	 * Given a Flinn-Engdahl geographical region number, returns the
-	 * corresponding F-E geographical region.
+	 * Given a Flinn-Engdahl geographical region number, returns the corresponding
+	 * F-E geographical region.
 	 * 
 	 * @param fenum the Flinn-Engdahl geographical region number
 	 * @return the F-E geographical region that corrisponds to the given region
@@ -122,8 +121,8 @@ public class FERegion {
 	/**
 	 * Returns a map containing all the Flinn-Engdahl geographical regions.
 	 * 
-	 * @return a new map (F-E number, {@code Region}) containing all
-	 *         Flinn-Engdahl geographical regions
+	 * @return a new map (F-E number, {@code Region}) containing all Flinn-Engdahl
+	 *         geographical regions
 	 */
 	public Map<Integer, Region> getAllGeographicRegions() {
 		final Map<Integer, Region> regions = new TreeMap<>();

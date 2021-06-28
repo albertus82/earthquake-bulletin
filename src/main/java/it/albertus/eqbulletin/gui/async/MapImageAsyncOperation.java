@@ -29,7 +29,8 @@ import lombok.extern.java.Log;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MapImageAsyncOperation extends AsyncOperation {
 
-	@Setter private static Job currentJob;
+	@Setter
+	private static Job currentJob;
 
 	public static synchronized void execute(final Earthquake earthquake, final Shell shell) {
 		if (earthquake != null && earthquake.getEnclosureUri().isPresent() && shell != null && !shell.isDisposed()) {

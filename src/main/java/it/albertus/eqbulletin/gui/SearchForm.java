@@ -113,7 +113,8 @@ public class SearchForm implements Multilanguage {
 
 	private final Text latitudeFromText;
 	private final Text latitudeToText;
-	@Getter(AccessLevel.NONE) private Button openMapButton;
+	@Getter(AccessLevel.NONE)
+	private Button openMapButton;
 	private final Text longitudeFromText;
 	private final Text longitudeToText;
 
@@ -132,7 +133,8 @@ public class SearchForm implements Multilanguage {
 
 	private final Collection<ControlValidator<Text>> validators = new ArrayList<>();
 
-	@Getter(AccessLevel.NONE) private final LocalizedWidgets localizedWidgets = new LocalizedWidgets();
+	@Getter(AccessLevel.NONE)
+	private final LocalizedWidgets localizedWidgets = new LocalizedWidgets();
 
 	SearchForm(@NonNull final EarthquakeBulletinGui gui) {
 		final Shell shell = gui.getShell();

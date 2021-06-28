@@ -23,7 +23,8 @@ public class EpicenterMapSelectionListener extends SelectionAdapter {
 
 	private static final int DEFAULT_ZOOM_LEVEL = 6;
 
-	@NonNull private final Supplier<ResultsTable> resultsTableSupplier;
+	@NonNull
+	private final Supplier<ResultsTable> resultsTableSupplier;
 
 	@Override
 	public void widgetSelected(final SelectionEvent se) {

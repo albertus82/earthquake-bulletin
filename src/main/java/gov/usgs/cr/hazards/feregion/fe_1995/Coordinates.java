@@ -56,8 +56,8 @@ public class Coordinates implements Serializable {
 	}
 
 	/**
-	 * Given <em>longitude</em> and <em>latitude</em> decimal string values,
-	 * returns a new {@code Coordinates} object.
+	 * Given <em>longitude</em> and <em>latitude</em> decimal string values, returns
+	 * a new {@code Coordinates} object.
 	 * 
 	 * @param longitude the longitude decimal string value (e.g., 129, 129.524,
 	 *        129.524E)

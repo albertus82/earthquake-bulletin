@@ -15,9 +15,12 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class FormatRadioSelectionListener extends SelectionAdapter {
 
-	@NonNull private final SearchForm form;
-	@NonNull private final Button radio;
-	@NonNull private final Format format;
+	@NonNull
+	private final SearchForm form;
+	@NonNull
+	private final Button radio;
+	@NonNull
+	private final Format format;
 
 	@Override
 	public void widgetSelected(final SelectionEvent e) {

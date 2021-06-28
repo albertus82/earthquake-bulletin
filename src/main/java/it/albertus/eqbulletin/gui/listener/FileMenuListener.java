@@ -11,7 +11,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class FileMenuListener implements ArmMenuListener {
 
-	@NonNull private final EarthquakeBulletinGui gui;
+	@NonNull
+	private final EarthquakeBulletinGui gui;
 
 	@Override
 	public void menuHidden(final MenuEvent e) {

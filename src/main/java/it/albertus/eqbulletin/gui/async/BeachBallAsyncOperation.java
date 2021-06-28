@@ -23,7 +23,8 @@ import lombok.extern.java.Log;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class BeachBallAsyncOperation extends AsyncOperation {
 
-	@Setter private static Job currentJob;
+	@Setter
+	private static Job currentJob;
 
 	public static synchronized void execute(final Earthquake earthquake) {
 		if (earthquake != null && earthquake.getMomentTensorUri().isPresent()) {
