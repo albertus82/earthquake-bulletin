@@ -12,7 +12,7 @@ public class LongitudeRange {
 
 	@Override
 	public String toString() {
-		return Arrays.asList(from, to).toString();
+		return Arrays.toString(new int[] { from, to });
 	}
 
 }
