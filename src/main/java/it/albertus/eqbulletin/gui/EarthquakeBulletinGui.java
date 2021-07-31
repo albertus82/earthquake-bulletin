@@ -143,7 +143,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow implements Multilan
 				}
 			}
 			catch (final Error e) { // NOSONAR Catch Exception instead of Error. Throwable and Error should not be caught (java:S1181)
-				log.log(Level.SEVERE, "An unexpected error has occurred:", e);
+				log.log(Level.SEVERE, "An unrecoverable error has occurred:", e);
 				throw e;
 			}
 		}
