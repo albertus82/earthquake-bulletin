@@ -139,10 +139,12 @@ public class EarthquakeBulletinGui extends ApplicationWindow implements Multilan
 				else {
 					log.log(Level.SEVERE, message, e);
 					EnhancedErrorDialog.openError(shell, getApplicationName(), message, IStatus.ERROR, e, display.getSystemImage(SWT.ICON_ERROR));
+					throw e;
 				}
 			}
 			catch (final Error e) {
 				log.log(Level.SEVERE, e.toString(), e);
+				throw e;
 			}
 		}
 	}
