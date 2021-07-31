@@ -17,7 +17,7 @@ public class EarthquakeBulletin {
 	}
 
 	public static void main(final String[] args) {
-		EarthquakeBulletinGui.run();
+		EarthquakeBulletinGui.main();
 	}
 
 }

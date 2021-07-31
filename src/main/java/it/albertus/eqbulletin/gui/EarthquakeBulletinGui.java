@@ -102,7 +102,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow implements Multilan
 		addStatusLine();
 	}
 
-	public static void run() {
+	public static void main() {
 		Display.setAppName(getApplicationName());
 		Display.setAppVersion(Version.getNumber());
 		try (final CloseableDevice<Display> cd = new CloseableDevice<>(Display.getDefault())) {
@@ -131,7 +131,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow implements Multilan
 					}
 				}
 			}
-			catch (final Exception e) {
+			catch (final RuntimeException e) {
 				final String message = Messages.get("error.fatal");
 				if (shell.isDisposed()) {
 					log.log(Level.FINE, message, e);
@@ -142,8 +142,8 @@ public class EarthquakeBulletinGui extends ApplicationWindow implements Multilan
 					throw e;
 				}
 			}
-			catch (final Error e) {
-				log.log(Level.SEVERE, e.toString(), e);
+			catch (final Error e) { // NOSONAR Catch Exception instead of Error. Throwable and Error should not be caught (java:S1181)
+				log.log(Level.SEVERE, "An unexpected error has occurred:", e);
 				throw e;
 			}
 		}
