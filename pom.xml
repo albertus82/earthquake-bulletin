@@ -198,28 +198,6 @@
 			</properties>
 		</profile>
 		<profile>
-			<id>git-commit-id-plugin-v4</id>
-			<activation>
-				<jdk>(,11)</jdk>
-			</activation>
-			<properties>
-				<git-commit-id-plugin.groupId>pl.project13.maven</git-commit-id-plugin.groupId>
-				<git-commit-id-plugin.artifactId>git-commit-id-plugin</git-commit-id-plugin.artifactId>
-				<git-commit-id-plugin.version>4.0.5</git-commit-id-plugin.version>
-			</properties>
-		</profile>
-		<profile>
-			<id>git-commit-id-plugin-v5</id>
-			<activation>
-				<jdk>[11,)</jdk>
-			</activation>
-			<properties>
-				<git-commit-id-plugin.groupId>io.github.git-commit-id</git-commit-id-plugin.groupId>
-				<git-commit-id-plugin.artifactId>git-commit-id-maven-plugin</git-commit-id-plugin.artifactId>
-				<git-commit-id-plugin.version>5.0.0</git-commit-id-plugin.version>
-			</properties>
-		</profile>
-		<profile>
 			<id>cocoa-macosx-aarch64</id>
 			<activation>
 				<os>
@@ -703,9 +681,9 @@
 			</plugin>
 
 			<plugin>
-				<groupId>${git-commit-id-plugin.groupId}</groupId>
-				<artifactId>${git-commit-id-plugin.artifactId}</artifactId>
-				<version>${git-commit-id-plugin.version}</version>
+				<groupId>pl.project13.maven</groupId>
+				<artifactId>git-commit-id-plugin</artifactId>
+				<version>4.0.5</version>
 				<executions>
 					<execution>
 						<id>zoned</id>
