@@ -75,7 +75,7 @@
 		<dependency>
 			<groupId>org.glassfish.jaxb</groupId>
 			<artifactId>jaxb-runtime</artifactId>
-			<version>3.0.1</version>
+			<version>3.0.2</version>
 			<scope>runtime</scope>
 			<exclusions>
 				<exclusion>
@@ -256,8 +256,8 @@
 								</goals>
 								<configuration>
 									<target>
-										<taskdef name="jarbundler" classname="com.ultramixer.jarbundler.JarBundler" classpathref="maven.plugin.classpath" />
-										<ant target="jarbundler" />
+										<taskdef name="jarbundler" classname="com.ultramixer.jarbundler.JarBundler" classpathref="maven.plugin.classpath"/>
+										<ant target="jarbundler"/>
 									</target>
 								</configuration>
 							</execution>
@@ -338,8 +338,8 @@
 								</goals>
 								<configuration>
 									<target>
-										<taskdef name="jarbundler" classname="com.ultramixer.jarbundler.JarBundler" classpathref="maven.plugin.classpath" />
-										<ant target="jarbundler" />
+										<taskdef name="jarbundler" classname="com.ultramixer.jarbundler.JarBundler" classpathref="maven.plugin.classpath"/>
+										<ant target="jarbundler"/>
 									</target>
 								</configuration>
 							</execution>
@@ -513,7 +513,7 @@
 								</goals>
 								<configuration>
 									<target>
-										<ant target="launch4j" />
+										<ant target="launch4j"/>
 									</target>
 								</configuration>
 							</execution>
@@ -564,7 +564,7 @@
 								</goals>
 								<configuration>
 									<target>
-										<ant target="launch4j" />
+										<ant target="launch4j"/>
 									</target>
 								</configuration>
 							</execution>
@@ -862,7 +862,7 @@
 						<configuration>
 							<skip>${maven.antrun.skip.lombok}</skip>
 							<target>
-								<ant target="lombok" />
+								<ant target="lombok"/>
 							</target>
 						</configuration>
 					</execution>
@@ -874,8 +874,8 @@
 						</goals>
 						<configuration>
 							<target>
-								<taskdef resource="net/sf/antcontrib/antlib.xml" classpathref="maven.plugin.classpath" />
-								<ant target="innosetup" />
+								<taskdef resource="net/sf/antcontrib/antlib.xml" classpathref="maven.plugin.classpath"/>
+								<ant target="innosetup"/>
 							</target>
 						</configuration>
 					</execution>
@@ -887,7 +887,7 @@
 						</goals>
 						<configuration>
 							<target>
-								<ant target="checksums" />
+								<ant target="checksums"/>
 							</target>
 						</configuration>
 					</execution>
