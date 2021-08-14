@@ -15,6 +15,7 @@ import java.util.TreeSet;
 import java.util.logging.Level;
 
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.jface.util.Util;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
@@ -77,6 +78,8 @@ public class MapCanvas implements Multilanguage {
 	private int zoomLevel = configuration.getShort(Preference.MAP_ZOOM_LEVEL, Defaults.MAP_ZOOM_LEVEL);
 
 	private Image resized;
+
+	private boolean dirty = false;
 
 	private final LocalizedWidgets localizedWidgets = new LocalizedWidgets();
 
@@ -196,16 +199,21 @@ public class MapCanvas implements Multilanguage {
 
 	public void setZoomLevel(final int zoomLevel) {
 		if (this.zoomLevel != zoomLevel) {
-			try (final CloseableResource<GC> cr = new CloseableResource<GC>(new GC(canvas))) {
-				prepareCanvas(cr.getResource(), zoomLevel);
-			}
+			dirty = this.zoomLevel > zoomLevel || this.zoomLevel == AUTO_SCALE;
 			this.zoomLevel = zoomLevel;
 			refresh();
 		}
 	}
 
 	public void refresh() {
-		canvas.redraw();
+		if (Util.isCocoa()) {
+			canvas.redraw();
+		}
+		else {
+			try (final CloseableResource<GC> cr = new CloseableResource<>(new GC(canvas))) {
+				paintImage(cr.getResource());
+			}
+		}
 	}
 
 	public void clear() {
@@ -230,6 +238,7 @@ public class MapCanvas implements Multilanguage {
 		final Rectangle resizedRect = getResizedRectangle(zoomLevel);
 
 		if (resizedRect.height == originalRect.height) { // Do not resize!
+			prepareCanvas(gc);
 			gc.drawImage(image, resizedRect.x, resizedRect.y);
 		}
 		else {
@@ -237,6 +246,7 @@ public class MapCanvas implements Multilanguage {
 				log.log(Level.FINE, "HQ resizing scale {0}.", zoomLevel);
 				final Image oldImage = resized;
 				resized = ImageUtils.resize(image, resizedRect.height / (float) originalRect.height);
+				prepareCanvas(gc);
 				gc.drawImage(resized, resizedRect.x, resizedRect.y);
 				if (oldImage != null && oldImage != resized) {
 					oldImage.dispose();
@@ -244,16 +254,18 @@ public class MapCanvas implements Multilanguage {
 			}
 			else { // Fast low-quality resizing
 				log.log(Level.FINE, "LQ Resizing scale {0}.", zoomLevel);
+				prepareCanvas(gc);
 				gc.drawImage(image, 0, 0, originalRect.width, originalRect.height, resizedRect.x, resizedRect.y, resizedRect.width, resizedRect.height);
 			}
 		}
 	}
 
-	private void prepareCanvas(final GC gc, final int newZoomLevel) {
-		if (zoomLevel > newZoomLevel || zoomLevel == AUTO_SCALE) { // Zoom out/Auto scale
+	private void prepareCanvas(@NonNull final GC gc) {
+		if (dirty) {
 			gc.setBackground(getBackgroundColor());
 			final Rectangle canvasBounds = canvas.getBounds();
 			gc.fillRectangle(0, 0, canvasBounds.width, canvasBounds.height);
+			dirty = false;
 		}
 	}
 
