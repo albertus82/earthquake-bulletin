@@ -91,7 +91,7 @@ public class MapCanvas implements Multilanguage {
 			canvas.setLayoutData(layoutData);
 		}
 		canvas.setBackground(getBackgroundColor());
-		canvas.addPaintListener(e -> paintImage(e.gc));
+		canvas.addPaintListener(e -> paint(e.gc));
 
 		final Menu contextMenu = new Menu(canvas);
 
@@ -211,7 +211,7 @@ public class MapCanvas implements Multilanguage {
 		}
 		else {
 			try (final CloseableResource<GC> cr = new CloseableResource<>(new GC(canvas))) {
-				paintImage(cr.getResource());
+				paint(cr.getResource());
 			}
 		}
 	}
@@ -225,7 +225,7 @@ public class MapCanvas implements Multilanguage {
 		refresh();
 	}
 
-	private void paintImage(@NonNull final GC gc) {
+	private void paint(@NonNull final GC gc) {
 		if (image == null) {
 			gc.setBackground(getBackgroundColor());
 			final Rectangle canvasBounds = canvas.getBounds();
