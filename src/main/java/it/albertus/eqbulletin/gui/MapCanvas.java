@@ -217,45 +217,44 @@ public class MapCanvas implements Multilanguage {
 	}
 
 	public void clear() {
-		try (final CloseableResource<GC> cr = new CloseableResource<>(new GC(canvas))) {
-			final GC gc = cr.getResource();
-			gc.setBackground(getBackgroundColor());
-			final Rectangle canvasBounds = canvas.getBounds();
-			gc.fillRectangle(0, 0, canvasBounds.width, canvasBounds.height);
-		}
 		if (image != null) {
 			image.dispose();
 			image = null;
 		}
 		earthquake = null;
+		refresh();
 	}
 
 	private void paintImage(@NonNull final GC gc) {
 		if (image == null) {
-			return;
-		}
-		final Rectangle originalRect = image.getBounds();
-		final Rectangle resizedRect = getResizedRectangle(zoomLevel);
-
-		if (resizedRect.height == originalRect.height) { // Do not resize!
-			prepareCanvas(gc);
-			gc.drawImage(image, resizedRect.x, resizedRect.y);
+			gc.setBackground(getBackgroundColor());
+			final Rectangle canvasBounds = canvas.getBounds();
+			gc.fillRectangle(0, 0, canvasBounds.width, canvasBounds.height);
 		}
 		else {
-			if (configuration.getBoolean(Preference.MAP_RESIZE_HQ, Defaults.MAP_RESIZE_HQ) && (zoomLevel == AUTO_SCALE || zoomLevel % 100 != 0 && zoomLevel <= MAX_HQ_RESIZE_RATIO)) {
-				log.log(Level.FINE, "HQ resizing scale {0}.", zoomLevel);
-				final Image oldImage = resized;
-				resized = ImageUtils.resize(image, resizedRect.height / (float) originalRect.height);
+			final Rectangle originalRect = image.getBounds();
+			final Rectangle resizedRect = getResizedRectangle(zoomLevel);
+
+			if (resizedRect.height == originalRect.height) { // Do not resize!
 				prepareCanvas(gc);
-				gc.drawImage(resized, resizedRect.x, resizedRect.y);
-				if (oldImage != null && oldImage != resized) {
-					oldImage.dispose();
-				}
+				gc.drawImage(image, resizedRect.x, resizedRect.y);
 			}
-			else { // Fast low-quality resizing
-				log.log(Level.FINE, "LQ Resizing scale {0}.", zoomLevel);
-				prepareCanvas(gc);
-				gc.drawImage(image, 0, 0, originalRect.width, originalRect.height, resizedRect.x, resizedRect.y, resizedRect.width, resizedRect.height);
+			else {
+				if (configuration.getBoolean(Preference.MAP_RESIZE_HQ, Defaults.MAP_RESIZE_HQ) && (zoomLevel == AUTO_SCALE || zoomLevel % 100 != 0 && zoomLevel <= MAX_HQ_RESIZE_RATIO)) {
+					log.log(Level.FINE, "HQ resizing scale {0}.", zoomLevel);
+					final Image oldImage = resized;
+					resized = ImageUtils.resize(image, resizedRect.height / (float) originalRect.height);
+					prepareCanvas(gc);
+					gc.drawImage(resized, resizedRect.x, resizedRect.y);
+					if (oldImage != null && oldImage != resized) {
+						oldImage.dispose();
+					}
+				}
+				else { // Fast low-quality resizing
+					log.log(Level.FINE, "LQ Resizing scale {0}.", zoomLevel);
+					prepareCanvas(gc);
+					gc.drawImage(image, 0, 0, originalRect.width, originalRect.height, resizedRect.x, resizedRect.y, resizedRect.width, resizedRect.height);
+				}
 			}
 		}
 	}
