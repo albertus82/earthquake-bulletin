@@ -85,7 +85,7 @@ public class MapCanvas implements Multilanguage {
 	MapCanvas(@NonNull final Composite parent) {
 		canvas = new Canvas(parent, SWT.BORDER);
 		canvas.setBackground(getBackgroundColor());
-		canvas.addPaintListener(e -> paintImage(zoomLevel));
+		canvas.addPaintListener(e -> paintImage(e.gc));
 
 		final Menu contextMenu = new Menu(canvas);
 
@@ -193,13 +193,16 @@ public class MapCanvas implements Multilanguage {
 
 	public void setZoomLevel(final int zoomLevel) {
 		if (this.zoomLevel != zoomLevel) {
-			paintImage(zoomLevel);
+			try (final CloseableResource<GC> cr = new CloseableResource<GC>(new GC(canvas))) {
+				prepareCanvas(cr.getResource(), zoomLevel);
+			}
 			this.zoomLevel = zoomLevel;
+			refresh();
 		}
 	}
 
 	public void refresh() {
-		paintImage(zoomLevel);
+		canvas.redraw();
 	}
 
 	public void clear() {
@@ -216,35 +219,29 @@ public class MapCanvas implements Multilanguage {
 		earthquake = null;
 	}
 
-	private void paintImage(final int scalePercent) {
+	private void paintImage(@NonNull final GC gc) {
 		if (image == null) {
 			return;
 		}
 		final Rectangle originalRect = image.getBounds();
-		final Rectangle resizedRect = getResizedRectangle(scalePercent);
+		final Rectangle resizedRect = getResizedRectangle(zoomLevel);
 
-		try (final CloseableResource<GC> cr = new CloseableResource<>(new GC(canvas))) {
-			final GC gc = cr.getResource();
-			if (resizedRect.height == originalRect.height) { // Do not resize!
-				prepareCanvas(gc, scalePercent);
-				gc.drawImage(image, resizedRect.x, resizedRect.y);
+		if (resizedRect.height == originalRect.height) { // Do not resize!
+			gc.drawImage(image, resizedRect.x, resizedRect.y);
+		}
+		else {
+			if (configuration.getBoolean(Preference.MAP_RESIZE_HQ, Defaults.MAP_RESIZE_HQ) && (zoomLevel == AUTO_SCALE || zoomLevel % 100 != 0 && zoomLevel <= MAX_HQ_RESIZE_RATIO)) {
+				log.log(Level.FINE, "HQ resizing scale {0}.", zoomLevel);
+				final Image oldImage = resized;
+				resized = ImageUtils.resize(image, resizedRect.height / (float) originalRect.height);
+				gc.drawImage(resized, resizedRect.x, resizedRect.y);
+				if (oldImage != null && oldImage != resized) {
+					oldImage.dispose();
+				}
 			}
-			else {
-				if (configuration.getBoolean(Preference.MAP_RESIZE_HQ, Defaults.MAP_RESIZE_HQ) && (scalePercent == AUTO_SCALE || scalePercent % 100 != 0 && scalePercent <= MAX_HQ_RESIZE_RATIO)) {
-					log.log(Level.FINE, "HQ resizing scale {0}.", scalePercent);
-					final Image oldImage = resized;
-					resized = ImageUtils.resize(image, resizedRect.height / (float) originalRect.height);
-					prepareCanvas(gc, scalePercent);
-					gc.drawImage(resized, resizedRect.x, resizedRect.y);
-					if (oldImage != null && oldImage != resized) {
-						oldImage.dispose();
-					}
-				}
-				else { // Fast low-quality resizing
-					log.log(Level.FINE, "LQ Resizing scale {0}.", scalePercent);
-					prepareCanvas(gc, scalePercent);
-					gc.drawImage(image, 0, 0, originalRect.width, originalRect.height, resizedRect.x, resizedRect.y, resizedRect.width, resizedRect.height);
-				}
+			else { // Fast low-quality resizing
+				log.log(Level.FINE, "LQ Resizing scale {0}.", zoomLevel);
+				gc.drawImage(image, 0, 0, originalRect.width, originalRect.height, resizedRect.x, resizedRect.y, resizedRect.width, resizedRect.height);
 			}
 		}
 	}
@@ -387,7 +384,7 @@ public class MapCanvas implements Multilanguage {
 					instance.image = new Image(instance.canvas.getDisplay(), is);
 					instance.mapImage = mapImage;
 					instance.earthquake = earthquake;
-					instance.paintImage(instance.zoomLevel);
+					instance.refresh();
 					if (oldImage != null) {
 						oldImage.dispose();
 					}
