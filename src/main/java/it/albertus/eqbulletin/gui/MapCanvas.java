@@ -148,10 +148,10 @@ public class MapCanvas implements Multilanguage {
 				final float autoscaleRatio = getAutoscaleRatio();
 				final int[] nearestValues = getZoomNearestValues(zoomLevel == AUTO_SCALE ? autoscaleRatio : zoomLevel);
 				if (e.count > 0) { // Zoom in
-					zoomIn(autoscaleRatio, nearestValues);
+					zoomIn(autoscaleRatio, nearestValues[1]);
 				}
 				else if (e.count < 0) { // Zoom out
-					zoomOut(autoscaleRatio, nearestValues);
+					zoomOut(autoscaleRatio, nearestValues[0]);
 				}
 			}
 		});
@@ -165,31 +165,31 @@ public class MapCanvas implements Multilanguage {
 					final float autoscaleRatio = getAutoscaleRatio();
 					final int[] nearestValues = getZoomNearestValues(zoomLevel == AUTO_SCALE ? autoscaleRatio : zoomLevel);
 					if (e.keyCode == '+' || e.keyCode == SWT.KEYPAD_ADD) { // Zoom in
-						zoomIn(autoscaleRatio, nearestValues);
+						zoomIn(autoscaleRatio, nearestValues[1]);
 					}
 					else if (e.keyCode == '-' || e.keyCode == SWT.KEYPAD_SUBTRACT) { // Zoom out
-						zoomOut(autoscaleRatio, nearestValues);
+						zoomOut(autoscaleRatio, nearestValues[0]);
 					}
 				}
 			}
 		});
 	}
 
-	private void zoomIn(final float autoscaleRatio, final int[] nearestValues) {
-		if (zoomLevel != AUTO_SCALE && zoomLevel < autoscaleRatio && autoscaleRatio < nearestValues[1]) {
+	private void zoomIn(final float autoscaleRatio, final int higherValue) {
+		if (zoomLevel != AUTO_SCALE && zoomLevel < autoscaleRatio && autoscaleRatio < higherValue) {
 			setZoomLevel(AUTO_SCALE);
 		}
 		else {
-			setZoomLevel(nearestValues[1]);
+			setZoomLevel(higherValue);
 		}
 	}
 
-	private void zoomOut(final float autoscaleRatio, final int[] nearestValues) {
-		if (zoomLevel != AUTO_SCALE && zoomLevel > autoscaleRatio && autoscaleRatio > nearestValues[0]) {
+	private void zoomOut(final float autoscaleRatio, final int lowerValue) {
+		if (zoomLevel != AUTO_SCALE && zoomLevel > autoscaleRatio && autoscaleRatio > lowerValue) {
 			setZoomLevel(AUTO_SCALE);
 		}
 		else {
-			setZoomLevel(nearestValues[0]);
+			setZoomLevel(lowerValue);
 		}
 	}
 
@@ -207,9 +207,9 @@ public class MapCanvas implements Multilanguage {
 
 	public void refresh() {
 		if (Util.isCocoa()) {
-			canvas.redraw();
+			canvas.redraw(); // slower but fixes empty canvas bug on macOS 11
 		}
-		else {
+		else { // faster
 			try (final CloseableResource<GC> cr = new CloseableResource<>(new GC(canvas))) {
 				paint(cr.getResource());
 			}
