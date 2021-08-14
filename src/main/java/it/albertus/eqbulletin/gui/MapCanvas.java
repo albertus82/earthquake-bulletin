@@ -82,8 +82,11 @@ public class MapCanvas implements Multilanguage {
 
 	private static MapCanvas instance;
 
-	MapCanvas(@NonNull final Composite parent) {
+	MapCanvas(@NonNull final Composite parent, final Object layoutData) {
 		canvas = new Canvas(parent, SWT.BORDER);
+		if (layoutData != null) {
+			canvas.setLayoutData(layoutData);
+		}
 		canvas.setBackground(getBackgroundColor());
 		canvas.addPaintListener(e -> paintImage(e.gc));
 
