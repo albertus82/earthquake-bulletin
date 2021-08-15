@@ -66,7 +66,7 @@ public class SearchRequest {
 				return Collections.singleton(baseUrl.append("&nmax=").append(pp.getNmax()).toString());
 			}
 			else {
-				final LinkedHashSet<String> urls = new LinkedHashSet<>();
+				final Set<String> urls = new LinkedHashSet<>();
 				for (short page = 1; page <= pp.getPages(); page++) {
 					urls.add(baseUrl + "&page=" + page + "&nmax=" + pp.getNmax()); // Don't append to the StringBuilder here!
 				}
