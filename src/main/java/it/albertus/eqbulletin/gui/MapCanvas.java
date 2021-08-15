@@ -79,7 +79,7 @@ public class MapCanvas implements Multilanguage {
 
 	private Image resized;
 
-	private boolean dirty = false;
+	private volatile boolean dirty = false;
 
 	private final LocalizedWidgets localizedWidgets = new LocalizedWidgets();
 
@@ -222,21 +222,20 @@ public class MapCanvas implements Multilanguage {
 			image = null;
 		}
 		earthquake = null;
+		dirty = true;
 		refresh();
 	}
 
 	private void paint(@NonNull final GC gc) {
 		if (image == null) {
-			gc.setBackground(getBackgroundColor());
-			final Rectangle canvasBounds = canvas.getBounds();
-			gc.fillRectangle(0, 0, canvasBounds.width, canvasBounds.height);
+			cleanDirt(gc);
 		}
 		else {
 			final Rectangle originalRect = image.getBounds();
 			final Rectangle resizedRect = getResizedRectangle(zoomLevel);
 
 			if (resizedRect.height == originalRect.height) { // Do not resize!
-				prepareCanvas(gc);
+				cleanDirt(gc);
 				gc.drawImage(image, resizedRect.x, resizedRect.y);
 			}
 			else {
@@ -244,7 +243,7 @@ public class MapCanvas implements Multilanguage {
 					log.log(Level.FINE, "HQ resizing scale {0}.", zoomLevel);
 					final Image oldImage = resized;
 					resized = ImageUtils.resize(image, resizedRect.height / (float) originalRect.height);
-					prepareCanvas(gc);
+					cleanDirt(gc);
 					gc.drawImage(resized, resizedRect.x, resizedRect.y);
 					if (oldImage != null && oldImage != resized) {
 						oldImage.dispose();
@@ -252,14 +251,14 @@ public class MapCanvas implements Multilanguage {
 				}
 				else { // Fast low-quality resizing
 					log.log(Level.FINE, "LQ Resizing scale {0}.", zoomLevel);
-					prepareCanvas(gc);
+					cleanDirt(gc);
 					gc.drawImage(image, 0, 0, originalRect.width, originalRect.height, resizedRect.x, resizedRect.y, resizedRect.width, resizedRect.height);
 				}
 			}
 		}
 	}
 
-	private void prepareCanvas(@NonNull final GC gc) {
+	private void cleanDirt(@NonNull final GC gc) {
 		if (dirty) {
 			gc.setBackground(getBackgroundColor());
 			final Rectangle canvasBounds = canvas.getBounds();
