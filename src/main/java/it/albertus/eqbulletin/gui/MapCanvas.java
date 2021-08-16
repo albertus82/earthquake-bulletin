@@ -23,7 +23,6 @@ import org.eclipse.swt.events.MenuAdapter;
 import org.eclipse.swt.events.MenuEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
@@ -90,7 +89,7 @@ public class MapCanvas implements Multilanguage {
 		if (layoutData != null) {
 			canvas.setLayoutData(layoutData);
 		}
-		canvas.setBackground(getBackgroundColor());
+		canvas.setBackground(canvas.getDisplay().getSystemColor(SWT.COLOR_WHITE));
 		canvas.addPaintListener(e -> paint(e.gc));
 
 		final Menu contextMenu = new Menu(canvas);
@@ -260,7 +259,6 @@ public class MapCanvas implements Multilanguage {
 
 	private void cleanDirt(@NonNull final GC gc) {
 		if (dirty) {
-			gc.setBackground(getBackgroundColor());
 			final Rectangle canvasBounds = canvas.getBounds();
 			gc.fillRectangle(0, 0, canvasBounds.width, canvasBounds.height);
 			dirty = false;
@@ -353,10 +351,6 @@ public class MapCanvas implements Multilanguage {
 	@Override
 	public void updateLanguage() {
 		localizedWidgets.resetAllTexts();
-	}
-
-	private Color getBackgroundColor() {
-		return canvas.getDisplay().getSystemColor(SWT.COLOR_WHITE);
 	}
 
 	private MenuItem newLocalizedMenuItem(@NonNull final Menu parent, final int style, @NonNull final String messageKey) {
