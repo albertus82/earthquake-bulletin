@@ -89,7 +89,7 @@ public class MapCanvas implements Multilanguage {
 		if (layoutData != null) {
 			canvas.setLayoutData(layoutData);
 		}
-		canvas.setBackground(canvas.getDisplay().getSystemColor(SWT.COLOR_WHITE));
+		canvas.setBackground(canvas.getDisplay().getSystemColor(SWT.COLOR_WHITE)); // match background color of GFZ maps
 		canvas.addPaintListener(e -> paint(e.gc));
 
 		final Menu contextMenu = new Menu(canvas);
