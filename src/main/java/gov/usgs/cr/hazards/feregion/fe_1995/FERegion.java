@@ -209,6 +209,7 @@ public class FERegion {
 
 @Slf4j
 @Command(description = "Returns Flinn-Engdahl Region name from decimal lon, lat values given on command line.", footer = { "As in: feregion -122.5  36.2", "As in: feregion  122.5W 36.2N" }, usageHelpWidth = 128, mixinStandardHelpOptions = false)
+@SuppressWarnings("java:S106") // Replace this use of System.out or System.err by a logger. Standard outputs should not be used directly to log anything (java:S106)
 class FERegionCommand implements Callable<Integer> {
 
 	@Parameters(index = "0", description = "longitude")
