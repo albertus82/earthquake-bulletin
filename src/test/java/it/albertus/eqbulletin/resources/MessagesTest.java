@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Serializable;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -17,7 +16,6 @@ import java.util.Locale;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -30,9 +28,9 @@ import it.albertus.eqbulletin.BaseTest;
 import it.albertus.eqbulletin.EarthquakeBulletin;
 import it.albertus.util.StringUtils;
 import lombok.NonNull;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
-@Log
+@Slf4j
 class MessagesTest extends BaseTest {
 
 	@Test
@@ -49,7 +47,7 @@ class MessagesTest extends BaseTest {
 				Assertions.assertNotNull(is, "Missing resource file: " + resourceName);
 				p.load(is);
 			}
-			log.log(Level.INFO, "{0} messages found in: {1}", new Serializable[] { p.size(), resourceName });
+			log.info("{} messages found in: {}", p.size(), resourceName);
 			Assertions.assertFalse(p.isEmpty(), "Empty resource file: " + resourceName);
 		}
 		pp.stream().reduce((p1, p2) -> {
@@ -68,7 +66,7 @@ class MessagesTest extends BaseTest {
 		final Set<String> keys = new TreeSet<>();
 		try (final Stream<Path> paths = newSourceStream()) {
 			paths.forEach(path -> {
-				log.log(Level.FINE, "{0}", path);
+				log.debug("{}", path);
 				try {
 					// @formatter:off
 					keys.addAll(Files.readAllLines(path).stream()
@@ -86,10 +84,10 @@ class MessagesTest extends BaseTest {
 				}
 			});
 		}
-		log.log(Level.INFO, "Found {0} message keys referenced in sources", keys.size());
+		log.info("Found {} message keys referenced in sources", keys.size());
 		Assertions.assertFalse(keys.isEmpty(), "No message keys found in sources");
 		final Collection<String> allKeys = Messages.getKeys();
-		log.log(Level.INFO, "{0} message keys available in resource bundle: {1}", new Serializable[] { allKeys.size(), Messages.class.getSimpleName() });
+		log.info("{} message keys available in resource bundle: {}", allKeys.size(), Messages.class.getSimpleName());
 		Assertions.assertFalse(allKeys.isEmpty(), "No message keys found in resource bundle: " + Messages.class.getSimpleName());
 		for (final String key : new TreeSet<>(keys)) {
 			Assertions.assertTrue(allKeys.contains(key), "Missing message key '" + key + "'");
@@ -107,7 +105,7 @@ class MessagesTest extends BaseTest {
 			Assertions.assertNotNull(is, "Missing resource file: " + resourceName);
 			p.load(is);
 		}
-		log.log(Level.INFO, "{0} messages found in: {1}", new Serializable[] { p.size(), resourceName });
+		log.info("{} messages found in: {}", p.size(), resourceName);
 		Assertions.assertFalse(p.isEmpty(), "Empty resource file: " + resourceName);
 		final Set<String> usedKeys = new TreeSet<>();
 		final Set<String> allKeys = new TreeSet<>(Collections.list(p.propertyNames()).stream().map(Object::toString).collect(Collectors.toSet()));
@@ -127,24 +125,24 @@ class MessagesTest extends BaseTest {
 			}
 		}
 
-		log.log(Level.INFO, "Found {0} message keys referenced in sources", usedKeys.size());
+		log.info("Found {} message keys referenced in sources", usedKeys.size());
 
 		final Set<String> unreferencedKeys = new TreeSet<>(allKeys.stream().filter(key -> !usedKeys.contains(key)).collect(Collectors.toSet()));
 		if (!unreferencedKeys.isEmpty()) {
-			log.log(Level.WARNING, "Unreferenced message keys: {0}", unreferencedKeys);
+			log.warn("Unreferenced message keys: {}", unreferencedKeys);
 		}
 	}
 
 	private static Stream<Path> newSourceStream() throws IOException {
 		final Path sourcesPath = Paths.get(projectProperties.getProperty("project.build.sourceDirectory"), EarthquakeBulletin.class.getPackage().getName().replace('.', File.separatorChar));
-		log.log(Level.INFO, "Sources path: {0}", sourcesPath);
+		log.info("Sources path: {}", sourcesPath);
 		return Files.walk(sourcesPath).filter(Files::isRegularFile).filter(p -> p.toString().toLowerCase(Locale.ROOT).endsWith(".java"));
 	}
 
 	private static Set<String> getResourceNames(final Class<?> messagesClass) {
 		final Reflections reflections = new Reflections(messagesClass.getPackage().getName(), new ResourcesScanner());
 		final Set<String> resourceNames = reflections.getResources(name -> name.contains(messagesClass.getSimpleName().toLowerCase(Locale.ROOT)) && name.endsWith(".properties"));
-		log.log(Level.INFO, "Resources found: {0}", resourceNames);
+		log.info("Resources found: {}", resourceNames);
 		return resourceNames;
 	}
 

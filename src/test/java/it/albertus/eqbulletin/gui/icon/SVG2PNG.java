@@ -10,7 +10,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Locale;
 import java.util.concurrent.Callable;
-import java.util.logging.Level;
 
 import org.apache.batik.transcoder.SVGAbstractTranscoder;
 import org.apache.batik.transcoder.TranscoderException;
@@ -19,13 +18,13 @@ import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.image.ImageTranscoder;
 import org.apache.batik.transcoder.image.PNGTranscoder;
 
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.ExitCode;
 import picocli.CommandLine.Option;
 
-@Log
+@Slf4j
 @Command
 public class SVG2PNG implements Callable<Integer> {
 
@@ -47,7 +46,7 @@ public class SVG2PNG implements Callable<Integer> {
 	@Override
 	public Integer call() throws IOException, TranscoderException {
 		if (output != null) {
-			log.log(Level.INFO, "{0}", output.toAbsolutePath());
+			log.info("{}", output.toAbsolutePath());
 			Files.createDirectories(output);
 		}
 		for (short size = from; size <= to; size += Math.round(Math.max(1, size * .047f) / 2) * 2) {
@@ -57,7 +56,7 @@ public class SVG2PNG implements Callable<Integer> {
 			final Path path = Paths.get(output.toString(), size + "x" + size + ".png");
 			try (final InputStream is = getClass().getResourceAsStream("map.svg"); final OutputStream os = Files.newOutputStream(path); final BufferedOutputStream bos = new BufferedOutputStream(os)) {
 				it.transcode(new TranscoderInput(is), new TranscoderOutput(bos));
-				log.log(Level.INFO, "{0,number,#}x{0,number,#}", size);
+				log.info("{}x{}", size, size);
 			}
 		}
 		return ExitCode.OK;
