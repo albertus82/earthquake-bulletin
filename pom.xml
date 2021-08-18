@@ -196,7 +196,7 @@
 			</dependency>
 			<dependency>
 				<groupId>org.slf4j</groupId>
-				<artifactId>slf4j-api</artifactId> <!-- For Resilience4j v1.7.0 -->
+				<artifactId>slf4j-api</artifactId>
 				<version>${slf4j.version}</version>
 			</dependency>
 		</dependencies>
@@ -271,9 +271,7 @@
 								</goals>
 								<configuration>
 									<target>
-										<taskdef name="jarbundler"
-											classname="com.ultramixer.jarbundler.JarBundler"
-											classpathref="maven.plugin.classpath" />
+										<taskdef name="jarbundler" classname="com.ultramixer.jarbundler.JarBundler" classpathref="maven.plugin.classpath" />
 										<ant target="jarbundler" />
 									</target>
 								</configuration>
@@ -355,9 +353,7 @@
 								</goals>
 								<configuration>
 									<target>
-										<taskdef name="jarbundler"
-											classname="com.ultramixer.jarbundler.JarBundler"
-											classpathref="maven.plugin.classpath" />
+										<taskdef name="jarbundler" classname="com.ultramixer.jarbundler.JarBundler" classpathref="maven.plugin.classpath" />
 										<ant target="jarbundler" />
 									</target>
 								</configuration>
@@ -893,8 +889,7 @@
 						</goals>
 						<configuration>
 							<target>
-								<taskdef resource="net/sf/antcontrib/antlib.xml"
-									classpathref="maven.plugin.classpath" />
+								<taskdef resource="net/sf/antcontrib/antlib.xml" classpathref="maven.plugin.classpath" />
 								<ant target="innosetup" />
 							</target>
 						</configuration>
