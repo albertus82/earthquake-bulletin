@@ -10,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class TimeZoneConfig {
+public class TimeZoneConfigAccessor {
 
 	public static final String DEFAULT_ZONE_ID = "UTC";
 

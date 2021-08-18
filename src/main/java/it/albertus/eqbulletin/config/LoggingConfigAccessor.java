@@ -18,7 +18,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
-public class LoggingConfig extends LoggingDefaultConfig {
+public class LoggingConfigAccessor extends LoggingDefaultConfig {
 
 	@NoArgsConstructor(access = AccessLevel.PRIVATE)
 	public static class Defaults {
@@ -58,6 +58,11 @@ public class LoggingConfig extends LoggingDefaultConfig {
 	@Override
 	public int getFileHandlerCount() {
 		return configuration.getInt(Preference.LOGGING_FILES_COUNT, super.getFileHandlerCount());
+	}
+
+	@Override
+	public String getFileHandlerFormat() {
+		return "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n";
 	}
 
 }

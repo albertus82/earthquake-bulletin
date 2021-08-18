@@ -9,7 +9,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
-public class LanguageConfig implements ILanguageConfig {
+public class LanguageConfigAccessor implements ILanguageConfig {
 
 	public static final String DEFAULT_LANGUAGE = Locale.getDefault().getLanguage();
 

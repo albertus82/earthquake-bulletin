@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class LogbackConfigurator extends ContextAwareBase implements Configurator {
 
-	private final LoggingConfig config = new LoggingConfig(EarthquakeBulletinConfig.getPreferencesConfiguration());
+	private final LoggingConfigAccessor config = new LoggingConfigAccessor(EarthquakeBulletinConfig.getPreferencesConfiguration());
 
 	public void configure(final LoggerContext context) {
 		final ConsoleAppender<ILoggingEvent> consoleAppender = new ConsoleAppender<>();
@@ -28,8 +28,7 @@ public class LogbackConfigurator extends ContextAwareBase implements Configurato
 		encoder.setContext(context);
 
 		final PatternLayout layout = new PatternLayout();
-		layout.setPattern("%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n");
-
+		layout.setPattern(config.getFileHandlerFormat());
 		layout.setContext(context);
 		layout.start();
 		encoder.setLayout(layout);
@@ -37,15 +36,17 @@ public class LogbackConfigurator extends ContextAwareBase implements Configurato
 		consoleAppender.setEncoder(encoder);
 		consoleAppender.start();
 
-		RollingFileAppender<ILoggingEvent> rollingFileAppender = new RollingFileAppender<>();
+		final Logger rootLogger = context.getLogger(Logger.ROOT_LOGGER_NAME); // NOSONAR Use static access with "org.slf4j.Logger" for "ROOT_LOGGER_NAME". "static" base class members should not be accessed via derived types (java:S3252)
+
 		if (config.isFileHandlerEnabled()) {
+			final RollingFileAppender<ILoggingEvent> rollingFileAppender = new RollingFileAppender<>();
 			rollingFileAppender.setContext(context);
 			rollingFileAppender.setName("rollingFileAppender");
 			rollingFileAppender.setEncoder(encoder);
 			rollingFileAppender.setAppend(true);
 			rollingFileAppender.setFile(config.getFileHandlerPattern().replace("%i", "0"));
 
-			FixedWindowRollingPolicy fixedWindowRollingPolicy = new FixedWindowRollingPolicy();
+			final FixedWindowRollingPolicy fixedWindowRollingPolicy = new FixedWindowRollingPolicy();
 			fixedWindowRollingPolicy.setContext(context);
 			fixedWindowRollingPolicy.setParent(rollingFileAppender);
 			fixedWindowRollingPolicy.setMinIndex(1);
@@ -53,20 +54,17 @@ public class LogbackConfigurator extends ContextAwareBase implements Configurato
 			fixedWindowRollingPolicy.setFileNamePattern(config.getFileHandlerPattern());
 			fixedWindowRollingPolicy.start();
 
-			SizeBasedTriggeringPolicy<ILoggingEvent> sizeBasedTriggeringPolicy = new SizeBasedTriggeringPolicy<>();
+			final SizeBasedTriggeringPolicy<ILoggingEvent> sizeBasedTriggeringPolicy = new SizeBasedTriggeringPolicy<>();
 			sizeBasedTriggeringPolicy.setContext(context);
 			sizeBasedTriggeringPolicy.setMaxFileSize(new FileSize(config.getFileHandlerLimit()));
 			rollingFileAppender.setTriggeringPolicy(sizeBasedTriggeringPolicy);
 			rollingFileAppender.setRollingPolicy(fixedWindowRollingPolicy);
 			sizeBasedTriggeringPolicy.start();
 			rollingFileAppender.start();
-		}
-
-		final Logger rootLogger = context.getLogger(Logger.ROOT_LOGGER_NAME);
-		rootLogger.addAppender(consoleAppender);
-		if (config.isFileHandlerEnabled()) {
 			rootLogger.addAppender(rollingFileAppender);
 		}
+
+		rootLogger.addAppender(consoleAppender);
 		rootLogger.setLevel(Level.toLevel(config.getLoggingLevel()));
 	}
 

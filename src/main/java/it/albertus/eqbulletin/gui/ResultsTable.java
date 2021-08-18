@@ -46,7 +46,7 @@ import org.eclipse.swt.widgets.TableColumn;
 
 import it.albertus.eqbulletin.cache.BeachBallCache;
 import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
-import it.albertus.eqbulletin.config.TimeZoneConfig;
+import it.albertus.eqbulletin.config.TimeZoneConfigAccessor;
 import it.albertus.eqbulletin.gui.async.BeachBallAsyncOperation;
 import it.albertus.eqbulletin.gui.async.BulletinExporter;
 import it.albertus.eqbulletin.gui.async.MomentTensorAsyncOperation;
@@ -253,7 +253,7 @@ public class ResultsTable implements Multilanguage {
 		col.setLabelProvider(new EarthquakeColumnLabelProvider() {
 			@Override
 			protected String getText(final Earthquake element) {
-				return dateTimeFormatter.withZone(TimeZoneConfig.getZoneId()).format(element.getTime());
+				return dateTimeFormatter.withZone(TimeZoneConfigAccessor.getZoneId()).format(element.getTime());
 			}
 		});
 	}

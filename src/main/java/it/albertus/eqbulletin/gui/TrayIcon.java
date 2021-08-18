@@ -20,7 +20,7 @@ import org.eclipse.swt.widgets.Tray;
 import org.eclipse.swt.widgets.TrayItem;
 
 import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
-import it.albertus.eqbulletin.config.TimeZoneConfig;
+import it.albertus.eqbulletin.config.TimeZoneConfigAccessor;
 import it.albertus.eqbulletin.gui.listener.CloseListener;
 import it.albertus.eqbulletin.gui.listener.EnhancedTrayRestoreListener;
 import it.albertus.eqbulletin.gui.preference.Preference;
@@ -161,7 +161,7 @@ public class TrayIcon implements IShellProvider, Multilanguage {
 				trayItem.getDisplay().syncExec(() -> {
 					trayItem.setToolTip(toolTip);
 					toolTip.setText(earthquake.getSummary());
-					toolTip.setMessage(earthquake.getDetails(TimeZoneConfig.getZoneId()));
+					toolTip.setMessage(earthquake.getDetails(TimeZoneConfigAccessor.getZoneId()));
 					toolTip.setVisible(true);
 				});
 			}
@@ -177,7 +177,7 @@ public class TrayIcon implements IShellProvider, Multilanguage {
 			buf.append(System.lineSeparator());
 			buf.append(earthquake.getSummary());
 			buf.append(System.lineSeparator());
-			buf.append(earthquake.getDetails(TimeZoneConfig.getZoneId()));
+			buf.append(earthquake.getDetails(TimeZoneConfigAccessor.getZoneId()));
 		}
 		toolTipText = buf.toString();
 		if (trayItem != null && !trayItem.isDisposed()) {

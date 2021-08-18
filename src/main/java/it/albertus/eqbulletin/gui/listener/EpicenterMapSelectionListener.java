@@ -6,7 +6,7 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 
-import it.albertus.eqbulletin.config.TimeZoneConfig;
+import it.albertus.eqbulletin.config.TimeZoneConfigAccessor;
 import it.albertus.eqbulletin.gui.Images;
 import it.albertus.eqbulletin.gui.ResultsTable;
 import it.albertus.eqbulletin.model.Earthquake;
@@ -49,7 +49,7 @@ public class EpicenterMapSelectionListener extends SelectionAdapter {
 			final StringBuilder title = new StringBuilder();
 			title.append(selection.getSummary());
 			title.append(System.lineSeparator());
-			title.append(selection.getDetails(TimeZoneConfig.getZoneId()));
+			title.append(selection.getDetails(TimeZoneConfigAccessor.getZoneId()));
 
 			epicenterMapDialog.getMarkers().add(new MapMarker(latitude, longitude, title.toString()));
 			epicenterMapDialog.open();

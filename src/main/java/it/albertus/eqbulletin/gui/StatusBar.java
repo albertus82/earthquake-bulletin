@@ -11,7 +11,7 @@ import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.MenuItem;
 
-import it.albertus.eqbulletin.config.TimeZoneConfig;
+import it.albertus.eqbulletin.config.TimeZoneConfigAccessor;
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.jface.Multilanguage;
 import it.albertus.jface.i18n.LocalizedWidgets;
@@ -53,7 +53,7 @@ public class StatusBar implements Multilanguage {
 	public void refresh() {
 		final StringBuilder message = new StringBuilder(Messages.get(itemCount == 1 ? "label.status.bar.item.count" : "label.status.bar.items.count", itemCount));
 		if (lastUpdateTime != null) {
-			final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.FULL).withLocale(Messages.getLanguage().getLocale()).withZone(TimeZoneConfig.getZoneId());
+			final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.FULL).withLocale(Messages.getLanguage().getLocale()).withZone(TimeZoneConfigAccessor.getZoneId());
 			message.append(SPACER);
 			message.append(Messages.get("label.status.bar.last.updated", dateTimeFormatter.format(lastUpdateTime)));
 		}

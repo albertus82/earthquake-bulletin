@@ -23,9 +23,9 @@ import org.slf4j.event.Level;
 import it.albertus.eqbulletin.cache.BeachBallCache;
 import it.albertus.eqbulletin.cache.MapImageCache;
 import it.albertus.eqbulletin.cache.MomentTensorCache;
-import it.albertus.eqbulletin.config.LanguageConfig;
-import it.albertus.eqbulletin.config.LoggingConfig;
-import it.albertus.eqbulletin.config.TimeZoneConfig;
+import it.albertus.eqbulletin.config.LanguageConfigAccessor;
+import it.albertus.eqbulletin.config.LoggingConfigAccessor;
+import it.albertus.eqbulletin.config.TimeZoneConfigAccessor;
 import it.albertus.eqbulletin.gui.CloseDialog;
 import it.albertus.eqbulletin.gui.EarthquakeBulletinGui;
 import it.albertus.eqbulletin.gui.MapCanvas;
@@ -65,8 +65,8 @@ import it.albertus.util.logging.LoggingDefaultConfig;
 
 public enum Preference implements IPreference {
 
-	LANGUAGE(new PreferenceDetailsBuilder(GENERAL).defaultValue(LanguageConfig.DEFAULT_LANGUAGE).build(), new FieldEditorDetailsBuilder(DefaultComboFieldEditor.class).labelsAndValues(Preference.getLanguageComboOptions()).build()),
-	TIMEZONE(new PreferenceDetailsBuilder(GENERAL).defaultValue(TimeZoneConfig.DEFAULT_ZONE_ID).build(), new FieldEditorDetailsBuilder(Boolean.TRUE.equals(SwtUtils.isGtk3()) ? ListFieldEditor.class : DefaultComboFieldEditor.class).labelsAndValues(getTimeZoneComboOptions()).height(3).build()), // GTK3 combo rendering is slow when item count is high
+	LANGUAGE(new PreferenceDetailsBuilder(GENERAL).defaultValue(LanguageConfigAccessor.DEFAULT_LANGUAGE).build(), new FieldEditorDetailsBuilder(DefaultComboFieldEditor.class).labelsAndValues(Preference.getLanguageComboOptions()).build()),
+	TIMEZONE(new PreferenceDetailsBuilder(GENERAL).defaultValue(TimeZoneConfigAccessor.DEFAULT_ZONE_ID).build(), new FieldEditorDetailsBuilder(Boolean.TRUE.equals(SwtUtils.isGtk3()) ? ListFieldEditor.class : DefaultComboFieldEditor.class).labelsAndValues(getTimeZoneComboOptions()).height(3).build()), // GTK3 combo rendering is slow when item count is high
 
 	START_MINIMIZED(new PreferenceDetailsBuilder(GENERAL).defaultValue(EarthquakeBulletinGui.Defaults.START_MINIMIZED).separate().build(), new FieldEditorDetailsBuilder(DefaultBooleanFieldEditor.class).build()),
 	MINIMIZE_TRAY(new PreferenceDetailsBuilder(GENERAL).defaultValue(TrayIcon.Defaults.MINIMIZE_TRAY).build(), new FieldEditorDetailsBuilder(DefaultBooleanFieldEditor.class).disabled(!SystemTray.isSupported()).build()),
@@ -111,9 +111,9 @@ public enum Preference implements IPreference {
 	MTI_CACHE_SIZE(new PreferenceDetailsBuilder(CACHE).defaultValue(BeachBallCache.Defaults.CACHE_SIZE).build(), new FieldEditorDetailsBuilder(ScaleIntegerFieldEditor.class).scaleMinimum(1).scaleMaximum(Byte.MAX_VALUE).scalePageIncrement(8).build()),
 	MTI_CACHE_SAVE(new PreferenceDetailsBuilder(CACHE).defaultValue(BeachBallCache.Defaults.CACHE_SAVE).build(), new FieldEditorDetailsBuilder(DefaultBooleanFieldEditor.class).build()),
 
-	LOGGING_LEVEL(new PreferenceDetailsBuilder(LOGGING).defaultValue(LoggingConfig.Defaults.LOGGING_LEVEL.toString()).build(), new FieldEditorDetailsBuilder(DefaultComboFieldEditor.class).labelsAndValues(getLoggingComboOptions()).build()),
+	LOGGING_LEVEL(new PreferenceDetailsBuilder(LOGGING).defaultValue(LoggingConfigAccessor.Defaults.LOGGING_LEVEL.toString()).build(), new FieldEditorDetailsBuilder(DefaultComboFieldEditor.class).labelsAndValues(getLoggingComboOptions()).build()),
 	LOGGING_FILES_ENABLED(new PreferenceDetailsBuilder(LOGGING).separate().defaultValue(LoggingDefaultConfig.DEFAULT_LOGGING_FILES_ENABLED).build(), new FieldEditorDetailsBuilder(DefaultBooleanFieldEditor.class).build()),
-	LOGGING_FILES_PATH(new PreferenceDetailsBuilder(LOGGING).parent(LOGGING_FILES_ENABLED).defaultValue(LoggingConfig.Defaults.LOGGING_FILES_PATH).build(), new FieldEditorDetailsBuilder(EnhancedDirectoryFieldEditor.class).emptyStringAllowed(false).directoryMustExist(false).directoryDialogMessage(() -> Messages.get("message.preferences.directory.dialog.message.log")).build()),
+	LOGGING_FILES_PATH(new PreferenceDetailsBuilder(LOGGING).parent(LOGGING_FILES_ENABLED).defaultValue(LoggingConfigAccessor.Defaults.LOGGING_FILES_PATH).build(), new FieldEditorDetailsBuilder(EnhancedDirectoryFieldEditor.class).emptyStringAllowed(false).directoryMustExist(false).directoryDialogMessage(() -> Messages.get("message.preferences.directory.dialog.message.log")).build()),
 	LOGGING_FILES_LIMIT(new PreferenceDetailsBuilder(LOGGING).parent(LOGGING_FILES_ENABLED).defaultValue(LoggingDefaultConfig.DEFAULT_LOGGING_FILES_LIMIT_KB).build(), new FieldEditorDetailsBuilder(ScaleIntegerFieldEditor.class).scaleMinimum(512).scaleMaximum(8192).scalePageIncrement(512).build()),
 	LOGGING_FILES_COUNT(new PreferenceDetailsBuilder(LOGGING).parent(LOGGING_FILES_ENABLED).defaultValue(LoggingDefaultConfig.DEFAULT_LOGGING_FILES_COUNT).build(), new FieldEditorDetailsBuilder(ScaleIntegerFieldEditor.class).scaleMinimum(1).scaleMaximum(9).scalePageIncrement(1).build()),
 

@@ -33,17 +33,17 @@ public class EarthquakeBulletinConfig extends Configuration {
 	private final ILoggingManager loggingManager;
 	private final ILanguageManager languageManager;
 
-	private EarthquakeBulletinConfig(final boolean initialize) throws IOException {
+	private EarthquakeBulletinConfig() throws IOException {
 		super(new PropertiesConfiguration(DIRECTORY_NAME + File.separator + CFG_FILE_NAME, true));
 		final IPreferencesConfiguration pc = new PreferencesConfiguration(this);
-		loggingManager = new LogbackLoggingManager();
-		languageManager = new LanguageManager(new LanguageConfig(pc), initialize);
+		loggingManager = new LoggingManager(new LoggingConfigAccessor(pc));
+		languageManager = new LanguageManager(new LanguageConfigAccessor(pc));
 	}
 
 	private static synchronized EarthquakeBulletinConfig getInstance() {
 		if (instance == null) {
 			try {
-				instance = new EarthquakeBulletinConfig(false);
+				instance = new EarthquakeBulletinConfig();
 				instanceCount++;
 				if (instanceCount > 1) {
 					throw new InitializationException("Detected multiple instances of singleton " + instance.getClass());
@@ -64,14 +64,15 @@ public class EarthquakeBulletinConfig extends Configuration {
 	}
 
 	public static void initialize() {
-		getInstance().languageManager.resetLanguage();
+		final EarthquakeBulletinConfig instance = getInstance();
+		instance.loggingManager.initializeLogging();
+		instance.languageManager.resetLanguage();
 	}
 
 	@Override
 	public void reload() throws IOException {
 		super.reload();
-		loggingManager.initializeLogging();
-		languageManager.resetLanguage();
+		initialize();
 	}
 
 }
