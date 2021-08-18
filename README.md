@@ -54,7 +54,9 @@ This application uses or includes portions of the following third party software
 |Inno Setup                   |Jordan Russell       |[License](https://jrsoftware.org/files/is/license.txt)  |[Home page](https://jrsoftware.org/isinfo.php)|
 |jsoup                        |Jonathan Hedley      |[License](https://jsoup.org/license)                    |[Home page](https://jsoup.org)                |
 |Launch4j                     |Grzegorz Kowal       |[License](https://opensource.org/licenses/BSD-3-Clause) |[Home page](http://launch4j.sourceforge.net)  |
+|Logback                      |Quality Open Software|[License](http://logback.qos.ch/license.html)           |[Home page](http://logback.qos.ch)            |
 |Picocli                      |Remko Popma          |[License](https://git.io/JUqAY)                         |[Home page](https://picocli.info)             |
 |Reflections                  |ronmamo              |[License](https://git.io/Jtp8i)                         |[Home page](https://git.io/Jtp81)             |
 |Resilience4j                 |Robert Winkler et al.|[License](https://resilience4j.readme.io/docs/apache-20)|[Home page](https://resilience4j.readme.io)   |
+|SLF4J                        |Quality Open Software|[License](http://www.slf4j.org/license.html)            |[Home page](http://www.slf4j.org)             |
 |universalJavaApplicationStub |Tobias Fischer       |[License](https://git.io/JUqAq)                         |[Home page](https://git.io/JUqAF)             |
