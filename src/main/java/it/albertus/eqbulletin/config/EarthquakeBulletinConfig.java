@@ -1,7 +1,5 @@
 package it.albertus.eqbulletin.config;
 
-import static it.albertus.eqbulletin.EarthquakeBulletin.ARTIFACT_ID;
-
 import java.io.File;
 import java.io.IOException;
 
@@ -9,6 +7,7 @@ import org.eclipse.jface.util.Util;
 
 import it.albertus.eqbulletin.resources.LanguageManager;
 import it.albertus.eqbulletin.resources.Messages;
+import it.albertus.eqbulletin.util.BuildInfo;
 import it.albertus.eqbulletin.util.InitializationException;
 import it.albertus.jface.preference.IPreferencesConfiguration;
 import it.albertus.jface.preference.PreferencesConfiguration;
@@ -20,11 +19,11 @@ import it.albertus.util.logging.ILoggingManager;
 
 public class EarthquakeBulletinConfig extends Configuration {
 
-	private static final String DIRECTORY_NAME = Util.isLinux() ? '.' + ARTIFACT_ID : "Earthquake Bulletin";
+	private static final String DIRECTORY_NAME = Util.isLinux() ? '.' + BuildInfo.getProperty("project.artifactId") : BuildInfo.getProperty("project.name");
 
 	public static final String APPDATA_DIRECTORY = SystemUtils.getOsSpecificLocalAppDataDir() + File.separator + DIRECTORY_NAME;
 
-	private static final String CFG_FILE_NAME = Util.isLinux() ? ARTIFACT_ID + ".cfg" : "EarthquakeBulletin.cfg";
+	private static final String CFG_FILE_NAME = (Util.isLinux() ? BuildInfo.getProperty("project.artifactId") : BuildInfo.getProperty("project.name").replace(" ", "")) + ".cfg";
 
 	private static EarthquakeBulletinConfig instance;
 	private static IPreferencesConfiguration wrapper;

@@ -1,6 +1,5 @@
 package it.albertus.eqbulletin.config;
 
-import static it.albertus.eqbulletin.EarthquakeBulletin.ARTIFACT_ID;
 import static it.albertus.eqbulletin.config.EarthquakeBulletinConfig.APPDATA_DIRECTORY;
 import static org.slf4j.event.Level.WARN;
 
@@ -10,6 +9,7 @@ import org.eclipse.jface.util.Util;
 import org.slf4j.event.Level;
 
 import it.albertus.eqbulletin.gui.preference.Preference;
+import it.albertus.eqbulletin.util.BuildInfo;
 import it.albertus.jface.preference.IPreferencesConfiguration;
 import it.albertus.util.logging.LoggingDefaultConfig;
 import lombok.AccessLevel;
@@ -41,7 +41,7 @@ public class LoggingConfigAccessor extends LoggingDefaultConfig {
 
 	@Override
 	public String getFileHandlerPattern() {
-		return configuration.getString(Preference.LOGGING_FILES_PATH, Defaults.LOGGING_FILES_PATH) + File.separator + (Util.isLinux() ? ARTIFACT_ID + ".%i.log" : "EarthquakeBulletin.%i.log");
+		return configuration.getString(Preference.LOGGING_FILES_PATH, Defaults.LOGGING_FILES_PATH) + File.separator + (Util.isLinux() ? BuildInfo.getProperty("project.artifactId") : BuildInfo.getProperty("project.name").replace(" ", "")) + ".%i.log";
 	}
 
 	@Override
