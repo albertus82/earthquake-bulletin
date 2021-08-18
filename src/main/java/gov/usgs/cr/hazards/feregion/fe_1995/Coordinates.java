@@ -48,7 +48,7 @@ public class Coordinates implements Serializable {
 		}
 
 		if (Math.abs(lat) > 90.0 || Math.abs(lng) > 180.0) {
-			throw new IllegalCoordinateException(String.format(" * bad latitude or longitude: %f %f", lat, lng));
+			throw new IllegalCoordinateException(lat, lng);
 		}
 
 		this.longitude = lng;
@@ -92,7 +92,7 @@ public class Coordinates implements Serializable {
 			lat = Double.parseDouble(latitude);
 		}
 		catch (final NumberFormatException e) {
-			throw new IllegalCoordinateException(String.format(" * bad latitude or longitude: %s %s", latitude, longitude), e);
+			throw new IllegalCoordinateException(latitude, longitude, e);
 		}
 
 		return new Coordinates(lng, lat);

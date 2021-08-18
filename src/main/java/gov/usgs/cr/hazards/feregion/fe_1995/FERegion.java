@@ -226,8 +226,9 @@ class FERegionCommand implements Callable<Integer> {
 			return ExitCode.OK;
 		}
 		catch (final IllegalCoordinateException e) {
-			System.err.println(e.getMessage());
-			log.log(Level.FINE, e.toString(), e);
+			final String message = String.format(" * bad latitude or longitude: %s %s", e.getLatitude(), e.getLongitude());
+			System.err.println(message);
+			log.log(Level.FINE, message, e);
 			return ExitCode.SOFTWARE;
 		}
 	}
