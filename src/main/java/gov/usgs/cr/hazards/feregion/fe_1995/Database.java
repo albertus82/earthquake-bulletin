@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 import lombok.extern.slf4j.Slf4j;
@@ -66,7 +67,7 @@ class Database {
 				}
 			}
 		}
-		log.debug("  * Numitems in quadsindex = {}", quadsindex.size());
+		log.debug(" * Numitems in quadsindex = {}", quadsindex.size());
 
 		final Map<String, List<Integer>> sects = new HashMap<>(quadorder.length * 2);
 		for (int i = 0; i < sectfiles.length; i++) {
@@ -100,8 +101,8 @@ class Database {
 				begin = end + 1;
 				begins.add(begin);
 				end += item;
-				if (log.isDebugEnabled() && n <= 10) {
-					log.debug("{} {} {} {}", quad, item, begin, end);
+				if (n <= 10) {
+					log.trace("{} {} {} {}", quad, item, begin, end);
 				}
 			}
 			latbegins.put(quad, begins);
@@ -137,7 +138,7 @@ class Database {
 			}
 		}
 
-		log.debug("F-E regions database initialized in {} ns.", System.nanoTime() - startTime);
+		log.debug("F-E regions database initialized in {} ms.", TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startTime));
 	}
 
 	List<String> getNames() {
