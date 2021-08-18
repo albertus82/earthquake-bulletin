@@ -48,7 +48,7 @@ public class LoggingManager implements ILoggingManager {
 		String fileHandlerFormat;
 		String loggingLevel;
 
-		private LoggingConfig(final ILoggingConfig config) {
+		private LoggingConfig(@NonNull final LoggingConfigAccessor config) {
 			this.fileHandlerPattern = config.getFileHandlerPattern();
 			this.fileHandlerEnabled = config.isFileHandlerEnabled();
 			this.fileHandlerLimit = config.getFileHandlerLimit();
