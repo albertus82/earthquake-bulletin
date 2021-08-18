@@ -300,7 +300,7 @@ public class FERegionDialog extends Dialog {
 			}
 		}
 		script.append("map.flyTo(new L.LatLng(").append(coordinates.getLatitude()).append(", ").append(coordinates.getLongitude()).append("));");
-		log.debug("Executing script:{}{}", new Object[] { System.lineSeparator(), script });
+		log.debug("Executing script:{}{}", System.lineSeparator(), script);
 		browser.execute(script.toString());
 	}
 
