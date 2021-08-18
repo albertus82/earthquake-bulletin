@@ -13,13 +13,12 @@ import java.time.ZoneId;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.logging.Level;
 
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.swt.widgets.Composite;
+import org.slf4j.event.Level;
 
 import it.albertus.eqbulletin.cache.BeachBallCache;
 import it.albertus.eqbulletin.cache.MapImageCache;
@@ -63,7 +62,6 @@ import it.albertus.jface.preference.field.ScaleIntegerFieldEditor;
 import it.albertus.jface.preference.field.ValidatedComboFieldEditor;
 import it.albertus.jface.preference.page.IPageDefinition;
 import it.albertus.util.logging.LoggingDefaultConfig;
-import it.albertus.util.logging.LoggingSupport;
 
 public enum Preference implements IPreference {
 
@@ -113,7 +111,7 @@ public enum Preference implements IPreference {
 	MTI_CACHE_SIZE(new PreferenceDetailsBuilder(CACHE).defaultValue(BeachBallCache.Defaults.CACHE_SIZE).build(), new FieldEditorDetailsBuilder(ScaleIntegerFieldEditor.class).scaleMinimum(1).scaleMaximum(Byte.MAX_VALUE).scalePageIncrement(8).build()),
 	MTI_CACHE_SAVE(new PreferenceDetailsBuilder(CACHE).defaultValue(BeachBallCache.Defaults.CACHE_SAVE).build(), new FieldEditorDetailsBuilder(DefaultBooleanFieldEditor.class).build()),
 
-	LOGGING_LEVEL(new PreferenceDetailsBuilder(LOGGING).defaultValue(LoggingConfig.Defaults.LOGGING_LEVEL.getName()).build(), new FieldEditorDetailsBuilder(DefaultComboFieldEditor.class).labelsAndValues(getLoggingComboOptions()).build()),
+	LOGGING_LEVEL(new PreferenceDetailsBuilder(LOGGING).defaultValue(LoggingConfig.Defaults.LOGGING_LEVEL.toString()).build(), new FieldEditorDetailsBuilder(DefaultComboFieldEditor.class).labelsAndValues(getLoggingComboOptions()).build()),
 	LOGGING_FILES_ENABLED(new PreferenceDetailsBuilder(LOGGING).separate().defaultValue(LoggingDefaultConfig.DEFAULT_LOGGING_FILES_ENABLED).build(), new FieldEditorDetailsBuilder(DefaultBooleanFieldEditor.class).build()),
 	LOGGING_FILES_PATH(new PreferenceDetailsBuilder(LOGGING).parent(LOGGING_FILES_ENABLED).defaultValue(LoggingConfig.Defaults.LOGGING_FILES_PATH).build(), new FieldEditorDetailsBuilder(EnhancedDirectoryFieldEditor.class).emptyStringAllowed(false).directoryMustExist(false).directoryDialogMessage(() -> Messages.get("message.preferences.directory.dialog.message.log")).build()),
 	LOGGING_FILES_LIMIT(new PreferenceDetailsBuilder(LOGGING).parent(LOGGING_FILES_ENABLED).defaultValue(LoggingDefaultConfig.DEFAULT_LOGGING_FILES_LIMIT_KB).build(), new FieldEditorDetailsBuilder(ScaleIntegerFieldEditor.class).scaleMinimum(512).scaleMaximum(8192).scalePageIncrement(512).build()),
@@ -235,10 +233,9 @@ public enum Preference implements IPreference {
 	}
 
 	public static StaticLabelsAndValues getLoggingComboOptions() {
-		final Map<Integer, Level> levels = LoggingSupport.getLevels();
-		final StaticLabelsAndValues options = new StaticLabelsAndValues(levels.size());
-		for (final Level level : levels.values()) {
-			options.put(level.toString(), level.getName());
+		final StaticLabelsAndValues options = new StaticLabelsAndValues(Level.values().length);
+		for (final Level level : Level.values()) {
+			options.put(level.toString(), level.toString());
 		}
 		return options;
 	}

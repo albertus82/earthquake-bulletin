@@ -17,10 +17,7 @@ import it.albertus.util.SystemUtils;
 import it.albertus.util.config.Configuration;
 import it.albertus.util.config.PropertiesConfiguration;
 import it.albertus.util.logging.ILoggingManager;
-import it.albertus.util.logging.LoggingManager;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public class EarthquakeBulletinConfig extends Configuration {
 
 	private static final String DIRECTORY_NAME = Util.isLinux() ? '.' + ARTIFACT_ID : "Earthquake Bulletin";
@@ -39,7 +36,7 @@ public class EarthquakeBulletinConfig extends Configuration {
 	private EarthquakeBulletinConfig(final boolean initialize) throws IOException {
 		super(new PropertiesConfiguration(DIRECTORY_NAME + File.separator + CFG_FILE_NAME, true));
 		final IPreferencesConfiguration pc = new PreferencesConfiguration(this);
-		loggingManager = new LoggingManager(new LoggingConfig(pc), initialize);
+		loggingManager = new LogbackLoggingManager();
 		languageManager = new LanguageManager(new LanguageConfig(pc), initialize);
 	}
 
@@ -48,9 +45,6 @@ public class EarthquakeBulletinConfig extends Configuration {
 			try {
 				instance = new EarthquakeBulletinConfig(false);
 				instanceCount++;
-				if (log.isDebugEnabled()) {
-					log.debug("Created {} instance.", instance.getClass().getSimpleName());
-				}
 				if (instanceCount > 1) {
 					throw new InitializationException("Detected multiple instances of singleton " + instance.getClass());
 				}
@@ -70,15 +64,14 @@ public class EarthquakeBulletinConfig extends Configuration {
 	}
 
 	public static void initialize() {
-		final EarthquakeBulletinConfig instance = getInstance();
-		instance.loggingManager.initializeLogging();
-		instance.languageManager.resetLanguage();
+		getInstance().languageManager.resetLanguage();
 	}
 
 	@Override
 	public void reload() throws IOException {
 		super.reload();
-		initialize();
+		loggingManager.initializeLogging();
+		languageManager.resetLanguage();
 	}
 
 }

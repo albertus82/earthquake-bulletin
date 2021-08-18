@@ -2,12 +2,12 @@ package it.albertus.eqbulletin.config;
 
 import static it.albertus.eqbulletin.EarthquakeBulletin.ARTIFACT_ID;
 import static it.albertus.eqbulletin.config.EarthquakeBulletinConfig.APPDATA_DIRECTORY;
-import static java.util.logging.Level.WARNING;
+import static org.slf4j.event.Level.WARN;
 
 import java.io.File;
-import java.util.logging.Level;
 
 import org.eclipse.jface.util.Util;
+import org.slf4j.event.Level;
 
 import it.albertus.eqbulletin.gui.preference.Preference;
 import it.albertus.jface.preference.IPreferencesConfiguration;
@@ -23,7 +23,7 @@ public class LoggingConfig extends LoggingDefaultConfig {
 	@NoArgsConstructor(access = AccessLevel.PRIVATE)
 	public static class Defaults {
 		public static final String LOGGING_FILES_PATH = APPDATA_DIRECTORY + File.separator + "log";
-		public static final Level LOGGING_LEVEL = WARNING;
+		public static final Level LOGGING_LEVEL = WARN;
 	}
 
 	@NonNull
@@ -36,12 +36,12 @@ public class LoggingConfig extends LoggingDefaultConfig {
 
 	@Override
 	public String getLoggingLevel() {
-		return configuration.getString(Preference.LOGGING_LEVEL, Defaults.LOGGING_LEVEL.getName());
+		return configuration.getString(Preference.LOGGING_LEVEL, Defaults.LOGGING_LEVEL.toString());
 	}
 
 	@Override
 	public String getFileHandlerPattern() {
-		return configuration.getString(Preference.LOGGING_FILES_PATH, Defaults.LOGGING_FILES_PATH) + File.separator + (Util.isLinux() ? ARTIFACT_ID + ".%g.log" : "EarthquakeBulletin.%g.log");
+		return configuration.getString(Preference.LOGGING_FILES_PATH, Defaults.LOGGING_FILES_PATH) + File.separator + (Util.isLinux() ? ARTIFACT_ID + ".%i.log" : "EarthquakeBulletin.%i.log");
 	}
 
 	@Override
