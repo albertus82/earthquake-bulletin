@@ -77,10 +77,10 @@ public class LogbackConfigurator extends ContextAwareBase implements Configurato
 		rootLogger.addAppender(consoleAppender);
 		rootLogger.setLevel(Level.toLevel(config.getLoggingLevel()));
 
-		final LevelChangePropagator listener = new LevelChangePropagator();
-		listener.setContext(context);
-		context.addListener(listener);
-		listener.start();
+		final LevelChangePropagator levelChangePropagator = new LevelChangePropagator();
+		levelChangePropagator.setContext(context);
+		context.addListener(levelChangePropagator);
+		levelChangePropagator.start();
 
 		addInfo("Logging configuration reloaded successfully.");
 	}
