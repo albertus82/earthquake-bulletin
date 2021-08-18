@@ -1,7 +1,5 @@
 package it.albertus.eqbulletin.config;
 
-import java.util.Objects;
-
 import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.classic.LoggerContext;
@@ -24,8 +22,11 @@ public class LoggingManager implements ILoggingManager {
 
 	@Override
 	public void initializeLogging() {
-		if (!equals(currentConfig, previousConfig)) {
-			previousConfig = new LoggingConfig(currentConfig.getFileHandlerPattern(), currentConfig.isFileHandlerEnabled(), currentConfig.getFileHandlerLimit(), currentConfig.getFileHandlerCount(), currentConfig.getFileHandlerFormat(), currentConfig.getLoggingLevel());
+		if (previousConfig == null) {
+			previousConfig = new LoggingConfig(currentConfig);
+		}
+		else if (!new LoggingConfig(currentConfig).equals(previousConfig)) {
+			previousConfig = new LoggingConfig(currentConfig);
 			final LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
 			context.reset();
 			try {
@@ -38,16 +39,6 @@ public class LoggingManager implements ILoggingManager {
 		}
 	}
 
-	private static boolean equals(final ILoggingConfig c1, final ILoggingConfig c2) {
-		if (c1 == null && c2 == null) {
-			return true;
-		}
-		if (c1 == null || c2 == null) {
-			return false;
-		}
-		return c1.getFileHandlerCount() == c2.getFileHandlerCount() && Objects.equals(c1.getFileHandlerFormat(), c2.getFileHandlerFormat()) && c1.getFileHandlerLimit() == c2.getFileHandlerLimit() && Objects.equals(c1.getFileHandlerPattern(), c2.getFileHandlerPattern()) && Objects.equals(c1.getLoggingLevel(), c2.getLoggingLevel()) && c1.isFileHandlerEnabled() == c2.isFileHandlerEnabled();
-	}
-
 	@Value
 	private class LoggingConfig implements ILoggingConfig {
 		String fileHandlerPattern;
@@ -56,6 +47,15 @@ public class LoggingManager implements ILoggingManager {
 		int fileHandlerCount;
 		String fileHandlerFormat;
 		String loggingLevel;
+
+		private LoggingConfig(final ILoggingConfig config) {
+			this.fileHandlerPattern = config.getFileHandlerPattern();
+			this.fileHandlerEnabled = config.isFileHandlerEnabled();
+			this.fileHandlerLimit = config.getFileHandlerLimit();
+			this.fileHandlerCount = config.getFileHandlerCount();
+			this.fileHandlerFormat = config.getFileHandlerFormat();
+			this.loggingLevel = config.getLoggingLevel();
+		}
 	}
 
 }

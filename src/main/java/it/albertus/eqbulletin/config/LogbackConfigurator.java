@@ -1,9 +1,12 @@
 package it.albertus.eqbulletin.config;
 
+import org.slf4j.bridge.SLF4JBridgeHandler;
+
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.PatternLayout;
+import ch.qos.logback.classic.jul.LevelChangePropagator;
 import ch.qos.logback.classic.spi.Configurator;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.ConsoleAppender;
@@ -18,9 +21,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class LogbackConfigurator extends ContextAwareBase implements Configurator {
 
+	static {
+		SLF4JBridgeHandler.removeHandlersForRootLogger();
+		SLF4JBridgeHandler.install();
+	}
+
 	private final LoggingConfigAccessor config = new LoggingConfigAccessor(EarthquakeBulletinConfig.getPreferencesConfiguration());
 
 	public void configure(final LoggerContext context) {
+		addInfo("Reloading logging configuration...");
+
 		final ConsoleAppender<ILoggingEvent> consoleAppender = new ConsoleAppender<>();
 		consoleAppender.setContext(context);
 		consoleAppender.setName("consoleAppender");
@@ -66,6 +76,13 @@ public class LogbackConfigurator extends ContextAwareBase implements Configurato
 
 		rootLogger.addAppender(consoleAppender);
 		rootLogger.setLevel(Level.toLevel(config.getLoggingLevel()));
+
+		final LevelChangePropagator listener = new LevelChangePropagator();
+		listener.setContext(context);
+		context.addListener(listener);
+		listener.start();
+
+		addInfo("Logging configuration reloaded successfully.");
 	}
 
 }
