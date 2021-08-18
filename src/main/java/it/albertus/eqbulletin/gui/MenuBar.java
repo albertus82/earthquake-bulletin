@@ -1,7 +1,5 @@
 package it.albertus.eqbulletin.gui;
 
-import java.util.logging.Level;
-
 import org.eclipse.jface.util.Util;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -29,7 +27,7 @@ import it.albertus.jface.cocoa.CocoaEnhancerException;
 import it.albertus.jface.cocoa.CocoaUIEnhancer;
 import it.albertus.jface.sysinfo.SystemInformationDialog;
 import lombok.NonNull;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Solo i <tt>MenuItem</tt> che fanno parte di una barra dei men&ugrave; con
@@ -38,7 +36,7 @@ import lombok.extern.java.Log;
  * combinazioni di tasti, gli acceleratori non funzioneranno e le relative
  * combinazioni di tasti saranno ignorate.
  */
-@Log
+@Slf4j
 public class MenuBar extends AbstractMenu {
 
 	MenuBar(@NonNull final EarthquakeBulletinGui gui) {
@@ -56,7 +54,7 @@ public class MenuBar extends AbstractMenu {
 				cocoaMenuCreated = true;
 			}
 			catch (final CocoaEnhancerException e) {
-				log.log(Level.WARNING, Messages.get("error.cocoa.enhancer"), e);
+				log.warn(Messages.get("error.cocoa.enhancer"), e);
 			}
 		}
 

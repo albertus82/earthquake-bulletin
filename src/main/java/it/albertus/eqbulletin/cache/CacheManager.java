@@ -14,17 +14,15 @@ import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.ObjectStreamClass;
 import java.io.OutputStream;
-import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.logging.Level;
 
 import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
 import lombok.NonNull;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
-@Log
+@Slf4j
 public class CacheManager<T extends Cache<?, ?>> {
 
 	static final String CACHE_DIRECTORY = EarthquakeBulletinConfig.APPDATA_DIRECTORY + File.separator + "cache";
@@ -34,12 +32,12 @@ public class CacheManager<T extends Cache<?, ?>> {
 			final File file = new File(pathname);
 			file.getParentFile().mkdirs();
 			try (final OutputStream fos = new FileOutputStream(file); final OutputStream bos = new BufferedOutputStream(fos); final ObjectOutput oo = new ObjectOutputStream(bos)) {
-				log.log(Level.CONFIG, "Serializing {0} to \"{1}\"...", new Serializable[] { instance, file });
+				log.debug("Serializing {} to \"{}\"...", instance, file);
 				oo.writeObject(instance);
-				log.log(Level.CONFIG, "{0} serialized successfully.", instance);
+				log.debug("{} serialized successfully.", instance);
 			}
 			catch (final IOException e) {
-				log.log(Level.WARNING, e, () -> "Cannot serialize " + instance + ':');
+				log.warn("Cannot serialize " + instance + ':', e);
 			}
 		}
 	}
@@ -48,11 +46,11 @@ public class CacheManager<T extends Cache<?, ?>> {
 		final File file = new File(pathname);
 		if (file.isFile()) {
 			try (final InputStream fis = new FileInputStream(file); final InputStream bis = new BufferedInputStream(fis); final ObjectInput oi = new LookAheadObjectInputStream(bis, clazz)) {
-				log.log(Level.CONFIG, "Deserializing cache object from \"{0}\"...", file);
+				log.debug("Deserializing cache object from \"{}\"...", file);
 				@SuppressWarnings("unchecked")
 				final T deserialized = (T) oi.readObject();
 				if (clazz.isInstance(deserialized)) {
-					log.log(Level.CONFIG, "{0} deserialized successfully.", deserialized);
+					log.debug("{} deserialized successfully.", deserialized);
 					return deserialized;
 				}
 				else {
@@ -60,7 +58,7 @@ public class CacheManager<T extends Cache<?, ?>> {
 				}
 			}
 			catch (final IOException | ClassNotFoundException | ClassCastException e) {
-				log.log(Level.WARNING, e, () -> "Cannot deserialize cache object from \"" + file + "\":");
+				log.warn("Cannot deserialize cache object from \"" + file + "\":", e);
 			}
 		}
 		return null;
@@ -70,11 +68,11 @@ public class CacheManager<T extends Cache<?, ?>> {
 		final Path path = Paths.get(pathname);
 		try {
 			if (Files.deleteIfExists(path)) {
-				log.log(Level.CONFIG, "Deleted cache file \"{0}\".", path);
+				log.debug("Deleted cache file \"{}\".", path);
 			}
 		}
 		catch (final IOException e) {
-			log.log(Level.WARNING, e, () -> "Cannot delete cache file \"" + path + "\":");
+			log.warn("Cannot delete cache file \"" + path + "\":", e);
 		}
 	}
 
@@ -92,7 +90,7 @@ public class CacheManager<T extends Cache<?, ?>> {
 		protected Class<?> resolveClass(final ObjectStreamClass desc) throws IOException, ClassNotFoundException {
 			if (first) {
 				if (clazz.getName().equals(desc.getName())) {
-					log.log(Level.FINE, "Deserialization allowed: {0}", desc);
+					log.debug("Deserialization allowed: {}", desc);
 					first = false;
 				}
 				else {

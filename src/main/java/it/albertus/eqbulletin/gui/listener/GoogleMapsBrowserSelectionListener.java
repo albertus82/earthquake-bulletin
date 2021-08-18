@@ -4,7 +4,6 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.function.Supplier;
-import java.util.logging.Level;
 
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -14,9 +13,9 @@ import it.albertus.eqbulletin.gui.ResultsTable;
 import it.albertus.eqbulletin.model.Earthquake;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
-@Log
+@Slf4j
 @RequiredArgsConstructor
 public class GoogleMapsBrowserSelectionListener extends SelectionAdapter {
 
@@ -33,7 +32,7 @@ public class GoogleMapsBrowserSelectionListener extends SelectionAdapter {
 				Program.launch(getGoogleMapsUri(selection).toURL().toString());
 			}
 			catch (final MalformedURLException | URISyntaxException e) {
-				log.log(Level.SEVERE, "Invalid Google Maps URL:", e);
+				log.error("Invalid Google Maps URL:", e);
 			}
 		}
 	}

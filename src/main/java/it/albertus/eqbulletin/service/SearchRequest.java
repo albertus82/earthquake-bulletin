@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
-import java.util.logging.Level;
 
 import com.dmurph.URIEncoder;
 
@@ -20,9 +19,9 @@ import it.albertus.eqbulletin.model.Format;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
-@Log
+@Slf4j
 @Getter
 @Setter
 public class SearchRequest {
@@ -96,13 +95,13 @@ public class SearchRequest {
 		PaginationParameters(final short limit) {
 			nmax = limit;
 			pages = 1;
-			log.log(Level.FINE, "Desired (nmax={0,number,#}).", limit);
+			log.debug("Desired (nmax={}).", limit);
 			while (nmax > API_LIMIT) {
 				pages++;
 				nmax = (short) Math.ceil((double) limit / pages);
-				log.log(Level.FINE, "Computing (nmax={0,number,#}, pages={1})...", new Number[] { nmax, pages });
+				log.debug("Computing (nmax={}, pages={})...", nmax, pages);
 			}
-			log.log(Level.FINE, "Computed (nmax={0,number,#}, pages={1}).", new Number[] { nmax, pages });
+			log.debug("Computed (nmax={}, pages={}).", nmax, pages);
 		}
 
 	}

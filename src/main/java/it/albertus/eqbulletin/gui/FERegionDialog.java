@@ -10,7 +10,6 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.logging.Level;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -46,9 +45,9 @@ import it.albertus.jface.maps.leaflet.LeafletMapControl;
 import it.albertus.jface.maps.leaflet.LeafletMapDialog;
 import it.albertus.jface.maps.leaflet.LeafletMapOptions;
 import lombok.Value;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
-@Log
+@Slf4j
 public class FERegionDialog extends Dialog {
 
 	private static final int LATITUDE_MIN_VALUE = 0;
@@ -258,7 +257,7 @@ public class FERegionDialog extends Dialog {
 	}
 
 	private void setResult() {
-		log.log(Level.FINE, "{0}", coordinates);
+		log.debug("{}", coordinates);
 		final Region region = feregion.getGeographicRegion(coordinates);
 		setResultFields(region);
 		setPolygonOnMap(region);
@@ -278,7 +277,7 @@ public class FERegionDialog extends Dialog {
 
 	private void setPolygonOnMap(final Region region) {
 		final Map<Integer, Set<LongitudeRange>> map = feregion.getLatitudeLongitudeMap(region.getNumber());
-		log.log(Level.FINE, "Latitude/longitude map for {0} {1}: {2}", new Object[] { region.getNumber(), region.getName(), map });
+		log.debug("Latitude/longitude map for {} {}: {}", region.getNumber(), region.getName(), map);
 		final Collection<Rectangle> rects = new LinkedHashSet<>();
 		for (final Entry<Integer, Set<LongitudeRange>> entry : map.entrySet()) {
 			final int latitude = entry.getKey();
@@ -290,7 +289,7 @@ public class FERegionDialog extends Dialog {
 				rects.add(new Rectangle(a, b, c, d));
 			}
 		}
-		log.log(Level.FINE, "Rectangles: {0}", rects);
+		log.debug("Rectangles: {}", rects);
 
 		final StringBuilder script = new StringBuilder();
 		if (!rects.equals(this.rectangles)) {
@@ -301,7 +300,7 @@ public class FERegionDialog extends Dialog {
 			}
 		}
 		script.append("map.flyTo(new L.LatLng(").append(coordinates.getLatitude()).append(", ").append(coordinates.getLongitude()).append("));");
-		log.log(Level.FINE, "Executing script:{0}{1}", new Object[] { System.lineSeparator(), script });
+		log.debug("Executing script:{}{}", new Object[] { System.lineSeparator(), script });
 		browser.execute(script.toString());
 	}
 

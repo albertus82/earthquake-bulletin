@@ -1,14 +1,12 @@
 package it.albertus.eqbulletin.gui;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 import org.eclipse.core.runtime.IStatus;
@@ -45,9 +43,9 @@ import it.albertus.util.Version;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
-@Log
+@Slf4j
 public class EarthquakeBulletinGui extends ApplicationWindow implements Multilanguage {
 
 	public static final String SHELL_MAXIMIZED = "shell.maximized";
@@ -98,7 +96,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow implements Multilan
 
 	private EarthquakeBulletinGui() {
 		super(null);
-		log.log(Level.CONFIG, "{0}", configuration);
+		log.debug("{}", configuration);
 		addStatusLine();
 	}
 
@@ -134,16 +132,16 @@ public class EarthquakeBulletinGui extends ApplicationWindow implements Multilan
 			catch (final RuntimeException e) {
 				final String message = Messages.get("error.fatal");
 				if (shell.isDisposed()) {
-					log.log(Level.FINE, message, e);
+					log.debug(message, e);
 				}
 				else {
-					log.log(Level.SEVERE, message, e);
+					log.error(message, e);
 					EnhancedErrorDialog.openError(shell, getApplicationName(), message, IStatus.ERROR, e, display.getSystemImage(SWT.ICON_ERROR));
 					throw e;
 				}
 			}
 			catch (final Error e) { // NOSONAR Catch Exception instead of Error. Throwable and Error should not be caught (java:S1181)
-				log.log(Level.SEVERE, "An unrecoverable error has occurred:", e);
+				log.error("An unrecoverable error has occurred:", e);
 				throw e;
 			}
 		}
@@ -245,7 +243,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow implements Multilan
 				shell.setLocation(locationX, locationY);
 			}
 			else {
-				log.log(Level.WARNING, "Illegal shell location ({0,number,#}, {1,number,#}) for size ({2}).", new Serializable[] { locationX, locationY, shell.getSize() });
+				log.warn("Illegal shell location ({}, {}) for size ({}).", locationX, locationY, shell.getSize());
 			}
 		}
 
@@ -322,7 +320,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow implements Multilan
 					shellLocation = shell.getLocation();
 				}
 			}
-			log.log(Level.FINE, "shellMaximized: {0} - shellSize: {1} - shellLocation: {2}", new Serializable[] { shellMaximized, shellSize, shellLocation });
+			log.debug("shellMaximized: {} - shellSize: {} - shellLocation: {}", shellMaximized, shellSize, shellLocation);
 		}
 	}
 
@@ -355,7 +353,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow implements Multilan
 	}
 
 	private static void logEvent(final Event event) {
-		log.log(Level.FINE, "{0} {1}", new Object[] { Events.getName(event), event });
+		log.debug("{} {}", Events.getName(event), event);
 	}
 
 	public void saveShellStatus() {
@@ -371,7 +369,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow implements Multilan
 				configuration.reload(); // make sure the properties are up-to-date
 			}
 			catch (final IOException e) {
-				log.log(Level.WARNING, e.toString(), e);
+				log.warn(e.toString(), e);
 				return; // abort
 			}
 			final Properties properties = configuration.getProperties();
@@ -393,13 +391,13 @@ public class EarthquakeBulletinGui extends ApplicationWindow implements Multilan
 				properties.setProperty(SHELL_SASH_WEIGHT + '.' + i, Integer.toString(sashWeights.get(i)));
 			}
 
-			log.log(Level.CONFIG, "{0}", configuration);
+			log.debug("{}", configuration);
 
 			try {
 				configuration.save(); // save configuration
 			}
 			catch (final IOException e) {
-				log.log(Level.WARNING, e.toString(), e);
+				log.warn(e.toString(), e);
 			}
 		}, "Save shell status").start();
 	}

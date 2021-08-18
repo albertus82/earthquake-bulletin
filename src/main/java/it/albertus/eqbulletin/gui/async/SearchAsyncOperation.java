@@ -3,7 +3,6 @@ package it.albertus.eqbulletin.gui.async;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.widgets.Button;
@@ -14,16 +13,16 @@ import it.albertus.eqbulletin.model.Format;
 import it.albertus.eqbulletin.service.GeofonBulletinProvider;
 import it.albertus.eqbulletin.service.SearchRequest;
 import it.albertus.eqbulletin.service.job.SearchJob;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
-@Log
+@Slf4j
 public class SearchAsyncOperation extends AsyncOperation {
 
 	private static SearchJob currentJob;
 
 	public static synchronized void execute(final EarthquakeBulletinGui gui) {
 		final SearchRequest request = evaluateForm(gui.getSearchForm());
-		log.log(Level.FINE, "{0}", request);
+		log.debug("{}", request);
 		if (request.isValid()) {
 			final Button searchButton = gui.getSearchForm().getSearchButton();
 			searchButton.setEnabled(false);
@@ -97,7 +96,7 @@ public class SearchAsyncOperation extends AsyncOperation {
 					}
 				}
 				catch (final RuntimeException e) {
-					log.log(Level.WARNING, e.toString(), e);
+					log.warn(e.toString(), e);
 				}
 			}
 		}

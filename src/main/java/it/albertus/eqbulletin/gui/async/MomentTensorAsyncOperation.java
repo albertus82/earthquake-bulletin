@@ -3,9 +3,7 @@ package it.albertus.eqbulletin.gui.async;
 import static it.albertus.jface.DisplayThreadExecutor.Mode.ASYNC;
 import static it.albertus.jface.DisplayThreadExecutor.Mode.SYNC;
 
-import java.io.Serializable;
 import java.util.Optional;
-import java.util.logging.Level;
 
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
@@ -20,9 +18,9 @@ import it.albertus.eqbulletin.service.net.MomentTensorDownloader;
 import it.albertus.jface.DisplayThreadExecutor;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
-@Log
+@Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MomentTensorAsyncOperation extends AsyncOperation {
 
@@ -33,11 +31,11 @@ public class MomentTensorAsyncOperation extends AsyncOperation {
 			final String guid = earthquake.getGuid();
 			final MomentTensor cachedObject = cache.get(guid);
 			if (cachedObject == null) {
-				log.log(Level.FINE, "Cache miss for key \"{0}\". Cache size: {1}.", new Serializable[] { guid, cache.getSize() });
+				log.debug("Cache miss for key \"{}\". Cache size: {}.", guid, cache.getSize());
 				cacheMiss(earthquake, shell);
 			}
 			else {
-				log.log(Level.FINE, "Cache hit for key \"{0}\". Cache size: {1}.", new Serializable[] { guid, cache.getSize() });
+				log.debug("Cache hit for key \"{}\". Cache size: {}.", guid, cache.getSize());
 				cacheHit(cachedObject, earthquake, shell);
 			}
 		}
@@ -86,7 +84,7 @@ public class MomentTensorAsyncOperation extends AsyncOperation {
 					}
 				}
 				catch (final Exception e) {
-					log.log(Level.WARNING, e.toString(), e);
+					log.warn(e.toString(), e);
 				}
 				finally {
 					new DisplayThreadExecutor(shell, SYNC).execute(() -> setDefaultCursor(shell));

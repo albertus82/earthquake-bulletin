@@ -12,7 +12,6 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeSet;
-import java.util.logging.Level;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.util.Util;
@@ -48,9 +47,9 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
-@Log
+@Slf4j
 public class MapCanvas implements Multilanguage {
 
 	@NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -239,7 +238,7 @@ public class MapCanvas implements Multilanguage {
 			}
 			else {
 				if (configuration.getBoolean(Preference.MAP_RESIZE_HQ, Defaults.MAP_RESIZE_HQ) && (zoomLevel == AUTO_SCALE || zoomLevel % 100 != 0 && zoomLevel <= MAX_HQ_RESIZE_RATIO)) {
-					log.log(Level.FINE, "HQ resizing scale {0}.", zoomLevel);
+					log.debug("HQ resizing scale {}.", zoomLevel);
 					final Image oldImage = resized;
 					resized = ImageUtils.resize(image, resizedRect.height / (float) originalRect.height);
 					cleanDirt(gc);
@@ -249,7 +248,7 @@ public class MapCanvas implements Multilanguage {
 					}
 				}
 				else { // Fast low-quality resizing
-					log.log(Level.FINE, "LQ Resizing scale {0}.", zoomLevel);
+					log.debug("LQ Resizing scale {}.", zoomLevel);
 					cleanDirt(gc);
 					gc.drawImage(image, 0, 0, originalRect.width, originalRect.height, resizedRect.x, resizedRect.y, resizedRect.width, resizedRect.height);
 				}
@@ -341,7 +340,7 @@ public class MapCanvas implements Multilanguage {
 				}
 				catch (final Exception e) {
 					final String message = Messages.get("error.image.save", fileName);
-					log.log(Level.WARNING, message, e);
+					log.warn(message, e);
 					EnhancedErrorDialog.openError(canvas.getShell(), EarthquakeBulletinGui.getApplicationName(), message, IStatus.WARNING, e, Images.getAppIconArray());
 				}
 			}
@@ -367,21 +366,21 @@ public class MapCanvas implements Multilanguage {
 
 	public static synchronized void setMapImage(final MapImage mapImage, final Earthquake earthquake) {
 		if (instance != null) {
-			log.log(Level.FINE, "Setting map image canvas for {0}...", earthquake);
+			log.debug("Setting map image canvas for {}...", earthquake);
 			update(mapImage, earthquake);
 		}
 	}
 
 	public static synchronized void updateMapImage(final MapImage mapImage, final Earthquake earthquake) {
 		if (instance != null && instance.earthquake != null && earthquake.getGuid().equals(instance.earthquake.getGuid())) { // Only if the provided image belongs to the current earthquake.
-			log.log(Level.FINE, "Updating map image canvas for {0}...", earthquake);
+			log.debug("Updating map image canvas for {}...", earthquake);
 			update(mapImage, earthquake);
 		}
 	}
 
 	private static void update(final MapImage mapImage, final Earthquake earthquake) {
 		if (mapImage.equals(instance.mapImage)) {
-			log.log(Level.FINE, "Map image canvas already set for {0}.", earthquake);
+			log.debug("Map image canvas already set for {}.", earthquake);
 		}
 		else {
 			final byte[] imageBytes = mapImage.getBytes();
@@ -395,10 +394,10 @@ public class MapCanvas implements Multilanguage {
 					if (oldImage != null) {
 						oldImage.dispose();
 					}
-					log.log(Level.FINE, "Map image canvas set/updated for {0}.", earthquake);
+					log.debug("Map image canvas set/updated for {}.", earthquake);
 				}
 				catch (final Exception e) {
-					log.log(Level.WARNING, e.toString(), e);
+					log.warn(e.toString(), e);
 				}
 			}
 		}

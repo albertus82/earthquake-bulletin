@@ -1,8 +1,6 @@
 package it.albertus.eqbulletin.gui.async;
 
-import java.io.Serializable;
 import java.util.Optional;
-import java.util.logging.Level;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
@@ -17,9 +15,9 @@ import it.albertus.eqbulletin.service.net.BeachBallDownloader;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
-@Log
+@Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class BeachBallAsyncOperation extends AsyncOperation {
 
@@ -33,11 +31,11 @@ public class BeachBallAsyncOperation extends AsyncOperation {
 			final String guid = earthquake.getGuid();
 			final BeachBall cachedObject = cache.get(guid);
 			if (cachedObject == null) {
-				log.log(Level.FINE, "Cache miss for key \"{0}\". Cache size: {1}.", new Serializable[] { guid, cache.getSize() });
+				log.debug("Cache miss for key \"{}\". Cache size: {}.", guid, cache.getSize());
 				cacheMiss(earthquake);
 			}
 			else {
-				log.log(Level.FINE, "Cache hit for key \"{0}\". Cache size: {1}.", new Serializable[] { guid, cache.getSize() });
+				log.debug("Cache hit for key \"{}\". Cache size: {}.", guid, cache.getSize());
 				cacheHit(cachedObject, earthquake);
 			}
 		}
@@ -62,7 +60,7 @@ public class BeachBallAsyncOperation extends AsyncOperation {
 					}
 				}
 				catch (final AsyncOperationException e) {
-					log.log(Level.WARNING, e.toString(), e);
+					log.warn(e.toString(), e);
 				}
 			}
 		});
@@ -80,7 +78,7 @@ public class BeachBallAsyncOperation extends AsyncOperation {
 					}
 				}
 				catch (final Exception e) {
-					log.log(Level.WARNING, e.toString(), e);
+					log.warn(e.toString(), e);
 				}
 			};
 			threadFactory.newThread(checkForUpdate).start();

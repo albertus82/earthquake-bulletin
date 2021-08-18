@@ -10,10 +10,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.regex.Pattern;
 
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * This class represents the Flinn-Engdahl regions database used by
@@ -27,7 +26,7 @@ import lombok.extern.java.Log;
  *      revision of the Flinn-Engdahl (F-E) seismic and geographical
  *      regionalization scheme and programs</a>
  */
-@Log
+@Slf4j
 class Database {
 
 	// Names of files containing Flinn-Engdahl Regionalization info.
@@ -67,7 +66,7 @@ class Database {
 				}
 			}
 		}
-		log.log(Level.FINE, "  * Numitems in quadsindex = {0}", quadsindex.size());
+		log.debug("  * Numitems in quadsindex = {}", quadsindex.size());
 
 		final Map<String, List<Integer>> sects = new HashMap<>(quadorder.length * 2);
 		for (int i = 0; i < sectfiles.length; i++) {
@@ -101,8 +100,8 @@ class Database {
 				begin = end + 1;
 				begins.add(begin);
 				end += item;
-				if (log.isLoggable(Level.FINE) && n <= 10) {
-					log.log(Level.FINE, "{0} {1} {2} {3}", new Object[] { quad, item, begin, end });
+				if (log.isDebugEnabled() && n <= 10) {
+					log.debug("{} {} {} {}", quad, item, begin, end);
 				}
 			}
 			latbegins.put(quad, begins);
@@ -138,7 +137,7 @@ class Database {
 			}
 		}
 
-		log.log(Level.FINE, "F-E regions database initialized in {0} ns.", System.nanoTime() - startTime);
+		log.debug("F-E regions database initialized in {} ns.", System.nanoTime() - startTime);
 	}
 
 	List<String> getNames() {

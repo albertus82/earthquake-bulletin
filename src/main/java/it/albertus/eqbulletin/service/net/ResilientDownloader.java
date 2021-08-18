@@ -2,7 +2,6 @@ package it.albertus.eqbulletin.service.net;
 
 import java.io.InputStream;
 import java.time.Duration;
-import java.util.logging.Level;
 
 import io.github.resilience4j.decorators.Decorators;
 import io.github.resilience4j.decorators.Decorators.DecorateCheckedSupplier;
@@ -12,9 +11,9 @@ import io.vavr.CheckedFunction0;
 import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
 import it.albertus.eqbulletin.gui.preference.Preference;
 import it.albertus.jface.preference.IPreferencesConfiguration;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
-@Log
+@Slf4j
 public abstract class ResilientDownloader {
 
 	protected final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getPreferencesConfiguration();
@@ -35,7 +34,7 @@ public abstract class ResilientDownloader {
 				connectionInputStream.close();
 			}
 			catch (final Exception e) {
-				log.log(Level.FINE, "Error closing the connection input stream:", e);
+				log.debug("Error closing the connection input stream:", e);
 			}
 		}
 	}

@@ -7,7 +7,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 import javax.swing.SortOrder;
@@ -24,9 +23,9 @@ import it.albertus.jface.ImageUtils;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
-@Log
+@Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Images {
 
@@ -41,7 +40,7 @@ public class Images {
 		final Reflections reflections = new Reflections(packageName, new ResourcesScanner());
 		final Iterable<String> resourceNames = reflections.getResources(name -> name.toLowerCase(Locale.ROOT).endsWith(".png")).stream().map(name -> '/' + name).collect(Collectors.toSet());
 		final Map<Rectangle, Image> map = ImageUtils.createImageMap(resourceNames, SortOrder.DESCENDING);
-		log.log(Level.CONFIG, "{0}: {1}", new Object[] { packageName, map });
+		log.debug("{}: {}", packageName, map);
 		return map;
 	}
 
@@ -58,7 +57,7 @@ public class Images {
 					try (final InputStream stream = Images.class.getResourceAsStream(resourceName)) {
 						final ImageData[] data = new ImageLoader().load(stream);
 						if (data != null && data.length == 1) {
-							log.log(Level.FINE, "Found {0,number,#}x{0,number,#} map icon for desired size {1,number,#} pixels.", new Integer[] { size, desiredSizePixels });
+							log.debug("Found {}x{} map icon for desired size {} pixels.", size, size, desiredSizePixels);
 							return new Image(Display.getCurrent(), data[0]);
 						}
 					}

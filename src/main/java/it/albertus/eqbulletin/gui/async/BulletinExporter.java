@@ -7,7 +7,6 @@ import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.logging.Level;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -27,9 +26,9 @@ import it.albertus.jface.SwtUtils;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
-@Log
+@Slf4j
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class BulletinExporter implements IRunnableWithProgress {
 
@@ -71,13 +70,13 @@ public class BulletinExporter implements IRunnableWithProgress {
 			}
 			catch (final InvocationTargetException e) {
 				final String message = Messages.get("error.job.csv.save");
-				log.log(Level.WARNING, message, e);
+				log.warn(message, e);
 				SwtUtils.unblockShell(shell);
 				EnhancedErrorDialog.openError(shell, EarthquakeBulletinGui.getApplicationName(), message, IStatus.WARNING, e.getCause() != null ? e.getCause() : e, Images.getAppIconArray());
 			}
 			catch (final Exception e) { // NOSONAR Either re-interrupt this method or rethrow the "InterruptedException" that can be caught here. "InterruptedException" should not be ignored (java:S2142)
 				final String message = Messages.get("error.job.csv.create");
-				log.log(Level.SEVERE, message, e);
+				log.error(message, e);
 				SwtUtils.unblockShell(shell);
 				EnhancedErrorDialog.openError(shell, EarthquakeBulletinGui.getApplicationName(), message, IStatus.ERROR, e, Images.getAppIconArray());
 			}

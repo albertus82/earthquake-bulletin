@@ -4,7 +4,6 @@ import static it.albertus.jface.DisplayThreadExecutor.Mode.ASYNC;
 
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Level;
 
 import org.eclipse.core.runtime.jobs.IJobManager;
 import org.eclipse.swt.SWT;
@@ -17,9 +16,9 @@ import it.albertus.jface.EnhancedErrorDialog;
 import it.albertus.util.DaemonThreadFactory;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
-@Log
+@Slf4j
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class AsyncOperation {
 
@@ -28,7 +27,7 @@ public abstract class AsyncOperation {
 		public Thread newThread(final Runnable r) {
 			final Thread thread = super.newThread(r);
 			thread.setPriority(Thread.MIN_PRIORITY);
-			thread.setUncaughtExceptionHandler((t, e) -> log.log(Level.SEVERE, t.toString(), e));
+			thread.setUncaughtExceptionHandler((t, e) -> log.error(t.toString(), e));
 			return thread;
 		}
 	};
@@ -40,7 +39,7 @@ public abstract class AsyncOperation {
 	}
 
 	protected static void setAppStartingCursor(final Shell shell) {
-		log.log(Level.FINE, "setAppStartingCursor() - operationCount = {0}", operationCount);
+		log.debug("setAppStartingCursor() - operationCount = {}", operationCount);
 		if (operationCount.getAndIncrement() == 0 && shell != null && !shell.isDisposed()) {
 			shell.setCursor(shell.getDisplay().getSystemCursor(SWT.CURSOR_APPSTARTING));
 		}
@@ -50,11 +49,11 @@ public abstract class AsyncOperation {
 		if (operationCount.updateAndGet(o -> o > 1 ? o - 1 : 0) == 0 && shell != null && !shell.isDisposed()) {
 			shell.setCursor(null);
 		}
-		log.log(Level.FINE, "setDefaultCursor() - operationCount = {0}", operationCount);
+		log.debug("setDefaultCursor() - operationCount = {}", operationCount);
 	}
 
 	protected static void showErrorDialog(final AsyncOperationException e, final Shell shell) {
-		log.log(e.getLoggingLevel(), e.getMessage(), e);
+		e.getLoggingMethod(log).accept(e.getMessage(), e);
 		if (!shell.isDisposed()) {
 			new DisplayThreadExecutor(shell, ASYNC).execute(() -> EnhancedErrorDialog.openError(shell, EarthquakeBulletinGui.getApplicationName(), e.getMessage(), e.getSeverity(), e.getCause() != null ? e.getCause() : e, Images.getAppIconArray()));
 		}

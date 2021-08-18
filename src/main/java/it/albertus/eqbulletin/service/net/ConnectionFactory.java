@@ -1,7 +1,6 @@
 package it.albertus.eqbulletin.service.net;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.net.Authenticator;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
@@ -16,7 +15,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.logging.Level;
 
 import com.sun.net.httpserver.Headers;
 
@@ -27,9 +25,9 @@ import it.albertus.util.Version;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
-@Log
+@Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ConnectionFactory {
 
@@ -72,7 +70,7 @@ public class ConnectionFactory {
 			else { // Absolute
 				spec = location;
 			}
-			log.log(Level.FINE, "Redirecting from \"{0}\" to \"{1}\"", new Serializable[] { url, spec });
+			log.debug("Redirecting from \"{}\" to \"{}\"", url, spec);
 			url = new URL(spec);
 			urlConnection = prepareConnection(url, headers);
 		}
@@ -120,7 +118,7 @@ public class ConnectionFactory {
 				}
 				proxy = new Proxy(Proxy.Type.valueOf(configuration.getString(Preference.PROXY_TYPE, Defaults.PROXY_TYPE.name())), new InetSocketAddress(configuration.getString(Preference.PROXY_ADDRESS, Defaults.PROXY_ADDRESS), configuration.getInt(Preference.PROXY_PORT, Defaults.PROXY_PORT)));
 			}
-			log.log(Level.CONFIG, "Using proxy: {0}", proxy);
+			log.debug("Using proxy: {}", proxy);
 			connection = url.openConnection(proxy);
 		}
 		else {

@@ -11,9 +11,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.Callable;
-import java.util.logging.Level;
 
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.ExitCode;
@@ -29,7 +28,7 @@ import picocli.CommandLine.Parameters;
  *      revision of the Flinn-Engdahl (F-E) seismic and geographical
  *      regionalization scheme and programs</a>
  */
-@Log
+@Slf4j
 public class FERegion {
 
 	private final Database database;
@@ -52,7 +51,7 @@ public class FERegion {
 	public Region getGeographicRegion(final Coordinates coordinates) {
 		final int fenum = getGeographicRegionNumber(coordinates);
 		final Region region = getGeographicRegion(fenum);
-		log.log(Level.FINE, "{0} {1}", new Object[] { region.getNumber(), region.getName() });
+		log.debug("{} {}", region.getNumber(), region.getName());
 
 		return region;
 	}
@@ -100,7 +99,7 @@ public class FERegion {
 			}
 		}
 
-		log.log(Level.FINE, "FERegion.getLatitudeLongitudeMap() execution time: {0} ns.", System.nanoTime() - startTime);
+		log.debug("FERegion.getLatitudeLongitudeMap() execution time: {} ns.", System.nanoTime() - startTime);
 
 		return result;
 	}
@@ -152,18 +151,18 @@ public class FERegion {
 		else {
 			quad = coordinates.getLongitude() >= 0.0 ? "se" : "sw";
 		}
-		log.log(Level.FINE, " * quad, lt, ln  = {0} {1} {2}", new Object[] { quad, lt, ln });
+		log.debug(" * quad, lt, ln  = {} {} {}", quad, lt, ln);
 
 		// Find location of the latitude tier in the appropriate quadrant file.
 		final int beg = database.getLatbegins().get(quad).get(lt); // Location of first item for latitude lt.
 		final int num = database.getLonsperlat().get(quad).get(lt); // Number of items for latitude lt.
-		log.log(Level.FINE, " * beg = {0} num = {1}", new Integer[] { beg, num });
+		log.debug(" * beg = {} num = {}", beg, num);
 
 		// Extract this tier of longitude and f-e numbers for latitude lt.
 		final List<Integer> mylons = database.getLons().get(quad).subList(beg, beg + num);
 		final List<Integer> myfenums = database.getFenums().get(quad).subList(beg, beg + num);
-		log.log(Level.FINE, "mylons: {0}", mylons);
-		log.log(Level.FINE, "myfenums: {0}", myfenums);
+		log.debug("mylons: {}", mylons);
+		log.debug("myfenums: {}", myfenums);
 
 		int n = 0;
 		for (final int item : mylons) {
@@ -175,7 +174,7 @@ public class FERegion {
 
 		final int feindex = n - 1;
 		final int fenum = myfenums.get(feindex);
-		log.log(Level.FINE, "{0} {1} {2}", new Integer[] { n, feindex, fenum });
+		log.debug("{} {} {}", n, feindex, fenum);
 
 		return fenum;
 	}
@@ -208,7 +207,7 @@ public class FERegion {
 	}
 }
 
-@Log
+@Slf4j
 @Command(description = "Returns Flinn-Engdahl Region name from decimal lon, lat values given on command line.", footer = { "As in: feregion -122.5  36.2", "As in: feregion  122.5W 36.2N" }, usageHelpWidth = 128, mixinStandardHelpOptions = false)
 class FERegionCommand implements Callable<Integer> {
 
@@ -228,7 +227,7 @@ class FERegionCommand implements Callable<Integer> {
 		catch (final IllegalCoordinateException e) {
 			final String message = String.format(" * bad latitude or longitude: %s %s", e.getLatitude(), e.getLongitude());
 			System.err.println(message);
-			log.log(Level.FINE, message, e);
+			log.debug(message, e);
 			return ExitCode.SOFTWARE;
 		}
 	}

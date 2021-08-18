@@ -3,12 +3,11 @@ package it.albertus.eqbulletin.model;
 import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
-import java.util.logging.Level;
 
 import lombok.Value;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
-@Log
+@Slf4j
 @Value
 public class Depth implements Serializable, Comparable<Depth> {
 
@@ -24,7 +23,7 @@ public class Depth implements Serializable, Comparable<Depth> {
 		@Override
 		protected boolean removeEldestEntry(final Entry<Short, Depth> eldest) {
 			final int size = size();
-			log.log(Level.FINER, "Depth cache size: {0}.", size);
+			log.trace("Depth cache size: {}.", size);
 			return size > MAX_ENTRIES;
 		}
 	};

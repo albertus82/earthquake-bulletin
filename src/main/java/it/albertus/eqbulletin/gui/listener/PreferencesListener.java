@@ -1,7 +1,6 @@
 package it.albertus.eqbulletin.gui.listener;
 
 import java.io.IOException;
-import java.util.logging.Level;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.swt.SWT;
@@ -27,9 +26,9 @@ import it.albertus.jface.preference.IPreferencesConfiguration;
 import it.albertus.jface.preference.Preferences;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
-@Log
+@Slf4j
 @RequiredArgsConstructor
 public class PreferencesListener extends SelectionAdapter implements Listener {
 
@@ -54,7 +53,7 @@ public class PreferencesListener extends SelectionAdapter implements Listener {
 		}
 		catch (final IOException e) {
 			final String message = Messages.get("error.preferences.dialog.open");
-			log.log(Level.WARNING, message, e);
+			log.warn(message, e);
 			EnhancedErrorDialog.openError(shell, EarthquakeBulletinGui.getApplicationName(), message, IStatus.WARNING, e, Images.getAppIconArray());
 		}
 

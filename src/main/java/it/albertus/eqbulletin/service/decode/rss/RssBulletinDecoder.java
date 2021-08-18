@@ -10,7 +10,6 @@ import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Level;
 
 import it.albertus.eqbulletin.model.Depth;
 import it.albertus.eqbulletin.model.Earthquake;
@@ -23,9 +22,9 @@ import it.albertus.eqbulletin.service.decode.rss.xml.Item;
 import it.albertus.eqbulletin.service.decode.rss.xml.RssBulletin;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
-@Log
+@Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class RssBulletinDecoder {
 
@@ -68,7 +67,7 @@ public class RssBulletinDecoder {
 				link = new URI(pageUrl.trim());
 			}
 			catch (final URISyntaxException e) {
-				log.log(Level.WARNING, Messages.get("error.url.malformed", pageUrl), e);
+				log.warn(Messages.get("error.url.malformed", pageUrl), e);
 			}
 		}
 
@@ -79,7 +78,7 @@ public class RssBulletinDecoder {
 				enclosureUri = new URI(imageUrl.trim());
 			}
 			catch (final URISyntaxException e) {
-				log.log(Level.WARNING, Messages.get("error.url.malformed", imageUrl), e);
+				log.warn(Messages.get("error.url.malformed", imageUrl), e);
 			}
 		}
 

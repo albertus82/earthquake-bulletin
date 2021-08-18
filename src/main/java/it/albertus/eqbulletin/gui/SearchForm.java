@@ -11,7 +11,6 @@ import java.util.Date;
 import java.util.EnumMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.logging.Level;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -64,9 +63,9 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
-@Log
+@Slf4j
 @Getter
 public class SearchForm implements Multilanguage {
 
@@ -193,7 +192,7 @@ public class SearchForm implements Multilanguage {
 		openMapButton.addPaintListener(e -> {
 			if (openMapButton.getImage() == null) {
 				final Point buttonSize = openMapButton.getSize();
-				log.log(Level.FINE, "openMapButton.size = {0}", buttonSize);
+				log.debug("openMapButton.size = {}", buttonSize);
 				openMapButton.setImage(Images.getMapIcon(Math.round(buttonSize.y * 0.8f)));
 				openMapButton.getParent().layout(true);
 			}
@@ -236,7 +235,7 @@ public class SearchForm implements Multilanguage {
 			selectedFormat = Format.valueOf(configuration.getString(Preference.CRITERIA_FORMAT, Defaults.FORMAT.name()).trim().toUpperCase());
 		}
 		catch (final IllegalArgumentException e) {
-			log.log(Level.WARNING, e.toString(), e);
+			log.warn(e.toString(), e);
 			selectedFormat = Defaults.FORMAT;
 		}
 		for (final Format format : Format.values()) {
@@ -379,7 +378,7 @@ public class SearchForm implements Multilanguage {
 			}
 		}
 		catch (final RuntimeException e) {
-			log.log(Level.WARNING, e.toString(), e);
+			log.warn(e.toString(), e);
 		}
 		return value;
 	}
@@ -393,7 +392,7 @@ public class SearchForm implements Multilanguage {
 			}
 		}
 		catch (final RuntimeException e) {
-			log.log(Level.WARNING, e.toString(), e);
+			log.warn(e.toString(), e);
 		}
 		return value;
 	}
@@ -407,7 +406,7 @@ public class SearchForm implements Multilanguage {
 				value = Date.from(dateTimeFormatter.parse(dateStr, Instant::from));
 			}
 			catch (final RuntimeException e) {
-				log.log(Level.WARNING, e.toString(), e);
+				log.warn(e.toString(), e);
 			}
 		}
 		return value;

@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
-import java.util.logging.Level;
 import java.util.zip.GZIPInputStream;
 
 import org.jsoup.Jsoup;
@@ -29,9 +28,9 @@ import it.albertus.eqbulletin.service.decode.html.HtmlBulletinDecoder;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
-@Log
+@Slf4j
 @RequiredArgsConstructor
 public class HtmlBulletinDownloader extends ResilientDownloader implements BulletinDownloader {
 
@@ -43,7 +42,7 @@ public class HtmlBulletinDownloader extends ResilientDownloader implements Bulle
 			return Optional.of(new Bulletin(doDownload(request, canceled)));
 		}
 		catch (final CancelException e) {
-			log.log(Level.FINE, "Operation canceled:", e);
+			log.debug("Operation canceled:", e);
 			return Optional.empty();
 		}
 	}
@@ -75,7 +74,7 @@ public class HtmlBulletinDownloader extends ResilientDownloader implements Bulle
 			final Optional<Short> limit = request.getLimit();
 			for (final URI uri : uris) {
 				final Collection<Earthquake> partial = downloadPage(uri, headers, canceled);
-				log.log(Level.FINE, "partial.size() = {0,number,#}", partial.size());
+				log.debug("partial.size() = {}", partial.size());
 				if (partial.isEmpty()) {
 					break;
 				}

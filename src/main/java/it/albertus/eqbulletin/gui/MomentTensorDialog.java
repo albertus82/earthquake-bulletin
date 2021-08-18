@@ -2,7 +2,6 @@ package it.albertus.eqbulletin.gui;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.logging.Level;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -33,9 +32,9 @@ import it.albertus.jface.closeable.CloseableResource;
 import it.albertus.jface.preference.IPreferencesConfiguration;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
-@Log
+@Slf4j
 public class MomentTensorDialog extends Dialog {
 
 	@NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -81,7 +80,7 @@ public class MomentTensorDialog extends Dialog {
 				open();
 			}
 			else {
-				log.log(Level.FINE, "Moment tensor dialog limit reached ({0}). Sending alert to the user...", maxDialogs);
+				log.debug("Moment tensor dialog limit reached ({}). Sending alert to the user...", maxDialogs);
 				removeInstance();
 				final MessageBox mb = new MessageBox(getParent(), SWT.ICON_WARNING);
 				mb.setText(Messages.get("error.mt.too.many.dialogs.title"));
@@ -166,13 +165,13 @@ public class MomentTensorDialog extends Dialog {
 
 	private synchronized void addInstance() {
 		if (instances.add(this)) {
-			log.log(Level.FINE, "Moment tensor dialog instance added; instances.size() = {0}.", instances.size());
+			log.debug("Moment tensor dialog instance added; instances.size() = {}.", instances.size());
 		}
 	}
 
 	private synchronized void removeInstance() {
 		if (instances.remove(this)) {
-			log.log(Level.FINE, "Moment tensor dialog instance removed; instances.size() = {0}.", instances.size());
+			log.debug("Moment tensor dialog instance removed; instances.size() = {}.", instances.size());
 		}
 	}
 
@@ -180,7 +179,7 @@ public class MomentTensorDialog extends Dialog {
 		int count = 0;
 		for (final MomentTensorDialog instance : instances) {
 			if (instance.earthquake != null && earthquake.getGuid().equals(instance.earthquake.getGuid())) {
-				log.log(Level.FINE, "Updating moment tensor dialog instance {0}...", instance);
+				log.debug("Updating moment tensor dialog instance {}...", instance);
 				instance.momentTensor = momentTensor; // Useful when the Text field is not initialized.
 				if (instance.text != null && !instance.text.isDisposed()) {
 					final String oldValue = instance.text.getText();
@@ -189,12 +188,12 @@ public class MomentTensorDialog extends Dialog {
 						instance.text.setText(newValue); // Update the Text field on-the-fly.
 					}
 				}
-				log.log(Level.FINE, "Moment tensor dialog instance {0} updated.", instance);
+				log.debug("Moment tensor dialog instance {} updated.", instance);
 				count++;
 			}
 		}
 		if (count == 0) {
-			log.log(Level.WARNING, "No moment tensor dialog instance found to update for {0}.", earthquake);
+			log.warn("No moment tensor dialog instance found to update for {}.", earthquake);
 		}
 	}
 

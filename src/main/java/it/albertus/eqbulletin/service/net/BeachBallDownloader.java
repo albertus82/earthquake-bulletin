@@ -9,8 +9,8 @@ import java.net.URLConnection;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
 
-import it.albertus.eqbulletin.model.Earthquake;
 import it.albertus.eqbulletin.model.BeachBall;
+import it.albertus.eqbulletin.model.Earthquake;
 import it.albertus.eqbulletin.service.GeofonUtils;
 import it.albertus.util.IOUtils;
 

@@ -2,8 +2,6 @@ package it.albertus.eqbulletin.gui.listener;
 
 import static it.albertus.eqbulletin.gui.EarthquakeBulletinGui.SHELL_MAXIMIZED;
 
-import java.util.logging.Level;
-
 import org.eclipse.jface.util.Util;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Shell;
@@ -15,9 +13,9 @@ import it.albertus.eqbulletin.gui.TrayIcon;
 import it.albertus.eqbulletin.gui.preference.Preference;
 import it.albertus.jface.listener.TrayRestoreListener;
 import it.albertus.jface.preference.IPreferencesConfiguration;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
-@Log
+@Slf4j
 public class EnhancedTrayRestoreListener extends TrayRestoreListener {
 
 	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getPreferencesConfiguration();
@@ -36,7 +34,7 @@ public class EnhancedTrayRestoreListener extends TrayRestoreListener {
 			if (firstTime && configuration.getBoolean(Preference.MINIMIZE_TRAY, TrayIcon.Defaults.MINIMIZE_TRAY) && configuration.getBoolean(Preference.START_MINIMIZED, EarthquakeBulletinGui.Defaults.START_MINIMIZED) && configuration.getBoolean(SHELL_MAXIMIZED, EarthquakeBulletinGui.Defaults.SHELL_MAXIMIZED)) {
 				firstTime = false;
 				shell.setMaximized(true);
-				log.log(Level.FINE, "{0}", e);
+				log.debug("{}", e);
 			}
 			if (Util.isGtk()) {
 				shell.setVisible(true);

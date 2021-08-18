@@ -2,16 +2,15 @@ package it.albertus.eqbulletin.service;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.logging.Level;
 
 import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
 import it.albertus.eqbulletin.gui.preference.Preference;
 import it.albertus.eqbulletin.resources.Messages;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
-@Log
+@Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class GeofonUtils {
 
@@ -30,7 +29,7 @@ public class GeofonUtils {
 			return new URI(spec);
 		}
 		catch (final URISyntaxException e) {
-			log.log(Level.WARNING, Messages.get(MSG_KEY_ERR_URL_MALFORMED, spec), e);
+			log.warn(Messages.get(MSG_KEY_ERR_URL_MALFORMED, spec), e);
 			return null;
 		}
 	}

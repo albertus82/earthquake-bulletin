@@ -1,11 +1,13 @@
 package it.albertus.eqbulletin.gui.async;
 
-import java.util.logging.Level;
+import java.util.function.BiConsumer;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.swt.SWT;
+import org.slf4j.Logger;
 
 import lombok.Getter;
+import lombok.NonNull;
 
 @Getter
 public class AsyncOperationException extends Exception {
@@ -24,18 +26,18 @@ public class AsyncOperationException extends Exception {
 		this.severity = IStatus.ERROR;
 	}
 
-	public Level getLoggingLevel() {
+	public BiConsumer<String, Throwable> getLoggingMethod(@NonNull final Logger log) {
 		switch (severity) {
 		case IStatus.OK:
-			return Level.FINE;
+			return log::debug;
 		case IStatus.INFO:
-			return Level.INFO;
+			return log::info;
 		case IStatus.WARNING:
-			return Level.WARNING;
+			return log::warn;
 		case IStatus.ERROR:
-			return Level.SEVERE;
+			return log::error;
 		default:
-			return Level.WARNING;
+			return log::warn;
 		}
 	}
 

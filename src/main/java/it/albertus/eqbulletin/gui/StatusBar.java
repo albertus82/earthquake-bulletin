@@ -5,7 +5,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.time.temporal.TemporalAccessor;
 import java.util.Locale;
-import java.util.logging.Level;
 
 import org.eclipse.jface.action.StatusLineManager;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -18,9 +17,9 @@ import it.albertus.jface.Multilanguage;
 import it.albertus.jface.i18n.LocalizedWidgets;
 import lombok.NonNull;
 import lombok.Setter;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
-@Log
+@Slf4j
 @Setter
 public class StatusBar implements Multilanguage {
 
@@ -39,7 +38,7 @@ public class StatusBar implements Multilanguage {
 			localizedWidgets.put(getCopyMenuItem(), () -> Messages.get("label.menu.item.copy"));
 		}
 		catch (final Exception e) {
-			log.log(Level.WARNING, "Cannot localize the status bar:", e);
+			log.warn("Cannot localize the status bar:", e);
 		}
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(manager.getControl());
 		refresh();

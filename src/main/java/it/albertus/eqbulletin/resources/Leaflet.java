@@ -3,14 +3,13 @@ package it.albertus.eqbulletin.resources;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.logging.Level;
 
 import it.albertus.util.IOUtils;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
-@Log
+@Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Leaflet {
 
@@ -25,7 +24,7 @@ public class Leaflet {
 			layers = out.toString(StandardCharsets.UTF_8.name());
 		}
 		catch (final Exception e) {
-			log.log(Level.SEVERE, e, () -> "Cannot read resource \"/" + Leaflet.class.getPackage().getName().replace('.', '/') + '/' + RESOURCE_NAME + "\":");
+			log.error("Cannot read resource \"/" + Leaflet.class.getPackage().getName().replace('.', '/') + '/' + RESOURCE_NAME + "\":", e);
 		}
 		LAYERS = layers;
 	}

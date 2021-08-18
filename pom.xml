@@ -28,6 +28,7 @@
 		<swt.version>3.116.100</swt.version>
 		<jface.version>3.22.200</jface.version>
 		<picocli.version>4.6.1</picocli.version>
+		<slf4j.version>1.7.32</slf4j.version>
 		<windows.build.finalName>EarthquakeBulletin</windows.build.finalName>
 		<linux.build.finalName>${project.artifactId}</linux.build.finalName>
 		<mac.build.finalName>EarthquakeBulletin</mac.build.finalName>
@@ -148,6 +149,11 @@
 			<artifactId>logback-classic</artifactId>
 			<version>1.2.5</version>
 		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jul-to-slf4j</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
 		<!-- Provided -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -191,7 +197,7 @@
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-api</artifactId> <!-- For Resilience4j v1.7.0 -->
-				<version>1.7.32</version>
+				<version>${slf4j.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -265,8 +271,10 @@
 								</goals>
 								<configuration>
 									<target>
-										<taskdef name="jarbundler" classname="com.ultramixer.jarbundler.JarBundler" classpathref="maven.plugin.classpath"/>
-										<ant target="jarbundler"/>
+										<taskdef name="jarbundler"
+											classname="com.ultramixer.jarbundler.JarBundler"
+											classpathref="maven.plugin.classpath" />
+										<ant target="jarbundler" />
 									</target>
 								</configuration>
 							</execution>
@@ -347,8 +355,10 @@
 								</goals>
 								<configuration>
 									<target>
-										<taskdef name="jarbundler" classname="com.ultramixer.jarbundler.JarBundler" classpathref="maven.plugin.classpath"/>
-										<ant target="jarbundler"/>
+										<taskdef name="jarbundler"
+											classname="com.ultramixer.jarbundler.JarBundler"
+											classpathref="maven.plugin.classpath" />
+										<ant target="jarbundler" />
 									</target>
 								</configuration>
 							</execution>
@@ -883,8 +893,9 @@
 						</goals>
 						<configuration>
 							<target>
-								<taskdef resource="net/sf/antcontrib/antlib.xml" classpathref="maven.plugin.classpath"/>
-								<ant target="innosetup"/>
+								<taskdef resource="net/sf/antcontrib/antlib.xml"
+									classpathref="maven.plugin.classpath" />
+								<ant target="innosetup" />
 							</target>
 						</configuration>
 					</execution>

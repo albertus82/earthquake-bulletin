@@ -2,7 +2,6 @@ package it.albertus.eqbulletin.gui;
 
 import java.awt.SystemTray;
 import java.util.Map;
-import java.util.logging.Level;
 
 import org.eclipse.jface.util.Util;
 import org.eclipse.jface.window.IShellProvider;
@@ -36,9 +35,9 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
-@Log
+@Slf4j
 public class TrayIcon implements IShellProvider, Multilanguage {
 
 	public static final String SHELL_WAS_MAXIMIZED = EarthquakeBulletinGui.class.getName() + ".wasMaximizedWhenMinimizedOnTray";
@@ -76,7 +75,7 @@ public class TrayIcon implements IShellProvider, Multilanguage {
 						iconify(gui);
 					}
 					else {
-						log.log(Level.INFO, "The system tray is not supported on the current platform.");
+						log.info("The system tray is not supported on the current platform.");
 					}
 				}
 			}
@@ -96,7 +95,7 @@ public class TrayIcon implements IShellProvider, Multilanguage {
 
 	private void iconify(final EarthquakeBulletinGui gui) {
 		if (trayItem == null || trayItem.isDisposed()) {
-			log.fine("Initializing tray item...");
+			log.debug("Initializing tray item...");
 			try {
 				final Tray tray = shell.getDisplay().getSystemTray();
 				if (tray != null) {
@@ -130,10 +129,10 @@ public class TrayIcon implements IShellProvider, Multilanguage {
 						shell.addShellListener(trayRestoreListener);
 					}
 				}
-				log.fine("Tray item initialized successfully.");
+				log.debug("Tray item initialized successfully.");
 			}
 			catch (final Exception e) {
-				log.log(Level.SEVERE, Messages.get("error.tray.init"), e);
+				log.error(Messages.get("error.tray.init"), e);
 			}
 		}
 
@@ -167,7 +166,7 @@ public class TrayIcon implements IShellProvider, Multilanguage {
 				});
 			}
 			catch (final RuntimeException e) {
-				log.log(Level.WARNING, e.toString(), e);
+				log.warn(e.toString(), e);
 			}
 		}
 	}
@@ -190,7 +189,7 @@ public class TrayIcon implements IShellProvider, Multilanguage {
 				});
 			}
 			catch (final RuntimeException e) {
-				log.log(Level.WARNING, e.toString(), e);
+				log.warn(e.toString(), e);
 			}
 		}
 	}

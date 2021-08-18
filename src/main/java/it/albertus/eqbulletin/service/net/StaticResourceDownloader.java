@@ -7,7 +7,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Locale;
 import java.util.function.BooleanSupplier;
-import java.util.logging.Level;
 import java.util.zip.GZIPInputStream;
 
 import com.sun.net.httpserver.Headers;
@@ -16,9 +15,9 @@ import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
-@Log
+@Slf4j
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class StaticResourceDownloader<T extends StaticResource> extends ResilientDownloader {
 
@@ -57,7 +56,7 @@ public abstract class StaticResourceDownloader<T extends StaticResource> extends
 
 	private T fetch(@NonNull final URL url, final T cached, final BooleanSupplier canceled, final Headers headers) throws IOException {
 		if (canceled != null && canceled.getAsBoolean()) {
-			log.fine("Download canceled before connection.");
+			log.debug("Download canceled before connection.");
 			return null;
 		}
 		final HttpURLConnection connection = ConnectionFactory.makeGetRequest(url, headers);
@@ -75,12 +74,12 @@ public abstract class StaticResourceDownloader<T extends StaticResource> extends
 		try (final InputStream raw = connection.getInputStream(); final InputStream in = gzip ? new GZIPInputStream(raw) : raw) {
 			connectionInputStream = raw;
 			if (canceled != null && canceled.getAsBoolean()) {
-				log.fine("Download canceled after connection.");
+				log.debug("Download canceled after connection.");
 				return null;
 			}
 			final T downloaded = makeObject(in, connection);
 			if (downloaded.equals(cached)) {
-				log.fine("downloaded.equals(cached)");
+				log.debug("downloaded.equals(cached)");
 				return cached;
 			}
 			else {
@@ -89,7 +88,7 @@ public abstract class StaticResourceDownloader<T extends StaticResource> extends
 		}
 		catch (final IOException e) {
 			if (canceled != null && canceled.getAsBoolean()) {
-				log.log(Level.FINE, "Download canceled during download:", e);
+				log.debug("Download canceled during download:", e);
 				return null;
 			}
 			else {
