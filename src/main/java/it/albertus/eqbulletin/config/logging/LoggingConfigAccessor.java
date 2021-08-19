@@ -34,13 +34,7 @@ public class LoggingConfigAccessor implements LoggingConfig {
 
 	@Override
 	public int getFileMaxSize() {
-		final Short limit = configuration.getShort(Preference.LOGGING_FILES_LIMIT);
-		if (limit != null) {
-			return limit * 1024;
-		}
-		else {
-			return Defaults.LOGGING_FILES_MAX_SIZE_KB * 1024;
-		}
+		return 1024 * configuration.getShort(Preference.LOGGING_FILES_LIMIT, Defaults.LOGGING_FILES_MAX_SIZE_KB);
 	}
 
 	@Override
