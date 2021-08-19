@@ -24,6 +24,7 @@ public class LoggingConfigAccessor extends LoggingDefaultConfig {
 	public static class Defaults {
 		public static final String LOGGING_FILES_PATH = APPDATA_DIRECTORY + File.separator + "log";
 		public static final Level LOGGING_LEVEL = WARN;
+		public static final boolean LOGGING_FILES_COMPRESSION_ENABLED = false;
 	}
 
 	@NonNull
@@ -63,6 +64,10 @@ public class LoggingConfigAccessor extends LoggingDefaultConfig {
 	@Override
 	public String getFileHandlerFormat() {
 		return "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n";
+	}
+
+	public boolean isFileCompressionEnabled() {
+		return configuration.getBoolean(Preference.LOGGING_FILES_COMPRESSION_ENABLED, Defaults.LOGGING_FILES_COMPRESSION_ENABLED);
 	}
 
 }

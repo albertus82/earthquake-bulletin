@@ -41,19 +41,21 @@ public class LoggingManager implements ILoggingManager {
 
 	@Value
 	private class LoggingConfig implements ILoggingConfig {
-		String fileHandlerPattern;
-		boolean fileHandlerEnabled;
-		int fileHandlerLimit;
+		boolean fileCompressionEnabled;
 		int fileHandlerCount;
+		boolean fileHandlerEnabled;
 		String fileHandlerFormat;
+		int fileHandlerLimit;
+		String fileHandlerPattern;
 		String loggingLevel;
 
 		private LoggingConfig(@NonNull final LoggingConfigAccessor config) {
-			this.fileHandlerPattern = config.getFileHandlerPattern();
-			this.fileHandlerEnabled = config.isFileHandlerEnabled();
-			this.fileHandlerLimit = config.getFileHandlerLimit();
+			this.fileCompressionEnabled = config.isFileCompressionEnabled();
 			this.fileHandlerCount = config.getFileHandlerCount();
+			this.fileHandlerEnabled = config.isFileHandlerEnabled();
 			this.fileHandlerFormat = config.getFileHandlerFormat();
+			this.fileHandlerLimit = config.getFileHandlerLimit();
+			this.fileHandlerPattern = config.getFileHandlerPattern();
 			this.loggingLevel = config.getLoggingLevel();
 		}
 	}

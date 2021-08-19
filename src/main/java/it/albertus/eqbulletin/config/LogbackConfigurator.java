@@ -1,5 +1,6 @@
 package it.albertus.eqbulletin.config;
 
+import org.eclipse.jface.util.Util;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import ch.qos.logback.classic.Level;
@@ -22,8 +23,8 @@ import lombok.NoArgsConstructor;
 public class LogbackConfigurator extends ContextAwareBase implements Configurator {
 
 	static {
-		SLF4JBridgeHandler.removeHandlersForRootLogger();
-		SLF4JBridgeHandler.install();
+		SLF4JBridgeHandler.removeHandlersForRootLogger(); // Remove existing handlers attached to JUL root logger
+		SLF4JBridgeHandler.install(); // Add SLF4JBridgeHandler to JUL's root logger
 	}
 
 	private final LoggingConfigAccessor config = new LoggingConfigAccessor(EarthquakeBulletinConfig.getPreferencesConfiguration());
@@ -54,14 +55,18 @@ public class LogbackConfigurator extends ContextAwareBase implements Configurato
 			rollingFileAppender.setName("rollingFileAppender");
 			rollingFileAppender.setEncoder(encoder);
 			rollingFileAppender.setAppend(true);
-			rollingFileAppender.setFile(config.getFileHandlerPattern().replace("%i", "0"));
+			rollingFileAppender.setFile(config.getFileHandlerPattern().replace("%i", "0")); // The current file is the one with the zero index
 
 			final FixedWindowRollingPolicy fixedWindowRollingPolicy = new FixedWindowRollingPolicy();
 			fixedWindowRollingPolicy.setContext(context);
 			fixedWindowRollingPolicy.setParent(rollingFileAppender);
 			fixedWindowRollingPolicy.setMinIndex(1);
 			fixedWindowRollingPolicy.setMaxIndex(config.getFileHandlerCount());
-			fixedWindowRollingPolicy.setFileNamePattern(config.getFileHandlerPattern());
+			String fileNamePattern = config.getFileHandlerPattern();
+			if (config.isFileCompressionEnabled()) {
+				fileNamePattern += Util.isWindows() ? ".zip" : ".gz";
+			}
+			fixedWindowRollingPolicy.setFileNamePattern(fileNamePattern);
 			fixedWindowRollingPolicy.start();
 
 			final SizeBasedTriggeringPolicy<ILoggingEvent> sizeBasedTriggeringPolicy = new SizeBasedTriggeringPolicy<>();
@@ -69,6 +74,7 @@ public class LogbackConfigurator extends ContextAwareBase implements Configurato
 			sizeBasedTriggeringPolicy.setMaxFileSize(new FileSize(config.getFileHandlerLimit()));
 			rollingFileAppender.setTriggeringPolicy(sizeBasedTriggeringPolicy);
 			rollingFileAppender.setRollingPolicy(fixedWindowRollingPolicy);
+
 			sizeBasedTriggeringPolicy.start();
 			rollingFileAppender.start();
 			rootLogger.addAppender(rollingFileAppender);
@@ -77,7 +83,7 @@ public class LogbackConfigurator extends ContextAwareBase implements Configurato
 		rootLogger.addAppender(consoleAppender);
 		rootLogger.setLevel(Level.toLevel(config.getLoggingLevel()));
 
-		final LevelChangePropagator levelChangePropagator = new LevelChangePropagator();
+		final LevelChangePropagator levelChangePropagator = new LevelChangePropagator(); // Propagate level changes made to a logback logger into the equivalent logger in JUL
 		levelChangePropagator.setContext(context);
 		context.addListener(levelChangePropagator);
 		levelChangePropagator.start();
