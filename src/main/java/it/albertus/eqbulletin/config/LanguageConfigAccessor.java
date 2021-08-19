@@ -9,14 +9,13 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
-public class LanguageConfigAccessor implements ILanguageConfig {
+public class LanguageConfigAccessor {
 
 	public static final String DEFAULT_LANGUAGE = Locale.getDefault().getLanguage();
 
 	@NonNull
 	private final IPreferencesConfiguration configuration;
 
-	@Override
 	public String getLanguage() {
 		return configuration.getString(Preference.LANGUAGE, DEFAULT_LANGUAGE);
 	}
