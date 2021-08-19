@@ -1,4 +1,4 @@
-package it.albertus.eqbulletin.config;
+package it.albertus.eqbulletin.config.logback;
 
 import org.slf4j.LoggerFactory;
 

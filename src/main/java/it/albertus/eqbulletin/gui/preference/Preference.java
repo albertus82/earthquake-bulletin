@@ -19,13 +19,13 @@ import java.util.TreeSet;
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.swt.widgets.Composite;
 
-import ch.qos.logback.classic.Level;
 import it.albertus.eqbulletin.cache.BeachBallCache;
 import it.albertus.eqbulletin.cache.MapImageCache;
 import it.albertus.eqbulletin.cache.MomentTensorCache;
 import it.albertus.eqbulletin.config.LanguageConfigAccessor;
-import it.albertus.eqbulletin.config.LoggingConfigAccessor;
 import it.albertus.eqbulletin.config.TimeZoneConfigAccessor;
+import it.albertus.eqbulletin.config.logback.LogbackLevel;
+import it.albertus.eqbulletin.config.logback.LoggingConfigAccessor;
 import it.albertus.eqbulletin.gui.CloseDialog;
 import it.albertus.eqbulletin.gui.EarthquakeBulletinGui;
 import it.albertus.eqbulletin.gui.MapCanvas;
@@ -235,14 +235,10 @@ public enum Preference implements IPreference {
 	}
 
 	public static StaticLabelsAndValues getLoggingComboOptions() {
-		final StaticLabelsAndValues options = new StaticLabelsAndValues(7);
-		options.put(Level.OFF.toString(), Level.OFF.toString());
-		options.put(Level.ERROR.toString(), Level.ERROR.toString());
-		options.put(Level.WARN.toString(), Level.WARN.toString());
-		options.put(Level.INFO.toString(), Level.INFO.toString());
-		options.put(Level.DEBUG.toString(), Level.DEBUG.toString());
-		options.put(Level.TRACE.toString(), Level.TRACE.toString());
-		options.put(Level.ALL.toString(), Level.ALL.toString());
+		final StaticLabelsAndValues options = new StaticLabelsAndValues(LogbackLevel.values().length);
+		for (final LogbackLevel level : LogbackLevel.values()) {
+			options.put(level.get().toString(), level.get().toString());
+		}
 		return options;
 	}
 

@@ -1,4 +1,4 @@
-package it.albertus.eqbulletin.config;
+package it.albertus.eqbulletin.config.logback;
 
 import org.eclipse.jface.util.Util;
 import org.slf4j.bridge.SLF4JBridgeHandler;
@@ -18,6 +18,7 @@ import ch.qos.logback.core.rolling.RollingFileAppender;
 import ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.util.FileSize;
+import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
