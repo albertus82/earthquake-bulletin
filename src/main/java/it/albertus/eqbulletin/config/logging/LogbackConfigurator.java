@@ -30,6 +30,7 @@ public class LogbackConfigurator extends ContextAwareBase implements Configurato
 
 	private final LoggingConfig config = new LoggingConfigAccessor(EarthquakeBulletinConfig.getPreferencesConfiguration());
 
+	@Override
 	public void configure(final LoggerContext context) {
 		addInfo("Reloading logging configuration...");
 
