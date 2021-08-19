@@ -1,8 +1,5 @@
 package it.albertus.eqbulletin.config.logging;
 
-import static ch.qos.logback.classic.Level.WARN;
-import static it.albertus.eqbulletin.config.EarthquakeBulletinConfig.APPDATA_DIRECTORY;
-
 import java.io.File;
 
 import org.eclipse.jface.util.Util;
@@ -11,71 +8,64 @@ import ch.qos.logback.classic.Level;
 import it.albertus.eqbulletin.gui.preference.Preference;
 import it.albertus.eqbulletin.util.BuildInfo;
 import it.albertus.jface.preference.IPreferencesConfiguration;
-import it.albertus.util.logging.LoggingDefaultConfig;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class LoggingConfigAccessor extends LoggingDefaultConfig {
-
-	@NoArgsConstructor(access = AccessLevel.PRIVATE)
-	public static class Defaults {
-		public static final boolean LOGGING_FILES_COMPRESSION_ENABLED = false;
-		public static final String LOGGING_FILES_PATH = APPDATA_DIRECTORY + File.separator + "log";
-		public static final Level LOGGING_LEVEL = WARN;
-	}
+public class LoggingConfigAccessor implements LoggingConfig {
 
 	@NonNull
 	private final IPreferencesConfiguration configuration;
 
+	@Override
 	public Level getConsoleLevel() {
 		return Level.toLevel(configuration.getString(Preference.LOGGING_CONSOLE_LEVEL), Defaults.LOGGING_LEVEL);
 	}
 
 	@Override
-	public int getFileHandlerCount() {
-		return configuration.getInt(Preference.LOGGING_FILES_COUNT, super.getFileHandlerCount());
-	}
-
-	@Override
-	public String getFileHandlerFormat() {
-		return "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n";
-	}
-
-	@Override
-	public int getFileHandlerLimit() {
-		final Integer limit = configuration.getInt(Preference.LOGGING_FILES_LIMIT);
-		if (limit != null) {
-			return limit * 1024;
-		}
-		else {
-			return super.getFileHandlerLimit();
-		}
-	}
-
-	@Override
-	public String getFileHandlerPattern() {
-		return configuration.getString(Preference.LOGGING_FILES_PATH, Defaults.LOGGING_FILES_PATH) + File.separator + (Util.isLinux() ? BuildInfo.getProperty("project.artifactId") : BuildInfo.getProperty("project.name").replace(" ", "")) + ".%i.log";
-	}
-
 	public Level getFileLevel() {
 		return Level.toLevel(configuration.getString(Preference.LOGGING_FILES_LEVEL), Defaults.LOGGING_LEVEL);
 	}
 
 	@Override
-	public String getLoggingLevel() {
-		return Level.toLevel(Math.min(getConsoleLevel().toInt(), getFileLevel().toInt())).toString();
-	}
-
-	public boolean isFileCompressionEnabled() {
-		return configuration.getBoolean(Preference.LOGGING_FILES_COMPRESSION_ENABLED, Defaults.LOGGING_FILES_COMPRESSION_ENABLED);
+	public byte getFileMaxIndex() {
+		return configuration.getByte(Preference.LOGGING_FILES_COUNT, Defaults.LOGGING_FILES_MAX_INDEX);
 	}
 
 	@Override
-	public boolean isFileHandlerEnabled() {
-		return configuration.getBoolean(Preference.LOGGING_FILES_ENABLED, super.isFileHandlerEnabled());
+	public int getFileMaxSize() {
+		final Short limit = configuration.getShort(Preference.LOGGING_FILES_LIMIT);
+		if (limit != null) {
+			return limit * 1024;
+		}
+		else {
+			return Defaults.LOGGING_FILES_MAX_SIZE_KB * 1024;
+		}
+	}
+
+	@Override
+	public String getFileNamePattern() {
+		return configuration.getString(Preference.LOGGING_FILES_PATH, Defaults.LOGGING_FILES_PATH) + File.separator + (Util.isLinux() ? BuildInfo.getProperty("project.artifactId") : BuildInfo.getProperty("project.name").replace(" ", "")) + ".%i.log";
+	}
+
+	@Override
+	public String getLayoutPattern() {
+		return Defaults.LOGGING_LAYOUT_PATTERN;
+	}
+
+	@Override
+	public Level getRootLevel() {
+		return Level.toLevel(Math.min(getConsoleLevel().toInt(), getFileLevel().toInt()));
+	}
+
+	@Override
+	public boolean isFileAppenderEnabled() {
+		return configuration.getBoolean(Preference.LOGGING_FILES_ENABLED, Defaults.LOGGING_FILES_ENABLED);
+	}
+
+	@Override
+	public boolean isFileCompressionEnabled() {
+		return configuration.getBoolean(Preference.LOGGING_FILES_COMPRESSION_ENABLED, Defaults.LOGGING_FILES_COMPRESSION_ENABLED);
 	}
 
 }

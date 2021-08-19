@@ -3,7 +3,6 @@ package it.albertus.eqbulletin.config.logging;
 import org.eclipse.jface.util.Util;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
-import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.PatternLayout;
@@ -29,7 +28,7 @@ public class LogbackConfigurator extends ContextAwareBase implements Configurato
 		SLF4JBridgeHandler.install(); // Add SLF4JBridgeHandler to JUL's root logger
 	}
 
-	private final LoggingConfigAccessor config = new LoggingConfigAccessor(EarthquakeBulletinConfig.getPreferencesConfiguration());
+	private final LoggingConfig config = new LoggingConfigAccessor(EarthquakeBulletinConfig.getPreferencesConfiguration());
 
 	public void configure(final LoggerContext context) {
 		addInfo("Reloading logging configuration...");
@@ -41,7 +40,7 @@ public class LogbackConfigurator extends ContextAwareBase implements Configurato
 		final LayoutWrappingEncoder<ILoggingEvent> encoder = new LayoutWrappingEncoder<>();
 		encoder.setContext(context);
 		final PatternLayout layout = new PatternLayout();
-		layout.setPattern(config.getFileHandlerFormat());
+		layout.setPattern(config.getLayoutPattern());
 		layout.setContext(context);
 		layout.start();
 		encoder.setLayout(layout);
@@ -57,20 +56,20 @@ public class LogbackConfigurator extends ContextAwareBase implements Configurato
 
 		final Logger rootLogger = context.getLogger(Logger.ROOT_LOGGER_NAME); // NOSONAR Use static access with "org.slf4j.Logger" for "ROOT_LOGGER_NAME". "static" base class members should not be accessed via derived types (java:S3252)
 
-		if (config.isFileHandlerEnabled()) {
+		if (config.isFileAppenderEnabled()) {
 			final RollingFileAppender<ILoggingEvent> rollingFileAppender = new RollingFileAppender<>();
 			rollingFileAppender.setContext(context);
 			rollingFileAppender.setName("rollingFileAppender");
 			rollingFileAppender.setEncoder(encoder);
 			rollingFileAppender.setAppend(true);
-			rollingFileAppender.setFile(config.getFileHandlerPattern().replace("%i", "0")); // The current file is the one with the zero index
+			rollingFileAppender.setFile(config.getFileNamePattern().replace("%i", "0")); // The current file is the one with the zero index
 
 			final FixedWindowRollingPolicy fixedWindowRollingPolicy = new FixedWindowRollingPolicy();
 			fixedWindowRollingPolicy.setContext(context);
 			fixedWindowRollingPolicy.setParent(rollingFileAppender);
 			fixedWindowRollingPolicy.setMinIndex(1);
-			fixedWindowRollingPolicy.setMaxIndex(config.getFileHandlerCount());
-			String fileNamePattern = config.getFileHandlerPattern();
+			fixedWindowRollingPolicy.setMaxIndex(config.getFileMaxIndex());
+			String fileNamePattern = config.getFileNamePattern();
 			if (config.isFileCompressionEnabled()) {
 				fileNamePattern += Util.isWindows() ? ".zip" : ".gz";
 			}
@@ -79,7 +78,7 @@ public class LogbackConfigurator extends ContextAwareBase implements Configurato
 
 			final SizeBasedTriggeringPolicy<ILoggingEvent> sizeBasedTriggeringPolicy = new SizeBasedTriggeringPolicy<>();
 			sizeBasedTriggeringPolicy.setContext(context);
-			sizeBasedTriggeringPolicy.setMaxFileSize(new FileSize(config.getFileHandlerLimit()));
+			sizeBasedTriggeringPolicy.setMaxFileSize(new FileSize(config.getFileMaxSize()));
 			rollingFileAppender.setTriggeringPolicy(sizeBasedTriggeringPolicy);
 			rollingFileAppender.setRollingPolicy(fixedWindowRollingPolicy);
 			sizeBasedTriggeringPolicy.start();
@@ -95,7 +94,7 @@ public class LogbackConfigurator extends ContextAwareBase implements Configurato
 		}
 
 		rootLogger.addAppender(consoleAppender);
-		rootLogger.setLevel(Level.toLevel(config.getLoggingLevel()));
+		rootLogger.setLevel(config.getRootLevel());
 
 		final LevelChangePropagator levelChangePropagator = new LevelChangePropagator(); // Propagate level changes made to a logback logger into the equivalent logger in JUL
 		levelChangePropagator.setContext(context);

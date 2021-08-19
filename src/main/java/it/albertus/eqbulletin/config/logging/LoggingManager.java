@@ -7,7 +7,6 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.util.ContextInitializer;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.util.StatusPrinter;
-import it.albertus.util.logging.ILoggingConfig;
 import it.albertus.util.logging.ILoggingManager;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -19,15 +18,15 @@ public class LoggingManager implements ILoggingManager {
 	@NonNull
 	private final LoggingConfigAccessor currentConfig;
 
-	private LoggingConfig previousConfig;
+	private LoggingConfigValue previousConfig;
 
 	@Override
 	public void initializeLogging() {
 		if (previousConfig == null) {
-			previousConfig = new LoggingConfig(currentConfig);
+			previousConfig = new LoggingConfigValue(currentConfig);
 		}
-		else if (!new LoggingConfig(currentConfig).equals(previousConfig)) {
-			previousConfig = new LoggingConfig(currentConfig);
+		else if (!new LoggingConfigValue(currentConfig).equals(previousConfig)) {
+			previousConfig = new LoggingConfigValue(currentConfig);
 			final LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
 			context.reset();
 			try {
@@ -41,27 +40,27 @@ public class LoggingManager implements ILoggingManager {
 	}
 
 	@Value
-	private class LoggingConfig implements ILoggingConfig {
+	private class LoggingConfigValue implements LoggingConfig {
 		Level consoleLevel;
+		boolean fileAppenderEnabled;
 		boolean fileCompressionEnabled;
-		int fileHandlerCount;
-		boolean fileHandlerEnabled;
-		String fileHandlerFormat;
-		int fileHandlerLimit;
-		String fileHandlerPattern;
 		Level fileLevel;
-		String loggingLevel;
+		byte fileMaxIndex;
+		int fileMaxSize;
+		String fileNamePattern;
+		String layoutPattern;
+		Level rootLevel;
 
-		private LoggingConfig(@NonNull final LoggingConfigAccessor config) {
+		private LoggingConfigValue(@NonNull final LoggingConfigAccessor config) {
 			this.consoleLevel = config.getConsoleLevel();
-			this.fileCompressionEnabled = config.isFileCompressionEnabled();
-			this.fileHandlerCount = config.getFileHandlerCount();
-			this.fileHandlerEnabled = config.isFileHandlerEnabled();
-			this.fileHandlerFormat = config.getFileHandlerFormat();
-			this.fileHandlerLimit = config.getFileHandlerLimit();
-			this.fileHandlerPattern = config.getFileHandlerPattern();
 			this.fileLevel = config.getFileLevel();
-			this.loggingLevel = config.getLoggingLevel();
+			this.fileMaxIndex = config.getFileMaxIndex();
+			this.fileMaxSize = config.getFileMaxSize();
+			this.fileNamePattern = config.getFileNamePattern();
+			this.layoutPattern = config.getLayoutPattern();
+			this.rootLevel = config.getRootLevel();
+			this.fileAppenderEnabled = config.isFileAppenderEnabled();
+			this.fileCompressionEnabled = config.isFileCompressionEnabled();
 		}
 	}
 
