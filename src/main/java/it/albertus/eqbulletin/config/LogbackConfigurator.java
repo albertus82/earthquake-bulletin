@@ -7,6 +7,7 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.PatternLayout;
+import ch.qos.logback.classic.filter.ThresholdFilter;
 import ch.qos.logback.classic.jul.LevelChangePropagator;
 import ch.qos.logback.classic.spi.Configurator;
 import ch.qos.logback.classic.spi.ILoggingEvent;
@@ -35,16 +36,22 @@ public class LogbackConfigurator extends ContextAwareBase implements Configurato
 		final ConsoleAppender<ILoggingEvent> consoleAppender = new ConsoleAppender<>();
 		consoleAppender.setContext(context);
 		consoleAppender.setName("consoleAppender");
+
 		final LayoutWrappingEncoder<ILoggingEvent> encoder = new LayoutWrappingEncoder<>();
 		encoder.setContext(context);
-
 		final PatternLayout layout = new PatternLayout();
 		layout.setPattern(config.getFileHandlerFormat());
 		layout.setContext(context);
 		layout.start();
 		encoder.setLayout(layout);
-
 		consoleAppender.setEncoder(encoder);
+
+		final ThresholdFilter consoleThresholdFilter = new ThresholdFilter();
+		consoleThresholdFilter.setContext(context);
+		consoleThresholdFilter.setLevel(config.getConsoleLevel().toString());
+		consoleAppender.addFilter(consoleThresholdFilter);
+		consoleThresholdFilter.start();
+
 		consoleAppender.start();
 
 		final Logger rootLogger = context.getLogger(Logger.ROOT_LOGGER_NAME); // NOSONAR Use static access with "org.slf4j.Logger" for "ROOT_LOGGER_NAME". "static" base class members should not be accessed via derived types (java:S3252)
@@ -74,8 +81,14 @@ public class LogbackConfigurator extends ContextAwareBase implements Configurato
 			sizeBasedTriggeringPolicy.setMaxFileSize(new FileSize(config.getFileHandlerLimit()));
 			rollingFileAppender.setTriggeringPolicy(sizeBasedTriggeringPolicy);
 			rollingFileAppender.setRollingPolicy(fixedWindowRollingPolicy);
-
 			sizeBasedTriggeringPolicy.start();
+
+			final ThresholdFilter fileThresholdFilter = new ThresholdFilter();
+			fileThresholdFilter.setContext(context);
+			fileThresholdFilter.setLevel(config.getFileLevel().toString());
+			rollingFileAppender.addFilter(fileThresholdFilter);
+			fileThresholdFilter.start();
+
 			rollingFileAppender.start();
 			rootLogger.addAppender(rollingFileAppender);
 		}

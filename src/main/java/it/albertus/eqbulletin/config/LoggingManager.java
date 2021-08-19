@@ -2,6 +2,7 @@ package it.albertus.eqbulletin.config;
 
 import org.slf4j.LoggerFactory;
 
+import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.util.ContextInitializer;
 import ch.qos.logback.core.joran.spi.JoranException;
@@ -41,21 +42,25 @@ public class LoggingManager implements ILoggingManager {
 
 	@Value
 	private class LoggingConfig implements ILoggingConfig {
+		Level consoleLevel;
 		boolean fileCompressionEnabled;
 		int fileHandlerCount;
 		boolean fileHandlerEnabled;
 		String fileHandlerFormat;
 		int fileHandlerLimit;
 		String fileHandlerPattern;
+		Level fileLevel;
 		String loggingLevel;
 
 		private LoggingConfig(@NonNull final LoggingConfigAccessor config) {
+			this.consoleLevel = config.getConsoleLevel();
 			this.fileCompressionEnabled = config.isFileCompressionEnabled();
 			this.fileHandlerCount = config.getFileHandlerCount();
 			this.fileHandlerEnabled = config.isFileHandlerEnabled();
 			this.fileHandlerFormat = config.getFileHandlerFormat();
 			this.fileHandlerLimit = config.getFileHandlerLimit();
 			this.fileHandlerPattern = config.getFileHandlerPattern();
+			this.fileLevel = config.getFileLevel();
 			this.loggingLevel = config.getLoggingLevel();
 		}
 	}

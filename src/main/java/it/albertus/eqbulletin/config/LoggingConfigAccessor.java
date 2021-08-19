@@ -1,13 +1,13 @@
 package it.albertus.eqbulletin.config;
 
+import static ch.qos.logback.classic.Level.WARN;
 import static it.albertus.eqbulletin.config.EarthquakeBulletinConfig.APPDATA_DIRECTORY;
-import static org.slf4j.event.Level.WARN;
 
 import java.io.File;
 
 import org.eclipse.jface.util.Util;
-import org.slf4j.event.Level;
 
+import ch.qos.logback.classic.Level;
 import it.albertus.eqbulletin.gui.preference.Preference;
 import it.albertus.eqbulletin.util.BuildInfo;
 import it.albertus.jface.preference.IPreferencesConfiguration;
@@ -37,7 +37,15 @@ public class LoggingConfigAccessor extends LoggingDefaultConfig {
 
 	@Override
 	public String getLoggingLevel() {
-		return configuration.getString(Preference.LOGGING_LEVEL, Defaults.LOGGING_LEVEL.toString());
+		return Level.toLevel(Math.min(getConsoleLevel().toInt(), getFileLevel().toInt())).toString();
+	}
+
+	public Level getConsoleLevel() {
+		return Level.toLevel(configuration.getString(Preference.LOGGING_CONSOLE_LEVEL), Defaults.LOGGING_LEVEL);
+	}
+
+	public Level getFileLevel() {
+		return Level.toLevel(configuration.getString(Preference.LOGGING_FILES_LEVEL), Defaults.LOGGING_LEVEL);
 	}
 
 	@Override
