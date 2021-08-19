@@ -1,12 +1,11 @@
-package it.albertus.eqbulletin.config.logback;
-
-import java.util.function.Supplier;
+package it.albertus.eqbulletin.config.logging;
 
 import ch.qos.logback.classic.Level;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public enum LogbackLevel implements Supplier<Level> {
+public enum LoggingLevel {
 
 	OFF(Level.OFF),
 	ERROR(Level.ERROR),
@@ -16,11 +15,13 @@ public enum LogbackLevel implements Supplier<Level> {
 	TRACE(Level.TRACE),
 	ALL(Level.ALL);
 
+	@NonNull
 	private final Level level;
 
+	/** Returns the string representation of this Level. */
 	@Override
-	public Level get() {
-		return level;
+	public String toString() {
+		return level.toString();
 	}
 
 }

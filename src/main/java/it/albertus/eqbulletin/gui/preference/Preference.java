@@ -24,8 +24,8 @@ import it.albertus.eqbulletin.cache.MapImageCache;
 import it.albertus.eqbulletin.cache.MomentTensorCache;
 import it.albertus.eqbulletin.config.LanguageConfigAccessor;
 import it.albertus.eqbulletin.config.TimeZoneConfigAccessor;
-import it.albertus.eqbulletin.config.logback.LogbackLevel;
-import it.albertus.eqbulletin.config.logback.LoggingConfigAccessor;
+import it.albertus.eqbulletin.config.logging.LoggingConfigAccessor;
+import it.albertus.eqbulletin.config.logging.LoggingLevel;
 import it.albertus.eqbulletin.gui.CloseDialog;
 import it.albertus.eqbulletin.gui.EarthquakeBulletinGui;
 import it.albertus.eqbulletin.gui.MapCanvas;
@@ -235,9 +235,9 @@ public enum Preference implements IPreference {
 	}
 
 	public static StaticLabelsAndValues getLoggingComboOptions() {
-		final StaticLabelsAndValues options = new StaticLabelsAndValues(LogbackLevel.values().length);
-		for (final LogbackLevel level : LogbackLevel.values()) {
-			options.put(level.get().toString(), level.get().toString());
+		final StaticLabelsAndValues options = new StaticLabelsAndValues(LoggingLevel.values().length);
+		for (final LoggingLevel level : LoggingLevel.values()) {
+			options.put(level.toString(), level.toString());
 		}
 		return options;
 	}

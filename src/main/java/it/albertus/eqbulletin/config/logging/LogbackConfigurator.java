@@ -1,4 +1,4 @@
-package it.albertus.eqbulletin.config.logback;
+package it.albertus.eqbulletin.config.logging;
 
 import org.eclipse.jface.util.Util;
 import org.slf4j.bridge.SLF4JBridgeHandler;

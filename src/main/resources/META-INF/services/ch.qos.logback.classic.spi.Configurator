@@ -1,1 +1,1 @@
-it.albertus.eqbulletin.config.logback.LogbackConfigurator
+it.albertus.eqbulletin.config.logging.LogbackConfigurator

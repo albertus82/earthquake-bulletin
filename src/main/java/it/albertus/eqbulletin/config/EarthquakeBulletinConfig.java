@@ -5,8 +5,8 @@ import java.io.IOException;
 
 import org.eclipse.jface.util.Util;
 
-import it.albertus.eqbulletin.config.logback.LoggingConfigAccessor;
-import it.albertus.eqbulletin.config.logback.LoggingManager;
+import it.albertus.eqbulletin.config.logging.LoggingConfigAccessor;
+import it.albertus.eqbulletin.config.logging.LoggingManager;
 import it.albertus.eqbulletin.resources.LanguageManager;
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.eqbulletin.util.BuildInfo;

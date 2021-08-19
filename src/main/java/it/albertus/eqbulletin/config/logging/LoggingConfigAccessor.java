@@ -1,4 +1,4 @@
-package it.albertus.eqbulletin.config.logback;
+package it.albertus.eqbulletin.config.logging;
 
 import static ch.qos.logback.classic.Level.WARN;
 import static it.albertus.eqbulletin.config.EarthquakeBulletinConfig.APPDATA_DIRECTORY;
