@@ -38,10 +38,12 @@ import it.albertus.jface.Multilanguage;
 import it.albertus.jface.SwtUtils;
 import it.albertus.jface.closeable.CloseableDevice;
 import it.albertus.jface.preference.IPreferencesConfiguration;
+import it.albertus.util.InitializationException;
 import it.albertus.util.Version;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -104,27 +106,17 @@ public class EarthquakeBulletinGui extends ApplicationWindow implements Multilan
 		Display.setAppVersion(Version.getNumber());
 		Shell shell = null;
 		try (final CloseableDevice<Display> cd = new CloseableDevice<>(Display.getDefault())) {
-			// Load configuration from file (and exit on error)
-			try {
-				EarthquakeBulletinConfig.initialize();
-			}
-			catch (final Exception e) {
-				final String message = Messages.get("error.fatal.init");
-				log.error(message, e);
-				EnhancedErrorDialog.openError(null, getApplicationName(), message, IStatus.ERROR, e, Images.getAppIconArray());
-				return;
-			}
-
-			// Open main window
-			final Display display = cd.getDevice();
+			EarthquakeBulletinConfig.initialize(); // Load configuration and initialize the application
 			final EarthquakeBulletinGui gui = new EarthquakeBulletinGui();
-			gui.open();
+			gui.open(); // Open main window
 			shell = gui.getShell();
-			while (!shell.isDisposed()) {
-				if (!display.isDisposed() && !display.readAndDispatch()) {
-					display.sleep();
-				}
-			}
+			loop(shell);
+		}
+		catch (final InitializationException e) {
+			final String message = Messages.get("error.fatal.init");
+			log.error(message, e);
+			EnhancedErrorDialog.openError(shell, getApplicationName(), message, IStatus.ERROR, e, Images.getAppIconArray());
+			throw e;
 		}
 		catch (final RuntimeException e) {
 			final String message = Messages.get("error.fatal");
@@ -140,6 +132,15 @@ public class EarthquakeBulletinGui extends ApplicationWindow implements Multilan
 		catch (final Error e) { // NOSONAR Catch Exception instead of Error. Throwable and Error should not be caught (java:S1181)
 			log.error("An unrecoverable error has occurred:", e);
 			throw e;
+		}
+	}
+
+	private static void loop(@NonNull final Shell shell) {
+		final Display display = shell.getDisplay();
+		while (!shell.isDisposed()) {
+			if (!display.isDisposed() && !display.readAndDispatch()) {
+				display.sleep();
+			}
 		}
 	}
 
@@ -361,7 +362,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow implements Multilan
 				configuration.reload(); // make sure the properties are up-to-date
 			}
 			catch (final IOException e) {
-				log.warn(e.toString(), e);
+				log.warn("Cannot reload configuration:", e);
 				return; // abort
 			}
 			final Properties properties = configuration.getProperties();
@@ -389,7 +390,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow implements Multilan
 				configuration.save(); // save configuration
 			}
 			catch (final IOException e) {
-				log.warn(e.toString(), e);
+				log.warn("Cannot save configuration:", e);
 			}
 		}, "Save shell status").start();
 	}

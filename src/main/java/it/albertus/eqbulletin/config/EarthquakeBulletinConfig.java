@@ -14,6 +14,7 @@ import it.albertus.eqbulletin.util.BuildInfo;
 import it.albertus.jface.preference.IPreferencesConfiguration;
 import it.albertus.jface.preference.PreferencesConfiguration;
 import it.albertus.util.ILanguageManager;
+import it.albertus.util.InitializationException;
 import it.albertus.util.SystemUtils;
 import it.albertus.util.config.Configuration;
 import it.albertus.util.config.PropertiesConfiguration;
@@ -44,7 +45,7 @@ public class EarthquakeBulletinConfig extends Configuration {
 	private static EarthquakeBulletinConfig getInstance() {
 		if (instance == null) {
 			synchronized (EarthquakeBulletinConfig.class) {
-				if (instance == null) { // the field needs to be volatile to prevent cache incoherence issues
+				if (instance == null) { // The field needs to be volatile to prevent cache incoherence issues
 					try {
 						instance = new EarthquakeBulletinConfig();
 						if (++instanceCount > 1) {
@@ -63,7 +64,7 @@ public class EarthquakeBulletinConfig extends Configuration {
 	public static IPreferencesConfiguration getPreferencesConfiguration() {
 		if (wrapper == null) {
 			synchronized (EarthquakeBulletinConfig.class) {
-				if (wrapper == null) { // the field needs to be volatile to prevent cache incoherence issues
+				if (wrapper == null) { // The field needs to be volatile to prevent cache incoherence issues
 					wrapper = new PreferencesConfiguration(getInstance());
 				}
 			}
@@ -72,9 +73,14 @@ public class EarthquakeBulletinConfig extends Configuration {
 	}
 
 	public static void initialize() {
-		final EarthquakeBulletinConfig instance = getInstance();
-		instance.loggingManager.initializeLogging();
-		instance.languageManager.resetLanguage();
+		try {
+			final EarthquakeBulletinConfig config = getInstance();
+			config.loggingManager.initializeLogging();
+			config.languageManager.resetLanguage();
+		}
+		catch (final RuntimeException e) {
+			throw new InitializationException(e);
+		}
 	}
 
 	@Override
