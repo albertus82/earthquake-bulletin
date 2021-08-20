@@ -22,6 +22,13 @@ public enum BuildInfo {
 		}
 	}
 
+	/**
+	 * Searches for the property with the specified key in this property list. The
+	 * method returns {@code null} if the property is not found.
+	 *
+	 * @param key the property key.
+	 * @return the value in this property list with the specified key value.
+	 */
 	public static String getProperty(@NonNull final String key) {
 		return INSTANCE.properties.getProperty(key);
 	}
