@@ -102,34 +102,36 @@ public class EarthquakeBulletinGui extends ApplicationWindow implements Multilan
 	}
 
 	public static void main(final String... args) {
-		Display.setAppName(getApplicationName());
-		Display.setAppVersion(Version.getNumber());
-		Shell shell = null;
-		try (final CloseableDevice<Display> cd = new CloseableDevice<>(Display.getDefault())) {
-			EarthquakeBulletinConfig.initialize(); // Load configuration and initialize the application
-			final EarthquakeBulletinGui gui = new EarthquakeBulletinGui();
-			gui.open(); // Open main window
-			shell = gui.getShell();
-			loop(shell);
+		try {
+			Display.setAppName(getApplicationName());
+			Display.setAppVersion(Version.getNumber());
+			try (final CloseableDevice<Display> cd = new CloseableDevice<>(Display.getDefault())) {
+				Shell shell = null;
+				try {
+					EarthquakeBulletinConfig.initialize(); // Load configuration and initialize the application
+					final EarthquakeBulletinGui gui = new EarthquakeBulletinGui();
+					gui.open(); // Open main window
+					shell = gui.getShell();
+					loop(shell);
+				}
+				catch (final InitializationException e) {
+					EnhancedErrorDialog.openError(shell, getApplicationName(), Messages.get("error.fatal.init"), IStatus.ERROR, e, Images.getAppIconArray());
+					throw e;
+				}
+				catch (final RuntimeException e) {
+					final String message = Messages.get("error.fatal");
+					if (shell != null && shell.isDisposed()) {
+						log.debug(message, e);
+						// Do not rethrow, exiting with status OK.
+					}
+					else {
+						EnhancedErrorDialog.openError(shell, getApplicationName(), message, IStatus.ERROR, e, Images.getAppIconArray());
+						throw e;
+					}
+				}
+			} // Display is disposed before the catch!
 		}
-		catch (final InitializationException e) {
-			final String message = Messages.get("error.fatal.init");
-			log.error(message, e);
-			EnhancedErrorDialog.openError(shell, getApplicationName(), message, IStatus.ERROR, e, Images.getAppIconArray());
-			throw e;
-		}
-		catch (final RuntimeException e) {
-			final String message = Messages.get("error.fatal");
-			if (shell != null && shell.isDisposed()) {
-				log.debug(message, e);
-			}
-			else {
-				log.error(message, e);
-				EnhancedErrorDialog.openError(shell, getApplicationName(), message, IStatus.ERROR, e, Images.getAppIconArray());
-				throw e;
-			}
-		}
-		catch (final Error e) { // NOSONAR Catch Exception instead of Error. Throwable and Error should not be caught (java:S1181)
+		catch (final RuntimeException | Error e) { // NOSONAR Catch Exception instead of Error. Throwable and Error should not be caught (java:S1181)
 			log.error("An unrecoverable error has occurred:", e);
 			throw e;
 		}
