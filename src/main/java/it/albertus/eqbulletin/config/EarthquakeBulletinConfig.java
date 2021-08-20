@@ -2,6 +2,7 @@ package it.albertus.eqbulletin.config;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 
 import org.eclipse.jface.util.Util;
 
@@ -10,7 +11,6 @@ import it.albertus.eqbulletin.config.logging.LoggingManager;
 import it.albertus.eqbulletin.resources.LanguageManager;
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.eqbulletin.util.BuildInfo;
-import it.albertus.eqbulletin.util.InitializationException;
 import it.albertus.jface.preference.IPreferencesConfiguration;
 import it.albertus.jface.preference.PreferencesConfiguration;
 import it.albertus.util.ILanguageManager;
@@ -27,8 +27,8 @@ public class EarthquakeBulletinConfig extends Configuration {
 
 	private static final String CFG_FILE_NAME = (Util.isLinux() ? BuildInfo.getProperty("project.artifactId") : BuildInfo.getProperty("project.name").replace(" ", "")) + ".cfg";
 
-	private static EarthquakeBulletinConfig instance;
-	private static IPreferencesConfiguration wrapper;
+	private static volatile EarthquakeBulletinConfig instance; // NOSONAR Use a thread-safe type; adding "volatile" is not enough to make this field thread-safe. Use a thread-safe type; adding "volatile" is not enough to make this field thread-safe.
+	private static volatile IPreferencesConfiguration wrapper; // NOSONAR Use a thread-safe type; adding "volatile" is not enough to make this field thread-safe. Use a thread-safe type; adding "volatile" is not enough to make this field thread-safe.
 	private static int instanceCount = 0;
 
 	private final ILoggingManager loggingManager;
@@ -41,25 +41,32 @@ public class EarthquakeBulletinConfig extends Configuration {
 		languageManager = new LanguageManager(new LanguageConfigAccessor(pc));
 	}
 
-	private static synchronized EarthquakeBulletinConfig getInstance() {
+	private static EarthquakeBulletinConfig getInstance() {
 		if (instance == null) {
-			try {
-				instance = new EarthquakeBulletinConfig();
-				instanceCount++;
-				if (instanceCount > 1) {
-					throw new InitializationException("Detected multiple instances of singleton " + instance.getClass());
+			synchronized (EarthquakeBulletinConfig.class) {
+				if (instance == null) { // the field needs to be volatile to prevent cache incoherence issues
+					try {
+						instance = new EarthquakeBulletinConfig();
+						if (++instanceCount > 1) {
+							throw new IllegalStateException("Detected multiple instances of singleton " + instance.getClass());
+						}
+					}
+					catch (final IOException e) {
+						throw new UncheckedIOException(Messages.get("error.open.cfg", CFG_FILE_NAME), e);
+					}
 				}
-			}
-			catch (final IOException e) {
-				throw new InitializationException(Messages.get("error.open.cfg", CFG_FILE_NAME), e);
 			}
 		}
 		return instance;
 	}
 
-	public static synchronized IPreferencesConfiguration getPreferencesConfiguration() {
+	public static IPreferencesConfiguration getPreferencesConfiguration() {
 		if (wrapper == null) {
-			wrapper = new PreferencesConfiguration(getInstance());
+			synchronized (EarthquakeBulletinConfig.class) {
+				if (wrapper == null) { // the field needs to be volatile to prevent cache incoherence issues
+					wrapper = new PreferencesConfiguration(getInstance());
+				}
+			}
 		}
 		return wrapper;
 	}

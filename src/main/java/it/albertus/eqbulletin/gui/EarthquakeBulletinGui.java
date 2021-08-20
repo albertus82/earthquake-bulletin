@@ -32,7 +32,6 @@ import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
 import it.albertus.eqbulletin.gui.listener.CloseListener;
 import it.albertus.eqbulletin.gui.preference.Preference;
 import it.albertus.eqbulletin.resources.Messages;
-import it.albertus.eqbulletin.util.InitializationException;
 import it.albertus.jface.EnhancedErrorDialog;
 import it.albertus.jface.Events;
 import it.albertus.jface.Multilanguage;
@@ -109,12 +108,10 @@ public class EarthquakeBulletinGui extends ApplicationWindow implements Multilan
 			try {
 				EarthquakeBulletinConfig.initialize();
 			}
-			catch (final InitializationException ie) {
-				showError(ie);
-				return;
-			}
-			catch (final RuntimeException e) {
-				showError(new InitializationException(e.getMessage(), e));
+			catch (final Exception e) {
+				final String message = Messages.get("error.fatal.init");
+				log.error(message, e);
+				EnhancedErrorDialog.openError(null, getApplicationName(), message, IStatus.ERROR, e, Images.getAppIconArray());
 				return;
 			}
 
@@ -144,10 +141,6 @@ public class EarthquakeBulletinGui extends ApplicationWindow implements Multilan
 			log.error("An unrecoverable error has occurred:", e);
 			throw e;
 		}
-	}
-
-	private static void showError(final InitializationException e) {
-		EnhancedErrorDialog.openError(null, getApplicationName(), e.getLocalizedMessage() != null ? e.getLocalizedMessage() : e.getMessage(), IStatus.ERROR, e.getCause() != null ? e.getCause() : e, Images.getAppIconArray());
 	}
 
 	@Override

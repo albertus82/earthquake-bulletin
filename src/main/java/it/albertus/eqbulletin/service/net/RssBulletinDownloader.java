@@ -23,7 +23,6 @@ import it.albertus.eqbulletin.service.SearchRequest;
 import it.albertus.eqbulletin.service.decode.DecodeException;
 import it.albertus.eqbulletin.service.decode.rss.RssBulletinDecoder;
 import it.albertus.eqbulletin.service.decode.rss.xml.RssBulletin;
-import it.albertus.eqbulletin.util.InitializationException;
 import it.albertus.util.IOUtils;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
@@ -44,7 +43,7 @@ public class RssBulletinDownloader extends ResilientDownloader implements Bullet
 			jaxbContext = JAXBContext.newInstance(RssBulletin.class);
 		}
 		catch (final JAXBException e) {
-			throw new InitializationException("Cannot create instance of " + JAXBContext.class.getName() + " for " + RssBulletin.class.getName(), e);
+			throw new IllegalStateException("Cannot create instance of " + JAXBContext.class.getName() + " for " + RssBulletin.class.getName(), e);
 		}
 	}
 
