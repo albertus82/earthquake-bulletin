@@ -100,9 +100,10 @@ public class EarthquakeBulletinGui extends ApplicationWindow implements Multilan
 		addStatusLine();
 	}
 
-	public static void main() {
+	public static void main(final String... args) {
 		Display.setAppName(getApplicationName());
 		Display.setAppVersion(Version.getNumber());
+		Shell shell = null;
 		try (final CloseableDevice<Display> cd = new CloseableDevice<>(Display.getDefault())) {
 			// Load configuration from file (and exit on error)
 			try {
@@ -121,29 +122,27 @@ public class EarthquakeBulletinGui extends ApplicationWindow implements Multilan
 			final Display display = cd.getDevice();
 			final EarthquakeBulletinGui gui = new EarthquakeBulletinGui();
 			gui.open();
-			final Shell shell = gui.getShell();
-			try {
-				while (!shell.isDisposed()) {
-					if (!display.isDisposed() && !display.readAndDispatch()) {
-						display.sleep();
-					}
+			shell = gui.getShell();
+			while (!shell.isDisposed()) {
+				if (!display.isDisposed() && !display.readAndDispatch()) {
+					display.sleep();
 				}
 			}
-			catch (final RuntimeException e) {
-				final String message = Messages.get("error.fatal");
-				if (shell.isDisposed()) {
-					log.debug(message, e);
-				}
-				else {
-					log.error(message, e);
-					EnhancedErrorDialog.openError(shell, getApplicationName(), message, IStatus.ERROR, e, display.getSystemImage(SWT.ICON_ERROR));
-					throw e;
-				}
+		}
+		catch (final RuntimeException e) {
+			final String message = Messages.get("error.fatal");
+			if (shell != null && shell.isDisposed()) {
+				log.debug(message, e);
 			}
-			catch (final Error e) { // NOSONAR Catch Exception instead of Error. Throwable and Error should not be caught (java:S1181)
-				log.error("An unrecoverable error has occurred:", e);
+			else {
+				log.error(message, e);
+				EnhancedErrorDialog.openError(shell, getApplicationName(), message, IStatus.ERROR, e, Images.getAppIconArray());
 				throw e;
 			}
+		}
+		catch (final Error e) { // NOSONAR Catch Exception instead of Error. Throwable and Error should not be caught (java:S1181)
+			log.error("An unrecoverable error has occurred:", e);
+			throw e;
 		}
 	}
 
