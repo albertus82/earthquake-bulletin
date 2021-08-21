@@ -54,7 +54,7 @@ public class MenuBar extends AbstractMenu {
 				cocoaMenuCreated = true;
 			}
 			catch (final CocoaEnhancerException e) {
-				log.warn(Messages.get("error.cocoa.enhancer"), e);
+				log.warn("Unable to enhance Cocoa UI:", e);
 			}
 		}
 

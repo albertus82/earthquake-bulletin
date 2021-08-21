@@ -16,7 +16,6 @@ import it.albertus.eqbulletin.model.Earthquake;
 import it.albertus.eqbulletin.model.Latitude;
 import it.albertus.eqbulletin.model.Longitude;
 import it.albertus.eqbulletin.model.Status;
-import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.eqbulletin.service.GeofonUtils;
 import it.albertus.eqbulletin.service.decode.rss.xml.Item;
 import it.albertus.eqbulletin.service.decode.rss.xml.RssBulletin;
@@ -67,7 +66,7 @@ public class RssBulletinDecoder {
 				link = new URI(pageUrl.trim());
 			}
 			catch (final URISyntaxException e) {
-				log.warn(Messages.get("error.url.malformed", pageUrl), e);
+				log.warn("Invalid URL: \"" + pageUrl + "\":", e);
 			}
 		}
 
@@ -78,7 +77,7 @@ public class RssBulletinDecoder {
 				enclosureUri = new URI(imageUrl.trim());
 			}
 			catch (final URISyntaxException e) {
-				log.warn(Messages.get("error.url.malformed", imageUrl), e);
+				log.warn("Invalid URL: \"" + imageUrl + "\":", e);
 			}
 		}
 

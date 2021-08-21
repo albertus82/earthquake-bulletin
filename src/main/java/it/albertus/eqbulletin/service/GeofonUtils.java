@@ -5,7 +5,6 @@ import java.net.URISyntaxException;
 
 import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
 import it.albertus.eqbulletin.gui.preference.Preference;
-import it.albertus.eqbulletin.resources.Messages;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,14 +21,12 @@ public class GeofonUtils {
 	public static final String MOMENT_TENSOR_FILENAME = "mt.txt";
 	private static final String BEACH_BALL_FILENAME = "bb.png";
 
-	private static final String MSG_KEY_ERR_URL_MALFORMED = "error.url.malformed";
-
 	public static URI toURI(final String spec) {
 		try {
 			return new URI(spec);
 		}
 		catch (final URISyntaxException e) {
-			log.warn(Messages.get(MSG_KEY_ERR_URL_MALFORMED, spec), e);
+			log.warn("Invalid URL: \"" + spec + "\":", e);
 			return null;
 		}
 	}

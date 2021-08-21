@@ -69,16 +69,14 @@ public class BulletinExporter implements IRunnableWithProgress {
 				ModalContext.run(exporter, true, new NullProgressMonitor(), shell.getDisplay());
 			}
 			catch (final InvocationTargetException e) {
-				final String message = Messages.get("error.job.csv.save");
-				log.warn(message, e);
+				log.warn("Unable to save CSV file:", e);
 				SwtUtils.unblockShell(shell);
-				EnhancedErrorDialog.openError(shell, EarthquakeBulletinGui.getApplicationName(), message, IStatus.WARNING, e.getCause() != null ? e.getCause() : e, Images.getAppIconArray());
+				EnhancedErrorDialog.openError(shell, EarthquakeBulletinGui.getApplicationName(), Messages.get("error.job.csv.save"), IStatus.WARNING, e.getCause() != null ? e.getCause() : e, Images.getAppIconArray());
 			}
 			catch (final Exception e) { // NOSONAR Either re-interrupt this method or rethrow the "InterruptedException" that can be caught here. "InterruptedException" should not be ignored (java:S2142)
-				final String message = Messages.get("error.job.csv.create");
-				log.error(message, e);
+				log.error("Cannot export the earthquake bulletin as CSV file:", e);
 				SwtUtils.unblockShell(shell);
-				EnhancedErrorDialog.openError(shell, EarthquakeBulletinGui.getApplicationName(), message, IStatus.ERROR, e, Images.getAppIconArray());
+				EnhancedErrorDialog.openError(shell, EarthquakeBulletinGui.getApplicationName(), Messages.get("error.job.csv.create"), IStatus.ERROR, e, Images.getAppIconArray());
 			}
 			finally {
 				SwtUtils.unblockShell(shell);

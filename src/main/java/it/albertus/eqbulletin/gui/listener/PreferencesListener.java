@@ -52,9 +52,8 @@ public class PreferencesListener extends SelectionAdapter implements Listener {
 			preferences.openDialog(shell);
 		}
 		catch (final IOException e) {
-			final String message = Messages.get("error.preferences.dialog.open");
-			log.warn(message, e);
-			EnhancedErrorDialog.openError(shell, EarthquakeBulletinGui.getApplicationName(), message, IStatus.WARNING, e, Images.getAppIconArray());
+			log.warn("Cannot open preferences dialog:", e);
+			EnhancedErrorDialog.openError(shell, EarthquakeBulletinGui.getApplicationName(), Messages.get("error.preferences.dialog.open"), IStatus.WARNING, e, Images.getAppIconArray());
 		}
 
 		// Check if must update texts...

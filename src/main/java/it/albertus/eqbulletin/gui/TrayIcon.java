@@ -132,7 +132,7 @@ public class TrayIcon implements IShellProvider, Multilanguage {
 				log.debug("Tray item initialized successfully.");
 			}
 			catch (final Exception e) {
-				log.error(Messages.get("error.tray.init"), e);
+				log.error("Cannot initialize tray icon:", e);
 			}
 		}
 

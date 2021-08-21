@@ -119,13 +119,12 @@ public class EarthquakeBulletinGui extends ApplicationWindow implements Multilan
 					throw e;
 				}
 				catch (final RuntimeException e) {
-					final String message = Messages.get("error.fatal");
 					if (shell != null && shell.isDisposed()) {
-						log.debug(message, e);
+						log.debug("An unrecoverable error has occurred:", e);
 						// Do not rethrow, exiting with status OK.
 					}
 					else {
-						EnhancedErrorDialog.openError(shell, getApplicationName(), message, IStatus.ERROR, e, Images.getAppIconArray());
+						EnhancedErrorDialog.openError(shell, getApplicationName(), Messages.get("error.fatal"), IStatus.ERROR, e, Images.getAppIconArray());
 						throw e;
 					}
 				}
