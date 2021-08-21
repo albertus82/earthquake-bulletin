@@ -398,7 +398,7 @@ public class AboutDialog extends Dialog {
 		private static class LinkStyledCellLabelProvider extends StyledCellLabelProvider { // NOSONAR This class has 6 parents which is greater than 5 authorized. Inheritance tree of classes should not be too deep (java:S110)
 
 			private final String label;
-			private final Function<ThirdPartySoftware, URI> toolTipTextFunction;
+			private final Function<ThirdPartySoftware, URI> tooltipTextFunction;
 
 			@Override
 			public void update(final ViewerCell cell) {
@@ -410,7 +410,7 @@ public class AboutDialog extends Dialog {
 			public String getToolTipText(final Object element) {
 				if (element instanceof ThirdPartySoftware) {
 					final ThirdPartySoftware thirdPartySoftware = (ThirdPartySoftware) element;
-					return String.valueOf(toolTipTextFunction.apply(thirdPartySoftware));
+					return String.valueOf(tooltipTextFunction.apply(thirdPartySoftware));
 				}
 				else {
 					return super.getToolTipText(element);

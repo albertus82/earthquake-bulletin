@@ -19,8 +19,9 @@ public class TimeZoneConfigAccessor {
 			return ZoneId.of(EarthquakeBulletinConfig.getPreferencesConfiguration().getString(Preference.TIMEZONE, DEFAULT_ZONE_ID));
 		}
 		catch (final DateTimeException e) {
-			log.warn(e.toString(), e);
-			return ZoneId.of(DEFAULT_ZONE_ID);
+			final String fallback = DEFAULT_ZONE_ID;
+			log.warn("Cannot determine configured time-zone ID, falling back to " + fallback + ':', e);
+			return ZoneId.of(fallback);
 		}
 	}
 

@@ -340,7 +340,7 @@ public class MapCanvas implements Multilanguage {
 				}
 				catch (final Exception e) {
 					final String message = Messages.get("error.image.save", fileName);
-					log.warn(message, e);
+					log.warn("Cannot save map image file \"" + fileName + "\":", e);
 					EnhancedErrorDialog.openError(canvas.getShell(), EarthquakeBulletinGui.getApplicationName(), message, IStatus.WARNING, e, Images.getAppIconArray());
 				}
 			}
@@ -397,7 +397,7 @@ public class MapCanvas implements Multilanguage {
 					log.debug("Map image canvas set/updated for {}.", earthquake);
 				}
 				catch (final Exception e) {
-					log.warn(e.toString(), e);
+					log.warn("Cannot update map image canvas for " + earthquake + ':', e);
 				}
 			}
 		}

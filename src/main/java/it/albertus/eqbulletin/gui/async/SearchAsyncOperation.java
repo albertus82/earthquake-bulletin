@@ -96,7 +96,7 @@ public class SearchAsyncOperation extends AsyncOperation {
 					}
 				}
 				catch (final RuntimeException e) {
-					log.warn(e.toString(), e);
+					log.warn("Cannot determine delay:", e);
 				}
 			}
 		}

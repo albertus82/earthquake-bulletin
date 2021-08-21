@@ -60,7 +60,7 @@ public class BeachBallAsyncOperation extends AsyncOperation {
 					}
 				}
 				catch (final AsyncOperationException e) {
-					log.warn(e.toString(), e);
+					log.warn("An error occurred downloading the beach ball:", e);
 				}
 			}
 		});
@@ -78,7 +78,7 @@ public class BeachBallAsyncOperation extends AsyncOperation {
 					}
 				}
 				catch (final Exception e) {
-					log.warn(e.toString(), e);
+					log.warn("An error occurred while checking for beach ball updates:", e);
 				}
 			};
 			threadFactory.newThread(checkForUpdate).start();

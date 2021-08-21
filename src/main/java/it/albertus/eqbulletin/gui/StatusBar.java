@@ -37,8 +37,8 @@ public class StatusBar implements Multilanguage {
 		try {
 			localizedWidgets.put(getCopyMenuItem(), () -> Messages.get("label.menu.item.copy"));
 		}
-		catch (final Exception e) {
-			log.warn("Cannot localize the status bar:", e);
+		catch (final ReflectiveOperationException | RuntimeException e) {
+			log.warn("Cannot localize status bar:", e);
 		}
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(manager.getControl());
 		refresh();
@@ -60,7 +60,7 @@ public class StatusBar implements Multilanguage {
 		manager.setMessage(message.toString());
 	}
 
-	private MenuItem getCopyMenuItem() throws IllegalAccessException, NoSuchFieldException {
+	private MenuItem getCopyMenuItem() throws ReflectiveOperationException {
 		final Control statusLine = manager.getControl();
 		for (final Field field : statusLine.getClass().getDeclaredFields()) {
 			if (field.getName().toLowerCase(Locale.ROOT).contains("copy") && MenuItem.class.isAssignableFrom(field.getType())) {

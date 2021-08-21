@@ -97,12 +97,12 @@ class SearchJobChangeListener extends JobChangeAdapter {
 			if (!Arrays.equals(oldDataArray, newDataArray)) {
 				log.debug("Data has changed, performing table update.");
 				table.getTableViewer().setInput(newDataArray);
-				icon.updateToolTipText(newDataArray.length > 0 ? newDataArray[0] : null);
+				icon.updateTooltipText(newDataArray.length > 0 ? newDataArray[0] : null);
 				if (!eventsContainsMapEvent(events, map)) {
 					map.clear();
 				}
 				if (oldDataArray != null && newDataArray.length > 0 && newDataArray[0] != null && oldDataArray.length > 0 && !newDataArray[0].getGuid().equals(oldDataArray[0].getGuid()) && icon.getTrayItem() != null && icon.getTrayItem().getVisible()) {
-					icon.showBalloonToolTip(newDataArray[0]);
+					icon.showBalloonTooltip(newDataArray[0]);
 				}
 			}
 			bar.setLastUpdateTime(bulletin.getInstant());

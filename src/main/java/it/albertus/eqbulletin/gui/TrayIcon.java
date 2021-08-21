@@ -57,13 +57,13 @@ public class TrayIcon implements IShellProvider, Multilanguage {
 	@Getter
 	private TrayItem trayItem;
 
-	private final Map<Integer, ToolTip> toolTips = MapUtils.newHashMapWithExpectedSize(icons.length);
+	private final Map<Integer, ToolTip> tooltips = MapUtils.newHashMapWithExpectedSize(icons.length);
 
 	private final LocalizedWidgets localizedWidgets = new LocalizedWidgets();
 
 	// To be accessed only from this class
 	private Image image;
-	private String toolTipText = EarthquakeBulletinGui.getApplicationName();
+	private String tooltipText = EarthquakeBulletinGui.getApplicationName();
 
 	TrayIcon(@NonNull final EarthquakeBulletinGui gui) {
 		shell = gui.getShell();
@@ -102,15 +102,15 @@ public class TrayIcon implements IShellProvider, Multilanguage {
 					trayItem = new TrayItem(tray, SWT.NONE);
 					image = getImage();
 					trayItem.setImage(image);
-					trayItem.setToolTipText(toolTipText);
+					trayItem.setToolTipText(tooltipText);
 					final TrayRestoreListener trayRestoreListener = new EnhancedTrayRestoreListener(shell, trayItem);
 
 					for (final int icon : icons) {
-						final ToolTip toolTip = new ToolTip(shell, SWT.BALLOON | icon);
-						toolTip.setVisible(false);
-						toolTip.setAutoHide(true);
-						toolTip.addSelectionListener(trayRestoreListener);
-						toolTips.put(icon, toolTip);
+						final ToolTip tooltip = new ToolTip(shell, SWT.BALLOON | icon);
+						tooltip.setVisible(false);
+						tooltip.setAutoHide(true);
+						tooltip.addSelectionListener(trayRestoreListener);
+						tooltips.put(icon, tooltip);
 					}
 
 					final Menu trayMenu = new Menu(shell, SWT.POP_UP);
@@ -144,34 +144,34 @@ public class TrayIcon implements IShellProvider, Multilanguage {
 		}
 	}
 
-	public void showBalloonToolTip(@NonNull final Earthquake earthquake) {
+	public void showBalloonTooltip(@NonNull final Earthquake earthquake) {
 		if (trayItem != null && !trayItem.isDisposed()) {
-			final ToolTip toolTip;
+			final ToolTip tooltip;
 			if (earthquake.getMagnitude() >= configuration.getFloat(Preference.MAGNITUDE_XXL, ResultsTable.Defaults.MAGNITUDE_XXL)) {
-				toolTip = toolTips.get(SWT.ICON_ERROR);
+				tooltip = tooltips.get(SWT.ICON_ERROR);
 			}
 			else if (earthquake.getMagnitude() >= configuration.getFloat(Preference.MAGNITUDE_BIG, ResultsTable.Defaults.MAGNITUDE_BIG)) {
-				toolTip = toolTips.get(SWT.ICON_WARNING);
+				tooltip = tooltips.get(SWT.ICON_WARNING);
 			}
 			else {
-				toolTip = toolTips.get(SWT.ICON_INFORMATION);
+				tooltip = tooltips.get(SWT.ICON_INFORMATION);
 			}
 
 			try {
 				trayItem.getDisplay().syncExec(() -> {
-					trayItem.setToolTip(toolTip);
-					toolTip.setText(earthquake.getSummary());
-					toolTip.setMessage(earthquake.getDetails(TimeZoneConfigAccessor.getZoneId()));
-					toolTip.setVisible(true);
+					trayItem.setToolTip(tooltip);
+					tooltip.setText(earthquake.getSummary());
+					tooltip.setMessage(earthquake.getDetails(TimeZoneConfigAccessor.getZoneId()));
+					tooltip.setVisible(true);
 				});
 			}
 			catch (final RuntimeException e) {
-				log.warn(e.toString(), e);
+				log.warn("Cannot show balloon tooltip for " + earthquake + ':', e);
 			}
 		}
 	}
 
-	public void updateToolTipText(final Earthquake earthquake) {
+	public void updateTooltipText(final Earthquake earthquake) {
 		final StringBuilder buf = new StringBuilder(EarthquakeBulletinGui.getApplicationName());
 		if (earthquake != null) {
 			buf.append(System.lineSeparator());
@@ -179,17 +179,17 @@ public class TrayIcon implements IShellProvider, Multilanguage {
 			buf.append(System.lineSeparator());
 			buf.append(earthquake.getDetails(TimeZoneConfigAccessor.getZoneId()));
 		}
-		toolTipText = buf.toString();
+		tooltipText = buf.toString();
 		if (trayItem != null && !trayItem.isDisposed()) {
 			try {
 				trayItem.getDisplay().syncExec(() -> {
-					if (!toolTipText.equals(trayItem.getToolTipText())) {
-						trayItem.setToolTipText(toolTipText);
+					if (!tooltipText.equals(trayItem.getToolTipText())) {
+						trayItem.setToolTipText(tooltipText);
 					}
 				});
 			}
 			catch (final RuntimeException e) {
-				log.warn(e.toString(), e);
+				log.warn("Cannot update tooltip text for " + earthquake + ":", e);
 			}
 		}
 	}

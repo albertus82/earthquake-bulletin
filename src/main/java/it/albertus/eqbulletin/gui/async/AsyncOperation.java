@@ -27,7 +27,7 @@ public abstract class AsyncOperation {
 		public Thread newThread(final Runnable r) {
 			final Thread thread = super.newThread(r);
 			thread.setPriority(Thread.MIN_PRIORITY);
-			thread.setUncaughtExceptionHandler((t, e) -> log.error(t.toString(), e));
+			thread.setUncaughtExceptionHandler((t, e) -> log.error("An unrecoverable error has occurred in a secondary thread:", e));
 			return thread;
 		}
 	};

@@ -84,7 +84,7 @@ public class MomentTensorAsyncOperation extends AsyncOperation {
 					}
 				}
 				catch (final Exception e) {
-					log.warn(e.toString(), e);
+					log.warn("An error occurred while checking for moment tensor updates:", e);
 				}
 				finally {
 					new DisplayThreadExecutor(shell, SYNC).execute(() -> setDefaultCursor(shell));

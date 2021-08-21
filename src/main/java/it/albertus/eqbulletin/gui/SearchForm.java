@@ -235,8 +235,9 @@ public class SearchForm implements Multilanguage {
 			selectedFormat = Format.valueOf(configuration.getString(Preference.CRITERIA_FORMAT, Defaults.FORMAT.name()).trim().toUpperCase());
 		}
 		catch (final IllegalArgumentException e) {
-			log.warn(e.toString(), e);
-			selectedFormat = Defaults.FORMAT;
+			final Format fallback = Defaults.FORMAT;
+			log.warn("Cannot determine format, falling back to " + fallback + ':', e);
+			selectedFormat = fallback;
 		}
 		for (final Format format : Format.values()) {
 			final Button radio = new Button(radioComposite, SWT.RADIO);
@@ -378,7 +379,7 @@ public class SearchForm implements Multilanguage {
 			}
 		}
 		catch (final RuntimeException e) {
-			log.warn(e.toString(), e);
+			log.warn("Cannot determine " + Float.class.getSimpleName() + " value for " + preference + ':', e);
 		}
 		return value;
 	}
@@ -392,7 +393,7 @@ public class SearchForm implements Multilanguage {
 			}
 		}
 		catch (final RuntimeException e) {
-			log.warn(e.toString(), e);
+			log.warn("Cannot determine " + Integer.class.getSimpleName() + " value for " + preference + ':', e);
 		}
 		return value;
 	}
@@ -406,7 +407,7 @@ public class SearchForm implements Multilanguage {
 				value = Date.from(dateTimeFormatter.parse(dateStr, Instant::from));
 			}
 			catch (final RuntimeException e) {
-				log.warn(e.toString(), e);
+				log.warn("Cannot determine " + Date.class.getSimpleName() + " value for " + preference + ':', e);
 			}
 		}
 		return value;
