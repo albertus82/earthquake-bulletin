@@ -270,11 +270,6 @@ public class EarthquakeBulletinGui extends ApplicationWindow implements Multilan
 		return GridLayoutFactory.swtDefaults().create();
 	}
 
-	public void updateTimeZone() {
-		resultsTable.getTableViewer().refresh();
-		statusBar.refresh();
-	}
-
 	@Override
 	public void updateLanguage() {
 		final Shell shell = getShell();

@@ -38,7 +38,7 @@ public class PreferencesListener extends SelectionAdapter implements Listener {
 	private final EarthquakeBulletinGui gui;
 
 	@Override
-	public void widgetSelected(final SelectionEvent event) {
+	public void handleEvent(final Event event) {
 		final Language language = Messages.getLanguage();
 		final String timezone = configuration.getString(Preference.TIMEZONE, TimeZoneConfigAccessor.DEFAULT_ZONE_ID);
 		final float magnitudeBig = configuration.getFloat(Preference.MAGNITUDE_BIG, ResultsTable.Defaults.MAGNITUDE_BIG);
@@ -52,26 +52,36 @@ public class PreferencesListener extends SelectionAdapter implements Listener {
 			preferences.openDialog(shell);
 		}
 		catch (final IOException e) {
-			log.warn("Cannot open preferences dialog:", e);
+			log.warn("Cannot open Preferences dialog:", e);
 			EnhancedErrorDialog.openError(shell, EarthquakeBulletinGui.getApplicationName(), Messages.get("error.preferences.dialog.open"), IStatus.WARNING, e, Images.getAppIconArray());
 		}
 
-		// Check if must update texts...
+		// Change language if requested
 		if (!language.equals(Messages.getLanguage())) {
+			log.debug("Executing language change: {} -> {}.", language, Messages.getLanguage());
 			gui.updateLanguage();
 		}
 
-		// Check if time zone has changed...
-		if (magnitudeBig != configuration.getFloat(Preference.MAGNITUDE_BIG, ResultsTable.Defaults.MAGNITUDE_BIG) || magnitudeXxl != configuration.getFloat(Preference.MAGNITUDE_XXL, ResultsTable.Defaults.MAGNITUDE_XXL) || !timezone.equals(configuration.getString(Preference.TIMEZONE, TimeZoneConfigAccessor.DEFAULT_ZONE_ID))) {
-			gui.updateTimeZone();
+		// Refresh results table if needed
+		if (!timezone.equals(configuration.getString(Preference.TIMEZONE, TimeZoneConfigAccessor.DEFAULT_ZONE_ID)) || magnitudeBig != configuration.getFloat(Preference.MAGNITUDE_BIG, ResultsTable.Defaults.MAGNITUDE_BIG) || magnitudeXxl != configuration.getFloat(Preference.MAGNITUDE_XXL, ResultsTable.Defaults.MAGNITUDE_XXL)) {
+			log.debug("Executing Results table refresh.");
+			gui.getResultsTable().getTableViewer().refresh();
 		}
 
-		// Refresh map if needed...
+		// Refresh status bar if needed
+		if (!timezone.equals(configuration.getString(Preference.TIMEZONE, TimeZoneConfigAccessor.DEFAULT_ZONE_ID))) {
+			log.debug("Executing Status bar refresh.");
+			gui.getStatusBar().refresh();
+		}
+
+		// Refresh map if needed
 		final short newZoomLevel = configuration.getShort(Preference.MAP_ZOOM_LEVEL, MapCanvas.Defaults.MAP_ZOOM_LEVEL);
 		if (mapZoomLevel != newZoomLevel) {
+			log.debug("Changing map zoom level: {} -> {}.", mapZoomLevel, newZoomLevel);
 			gui.getMapCanvas().setZoomLevel(newZoomLevel);
 		}
-		if (mapResizeHq != configuration.getBoolean(Preference.MAP_RESIZE_HQ, MapCanvas.Defaults.MAP_RESIZE_HQ)) {
+		else if (mapResizeHq != configuration.getBoolean(Preference.MAP_RESIZE_HQ, MapCanvas.Defaults.MAP_RESIZE_HQ)) {
+			log.debug("Executing Map canvas refresh.");
 			gui.getMapCanvas().refresh();
 		}
 
@@ -84,8 +94,8 @@ public class PreferencesListener extends SelectionAdapter implements Listener {
 	}
 
 	@Override
-	public void handleEvent(final Event event) {
-		widgetSelected(null);
+	public void widgetSelected(final SelectionEvent event) {
+		handleEvent(null);
 	}
 
 }
