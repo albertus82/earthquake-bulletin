@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -28,6 +29,7 @@ import lombok.extern.slf4j.Slf4j;
  *      regionalization scheme and programs</a>
  */
 @Slf4j
+@Getter
 class Database {
 
 	// Names of files containing Flinn-Engdahl Regionalization info.
@@ -41,8 +43,8 @@ class Database {
 	private final Map<String, List<Integer>> lonsperlat = new HashMap<>(quadorder.length * 2);
 	private final Map<String, List<Integer>> latbegins = new HashMap<>(quadorder.length * 2);
 
-	private final Map<String, List<Integer>> mlons = new HashMap<>(quadorder.length * 2);
-	private final Map<String, List<Integer>> mfenums = new HashMap<>(quadorder.length * 2);
+	private final Map<String, List<Integer>> lons = new HashMap<>(quadorder.length * 2);
+	private final Map<String, List<Integer>> fenums = new HashMap<>(quadorder.length * 2);
 
 	private final List<Integer> seisreg = new ArrayList<>(757);
 
@@ -110,20 +112,20 @@ class Database {
 			latbegins.put(quad, begins);
 
 			final List<Integer> sect = sects.get(quad);
-			final List<Integer> lons = new ArrayList<>(sect.size() / 2);
-			final List<Integer> fenums = new ArrayList<>(sect.size() / 2);
+			final List<Integer> qlons = new ArrayList<>(sect.size() / 2);
+			final List<Integer> qfenums = new ArrayList<>(sect.size() / 2);
 			int o = 0;
 			for (final int item : sect) { // Split pairs of items into two separate arrays:
 				o++;
 				if (o % 2 != 0) {
-					lons.add(item);
+					qlons.add(item);
 				}
 				else {
-					fenums.add(item);
+					qfenums.add(item);
 				}
 			}
-			mlons.put(quad, lons);
-			mfenums.put(quad, fenums);
+			lons.put(quad, qlons);
+			fenums.put(quad, qfenums);
 		}
 
 		// mksrtb.for
@@ -141,30 +143,6 @@ class Database {
 		}
 
 		log.trace("F-E regions database initialized in {} ms.", TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startTime));
-	}
-
-	List<String> getNames() {
-		return names;
-	}
-
-	Map<String, List<Integer>> getLonsperlat() {
-		return lonsperlat;
-	}
-
-	Map<String, List<Integer>> getLatbegins() {
-		return latbegins;
-	}
-
-	Map<String, List<Integer>> getLons() {
-		return mlons;
-	}
-
-	Map<String, List<Integer>> getFenums() {
-		return mfenums;
-	}
-
-	List<Integer> getSeisreg() {
-		return seisreg;
 	}
 
 }
