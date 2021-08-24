@@ -125,7 +125,7 @@ class SearchJobChangeListener extends JobChangeAdapter {
 		return false;
 	}
 
-	private static void showErrorDialog(final AsyncOperationException e, final TrayIcon trayIcon) {
+	private static void showErrorDialog(@NonNull final AsyncOperationException e, final TrayIcon trayIcon) {
 		e.getLoggingMethod(log).accept(e.getMessage(), e);
 		if (trayIcon != null && !trayIcon.getShell().isDisposed()) {
 			new DisplayThreadExecutor(trayIcon.getShell(), SYNC).execute(() -> {

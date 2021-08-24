@@ -16,6 +16,7 @@ import it.albertus.jface.EnhancedErrorDialog;
 import it.albertus.util.DaemonThreadFactory;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -52,9 +53,9 @@ public abstract class AsyncOperation {
 		log.debug("setDefaultCursor() - operationCount = {}", operationCount);
 	}
 
-	protected static void showErrorDialog(final AsyncOperationException e, final Shell shell) {
+	protected static void showErrorDialog(@NonNull final AsyncOperationException e, final Shell shell) {
 		e.getLoggingMethod(log).accept(e.getMessage(), e);
-		if (!shell.isDisposed()) {
+		if (shell != null && !shell.isDisposed()) {
 			new DisplayThreadExecutor(shell, ASYNC).execute(() -> EnhancedErrorDialog.openError(shell, EarthquakeBulletinGui.getApplicationName(), e.getMessage(), e.getSeverity(), e.getCause() != null ? e.getCause() : e, Images.getAppIconArray()));
 		}
 	}

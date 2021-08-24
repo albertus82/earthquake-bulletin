@@ -10,13 +10,14 @@ import it.albertus.eqbulletin.service.net.BulletinDownloader;
 import it.albertus.eqbulletin.service.net.FetchException;
 import it.albertus.eqbulletin.service.net.HtmlBulletinDownloader;
 import it.albertus.eqbulletin.service.net.RssBulletinDownloader;
+import lombok.NonNull;
 
 public class GeofonBulletinProvider implements BulletinProvider {
 
 	private BulletinDownloader downloader;
 
 	@Override
-	public Optional<Bulletin> getBulletin(final SearchRequest request, final BooleanSupplier canceled) throws FetchException, DecodeException {
+	public Optional<Bulletin> getBulletin(@NonNull final SearchRequest request, final BooleanSupplier canceled) throws FetchException, DecodeException {
 		switch (request.getFormat()) {
 		case HTML:
 			downloader = new HtmlBulletinDownloader(HtmlBulletinDecoderFactory.newInstance());
