@@ -21,7 +21,6 @@ import com.sun.net.httpserver.Headers;
 
 import it.albertus.eqbulletin.model.Bulletin;
 import it.albertus.eqbulletin.model.Earthquake;
-import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.eqbulletin.service.SearchRequest;
 import it.albertus.eqbulletin.service.decode.DecodeException;
 import it.albertus.eqbulletin.service.decode.html.HtmlBulletinDecoder;
@@ -91,7 +90,7 @@ public class HtmlBulletinDownloader extends ResilientDownloader implements Bulle
 			}
 		}
 		catch (final URISyntaxException e) {
-			throw new FetchException(Messages.get("error.job.fetch"), e); // FIXME replace with an English-only message, move Messages.get(...) to SearchJob
+			throw new FetchException("Cannot download the earthquake bulletin", e);
 		}
 	}
 
@@ -102,7 +101,7 @@ public class HtmlBulletinDownloader extends ResilientDownloader implements Bulle
 			document = newResilientSupplier(() -> fetch(uri, headers, canceled)).get();
 		}
 		catch (final IOException | RuntimeException e) {
-			throw new FetchException(Messages.get("error.job.fetch"), e); // FIXME replace with an English-only message, move Messages.get(...) to SearchJob
+			throw new FetchException("Cannot download the earthquake bulletin", e);
 		}
 		try {
 			if (canceled != null && canceled.getAsBoolean()) {
@@ -111,7 +110,7 @@ public class HtmlBulletinDownloader extends ResilientDownloader implements Bulle
 			return decoder.decode(document);
 		}
 		catch (final RuntimeException e) {
-			throw new DecodeException(Messages.get("error.job.decode"), e); // FIXME replace with an English-only message, move Messages.get(...) to SearchJob
+			throw new DecodeException("Cannot decode the earthquake bulletin", e);
 		}
 	}
 

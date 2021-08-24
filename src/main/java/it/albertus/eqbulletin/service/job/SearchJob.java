@@ -8,6 +8,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 
 import it.albertus.eqbulletin.model.Bulletin;
+import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.eqbulletin.service.BulletinProvider;
 import it.albertus.eqbulletin.service.SearchRequest;
 import it.albertus.eqbulletin.service.decode.DecodeException;
@@ -39,11 +40,14 @@ public class SearchJob extends Job {
 			monitor.done();
 			return Status.OK_STATUS;
 		}
-		catch (final FetchException | DecodeException e) {
-			return new Status(IStatus.WARNING, getClass().getName(), e.getMessage(), e.getCause() != null ? e.getCause() : e); // FIXME Replace e.getMessage() with Messages.get(...)
+		catch (final FetchException e) {
+			return new Status(IStatus.WARNING, getClass().getName(), Messages.get("error.job.fetch"), e.getCause() != null ? e.getCause() : e);
+		}
+		catch (final DecodeException e) {
+			return new Status(IStatus.WARNING, getClass().getName(), Messages.get("error.job.decode"), e.getCause() != null ? e.getCause() : e);
 		}
 		catch (final Exception | LinkageError e) {
-			return new Status(IStatus.ERROR, getClass().getName(), e.toString(), e); // FIXME Replace e.toString() with Messages.get(...)
+			return new Status(IStatus.ERROR, getClass().getName(), Messages.get("error.unexpected"), e);
 		}
 	}
 
