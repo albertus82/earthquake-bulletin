@@ -71,6 +71,7 @@ public class MapImageAsyncOperation extends AsyncOperation {
 					}
 				}
 				catch (final AsyncOperationException e) {
+					e.log(log);
 					showErrorDialog(e, shell);
 				}
 				finally {

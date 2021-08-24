@@ -40,10 +40,10 @@ public class SearchJob extends Job {
 			return Status.OK_STATUS;
 		}
 		catch (final FetchException | DecodeException e) {
-			return new Status(IStatus.WARNING, getClass().getName(), e.getMessage(), e.getCause() != null ? e.getCause() : e);
+			return new Status(IStatus.WARNING, getClass().getName(), e.getMessage(), e.getCause() != null ? e.getCause() : e); // FIXME Replace e.getMessage() with Messages.get(...)
 		}
 		catch (final Exception | LinkageError e) {
-			return new Status(IStatus.ERROR, getClass().getName(), e.toString(), e);
+			return new Status(IStatus.ERROR, getClass().getName(), e.toString(), e); // FIXME Replace e.toString() with Messages.get(...)
 		}
 	}
 

@@ -65,6 +65,7 @@ class SearchJobChangeListener extends JobChangeAdapter {
 				}
 			}
 			catch (final AsyncOperationException e) {
+				e.log(log);
 				showErrorDialog(e, gui.getTrayIcon());
 			}
 			finally {
@@ -126,7 +127,6 @@ class SearchJobChangeListener extends JobChangeAdapter {
 	}
 
 	private static void showErrorDialog(@NonNull final AsyncOperationException e, final TrayIcon trayIcon) {
-		e.getLoggingMethod(log).accept(e.getMessage(), e);
 		if (trayIcon != null && !trayIcon.getShell().isDisposed()) {
 			new DisplayThreadExecutor(trayIcon.getShell(), SYNC).execute(() -> {
 				if (trayIcon.getTrayItem() == null || !trayIcon.getTrayItem().getVisible()) { // Show error dialog only if not minimized in the tray.

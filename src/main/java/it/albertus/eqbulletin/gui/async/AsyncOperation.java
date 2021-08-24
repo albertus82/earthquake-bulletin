@@ -54,7 +54,6 @@ public abstract class AsyncOperation {
 	}
 
 	protected static void showErrorDialog(@NonNull final AsyncOperationException e, final Shell shell) {
-		e.getLoggingMethod(log).accept(e.getMessage(), e);
 		if (shell != null && !shell.isDisposed()) {
 			new DisplayThreadExecutor(shell, ASYNC).execute(() -> EnhancedErrorDialog.openError(shell, EarthquakeBulletinGui.getApplicationName(), e.getMessage(), e.getSeverity(), e.getCause() != null ? e.getCause() : e, Images.getAppIconArray()));
 		}

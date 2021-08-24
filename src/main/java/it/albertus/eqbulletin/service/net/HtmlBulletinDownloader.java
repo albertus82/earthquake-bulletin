@@ -91,7 +91,7 @@ public class HtmlBulletinDownloader extends ResilientDownloader implements Bulle
 			}
 		}
 		catch (final URISyntaxException e) {
-			throw new FetchException(Messages.get("error.job.fetch"), e);
+			throw new FetchException(Messages.get("error.job.fetch"), e); // FIXME replace with an English-only message, move Messages.get(...) to SearchJob
 		}
 	}
 
@@ -102,7 +102,7 @@ public class HtmlBulletinDownloader extends ResilientDownloader implements Bulle
 			document = newResilientSupplier(() -> fetch(uri, headers, canceled)).get();
 		}
 		catch (final IOException | RuntimeException e) {
-			throw new FetchException(Messages.get("error.job.fetch"), e);
+			throw new FetchException(Messages.get("error.job.fetch"), e); // FIXME replace with an English-only message, move Messages.get(...) to SearchJob
 		}
 		try {
 			if (canceled != null && canceled.getAsBoolean()) {
@@ -111,7 +111,7 @@ public class HtmlBulletinDownloader extends ResilientDownloader implements Bulle
 			return decoder.decode(document);
 		}
 		catch (final RuntimeException e) {
-			throw new DecodeException(Messages.get("error.job.decode"), e);
+			throw new DecodeException(Messages.get("error.job.decode"), e); // FIXME replace with an English-only message, move Messages.get(...) to SearchJob
 		}
 	}
 

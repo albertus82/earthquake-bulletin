@@ -43,7 +43,7 @@ public class RssBulletinDownloader extends ResilientDownloader implements Bullet
 			jaxbContext = JAXBContext.newInstance(RssBulletin.class);
 		}
 		catch (final JAXBException e) {
-			throw new IllegalStateException("Cannot create instance of " + JAXBContext.class.getName() + " for " + RssBulletin.class.getName(), e);
+			throw new IllegalStateException("Cannot create instance of " + JAXBContext.class + " for " + RssBulletin.class, e);
 		}
 	}
 
@@ -82,7 +82,7 @@ public class RssBulletinDownloader extends ResilientDownloader implements Bullet
 			body = newResilientSupplier(() -> fetch(request, headers, canceled)).get();
 		}
 		catch (final IOException | RuntimeException | URISyntaxException e) {
-			throw new FetchException(Messages.get("error.job.fetch"), e);
+			throw new FetchException(Messages.get("error.job.fetch"), e); // FIXME replace with an English-only message, move Messages.get(...) to SearchJob
 		}
 		try {
 			if (canceled != null && canceled.getAsBoolean()) {
@@ -91,7 +91,7 @@ public class RssBulletinDownloader extends ResilientDownloader implements Bullet
 			return decode(body);
 		}
 		catch (final JAXBException | RuntimeException e) {
-			throw new DecodeException(Messages.get("error.job.decode"), e);
+			throw new DecodeException(Messages.get("error.job.decode"), e); // FIXME replace with an English-only message, move Messages.get(...) to SearchJob
 		}
 	}
 

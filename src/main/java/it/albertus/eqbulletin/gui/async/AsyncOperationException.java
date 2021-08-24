@@ -1,7 +1,5 @@
 package it.albertus.eqbulletin.gui.async;
 
-import java.util.function.BiConsumer;
-
 import org.eclipse.core.runtime.IStatus;
 import org.slf4j.Logger;
 
@@ -20,20 +18,26 @@ public class AsyncOperationException extends Exception {
 		this.severity = status.getSeverity();
 	}
 
-	public BiConsumer<String, Throwable> getLoggingMethod(@NonNull final Logger log) {
+	public void log(@NonNull final Logger log) {
 		switch (severity) {
 		case IStatus.OK:
-			return log::debug;
+			log.debug(getMessage(), this);
+			break;
 		case IStatus.INFO:
-			return log::info;
+			log.info(getMessage(), this);
+			break;
 		case IStatus.WARNING:
-			return log::warn;
+			log.warn(getMessage(), this);
+			break;
 		case IStatus.ERROR:
-			return log::error;
+			log.error(getMessage(), this);
+			break;
 		case IStatus.CANCEL:
-			return log::info;
+			log.info(getMessage(), this);
+			break;
 		default:
-			return log::warn;
+			log.warn(getMessage(), this);
+			break;
 		}
 	}
 
