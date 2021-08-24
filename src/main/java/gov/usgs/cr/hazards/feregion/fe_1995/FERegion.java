@@ -220,7 +220,7 @@ class FERegionCommand implements Callable<Integer> {
 
 	@Override
 	public Integer call() throws IOException {
-		FERegion instance = new FERegion();
+		final FERegion instance = new FERegion();
 		try {
 			System.out.println(instance.getGeographicRegion(lon, lat).getName());
 			return ExitCode.OK;
