@@ -151,7 +151,7 @@ public class FERegion {
 		else {
 			quad = coordinates.getLongitude() >= 0.0 ? "se" : "sw";
 		}
-		log.debug(" * quad, lt, ln  = {} {} {}", quad, lt, ln);
+		log.debug(" * quad, lt, ln = {} {} {}", quad, lt, ln);
 
 		// Find location of the latitude tier in the appropriate quadrant file.
 		final int beg = database.getLatbegins().get(quad).get(lt); // Location of first item for latitude lt.
@@ -196,7 +196,7 @@ public class FERegion {
 	}
 
 	/**
-	 * Returns Flinn-Engdahl Region name from decimal lon,lat values given on
+	 * Returns Flinn-Engdahl Region name from decimal lon, lat values given on
 	 * command line.
 	 * 
 	 * @param args command line arguments

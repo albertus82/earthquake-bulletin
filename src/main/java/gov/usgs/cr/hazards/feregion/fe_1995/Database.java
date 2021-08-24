@@ -31,8 +31,10 @@ import lombok.extern.slf4j.Slf4j;
 class Database {
 
 	// Names of files containing Flinn-Engdahl Regionalization info.
-	private static final String[] sectfiles = { "nesect.asc", "nwsect.asc", "sesect.asc", "swsect.asc" };
+	private static final String namesfile = "names.asc"; // NOSONAR Rename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'. Constant names should comply with a naming convention (java:S115)
+	private static final String quadsindexfile = "quadsidx.asc"; // NOSONAR Rename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'. Constant names should comply with a naming convention (java:S115)
 	private static final String[] quadorder = { "ne", "nw", "se", "sw" };
+	private static final String[] sectfiles = { "nesect.asc", "nwsect.asc", "sesect.asc", "swsect.asc" };
 
 	private final List<String> names = new ArrayList<>(757);
 
@@ -50,7 +52,7 @@ class Database {
 		final Pattern pattern = Pattern.compile("\\s+");
 
 		// Read the file of region names...
-		try (final InputStream is = getClass().getResourceAsStream("names.asc"); final InputStreamReader isr = new InputStreamReader(is, US_ASCII); final BufferedReader br = new BufferedReader(isr)) {
+		try (final InputStream is = getClass().getResourceAsStream(namesfile); final InputStreamReader isr = new InputStreamReader(is, US_ASCII); final BufferedReader br = new BufferedReader(isr)) {
 			String line;
 			while ((line = br.readLine()) != null) {
 				names.add(line.trim());
@@ -59,7 +61,7 @@ class Database {
 
 		// The quadsindex file contains a list for all 4 quadrants of the number of longitude entries for each integer latitude in the "sectfiles".
 		final List<Integer> quadsindex = new ArrayList<>(91 * quadorder.length);
-		try (final InputStream is = getClass().getResourceAsStream("quadsidx.asc"); final InputStreamReader isr = new InputStreamReader(is, US_ASCII); final BufferedReader br = new BufferedReader(isr)) {
+		try (final InputStream is = getClass().getResourceAsStream(quadsindexfile); final InputStreamReader isr = new InputStreamReader(is, US_ASCII); final BufferedReader br = new BufferedReader(isr)) {
 			String line;
 			while ((line = br.readLine()) != null) {
 				for (final String index : pattern.split(line.trim())) {
@@ -67,7 +69,7 @@ class Database {
 				}
 			}
 		}
-		log.debug(" * Numitems in quadsindex = {}", quadsindex.size());
+		log.debug(" * Numitems in {} = {}", quadsindexfile, quadsindex.size());
 
 		final Map<String, List<Integer>> sects = new HashMap<>(quadorder.length * 2);
 		for (int i = 0; i < sectfiles.length; i++) {
@@ -138,7 +140,7 @@ class Database {
 			}
 		}
 
-		log.debug("F-E regions database initialized in {} ms.", TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startTime));
+		log.trace("F-E regions database initialized in {} ms.", TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startTime));
 	}
 
 	List<String> getNames() {
