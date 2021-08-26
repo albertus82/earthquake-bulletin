@@ -10,10 +10,10 @@ import org.eclipse.swt.widgets.Shell;
 
 import it.albertus.eqbulletin.gui.listener.AboutListener;
 import it.albertus.eqbulletin.gui.listener.ArmMenuListener;
-import it.albertus.eqbulletin.gui.listener.CloseListener;
 import it.albertus.eqbulletin.gui.listener.CopyLinkSelectionListener;
 import it.albertus.eqbulletin.gui.listener.EpicenterMapSelectionListener;
 import it.albertus.eqbulletin.gui.listener.EventMenuListener;
+import it.albertus.eqbulletin.gui.listener.ExitListener;
 import it.albertus.eqbulletin.gui.listener.ExportCsvSelectionListener;
 import it.albertus.eqbulletin.gui.listener.FileMenuListener;
 import it.albertus.eqbulletin.gui.listener.GoogleMapsBrowserSelectionListener;
@@ -42,7 +42,7 @@ public class MenuBar extends AbstractMenu {
 	MenuBar(@NonNull final EarthquakeBulletinGui gui) {
 		final Shell shell = gui.getShell();
 
-		final CloseListener closeListener = new CloseListener(gui);
+		final ExitListener exitListener = new ExitListener(gui);
 		final AboutListener aboutListener = new AboutListener(gui);
 		final PreferencesListener preferencesListener = new PreferencesListener(gui);
 
@@ -50,7 +50,7 @@ public class MenuBar extends AbstractMenu {
 
 		if (Util.isCocoa()) {
 			try {
-				new CocoaUIEnhancer(shell.getDisplay()).hookApplicationMenu(closeListener, aboutListener, preferencesListener);
+				new CocoaUIEnhancer(shell.getDisplay()).hookApplicationMenu(exitListener, aboutListener, preferencesListener);
 				cocoaMenuCreated = true;
 			}
 			catch (final CocoaEnhancerException e) {
@@ -73,7 +73,7 @@ public class MenuBar extends AbstractMenu {
 			new MenuItem(fileMenu, SWT.SEPARATOR);
 
 			final MenuItem fileExitItem = newLocalizedMenuItem(fileMenu, SWT.PUSH, "label.menu.item.exit");
-			fileExitItem.addSelectionListener(new CloseListener(gui));
+			fileExitItem.addSelectionListener(new ExitListener(gui));
 		}
 
 		final FileMenuListener fileMenuListener = new FileMenuListener(gui);

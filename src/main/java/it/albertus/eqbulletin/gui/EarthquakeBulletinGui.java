@@ -29,7 +29,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TableColumn;
 
 import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
-import it.albertus.eqbulletin.gui.listener.CloseListener;
+import it.albertus.eqbulletin.gui.listener.ExitListener;
 import it.albertus.eqbulletin.gui.preference.Preference;
 import it.albertus.eqbulletin.resources.Messages;
 import it.albertus.jface.EnhancedErrorDialog;
@@ -215,7 +215,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow implements Multilan
 	@Override
 	protected void handleShellCloseEvent() {
 		final Event event = new Event();
-		new CloseListener(this).handleEvent(event);
+		new ExitListener(this).handleEvent(event);
 		if (event.doit) {
 			super.handleShellCloseEvent();
 		}

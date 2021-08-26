@@ -21,8 +21,8 @@ import org.eclipse.swt.widgets.TrayItem;
 
 import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
 import it.albertus.eqbulletin.config.TimeZoneConfigAccessor;
-import it.albertus.eqbulletin.gui.listener.CloseListener;
 import it.albertus.eqbulletin.gui.listener.EnhancedTrayRestoreListener;
+import it.albertus.eqbulletin.gui.listener.ExitListener;
 import it.albertus.eqbulletin.gui.preference.Preference;
 import it.albertus.eqbulletin.model.Earthquake;
 import it.albertus.eqbulletin.resources.Messages;
@@ -121,7 +121,7 @@ public class TrayIcon implements IShellProvider, Multilanguage {
 					new MenuItem(trayMenu, SWT.SEPARATOR);
 
 					final MenuItem exitMenuItem = newLocalizedMenuItem(trayMenu, SWT.PUSH, "label.tray.close");
-					exitMenuItem.addSelectionListener(new CloseListener(gui));
+					exitMenuItem.addSelectionListener(new ExitListener(gui));
 					trayItem.addMenuDetectListener(e -> trayMenu.setVisible(true));
 
 					trayItem.addSelectionListener(trayRestoreListener);

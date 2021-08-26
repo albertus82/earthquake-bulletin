@@ -14,7 +14,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class CloseListener extends SelectionAdapter implements Listener {
+public class ExitListener extends SelectionAdapter implements Listener {
 
 	@NonNull
 	private final EarthquakeBulletinGui gui;
