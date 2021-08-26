@@ -99,6 +99,14 @@ class MessagesTest extends BaseTest {
 		checkUnreferencedMessages(getResourceNames(Messages.class).iterator().next());
 	}
 
+	@Test
+	void testFallback() {
+		final String validKey = "lbl.system.info.dialog.title";
+		Assertions.assertNotEquals(validKey, Messages.get(validKey));
+		final String nonExistentKey = "qwertyuiop.asdfghjkl.zxcvbnm";
+		Assertions.assertEquals(nonExistentKey, Messages.get(nonExistentKey));
+	}
+
 	private void checkUnreferencedMessages(@NonNull final String resourceName) throws IOException {
 		final Properties p = new Properties();
 		try (final InputStream is = getClass().getResourceAsStream('/' + resourceName)) {
