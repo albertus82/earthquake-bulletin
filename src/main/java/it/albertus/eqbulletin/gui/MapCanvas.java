@@ -390,6 +390,7 @@ public class MapCanvas implements Multilanguage {
 					instance.image = new Image(instance.canvas.getDisplay(), is);
 					instance.mapImage = mapImage;
 					instance.earthquake = earthquake;
+					instance.dirty = true;
 					instance.refresh();
 					if (oldImage != null) {
 						oldImage.dispose();
