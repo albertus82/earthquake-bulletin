@@ -6,8 +6,11 @@ import it.albertus.eqbulletin.resources.Messages;
 
 public enum Status {
 
+	/** Automatic */
 	A,
+	/** Confirmed */
 	C,
+	/** Manually revised */
 	M;
 
 	public String getDescription() {
