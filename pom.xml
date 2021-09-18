@@ -217,7 +217,7 @@
 		<profile>
 			<id>codeql</id>
 			<properties>
-				<delombok.outputDirectory>${project.build.directory}/generated-sources/delombok</delombok.outputDirectory>
+				<lombok.outputDirectory>${project.build.directory}/generated-sources/delombok</lombok.outputDirectory>
 			</properties>
 			<build>
 				<plugins>
@@ -235,7 +235,6 @@
 						</executions>
 						<configuration>
 							<sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
-							<outputDirectory>${delombok.outputDirectory}</outputDirectory>
 							<addOutputDirectory>false</addOutputDirectory>
 							<verbose>true</verbose>
 						</configuration>
@@ -250,7 +249,7 @@
 								<configuration>
 									<target>
 										<copy overwrite="true" verbose="true" todir="${project.build.sourceDirectory}">
-											<fileset dir="${delombok.outputDirectory}" />
+											<fileset dir="${lombok.outputDirectory}" />
 										</copy>
 									</target>
 								</configuration>
