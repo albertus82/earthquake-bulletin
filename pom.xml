@@ -27,9 +27,9 @@
 		<maven.version.rules>${project.baseUri}/maven-version-rules.xml</maven.version.rules>
 		<swt.version>3.116.100</swt.version>
 		<jface.version>3.22.200</jface.version>
+		<lombok.version>1.18.20</lombok.version>
 		<picocli.version>4.6.1</picocli.version>
 		<slf4j.version>1.7.32</slf4j.version>
-		<lombok.version>1.18.20</lombok.version>
 		<windows.build.finalName>EarthquakeBulletin</windows.build.finalName>
 		<linux.build.finalName>${project.artifactId}</linux.build.finalName>
 		<mac.build.finalName>EarthquakeBulletin</mac.build.finalName>
