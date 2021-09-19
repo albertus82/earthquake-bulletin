@@ -12,7 +12,7 @@ public enum BuildInfo {
 
 	INSTANCE;
 
-	private static final String RESOURCE_NAME = "/META-INF/build-info.properties";
+	private static final String RESOURCE_NAME = "build-info.properties";
 
 	private final Properties properties = new Properties();
 
