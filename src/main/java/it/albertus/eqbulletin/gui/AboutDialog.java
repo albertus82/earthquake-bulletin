@@ -7,11 +7,11 @@ import java.io.InputStreamReader;
 import java.io.UncheckedIOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+import java.time.temporal.TemporalAccessor;
 import java.util.Collection;
-import java.util.Date;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.TreeSet;
@@ -183,15 +183,16 @@ public class AboutDialog extends Dialog {
 		applicationNameLabel.setText(Messages.get("message.application.name"));
 
 		final Link versionAndHomePageLink = new Link(headerComposite, SWT.NONE);
-		Date versionDate;
+		TemporalAccessor versionTimestamp;
 		try {
-			versionDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX").parse(BuildInfo.getProperty("project.timestamp"));
+			versionTimestamp = DateTimeFormatter.ISO_ZONED_DATE_TIME.parse(BuildInfo.getProperty("version.timestamp"));
+			log.debug("{}", versionTimestamp);
 		}
-		catch (final ParseException e) {
-			log.warn("Invalid version date:", e);
-			versionDate = new Date();
+		catch (final RuntimeException e) {
+			log.warn("Invalid version date, falling back to current date:", e);
+			versionTimestamp = Instant.now();
 		}
-		final String version = Messages.get("label.about.version", BuildInfo.getProperty("project.version"), DateFormat.getDateInstance(DateFormat.MEDIUM, Messages.getLanguage().getLocale()).format(versionDate));
+		final String version = Messages.get("label.about.version", BuildInfo.getProperty("project.version"), DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(Messages.getLanguage().getLocale()).format(versionTimestamp));
 		final String homePageAnchor = buildAnchor(Messages.get("message.project.url"), Messages.get("label.about.home.page"));
 		versionAndHomePageLink.setText(version + " - " + homePageAnchor);
 		if (!fontRegistry.hasValueFor(SYM_NAME_FONT_DEFAULT)) {
