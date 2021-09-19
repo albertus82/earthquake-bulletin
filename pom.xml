@@ -256,6 +256,9 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-antrun-plugin</artifactId>
+						<configuration>
+							<skip>${maven.antrun.skip.lombok}</skip>
+						</configuration>
 						<executions>
 							<execution>
 								<id>replace-sources</id>
@@ -286,9 +289,6 @@
 								</goals>
 							</execution>
 						</executions>
-						<configuration>
-							<skip>${maven.antrun.skip.lombok}</skip>
-						</configuration>
 					</plugin>
 				</plugins>
 			</build>
