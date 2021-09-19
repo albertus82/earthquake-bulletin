@@ -7,7 +7,7 @@ import java.io.InputStreamReader;
 import java.io.UncheckedIOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.time.temporal.TemporalAccessor;
@@ -280,7 +280,7 @@ public class AboutDialog extends Dialog {
 		}
 		catch (final RuntimeException e) {
 			log.warn("Invalid version timestamp, falling back to current datetime:", e);
-			return Instant.now();
+			return LocalDateTime.now();
 		}
 	}
 
