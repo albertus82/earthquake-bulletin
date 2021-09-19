@@ -286,6 +286,9 @@
 								</goals>
 							</execution>
 						</executions>
+						<configuration>
+							<skip>${maven.antrun.skip.lombok}</skip>
+						</configuration>
 					</plugin>
 				</plugins>
 			</build>
@@ -1024,6 +1027,7 @@
 						<maven.gitcommitid.skip>true</maven.gitcommitid.skip>
 						<maven.antrun.skip.lombok>true</maven.antrun.skip.lombok>
 						<jacoco.skip>true</jacoco.skip>
+						<lombok.delombok.skip>true</lombok.delombok.skip>
 						<local.git.commit.time>${local.git.commit.time}</local.git.commit.time>
 						<zoned.git.commit.time>${zoned.git.commit.time}</zoned.git.commit.time>
 					</properties>
