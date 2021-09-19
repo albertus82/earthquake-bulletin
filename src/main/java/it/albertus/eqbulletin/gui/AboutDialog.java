@@ -183,16 +183,7 @@ public class AboutDialog extends Dialog {
 		applicationNameLabel.setText(Messages.get("message.application.name"));
 
 		final Link versionAndHomePageLink = new Link(headerComposite, SWT.NONE);
-		TemporalAccessor versionTimestamp;
-		try {
-			versionTimestamp = DateTimeFormatter.ISO_ZONED_DATE_TIME.parse(BuildInfo.getProperty("version.timestamp"));
-			log.debug("{}", versionTimestamp);
-		}
-		catch (final RuntimeException e) {
-			log.warn("Invalid version date, falling back to current date:", e);
-			versionTimestamp = Instant.now();
-		}
-		final String version = Messages.get("label.about.version", BuildInfo.getProperty("project.version"), DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(Messages.getLanguage().getLocale()).format(versionTimestamp));
+		final String version = Messages.get("label.about.version", BuildInfo.getProperty("project.version"), DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(Messages.getLanguage().getLocale()).format(getVersionTimestamp()));
 		final String homePageAnchor = buildAnchor(Messages.get("message.project.url"), Messages.get("label.about.home.page"));
 		versionAndHomePageLink.setText(version + " - " + homePageAnchor);
 		if (!fontRegistry.hasValueFor(SYM_NAME_FONT_DEFAULT)) {
@@ -279,6 +270,18 @@ public class AboutDialog extends Dialog {
 	private static void addUnobtrusiveSeparator(@NonNull final Composite parent) {
 		final Label separator = new Label(parent, SWT.HORIZONTAL | SWT.SEPARATOR | SWT.SHADOW_NONE); // Invisible separator
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(separator);
+	}
+
+	private static TemporalAccessor getVersionTimestamp() {
+		try {
+			final TemporalAccessor timestamp = DateTimeFormatter.ISO_ZONED_DATE_TIME.parse(BuildInfo.getProperty("version.timestamp"));
+			log.debug("{}", timestamp);
+			return timestamp;
+		}
+		catch (final RuntimeException e) {
+			log.warn("Invalid version timestamp, falling back to current datetime:", e);
+			return Instant.now();
+		}
 	}
 
 	@Getter
