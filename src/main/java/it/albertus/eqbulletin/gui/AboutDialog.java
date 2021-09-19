@@ -9,6 +9,7 @@ import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map.Entry;
@@ -55,10 +56,10 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 
 import it.albertus.eqbulletin.resources.Messages;
+import it.albertus.eqbulletin.util.BuildInfo;
 import it.albertus.jface.SwtUtils;
 import it.albertus.jface.closeable.CloseableResource;
 import it.albertus.jface.listener.LinkSelectionListener;
-import it.albertus.util.Version;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
@@ -184,13 +185,13 @@ public class AboutDialog extends Dialog {
 		final Link versionAndHomePageLink = new Link(headerComposite, SWT.NONE);
 		Date versionDate;
 		try {
-			versionDate = Version.getDate();
+			versionDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX").parse(BuildInfo.getProperty("project.timestamp"));
 		}
 		catch (final ParseException e) {
 			log.warn("Invalid version date:", e);
 			versionDate = new Date();
 		}
-		final String version = Messages.get("label.about.version", Version.getNumber(), DateFormat.getDateInstance(DateFormat.MEDIUM, Messages.getLanguage().getLocale()).format(versionDate));
+		final String version = Messages.get("label.about.version", BuildInfo.getProperty("project.version"), DateFormat.getDateInstance(DateFormat.MEDIUM, Messages.getLanguage().getLocale()).format(versionDate));
 		final String homePageAnchor = buildAnchor(Messages.get("message.project.url"), Messages.get("label.about.home.page"));
 		versionAndHomePageLink.setText(version + " - " + homePageAnchor);
 		if (!fontRegistry.hasValueFor(SYM_NAME_FONT_DEFAULT)) {

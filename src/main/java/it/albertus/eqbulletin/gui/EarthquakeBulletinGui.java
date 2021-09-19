@@ -32,6 +32,7 @@ import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
 import it.albertus.eqbulletin.gui.listener.ExitListener;
 import it.albertus.eqbulletin.gui.preference.Preference;
 import it.albertus.eqbulletin.resources.Messages;
+import it.albertus.eqbulletin.util.BuildInfo;
 import it.albertus.jface.EnhancedErrorDialog;
 import it.albertus.jface.Events;
 import it.albertus.jface.Multilanguage;
@@ -39,7 +40,6 @@ import it.albertus.jface.SwtUtils;
 import it.albertus.jface.closeable.CloseableDevice;
 import it.albertus.jface.preference.IPreferencesConfiguration;
 import it.albertus.util.InitializationException;
-import it.albertus.util.Version;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -104,7 +104,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow implements Multilan
 	public static void main(final String... args) {
 		try {
 			Display.setAppName(getApplicationName());
-			Display.setAppVersion(Version.getNumber());
+			Display.setAppVersion(BuildInfo.getProperty("project.version"));
 			start();
 		}
 		catch (final RuntimeException | Error e) { // NOSONAR Catch Exception instead of Error. Throwable and Error should not be caught (java:S1181)

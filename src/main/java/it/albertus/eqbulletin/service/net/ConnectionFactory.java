@@ -20,8 +20,8 @@ import com.sun.net.httpserver.Headers;
 
 import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
 import it.albertus.eqbulletin.gui.preference.Preference;
+import it.albertus.eqbulletin.util.BuildInfo;
 import it.albertus.jface.preference.IPreferencesConfiguration;
-import it.albertus.util.Version;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -43,7 +43,7 @@ public class ConnectionFactory {
 		public static final boolean PROXY_AUTH_REQUIRED = false;
 	}
 
-	private static final String USER_AGENT = String.format("Mozilla/5.0 (%s; %s; %s) EarthquakeBulletin/%s (KHTML, like Gecko)", System.getProperty("os.name"), System.getProperty("os.arch"), System.getProperty("os.version"), Version.getNumber());
+	private static final String USER_AGENT = String.format("Mozilla/5.0 (%s; %s; %s) EarthquakeBulletin/%s (KHTML, like Gecko)", System.getProperty("os.name"), System.getProperty("os.arch"), System.getProperty("os.version"), BuildInfo.getProperty("project.version"));
 
 	private static final Collection<Integer> httpRedirectionResponseCodes = Arrays.asList(HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_MOVED_TEMP);
 
