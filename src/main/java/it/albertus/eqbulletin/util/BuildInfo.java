@@ -7,7 +7,9 @@ import java.io.UncheckedIOException;
 import java.util.Properties;
 
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public enum BuildInfo {
 
 	INSTANCE;
@@ -36,7 +38,11 @@ public enum BuildInfo {
 	 * @return the value in this property list with the specified key value.
 	 */
 	public static String getProperty(@NonNull final String key) {
-		return INSTANCE.properties.getProperty(key);
+		final String value = INSTANCE.properties.getProperty(key);
+		if (value == null) {
+			log.warn("Missing property for key: \"{}\".", key);
+		}
+		return value;
 	}
 
 }
