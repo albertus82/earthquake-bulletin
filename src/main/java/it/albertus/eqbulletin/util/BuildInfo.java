@@ -16,7 +16,7 @@ public enum BuildInfo {
 
 	private static final String RESOURCE_NAME = "build-info.properties";
 
-	private final Properties properties = new Properties();
+	final Properties properties = new Properties();
 
 	private BuildInfo() {
 		try (final InputStream is = getClass().getResourceAsStream(RESOURCE_NAME)) {
