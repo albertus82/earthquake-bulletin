@@ -3,6 +3,7 @@ package it.albertus.eqbulletin.service.net;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -53,6 +54,13 @@ public class ConnectionUtils {
 
 	public static URI toURI(@NonNull final String spec) throws MalformedURLException, URISyntaxException {
 		return new URI(sanitizeUriString(spec));
+	}
+
+	public static URL sanitizeUrl(@NonNull URL url) throws MalformedURLException {
+		if (!url.getProtocol().equalsIgnoreCase("http") && !url.getProtocol().equalsIgnoreCase("https")) {
+			throw new MalformedURLException("Illegal or missing protocol (only http and https are allowed)");
+		}
+		return url;
 	}
 
 }
