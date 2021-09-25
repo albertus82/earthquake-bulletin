@@ -1,5 +1,6 @@
 package it.albertus.eqbulletin.service.decode.rss;
 
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.ZoneOffset;
@@ -77,13 +78,18 @@ public class RssBulletinDecoder {
 				enclosureUri = new URI(imageUrl.trim());
 			}
 			catch (final URISyntaxException e) {
-				log.warn("Invalid URL: \"" + imageUrl + "\":", e);
+				log.error("Invalid URL: \"" + imageUrl + "\":", e);
 			}
 		}
 
 		URI momentTensorUri = null;
 		if (item.getMt() != null && "yes".equalsIgnoreCase(item.getMt().trim())) {
-			momentTensorUri = GeofonUtils.getEventMomentTensorUri(guid, time.get(ChronoField.YEAR));
+			try {
+				momentTensorUri = GeofonUtils.getEventMomentTensorUri(guid, time.get(ChronoField.YEAR));
+			}
+			catch (final MalformedURLException | URISyntaxException e) {
+				log.error("Cannot construct moment tensor URI:", e);
+			}
 		}
 
 		return new Earthquake(guid, time, magnitudo, Latitude.valueOf(latitude), Longitude.valueOf(longitude), Depth.valueOf(depth), status, region, link, enclosureUri, momentTensorUri);

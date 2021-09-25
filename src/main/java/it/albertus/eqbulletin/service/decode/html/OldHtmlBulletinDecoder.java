@@ -1,6 +1,8 @@
 package it.albertus.eqbulletin.service.decode.html;
 
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoField;
 import java.util.ArrayList;
@@ -19,7 +21,9 @@ import it.albertus.eqbulletin.model.Longitude;
 import it.albertus.eqbulletin.model.Status;
 import it.albertus.eqbulletin.service.GeofonUtils;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class OldHtmlBulletinDecoder extends AbstractHtmlBulletinDecoder {
 
 	@Override
@@ -73,7 +77,13 @@ public class OldHtmlBulletinDecoder extends AbstractHtmlBulletinDecoder {
 	}
 
 	private static URI decodeLink(@NonNull final Element anchor) {
-		return GeofonUtils.toURI(anchor.absUrl("href"));
+		try {
+			return GeofonUtils.toURI(anchor.absUrl("href"));
+		}
+		catch (final MalformedURLException | URISyntaxException e) {
+			log.error("Cannot decode link " + anchor + ":", e);
+			return null;
+		}
 	}
 
 	private static float decodeMagnitude(@NonNull final Element row) {
@@ -109,14 +119,26 @@ public class OldHtmlBulletinDecoder extends AbstractHtmlBulletinDecoder {
 	}
 
 	private static URI decodeEnclosureUri(@NonNull final String guid, int year) {
-		return GeofonUtils.getEventMapUri(guid, year);
+		try {
+			return GeofonUtils.getEventMapUri(guid, year);
+		}
+		catch (final MalformedURLException | URISyntaxException e) {
+			log.error("Cannot construct enclosure URI for (guid=" + guid + ", year=" + year + "):", e);
+			return null;
+		}
 	}
 
 	private static URI decodeMomentTensorUri(@NonNull final Element row) {
 		for (int i = 6; i < row.children().size(); i++) {
 			final Optional<Element> a = findFirstLink(row.child(i));
 			if (a.isPresent() && ("MT".equalsIgnoreCase(a.get().text()) || a.get().attr("href").endsWith(GeofonUtils.MOMENT_TENSOR_FILENAME))) {
-				return GeofonUtils.toURI(a.get().absUrl("href"));
+				try {
+					return GeofonUtils.toURI(a.get().absUrl("href"));
+				}
+				catch (final MalformedURLException | URISyntaxException e) {
+					log.error("Cannot construct moment tensor URI for " + row + ":", e);
+					break;
+				}
 			}
 		}
 		return null;

@@ -1,15 +1,16 @@
 package it.albertus.eqbulletin.service;
 
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Locale;
 
 import it.albertus.eqbulletin.config.EarthquakeBulletinConfig;
 import it.albertus.eqbulletin.gui.preference.Preference;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import lombok.NonNull;
 
-@Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class GeofonUtils {
 
@@ -21,38 +22,42 @@ public class GeofonUtils {
 	public static final String MOMENT_TENSOR_FILENAME = "mt.txt";
 	private static final String BEACH_BALL_FILENAME = "bb.png";
 
-	public static URI toURI(final String spec) {
-		try {
-			return new URI(spec);
-		}
-		catch (final URISyntaxException e) {
-			log.warn("Invalid URL: \"" + spec + "\":", e);
-			return null;
-		}
+	public static URI toURI(@NonNull final String spec) throws MalformedURLException, URISyntaxException {
+		return new URI(sanitizeUriString(spec));
 	}
 
-	public static URI getEventMapUri(final String guid, final int year) {
+	public static URI getEventMapUri(@NonNull final String guid, final int year) throws MalformedURLException, URISyntaxException {
 		return toURI(getEventBaseUrl(guid, year) + guid + ".jpg");
 	}
 
-	public static URI getEventMomentTensorUri(final String guid, final int year) {
+	public static URI getEventMomentTensorUri(@NonNull final String guid, final int year) throws MalformedURLException, URISyntaxException {
 		return toURI(getEventBaseUrl(guid, year) + MOMENT_TENSOR_FILENAME);
 	}
 
-	public static URI getBeachBallUri(final String guid, final int year) {
+	public static URI getBeachBallUri(@NonNull final String guid, final int year) throws MalformedURLException, URISyntaxException {
 		return toURI(getEventBaseUrl(guid, year) + BEACH_BALL_FILENAME);
 	}
 
-	public static String getBulletinBaseUrl() {
+	public static String getBulletinBaseUrl() throws MalformedURLException {
 		return getBaseUrl() + "/eqinfo/list.php";
 	}
 
-	private static String getEventBaseUrl(final String guid, final int year) {
+	private static String getEventBaseUrl(@NonNull final String guid, final int year) throws MalformedURLException {
 		return getBaseUrl() + "/data/alerts/" + year + "/" + guid + "/";
 	}
 
-	private static String getBaseUrl() {
-		return EarthquakeBulletinConfig.getPreferencesConfiguration().getString(Preference.GEOFON_BASE_URL, DEFAULT_GEOFON_BASE_URL);
+	private static String getBaseUrl() throws MalformedURLException {
+		final String spec = EarthquakeBulletinConfig.getPreferencesConfiguration().getString(Preference.GEOFON_BASE_URL, DEFAULT_GEOFON_BASE_URL);
+		return sanitizeUriString(spec);
+	}
+
+	private static String sanitizeUriString(@NonNull final String spec) throws MalformedURLException {
+		final String sanitized = spec.trim();
+		final String lower = sanitized.toLowerCase(Locale.ROOT);
+		if (!lower.startsWith("http:") && !lower.startsWith("https:")) {
+			throw new MalformedURLException("Illegal or missing protocol (only http and https are allowed)");
+		}
+		return sanitized;
 	}
 
 }

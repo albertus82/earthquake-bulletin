@@ -1,6 +1,8 @@
 package it.albertus.eqbulletin.service.decode.html;
 
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoField;
 import java.util.ArrayList;
@@ -21,7 +23,9 @@ import it.albertus.eqbulletin.model.Longitude;
 import it.albertus.eqbulletin.model.Status;
 import it.albertus.eqbulletin.service.GeofonUtils;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class NewHtmlBulletinDecoder extends AbstractHtmlBulletinDecoder {
 
 	@Override
@@ -80,7 +84,13 @@ public class NewHtmlBulletinDecoder extends AbstractHtmlBulletinDecoder {
 	}
 
 	private static URI decodeLink(@NonNull final Element anchor) {
-		return GeofonUtils.toURI(anchor.absUrl("href"));
+		try {
+			return GeofonUtils.toURI(anchor.absUrl("href"));
+		}
+		catch (final MalformedURLException | URISyntaxException e) {
+			log.error("Cannot decode link " + anchor + ":", e);
+			return null;
+		}
 	}
 
 	private static float decodeMagnitude(@NonNull final Elements spans) {
@@ -116,13 +126,25 @@ public class NewHtmlBulletinDecoder extends AbstractHtmlBulletinDecoder {
 	}
 
 	private static URI decodeEnclosureUri(@NonNull final String guid, final int year) {
-		return GeofonUtils.getEventMapUri(guid, year);
+		try {
+			return GeofonUtils.getEventMapUri(guid, year);
+		}
+		catch (MalformedURLException | URISyntaxException e) {
+			log.error("Cannot construct enclosure URI for (guid=" + guid + ", year=" + year + "):", e);
+			return null;
+		}
 	}
 
 	private static URI decodeMomentTensorUri(@NonNull final Element anchor, @NonNull final String guid, final int year) {
 		for (final Element img : anchor.getElementsByTag("img")) {
 			if ("MT".equalsIgnoreCase(img.attr("alt"))) {
-				return GeofonUtils.getEventMomentTensorUri(guid, year);
+				try {
+					return GeofonUtils.getEventMomentTensorUri(guid, year);
+				}
+				catch (final MalformedURLException | URISyntaxException e) {
+					log.error("Cannot construct moment tensor URI for (anchor=" + anchor + ", guid=" + guid + ", year=" + year + "):", e);
+					break;
+				}
 			}
 		}
 		return null;

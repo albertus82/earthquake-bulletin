@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Optional;
@@ -13,7 +14,9 @@ import it.albertus.eqbulletin.model.BeachBall;
 import it.albertus.eqbulletin.model.Earthquake;
 import it.albertus.eqbulletin.service.GeofonUtils;
 import it.albertus.util.IOUtils;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class BeachBallDownloader extends StaticResourceDownloader<BeachBall> {
 
 	private static final short BUFFER_SIZE = 0x400;
@@ -23,11 +26,23 @@ public class BeachBallDownloader extends StaticResourceDownloader<BeachBall> {
 	}
 
 	public Optional<BeachBall> download(final Earthquake earthquake, final BooleanSupplier canceled) throws IOException {
-		return Optional.ofNullable(doDownload(getUrl(earthquake), canceled));
+		try {
+			return Optional.ofNullable(doDownload(getUrl(earthquake), canceled));
+		}
+		catch (final IOException | URISyntaxException e) {
+			log.error("Cannot construct beach ball URL for " + earthquake + ':', e);
+			return Optional.empty();
+		}
 	}
 
 	public Optional<BeachBall> download(final Earthquake earthquake, final BeachBall cached, final BooleanSupplier canceled) throws IOException {
-		return Optional.ofNullable(doDownload(getUrl(earthquake), cached, canceled));
+		try {
+			return Optional.ofNullable(doDownload(getUrl(earthquake), cached, canceled));
+		}
+		catch (final IOException | URISyntaxException e) {
+			log.error("Cannot construct beach ball URL for " + earthquake + ':', e);
+			return Optional.empty();
+		}
 	}
 
 	@Override
@@ -38,7 +53,7 @@ public class BeachBallDownloader extends StaticResourceDownloader<BeachBall> {
 		}
 	}
 
-	private static URL getUrl(final Earthquake earthquake) throws MalformedURLException {
+	private static URL getUrl(final Earthquake earthquake) throws MalformedURLException, URISyntaxException {
 		return GeofonUtils.getBeachBallUri(earthquake.getGuid(), earthquake.getTime().getYear()).toURL();
 	}
 

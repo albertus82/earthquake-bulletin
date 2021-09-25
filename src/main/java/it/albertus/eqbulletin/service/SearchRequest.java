@@ -1,6 +1,7 @@
 package it.albertus.eqbulletin.service;
 
 import java.io.Serializable;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -43,7 +44,7 @@ public class SearchRequest {
 		return Format.forValue(parameterMap.get(Format.KEY));
 	}
 
-	public List<URI> toURIs() throws URISyntaxException {
+	public List<URI> toURIs() throws URISyntaxException, MalformedURLException {
 		final List<URI> uris = new ArrayList<>();
 		for (final String url : toUrlStrings()) {
 			uris.add(new URI(url));
@@ -51,7 +52,7 @@ public class SearchRequest {
 		return uris;
 	}
 
-	private Set<String> toUrlStrings() {
+	private Set<String> toUrlStrings() throws MalformedURLException {
 		final StringBuilder baseUrl = new StringBuilder(GeofonUtils.getBulletinBaseUrl());
 		baseUrl.append('?').append(Format.KEY).append('=').append(getFormat().getValue());
 		for (final Entry<String, String> param : parameterMap.entrySet()) {

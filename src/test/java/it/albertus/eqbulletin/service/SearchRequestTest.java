@@ -1,5 +1,6 @@
 package it.albertus.eqbulletin.service;
 
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 
 import org.junit.jupiter.api.Assertions;
@@ -31,7 +32,7 @@ class SearchRequestTest {
 	}
 
 	@Test
-	void testGenerateUrl() throws URISyntaxException {
+	void testGenerateUrl() throws URISyntaxException, MalformedURLException {
 		final String baseUrl = GeofonUtils.getBulletinBaseUrl();
 
 		final SearchRequest r = new SearchRequest();
