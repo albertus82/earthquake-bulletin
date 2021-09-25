@@ -132,6 +132,7 @@ public class ConnectionFactory {
 			return (HttpURLConnection) connection;
 		}
 		else {
+			log.error("url={}, connection={}", url, connection);
 			throw new IllegalArgumentException(String.valueOf(url));
 		}
 	}
