@@ -90,17 +90,17 @@ public class ConnectionFactory {
 	}
 
 	private static HttpURLConnection createConnection(@NonNull final URL url) throws IOException {
-		final URL sanitizedUrl = ConnectionUtils.sanitizeUrl(url);
+		ConnectionUtils.validateUrl(url);
 		final URLConnection connection;
 		if (configuration.getBoolean(Preference.PROXY_ENABLED, Defaults.PROXY_ENABLED)) {
 			Proxy proxy;
 			if (!configuration.getBoolean(Preference.PROXY_MANUAL, Defaults.PROXY_MANUAL)) {
 				System.setProperty("java.net.useSystemProxies", Boolean.TRUE.toString());
 				try {
-					proxy = ProxySelector.getDefault().select(sanitizedUrl.toURI()).get(0);
+					proxy = ProxySelector.getDefault().select(url.toURI()).get(0);
 				}
 				catch (final URISyntaxException e) {
-					throw new IllegalArgumentException(sanitizedUrl.toString(), e);
+					throw new IllegalArgumentException(url.toString(), e);
 				}
 			}
 			else {
@@ -120,11 +120,11 @@ public class ConnectionFactory {
 				proxy = new Proxy(Proxy.Type.valueOf(configuration.getString(Preference.PROXY_TYPE, Defaults.PROXY_TYPE.name())), new InetSocketAddress(configuration.getString(Preference.PROXY_ADDRESS, Defaults.PROXY_ADDRESS), configuration.getInt(Preference.PROXY_PORT, Defaults.PROXY_PORT)));
 			}
 			log.debug("Using proxy: {}", proxy);
-			connection = sanitizedUrl.openConnection(proxy);
+			connection = url.openConnection(proxy);
 		}
 		else {
 			Authenticator.setDefault(null);
-			connection = sanitizedUrl.openConnection(/* DIRECT */);
+			connection = url.openConnection(/* DIRECT */);
 		}
 		if (connection instanceof HttpURLConnection) {
 			connection.setConnectTimeout(configuration.getInt(Preference.HTTP_CONNECTION_TIMEOUT_MS, Defaults.CONNECTION_TIMEOUT_IN_MILLIS));
@@ -133,8 +133,8 @@ public class ConnectionFactory {
 			return (HttpURLConnection) connection;
 		}
 		else {
-			log.error("url={}, connection={}", sanitizedUrl, connection);
-			throw new IllegalArgumentException(String.valueOf(sanitizedUrl));
+			log.error("url={}, connection={}", url, connection);
+			throw new IllegalArgumentException(String.valueOf(url));
 		}
 	}
 

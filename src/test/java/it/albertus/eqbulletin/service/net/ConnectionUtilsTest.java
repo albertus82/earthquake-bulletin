@@ -1,5 +1,7 @@
 package it.albertus.eqbulletin.service.net;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 import org.junit.jupiter.api.Assertions;
@@ -21,6 +23,32 @@ class ConnectionUtilsTest {
 		Assertions.assertEquals(StandardCharsets.UTF_8, ConnectionUtils.detectCharset("application/json;charset= UTF-8"));
 		Assertions.assertEquals(StandardCharsets.UTF_8, ConnectionUtils.detectCharset("application/json; charset= UTF-8"));
 		Assertions.assertEquals(StandardCharsets.US_ASCII, ConnectionUtils.detectCharset("application/json; charset=us-ascii"));
+	}
+
+	@Test
+	void testSanitizeUriString() throws MalformedURLException {
+		Assertions.assertEquals("https://www.example.com", ConnectionUtils.sanitizeUriString("https://www.example.com"));
+		Assertions.assertEquals("https://www.example.com/", ConnectionUtils.sanitizeUriString(" https://www.example.com/"));
+		Assertions.assertEquals("https://www.example.com", ConnectionUtils.sanitizeUriString("https://www.example.com "));
+		Assertions.assertEquals("https://www.example.com/", ConnectionUtils.sanitizeUriString(" https://www.example.com/ "));
+		Assertions.assertEquals("https://www.example.com", ConnectionUtils.sanitizeUriString("\t  \t https://www.example.com  "));
+		Assertions.assertEquals("http://www.example.com", ConnectionUtils.sanitizeUriString("http://www.example.com"));
+		Assertions.assertEquals("http://www.example.com/", ConnectionUtils.sanitizeUriString("  http://www.example.com/  "));
+		Assertions.assertThrows(MalformedURLException.class, () -> ConnectionUtils.sanitizeUriString("file:///etc/passwd"));
+		Assertions.assertThrows(MalformedURLException.class, () -> ConnectionUtils.sanitizeUriString("dict://dict.example.com"));
+		Assertions.assertThrows(MalformedURLException.class, () -> ConnectionUtils.sanitizeUriString("ftp://ftp.example.com"));
+		Assertions.assertThrows(MalformedURLException.class, () -> ConnectionUtils.sanitizeUriString("gopher://gph.example.com"));
+	}
+
+	@Test
+	@SuppressWarnings("java:S5783")
+	void testValidateUrl() {
+		Assertions.assertDoesNotThrow(() -> ConnectionUtils.validateUrl(new URL("https://www.example.com")));
+		Assertions.assertDoesNotThrow(() -> ConnectionUtils.validateUrl(new URL("http://www.example.com")));
+		Assertions.assertThrows(MalformedURLException.class, () -> ConnectionUtils.validateUrl(new URL("file:///etc/passwd")));
+		Assertions.assertThrows(MalformedURLException.class, () -> ConnectionUtils.validateUrl(new URL("dict://dict.example.com")));
+		Assertions.assertThrows(MalformedURLException.class, () -> ConnectionUtils.validateUrl(new URL("ftp://ftp.example.com")));
+		Assertions.assertThrows(MalformedURLException.class, () -> ConnectionUtils.validateUrl(new URL("gopher://gph.example.com")));
 	}
 
 }

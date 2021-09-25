@@ -19,11 +19,24 @@ import lombok.extern.slf4j.Slf4j;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ConnectionUtils {
 
-	public static Charset detectCharset(@NonNull final URLConnection connection) {
+	public static String sanitizeUriString(@NonNull final String spec) throws MalformedURLException {
+		final String sanitized = spec.trim();
+		final String lower = sanitized.toLowerCase(Locale.ROOT);
+		if (!lower.startsWith("http:") && !lower.startsWith("https:")) {
+			throw new MalformedURLException("Illegal or missing protocol (only http and https are allowed)");
+		}
+		return sanitized;
+	}
+
+	public static URI toURI(@NonNull final String spec) throws MalformedURLException, URISyntaxException {
+		return new URI(sanitizeUriString(spec));
+	}
+
+	static Charset detectCharset(@NonNull final URLConnection connection) {
 		return detectCharset(connection.getContentType());
 	}
 
-	static Charset detectCharset(String contentType) {
+	static Charset detectCharset(String contentType) { // non-private for test only access
 		if (contentType != null) {
 			contentType = contentType.toLowerCase(Locale.ROOT);
 			if (contentType.contains("charset=")) {
@@ -43,24 +56,11 @@ public class ConnectionUtils {
 		return charset;
 	}
 
-	public static String sanitizeUriString(@NonNull final String spec) throws MalformedURLException {
-		final String sanitized = spec.trim();
-		final String lower = sanitized.toLowerCase(Locale.ROOT);
-		if (!lower.startsWith("http:") && !lower.startsWith("https:")) {
-			throw new MalformedURLException("Illegal or missing protocol (only http and https are allowed)");
-		}
-		return sanitized;
-	}
-
-	public static URI toURI(@NonNull final String spec) throws MalformedURLException, URISyntaxException {
-		return new URI(sanitizeUriString(spec));
-	}
-
-	public static URL sanitizeUrl(@NonNull URL url) throws MalformedURLException {
+	static void validateUrl(@NonNull final URL url) throws MalformedURLException {
 		if (!url.getProtocol().equalsIgnoreCase("http") && !url.getProtocol().equalsIgnoreCase("https")) {
 			throw new MalformedURLException("Illegal or missing protocol (only http and https are allowed)");
 		}
-		return url;
+		log.debug("URL [{}] validated successfully.", url);
 	}
 
 }
