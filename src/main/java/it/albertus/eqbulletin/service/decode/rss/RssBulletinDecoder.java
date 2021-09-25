@@ -22,6 +22,7 @@ import it.albertus.eqbulletin.service.decode.rss.xml.Item;
 import it.albertus.eqbulletin.service.decode.rss.xml.RssBulletin;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -60,39 +61,49 @@ public class RssBulletinDecoder {
 		final Status status = Status.valueOf(descriptionTokens[6].trim());
 
 		// URIs
-		URI link = null;
+		final URI link = decodeLink(item);
+		final URI enclosureUri = decodeEnclosureUri(item);
+		final URI momentTensorUri = decodeMomentTensorUri(item, guid, time);
+
+		return new Earthquake(guid, time, magnitudo, Latitude.valueOf(latitude), Longitude.valueOf(longitude), Depth.valueOf(depth), status, region, link, enclosureUri, momentTensorUri);
+	}
+
+	private static URI decodeLink(@NonNull final Item item) {
 		final String pageUrl = item.getLink();
 		if (pageUrl != null) {
 			try {
-				link = new URI(pageUrl.trim());
+				return new URI(pageUrl.trim());
 			}
 			catch (final URISyntaxException e) {
 				log.warn("Invalid URL: \"" + pageUrl + "\":", e);
 			}
 		}
+		return null;
+	}
 
-		URI enclosureUri = null;
-		final String imageUrl = item.getEnclosure() != null ? item.getEnclosure().getUrl() : null;
-		if (imageUrl != null) {
-			try {
-				enclosureUri = new URI(imageUrl.trim());
-			}
-			catch (final URISyntaxException e) {
-				log.error("Invalid URL: \"" + imageUrl + "\":", e);
-			}
-		}
-
-		URI momentTensorUri = null;
+	private static URI decodeMomentTensorUri(@NonNull final Item item, @NonNull final String guid, @NonNull final ZonedDateTime time) {
 		if (item.getMt() != null && "yes".equalsIgnoreCase(item.getMt().trim())) {
 			try {
-				momentTensorUri = GeofonUtils.getEventMomentTensorUri(guid, time.get(ChronoField.YEAR));
+				return GeofonUtils.getEventMomentTensorUri(guid, time.get(ChronoField.YEAR));
 			}
 			catch (final MalformedURLException | URISyntaxException e) {
 				log.error("Cannot construct moment tensor URI:", e);
 			}
 		}
+		return null;
+	}
 
-		return new Earthquake(guid, time, magnitudo, Latitude.valueOf(latitude), Longitude.valueOf(longitude), Depth.valueOf(depth), status, region, link, enclosureUri, momentTensorUri);
+	private static URI decodeEnclosureUri(@NonNull final Item item) {
+		final String imageUrl = item.getEnclosure() != null ? item.getEnclosure().getUrl() : null;
+		if (imageUrl != null) {
+			try {
+				return new URI(imageUrl.trim());
+			}
+			catch (final URISyntaxException e) {
+				log.error("Invalid URL: \"" + imageUrl + "\":", e);
+			}
+		}
+		return null;
 	}
 
 }
