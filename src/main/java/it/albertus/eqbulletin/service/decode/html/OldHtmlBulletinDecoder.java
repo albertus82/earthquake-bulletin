@@ -20,6 +20,7 @@ import it.albertus.eqbulletin.model.Latitude;
 import it.albertus.eqbulletin.model.Longitude;
 import it.albertus.eqbulletin.model.Status;
 import it.albertus.eqbulletin.service.GeofonUtils;
+import it.albertus.eqbulletin.service.net.ConnectionUtils;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
@@ -78,7 +79,7 @@ public class OldHtmlBulletinDecoder extends AbstractHtmlBulletinDecoder {
 
 	private static URI decodeLink(@NonNull final Element anchor) {
 		try {
-			return GeofonUtils.toURI(anchor.absUrl("href"));
+			return ConnectionUtils.toURI(anchor.absUrl("href"));
 		}
 		catch (final MalformedURLException | URISyntaxException e) {
 			log.error("Cannot decode link " + anchor + ":", e);
@@ -133,7 +134,7 @@ public class OldHtmlBulletinDecoder extends AbstractHtmlBulletinDecoder {
 			final Optional<Element> a = findFirstLink(row.child(i));
 			if (a.isPresent() && ("MT".equalsIgnoreCase(a.get().text()) || a.get().attr("href").endsWith(GeofonUtils.MOMENT_TENSOR_FILENAME))) {
 				try {
-					return GeofonUtils.toURI(a.get().absUrl("href"));
+					return ConnectionUtils.toURI(a.get().absUrl("href"));
 				}
 				catch (final MalformedURLException | URISyntaxException e) {
 					log.error("Cannot construct moment tensor URI for " + row + ":", e);

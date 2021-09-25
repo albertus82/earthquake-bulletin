@@ -68,7 +68,7 @@ public class ConnectionFactory {
 				spec = baseUrl + location;
 			}
 			else { // Absolute
-				spec = location;
+				spec = ConnectionUtils.sanitizeUriString(location);
 			}
 			log.debug("Redirecting from \"{}\" to \"{}\"", url, spec);
 			url = new URL(spec);

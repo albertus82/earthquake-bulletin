@@ -22,6 +22,7 @@ import it.albertus.eqbulletin.model.Latitude;
 import it.albertus.eqbulletin.model.Longitude;
 import it.albertus.eqbulletin.model.Status;
 import it.albertus.eqbulletin.service.GeofonUtils;
+import it.albertus.eqbulletin.service.net.ConnectionUtils;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
@@ -85,7 +86,7 @@ public class NewHtmlBulletinDecoder extends AbstractHtmlBulletinDecoder {
 
 	private static URI decodeLink(@NonNull final Element anchor) {
 		try {
-			return GeofonUtils.toURI(anchor.absUrl("href"));
+			return ConnectionUtils.toURI(anchor.absUrl("href"));
 		}
 		catch (final MalformedURLException | URISyntaxException e) {
 			log.error("Cannot decode link " + anchor + ":", e);
