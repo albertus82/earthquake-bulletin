@@ -1,6 +1,7 @@
 package it.albertus.eqbulletin.service.net;
 
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.time.Duration;
 
 import io.github.resilience4j.decorators.Decorators;
@@ -21,7 +22,7 @@ public abstract class ResilientDownloader {
 	protected InputStream connectionInputStream;
 
 	private Retry getRetry() {
-		return Retry.of(getClass().getSimpleName() + Retry.class.getSimpleName(), RetryConfig.custom().maxAttempts(configuration.getBoolean(Preference.PROXY_ENABLED, ConnectionFactory.Defaults.PROXY_ENABLED) && configuration.getBoolean(Preference.PROXY_AUTH_REQUIRED, ConnectionFactory.Defaults.PROXY_AUTH_REQUIRED) ? 1 : 3).waitDuration(Duration.ofSeconds(1)).ignoreExceptions(CancelException.class).build());
+		return Retry.of(getClass().getSimpleName() + Retry.class.getSimpleName(), RetryConfig.custom().maxAttempts(configuration.getBoolean(Preference.PROXY_ENABLED, ConnectionFactory.Defaults.PROXY_ENABLED) && configuration.getBoolean(Preference.PROXY_AUTH_REQUIRED, ConnectionFactory.Defaults.PROXY_AUTH_REQUIRED) ? 1 : 3).waitDuration(Duration.ofSeconds(1)).ignoreExceptions(CancelException.class, MalformedURLException.class).build());
 	}
 
 	protected <T> DecorateCheckedSupplier<T> newResilientSupplier(final CheckedFunction0<T> supplier) {
