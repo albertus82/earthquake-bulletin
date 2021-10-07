@@ -257,9 +257,6 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-antrun-plugin</artifactId>
-						<configuration>
-							<skip>${maven.antrun.skip.lombok}</skip>
-						</configuration>
 						<executions>
 							<execution>
 								<id>replace-sources</id>
@@ -929,15 +926,15 @@
 				<executions>
 					<execution>
 						<?m2e execute?>
-						<id>lombok</id>
+						<id>lombok-config</id>
 						<phase>initialize</phase>
 						<goals>
 							<goal>run</goal>
 						</goals>
 						<configuration>
-							<skip>${maven.antrun.skip.lombok}</skip>
+							<skip>${maven.antrun.skip.lombok-config}</skip>
 							<target>
-								<ant target="lombok" />
+								<ant target="lombok-config" />
 							</target>
 						</configuration>
 					</execution>
@@ -1003,7 +1000,7 @@
 					<properties>
 						<skipTests>${skipTests}</skipTests>
 						<maven.gitcommitid.skip>true</maven.gitcommitid.skip>
-						<maven.antrun.skip.lombok>true</maven.antrun.skip.lombok>
+						<maven.antrun.skip.lombok-config>true</maven.antrun.skip.lombok-config>
 						<jacoco.skip>true</jacoco.skip>
 						<lombok.delombok.skip>true</lombok.delombok.skip>
 						<local.git.commit.time>${local.git.commit.time}</local.git.commit.time>
