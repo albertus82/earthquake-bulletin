@@ -5,7 +5,7 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>it.albertus</groupId>
+	<groupId>com.github.albertus82</groupId>
 	<artifactId>earthquake-bulletin</artifactId>
 	<version>2.3.1</version>
 	<name>Earthquake Bulletin</name>
@@ -38,7 +38,7 @@
 		<eqbulletin.vm.maxHeapSize>96</eqbulletin.vm.maxHeapSize>
 		<feregion.vm.initialHeapSize>4</feregion.vm.initialHeapSize>
 		<feregion.vm.maxHeapSize>16</feregion.vm.maxHeapSize>
-		<eqbulletin.mainClass>it.albertus.eqbulletin.EarthquakeBulletin</eqbulletin.mainClass>
+		<eqbulletin.mainClass>${project.groupId}.eqbulletin.EarthquakeBulletin</eqbulletin.mainClass>
 		<feregion.mainClass>gov.usgs.cr.hazards.feregion.fe_1995.FERegion</feregion.mainClass>
 	</properties>
 
