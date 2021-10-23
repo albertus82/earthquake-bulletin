@@ -1,7 +1,7 @@
 package io.github.albertus82.eqbulletin.gui.async;
 
-import static it.albertus.jface.DisplayThreadExecutor.Mode.ASYNC;
-import static it.albertus.jface.DisplayThreadExecutor.Mode.SYNC;
+import static io.github.albertus82.jface.DisplayThreadExecutor.Mode.ASYNC;
+import static io.github.albertus82.jface.DisplayThreadExecutor.Mode.SYNC;
 
 import java.util.Optional;
 
@@ -17,7 +17,7 @@ import io.github.albertus82.eqbulletin.model.Earthquake;
 import io.github.albertus82.eqbulletin.model.MapImage;
 import io.github.albertus82.eqbulletin.service.job.MapImageDownloadJob;
 import io.github.albertus82.eqbulletin.service.net.MapImageDownloader;
-import it.albertus.jface.DisplayThreadExecutor;
+import io.github.albertus82.jface.DisplayThreadExecutor;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

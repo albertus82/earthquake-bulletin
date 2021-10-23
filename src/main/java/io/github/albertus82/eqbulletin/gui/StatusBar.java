@@ -13,8 +13,8 @@ import org.eclipse.swt.widgets.MenuItem;
 
 import io.github.albertus82.eqbulletin.config.TimeZoneConfigAccessor;
 import io.github.albertus82.eqbulletin.resources.Messages;
-import it.albertus.jface.Multilanguage;
-import it.albertus.jface.i18n.LocalizedWidgets;
+import io.github.albertus82.jface.Multilanguage;
+import io.github.albertus82.jface.i18n.LocalizedWidgets;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;

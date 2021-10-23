@@ -5,10 +5,10 @@ import java.util.Locale;
 import org.eclipse.jface.resource.ImageDescriptor;
 
 import io.github.albertus82.eqbulletin.resources.Messages;
-import it.albertus.jface.preference.page.BasePreferencePage;
-import it.albertus.jface.preference.page.IPageDefinition;
-import it.albertus.jface.preference.page.PageDefinitionDetails;
-import it.albertus.jface.preference.page.PageDefinitionDetails.PageDefinitionDetailsBuilder;
+import io.github.albertus82.jface.preference.page.BasePreferencePage;
+import io.github.albertus82.jface.preference.page.IPageDefinition;
+import io.github.albertus82.jface.preference.page.PageDefinitionDetails;
+import io.github.albertus82.jface.preference.page.PageDefinitionDetails.PageDefinitionDetailsBuilder;
 
 public enum PageDefinition implements IPageDefinition {
 

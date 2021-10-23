@@ -3,7 +3,7 @@ package io.github.albertus82.eqbulletin.config;
 import java.util.Locale;
 
 import io.github.albertus82.eqbulletin.gui.preference.Preference;
-import it.albertus.jface.preference.IPreferencesConfiguration;
+import io.github.albertus82.jface.preference.IPreferencesConfiguration;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;

@@ -8,9 +8,9 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Text;
 
 import io.github.albertus82.eqbulletin.gui.SearchForm;
-import it.albertus.jface.maps.CoordinateUtils;
-import it.albertus.jface.maps.MapBounds;
-import it.albertus.jface.maps.MapBoundsDialog;
+import io.github.albertus82.jface.maps.CoordinateUtils;
+import io.github.albertus82.jface.maps.MapBounds;
+import io.github.albertus82.jface.maps.MapBoundsDialog;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 

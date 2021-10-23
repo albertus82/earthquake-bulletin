@@ -10,7 +10,7 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import it.albertus.jface.JFaceMessages;
+import io.github.albertus82.jface.JFaceMessages;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 

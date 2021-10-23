@@ -19,7 +19,7 @@ import org.eclipse.swt.widgets.Display;
 import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
 
-import it.albertus.jface.ImageUtils;
+import io.github.albertus82.jface.ImageUtils;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

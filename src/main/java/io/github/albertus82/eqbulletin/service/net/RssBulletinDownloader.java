@@ -22,7 +22,7 @@ import io.github.albertus82.eqbulletin.service.SearchRequest;
 import io.github.albertus82.eqbulletin.service.decode.DecodeException;
 import io.github.albertus82.eqbulletin.service.decode.rss.RssBulletinDecoder;
 import io.github.albertus82.eqbulletin.service.decode.rss.xml.RssBulletin;
-import it.albertus.util.IOUtils;
+import io.github.albertus82.util.IOUtils;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;

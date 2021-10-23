@@ -1,7 +1,7 @@
 package io.github.albertus82.eqbulletin.gui.async;
 
-import static it.albertus.jface.DisplayThreadExecutor.Mode.ASYNC;
-import static it.albertus.jface.DisplayThreadExecutor.Mode.SYNC;
+import static io.github.albertus82.jface.DisplayThreadExecutor.Mode.ASYNC;
+import static io.github.albertus82.jface.DisplayThreadExecutor.Mode.SYNC;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -24,8 +24,8 @@ import io.github.albertus82.eqbulletin.model.Earthquake;
 import io.github.albertus82.eqbulletin.resources.Messages;
 import io.github.albertus82.eqbulletin.service.SearchRequest;
 import io.github.albertus82.eqbulletin.service.job.SearchJob;
-import it.albertus.jface.DisplayThreadExecutor;
-import it.albertus.jface.EnhancedErrorDialog;
+import io.github.albertus82.jface.DisplayThreadExecutor;
+import io.github.albertus82.jface.EnhancedErrorDialog;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;

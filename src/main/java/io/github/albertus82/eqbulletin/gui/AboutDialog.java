@@ -57,9 +57,9 @@ import org.eclipse.swt.widgets.Text;
 
 import io.github.albertus82.eqbulletin.resources.Messages;
 import io.github.albertus82.eqbulletin.util.BuildInfo;
-import it.albertus.jface.SwtUtils;
-import it.albertus.jface.closeable.CloseableResource;
-import it.albertus.jface.listener.LinkSelectionListener;
+import io.github.albertus82.jface.SwtUtils;
+import io.github.albertus82.jface.closeable.CloseableResource;
+import io.github.albertus82.jface.listener.LinkSelectionListener;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;

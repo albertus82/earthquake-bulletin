@@ -7,7 +7,7 @@ import org.eclipse.jface.util.Util;
 import ch.qos.logback.classic.Level;
 import io.github.albertus82.eqbulletin.gui.preference.Preference;
 import io.github.albertus82.eqbulletin.util.BuildInfo;
-import it.albertus.jface.preference.IPreferencesConfiguration;
+import io.github.albertus82.jface.preference.IPreferencesConfiguration;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 

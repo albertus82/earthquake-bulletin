@@ -14,7 +14,7 @@ import org.eclipse.swt.widgets.Table;
 
 import io.github.albertus82.eqbulletin.gui.ResultsTable;
 import io.github.albertus82.eqbulletin.model.Earthquake;
-import it.albertus.jface.closeable.CloseableClipboard;
+import io.github.albertus82.jface.closeable.CloseableClipboard;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 

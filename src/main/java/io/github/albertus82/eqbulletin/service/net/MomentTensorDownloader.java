@@ -11,7 +11,7 @@ import java.util.Optional;
 
 import io.github.albertus82.eqbulletin.model.Earthquake;
 import io.github.albertus82.eqbulletin.model.MomentTensor;
-import it.albertus.util.IOUtils;
+import io.github.albertus82.util.IOUtils;
 
 public class MomentTensorDownloader extends StaticResourceDownloader<MomentTensor> {
 

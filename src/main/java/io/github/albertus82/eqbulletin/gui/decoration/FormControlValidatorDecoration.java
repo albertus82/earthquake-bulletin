@@ -7,8 +7,8 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Control;
 
-import it.albertus.jface.decoration.ControlValidatorDecoration;
-import it.albertus.jface.validation.ControlValidator;
+import io.github.albertus82.jface.decoration.ControlValidatorDecoration;
+import io.github.albertus82.jface.validation.ControlValidator;
 
 public class FormControlValidatorDecoration extends ControlValidatorDecoration {
 

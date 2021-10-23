@@ -1,7 +1,7 @@
 package io.github.albertus82.eqbulletin.resources;
 
 import io.github.albertus82.eqbulletin.config.LanguageConfigAccessor;
-import it.albertus.util.ILanguageManager;
+import io.github.albertus82.util.ILanguageManager;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 

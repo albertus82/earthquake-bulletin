@@ -2,7 +2,7 @@ package io.github.albertus82.eqbulletin.service.decode.html;
 
 import io.github.albertus82.eqbulletin.config.EarthquakeBulletinConfig;
 import io.github.albertus82.eqbulletin.gui.preference.Preference;
-import it.albertus.jface.preference.IPreferencesConfiguration;
+import io.github.albertus82.jface.preference.IPreferencesConfiguration;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 

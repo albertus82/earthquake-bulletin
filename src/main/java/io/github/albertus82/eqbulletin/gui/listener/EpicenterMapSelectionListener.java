@@ -12,9 +12,9 @@ import io.github.albertus82.eqbulletin.gui.ResultsTable;
 import io.github.albertus82.eqbulletin.model.Earthquake;
 import io.github.albertus82.eqbulletin.resources.Leaflet;
 import io.github.albertus82.eqbulletin.resources.Messages;
-import it.albertus.jface.maps.MapMarker;
-import it.albertus.jface.maps.leaflet.LeafletMapControl;
-import it.albertus.jface.maps.leaflet.LeafletMapDialog;
+import io.github.albertus82.jface.maps.MapMarker;
+import io.github.albertus82.jface.maps.leaflet.LeafletMapControl;
+import io.github.albertus82.jface.maps.leaflet.LeafletMapDialog;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 

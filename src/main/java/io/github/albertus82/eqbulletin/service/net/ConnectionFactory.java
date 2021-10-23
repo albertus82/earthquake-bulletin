@@ -21,7 +21,7 @@ import com.sun.net.httpserver.Headers;
 import io.github.albertus82.eqbulletin.config.EarthquakeBulletinConfig;
 import io.github.albertus82.eqbulletin.gui.preference.Preference;
 import io.github.albertus82.eqbulletin.util.BuildInfo;
-import it.albertus.jface.preference.IPreferencesConfiguration;
+import io.github.albertus82.jface.preference.IPreferencesConfiguration;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;

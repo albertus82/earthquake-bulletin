@@ -1,6 +1,6 @@
 package io.github.albertus82.eqbulletin.model;
 
-import static it.albertus.jface.maps.CoordinateUtils.DEGREE_SIGN;
+import static io.github.albertus82.jface.maps.CoordinateUtils.DEGREE_SIGN;
 
 import java.text.NumberFormat;
 

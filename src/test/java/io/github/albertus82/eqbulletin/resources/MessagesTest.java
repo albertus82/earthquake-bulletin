@@ -26,7 +26,7 @@ import org.reflections.scanners.ResourcesScanner;
 
 import io.github.albertus82.eqbulletin.BaseTest;
 import io.github.albertus82.eqbulletin.EarthquakeBulletin;
-import it.albertus.util.StringUtils;
+import io.github.albertus82.util.StringUtils;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 

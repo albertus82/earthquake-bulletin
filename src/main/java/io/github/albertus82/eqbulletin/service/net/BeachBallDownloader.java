@@ -13,7 +13,7 @@ import java.util.function.BooleanSupplier;
 import io.github.albertus82.eqbulletin.model.BeachBall;
 import io.github.albertus82.eqbulletin.model.Earthquake;
 import io.github.albertus82.eqbulletin.service.GeofonUtils;
-import it.albertus.util.IOUtils;
+import io.github.albertus82.util.IOUtils;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

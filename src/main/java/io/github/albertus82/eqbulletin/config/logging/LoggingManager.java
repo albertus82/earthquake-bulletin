@@ -7,7 +7,7 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.util.ContextInitializer;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.util.StatusPrinter;
-import it.albertus.util.logging.ILoggingManager;
+import io.github.albertus82.util.logging.ILoggingManager;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;

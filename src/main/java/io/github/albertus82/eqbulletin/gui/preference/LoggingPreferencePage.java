@@ -3,8 +3,8 @@ package io.github.albertus82.eqbulletin.gui.preference;
 import org.eclipse.swt.widgets.Control;
 
 import io.github.albertus82.eqbulletin.resources.Messages;
-import it.albertus.jface.preference.page.BasePreferencePage;
-import it.albertus.util.logging.LoggingSupport;
+import io.github.albertus82.jface.preference.page.BasePreferencePage;
+import io.github.albertus82.util.logging.LoggingSupport;
 import lombok.Getter;
 import lombok.Setter;
 

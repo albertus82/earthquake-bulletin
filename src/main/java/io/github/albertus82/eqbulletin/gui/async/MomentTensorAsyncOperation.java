@@ -1,7 +1,7 @@
 package io.github.albertus82.eqbulletin.gui.async;
 
-import static it.albertus.jface.DisplayThreadExecutor.Mode.ASYNC;
-import static it.albertus.jface.DisplayThreadExecutor.Mode.SYNC;
+import static io.github.albertus82.jface.DisplayThreadExecutor.Mode.ASYNC;
+import static io.github.albertus82.jface.DisplayThreadExecutor.Mode.SYNC;
 
 import java.util.Optional;
 
@@ -15,7 +15,7 @@ import io.github.albertus82.eqbulletin.model.Earthquake;
 import io.github.albertus82.eqbulletin.model.MomentTensor;
 import io.github.albertus82.eqbulletin.service.job.MomentTensorDownloadJob;
 import io.github.albertus82.eqbulletin.service.net.MomentTensorDownloader;
-import it.albertus.jface.DisplayThreadExecutor;
+import io.github.albertus82.jface.DisplayThreadExecutor;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

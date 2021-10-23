@@ -11,7 +11,7 @@ import java.util.function.BooleanSupplier;
 
 import io.github.albertus82.eqbulletin.model.Earthquake;
 import io.github.albertus82.eqbulletin.model.MapImage;
-import it.albertus.util.IOUtils;
+import io.github.albertus82.util.IOUtils;
 
 public class MapImageDownloader extends StaticResourceDownloader<MapImage> {
 

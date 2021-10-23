@@ -11,14 +11,14 @@ import io.github.albertus82.eqbulletin.config.logging.LoggingManager;
 import io.github.albertus82.eqbulletin.resources.LanguageManager;
 import io.github.albertus82.eqbulletin.resources.Messages;
 import io.github.albertus82.eqbulletin.util.BuildInfo;
-import it.albertus.jface.preference.IPreferencesConfiguration;
-import it.albertus.jface.preference.PreferencesConfiguration;
-import it.albertus.util.ILanguageManager;
-import it.albertus.util.InitializationException;
-import it.albertus.util.SystemUtils;
-import it.albertus.util.config.Configuration;
-import it.albertus.util.config.PropertiesConfiguration;
-import it.albertus.util.logging.ILoggingManager;
+import io.github.albertus82.jface.preference.IPreferencesConfiguration;
+import io.github.albertus82.jface.preference.PreferencesConfiguration;
+import io.github.albertus82.util.ILanguageManager;
+import io.github.albertus82.util.InitializationException;
+import io.github.albertus82.util.SystemUtils;
+import io.github.albertus82.util.config.Configuration;
+import io.github.albertus82.util.config.PropertiesConfiguration;
+import io.github.albertus82.util.logging.ILoggingManager;
 
 public class EarthquakeBulletinConfig extends Configuration {
 

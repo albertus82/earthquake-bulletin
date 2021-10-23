@@ -7,7 +7,7 @@ import java.util.Map;
 import io.github.albertus82.eqbulletin.config.EarthquakeBulletinConfig;
 import io.github.albertus82.eqbulletin.gui.preference.Preference;
 import io.github.albertus82.eqbulletin.model.MapImage;
-import it.albertus.jface.preference.IPreferencesConfiguration;
+import io.github.albertus82.jface.preference.IPreferencesConfiguration;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 

@@ -11,8 +11,8 @@ import io.github.albertus82.eqbulletin.config.EarthquakeBulletinConfig;
 import io.github.albertus82.eqbulletin.gui.EarthquakeBulletinGui;
 import io.github.albertus82.eqbulletin.gui.TrayIcon;
 import io.github.albertus82.eqbulletin.gui.preference.Preference;
-import it.albertus.jface.listener.TrayRestoreListener;
-import it.albertus.jface.preference.IPreferencesConfiguration;
+import io.github.albertus82.jface.listener.TrayRestoreListener;
+import io.github.albertus82.jface.preference.IPreferencesConfiguration;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

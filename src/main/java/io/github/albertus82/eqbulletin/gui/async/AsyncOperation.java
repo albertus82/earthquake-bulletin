@@ -1,6 +1,6 @@
 package io.github.albertus82.eqbulletin.gui.async;
 
-import static it.albertus.jface.DisplayThreadExecutor.Mode.ASYNC;
+import static io.github.albertus82.jface.DisplayThreadExecutor.Mode.ASYNC;
 
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -11,9 +11,9 @@ import org.eclipse.swt.widgets.Shell;
 
 import io.github.albertus82.eqbulletin.gui.EarthquakeBulletinGui;
 import io.github.albertus82.eqbulletin.gui.Images;
-import it.albertus.jface.DisplayThreadExecutor;
-import it.albertus.jface.EnhancedErrorDialog;
-import it.albertus.util.DaemonThreadFactory;
+import io.github.albertus82.jface.DisplayThreadExecutor;
+import io.github.albertus82.jface.EnhancedErrorDialog;
+import io.github.albertus82.util.DaemonThreadFactory;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;

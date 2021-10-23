@@ -2,7 +2,7 @@ package io.github.albertus82.eqbulletin.gui.listener;
 
 import org.eclipse.swt.events.VerifyEvent;
 
-import it.albertus.jface.listener.TrimVerifyListener;
+import io.github.albertus82.jface.listener.TrimVerifyListener;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 

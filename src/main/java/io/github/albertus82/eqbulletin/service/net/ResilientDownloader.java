@@ -6,12 +6,12 @@ import java.time.Duration;
 
 import io.github.albertus82.eqbulletin.config.EarthquakeBulletinConfig;
 import io.github.albertus82.eqbulletin.gui.preference.Preference;
+import io.github.albertus82.jface.preference.IPreferencesConfiguration;
 import io.github.resilience4j.decorators.Decorators;
 import io.github.resilience4j.decorators.Decorators.DecorateCheckedSupplier;
 import io.github.resilience4j.retry.Retry;
 import io.github.resilience4j.retry.RetryConfig;
 import io.vavr.CheckedFunction0;
-import it.albertus.jface.preference.IPreferencesConfiguration;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

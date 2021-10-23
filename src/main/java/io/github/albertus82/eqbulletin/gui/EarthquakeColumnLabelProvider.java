@@ -10,7 +10,7 @@ import org.eclipse.swt.graphics.RGB;
 import io.github.albertus82.eqbulletin.config.EarthquakeBulletinConfig;
 import io.github.albertus82.eqbulletin.gui.preference.Preference;
 import io.github.albertus82.eqbulletin.model.Earthquake;
-import it.albertus.jface.preference.IPreferencesConfiguration;
+import io.github.albertus82.jface.preference.IPreferencesConfiguration;
 
 public class EarthquakeColumnLabelProvider extends ColumnLabelProvider {
 

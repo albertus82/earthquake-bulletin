@@ -22,10 +22,10 @@ import io.github.albertus82.eqbulletin.gui.listener.PreferencesListener;
 import io.github.albertus82.eqbulletin.gui.listener.ShowMapListener;
 import io.github.albertus82.eqbulletin.gui.listener.ShowMomentTensorListener;
 import io.github.albertus82.eqbulletin.resources.Messages;
-import it.albertus.jface.SwtUtils;
-import it.albertus.jface.cocoa.CocoaEnhancerException;
-import it.albertus.jface.cocoa.CocoaUIEnhancer;
-import it.albertus.jface.sysinfo.SystemInformationDialog;
+import io.github.albertus82.jface.SwtUtils;
+import io.github.albertus82.jface.cocoa.CocoaEnhancerException;
+import io.github.albertus82.jface.cocoa.CocoaUIEnhancer;
+import io.github.albertus82.jface.sysinfo.SystemInformationDialog;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 

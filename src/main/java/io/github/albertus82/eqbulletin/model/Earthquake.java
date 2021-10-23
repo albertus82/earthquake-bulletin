@@ -9,7 +9,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
-import it.albertus.jface.maps.CoordinateUtils;
+import io.github.albertus82.jface.maps.CoordinateUtils;
 import lombok.NonNull;
 import lombok.Value;
 

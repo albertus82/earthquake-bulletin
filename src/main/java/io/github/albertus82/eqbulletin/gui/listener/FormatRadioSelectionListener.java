@@ -8,7 +8,7 @@ import org.eclipse.swt.widgets.Text;
 
 import io.github.albertus82.eqbulletin.gui.SearchForm;
 import io.github.albertus82.eqbulletin.model.Format;
-import it.albertus.jface.validation.ControlValidator;
+import io.github.albertus82.jface.validation.ControlValidator;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 

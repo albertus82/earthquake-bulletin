@@ -1,6 +1,6 @@
 package gov.usgs.cr.hazards.feregion.fe_1995;
 
-import static it.albertus.jface.maps.CoordinateUtils.DEGREE_SIGN;
+import static io.github.albertus82.jface.maps.CoordinateUtils.DEGREE_SIGN;
 
 import java.io.Serializable;
 import java.util.Locale;
