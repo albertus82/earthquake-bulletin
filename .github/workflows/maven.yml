@@ -7,7 +7,7 @@ jobs:
     strategy:
       matrix:
         java: [ '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18-ea' ]
-        os: [ 'windows-latest', 'ubuntu-latest', 'macOS-latest' ]
+        os: [ 'windows-latest', 'ubuntu-18.04', 'macOS-latest' ]
     runs-on: ${{ matrix.os }}
     env:
       MAVEN_OPTS: -Dhttp.keepAlive=false
@@ -18,7 +18,7 @@ jobs:
         sudo dpkg --add-architecture i386
         wget -nc https://dl.winehq.org/wine-builds/winehq.key
         sudo apt-key add winehq.key
-        sudo add-apt-repository 'deb https://dl.winehq.org/wine-builds/ubuntu/ focal main'
+        sudo add-apt-repository 'deb https://dl.winehq.org/wine-builds/ubuntu/ bionic main'
         sudo apt-get update
         sudo apt-get upgrade -y
         sudo apt-get install --install-recommends -y winehq-stable
