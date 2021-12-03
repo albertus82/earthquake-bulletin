@@ -14,13 +14,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - if: startsWith(matrix.os, 'ubuntu')
-      run: |
-        sudo dpkg --add-architecture i386
-        wget -nc https://dl.winehq.org/wine-builds/winehq.key
-        sudo apt-key add winehq.key
-        sudo add-apt-repository 'deb https://dl.winehq.org/wine-builds/ubuntu/ focal main'
-        sudo apt-get update
-        sudo apt-get install --install-recommends -y winehq-stable
+      run: sudo dpkg --add-architecture i386 && sudo apt-get update && sudo apt-get install -y libwine wine32
     - uses: actions/setup-java@v2
       with:
         distribution: 'zulu'
