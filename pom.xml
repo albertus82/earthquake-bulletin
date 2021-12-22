@@ -118,7 +118,7 @@
 		<dependency>
 			<groupId>org.eclipse.platform</groupId>
 			<artifactId>org.eclipse.osgi</artifactId>
-			<version>3.17.0</version>
+			<version>3.17.100</version>
 		</dependency>
 		<dependency>
 			<groupId>info.picocli</groupId>
@@ -861,7 +861,7 @@
 					<dependency>
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>extra-enforcer-rules</artifactId>
-						<version>1.4</version>
+						<version>1.5.1</version>
 					</dependency>
 				</dependencies>
 			</plugin>
