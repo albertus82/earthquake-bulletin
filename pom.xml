@@ -30,6 +30,7 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<project.url>${project.url}</project.url>
+		<project.build.outputTimestamp>${git.commit.time}</project.build.outputTimestamp>
 		<project.build.basedir>target</project.build.basedir>
 		<project.build.binSourceDirectory>src/main/bin</project.build.binSourceDirectory>
 		<project.build.iconsSourceDirectory>src/main/icons</project.build.iconsSourceDirectory>
@@ -276,7 +277,7 @@
 								<phase>process-sources</phase>
 								<configuration>
 									<target>
-										<ant target="codeql-delombok"/>
+										<ant target="codeql-delombok" />
 									</target>
 								</configuration>
 								<goals>
@@ -288,7 +289,7 @@
 								<phase>process-test-sources</phase>
 								<configuration>
 									<target>
-										<ant target="codeql-delombok-test"/>
+										<ant target="codeql-delombok-test" />
 									</target>
 								</configuration>
 								<goals>
@@ -312,8 +313,6 @@
 			<properties>
 				<platform>cocoa-macosx-aarch64</platform>
 				<assembly.descriptor>mac.xml</assembly.descriptor>
-				<assembly.outputTimestamp>${zoned.git.commit.time}</assembly.outputTimestamp>
-				<ignoreWineErrors>true</ignoreWineErrors>
 			</properties>
 			<build>
 				<finalName>${mac.build.finalName}</finalName>
@@ -394,8 +393,6 @@
 			<properties>
 				<platform>cocoa-macosx-x86_64</platform>
 				<assembly.descriptor>mac.xml</assembly.descriptor>
-				<assembly.outputTimestamp>${zoned.git.commit.time}</assembly.outputTimestamp>
-				<ignoreWineErrors>true</ignoreWineErrors>
 			</properties>
 			<build>
 				<finalName>${mac.build.finalName}</finalName>
@@ -476,8 +473,6 @@
 			<properties>
 				<platform>gtk-linux-aarch64</platform>
 				<assembly.descriptor>linux.xml</assembly.descriptor>
-				<assembly.outputTimestamp>${zoned.git.commit.time}</assembly.outputTimestamp>
-				<ignoreWineErrors>true</ignoreWineErrors>
 			</properties>
 			<build>
 				<finalName>${linux.build.finalName}</finalName>
@@ -507,8 +502,6 @@
 			<properties>
 				<platform>gtk-linux-armhf</platform>
 				<assembly.descriptor>linux.xml</assembly.descriptor>
-				<assembly.outputTimestamp>${zoned.git.commit.time}</assembly.outputTimestamp>
-				<ignoreWineErrors>true</ignoreWineErrors>
 				<jface.version>3.12.2</jface.version>
 			</properties>
 			<build>
@@ -539,7 +532,6 @@
 			<properties>
 				<platform>gtk-linux-x86</platform>
 				<assembly.descriptor>linux.xml</assembly.descriptor>
-				<assembly.outputTimestamp>${zoned.git.commit.time}</assembly.outputTimestamp>
 			</properties>
 			<build>
 				<finalName>${linux.build.finalName}</finalName>
@@ -569,7 +561,6 @@
 			<properties>
 				<platform>gtk-linux-x86_64</platform>
 				<assembly.descriptor>linux.xml</assembly.descriptor>
-				<assembly.outputTimestamp>${zoned.git.commit.time}</assembly.outputTimestamp>
 			</properties>
 			<build>
 				<finalName>${linux.build.finalName}</finalName>
@@ -599,7 +590,6 @@
 			<properties>
 				<platform>win32-win32-x86</platform>
 				<assembly.descriptor>windows.xml</assembly.descriptor>
-				<assembly.outputTimestamp>${local.git.commit.time}</assembly.outputTimestamp>
 				<launch4j.jre.runtimeBits>32</launch4j.jre.runtimeBits>
 			</properties>
 			<build>
@@ -617,7 +607,7 @@
 								</goals>
 								<configuration>
 									<target>
-										<ant target="launch4j"/>
+										<ant target="launch4j" />
 									</target>
 								</configuration>
 							</execution>
@@ -650,7 +640,6 @@
 			<properties>
 				<platform>win32-win32-x86_64</platform>
 				<assembly.descriptor>windows.xml</assembly.descriptor>
-				<assembly.outputTimestamp>${local.git.commit.time}</assembly.outputTimestamp>
 				<launch4j.jre.runtimeBits>64</launch4j.jre.runtimeBits>
 			</properties>
 			<build>
@@ -668,7 +657,7 @@
 								</goals>
 								<configuration>
 									<target>
-										<ant target="launch4j"/>
+										<ant target="launch4j" />
 									</target>
 								</configuration>
 							</execution>
@@ -790,28 +779,16 @@
 				<version>4.0.5</version>
 				<executions>
 					<execution>
-						<id>zoned</id>
 						<goals>
 							<goal>revision</goal>
 						</goals>
 						<phase>initialize</phase>
-						<configuration>
-							<prefix>zoned.git</prefix>
-							<dateFormat>yyyy-MM-dd'T'HH:mm:ssXXX</dateFormat>
-						</configuration>
-					</execution>
-					<execution>
-						<id>local</id>
-						<goals>
-							<goal>revision</goal>
-						</goals>
-						<phase>initialize</phase>
-						<configuration>
-							<prefix>local.git</prefix>
-							<dateFormat>yyyy-MM-dd'T'HH:mm:ss'Z'</dateFormat>
-						</configuration>
 					</execution>
 				</executions>
+				<configuration>
+					<dateFormat>yyyy-MM-dd'T'HH:mm:ssXXX</dateFormat>
+					<dateFormatTimeZone>Z</dateFormatTimeZone>
+				</configuration>
 			</plugin>
 
 			<plugin>
@@ -819,7 +796,6 @@
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>3.2.0</version>
 				<configuration>
-					<outputTimestamp>${local.git.commit.time}</outputTimestamp>
 					<archive>
 						<manifestEntries>
 							<X-Compile-Source-JDK>${maven.compiler.source}</X-Compile-Source-JDK>
@@ -949,7 +925,7 @@
 						<configuration>
 							<skip>${maven.antrun.skip.lombok-config}</skip>
 							<target>
-								<ant target="lombok-config"/>
+								<ant target="lombok-config" />
 							</target>
 						</configuration>
 					</execution>
@@ -974,7 +950,7 @@
 						</goals>
 						<configuration>
 							<target>
-								<ant target="checksums"/>
+								<ant target="checksums" />
 							</target>
 						</configuration>
 					</execution>
@@ -986,7 +962,6 @@
 				<artifactId>maven-assembly-plugin</artifactId>
 				<version>3.3.0</version>
 				<configuration>
-					<outputTimestamp>${assembly.outputTimestamp}</outputTimestamp>
 					<finalName>${assembly.finalName}</finalName>
 					<outputDirectory>${assembly.outputDirectory}</outputDirectory>
 					<descriptors>
@@ -1018,8 +993,7 @@
 						<maven.antrun.skip.lombok-config>true</maven.antrun.skip.lombok-config>
 						<jacoco.skip>true</jacoco.skip>
 						<lombok.delombok.skip>true</lombok.delombok.skip>
-						<local.git.commit.time>${local.git.commit.time}</local.git.commit.time>
-						<zoned.git.commit.time>${zoned.git.commit.time}</zoned.git.commit.time>
+						<git.commit.time>${git.commit.time}</git.commit.time>
 					</properties>
 				</configuration>
 				<executions>
