@@ -829,7 +829,6 @@
 									<version>3.3.9</version>
 								</requireMavenVersion>
 							</rules>
-							<fail>true</fail>
 						</configuration>
 					</execution>
 				</executions>
