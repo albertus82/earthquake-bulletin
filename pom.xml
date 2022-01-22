@@ -1107,6 +1107,16 @@
 			<id>albertus82-github</id>
 			<url>https://albertus82.github.io/maven</url>
 		</repository>
+		<repository>
+			<id>ossrh-snapshot</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
 	</repositories>
 
 </project>
