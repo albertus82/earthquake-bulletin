@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>org.eclipse.nebula</groupId>
+  <artifactId>org.eclipse.nebula.widgets.cdatetime</artifactId>
+  <versioning>
+    <release>1.5.0.202011020719</release>
+    <versions>
+      <version>1.5.0.202011020719</version>
+    </versions>
+    <lastUpdated>20210321100415</lastUpdated>
+  </versioning>
+</metadata>
