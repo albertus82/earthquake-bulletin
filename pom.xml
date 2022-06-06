@@ -112,7 +112,7 @@
 		<dependency>
 			<groupId>org.jsoup</groupId>
 			<artifactId>jsoup</artifactId>
-			<version>1.14.3</version>
+			<version>1.15.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.platform</groupId>
@@ -292,7 +292,7 @@
 								<phase>process-sources</phase>
 								<configuration>
 									<target>
-										<ant target="codeql-delombok" />
+										<ant target="codeql-delombok"/>
 									</target>
 								</configuration>
 								<goals>
@@ -304,7 +304,7 @@
 								<phase>process-test-sources</phase>
 								<configuration>
 									<target>
-										<ant target="codeql-delombok-test" />
+										<ant target="codeql-delombok-test"/>
 									</target>
 								</configuration>
 								<goals>
@@ -622,7 +622,7 @@
 								</goals>
 								<configuration>
 									<target>
-										<ant target="launch4j" />
+										<ant target="launch4j"/>
 									</target>
 								</configuration>
 							</execution>
@@ -672,7 +672,7 @@
 								</goals>
 								<configuration>
 									<target>
-										<ant target="launch4j" />
+										<ant target="launch4j"/>
 									</target>
 								</configuration>
 							</execution>
@@ -926,7 +926,7 @@
 						<configuration>
 							<skip>${maven.antrun.skip.lombok-config}</skip>
 							<target>
-								<ant target="lombok-config" />
+								<ant target="lombok-config"/>
 							</target>
 						</configuration>
 					</execution>
@@ -951,7 +951,7 @@
 						</goals>
 						<configuration>
 							<target>
-								<ant target="checksums" />
+								<ant target="checksums"/>
 							</target>
 						</configuration>
 					</execution>
