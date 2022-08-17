@@ -19,7 +19,7 @@ jobs:
         distribution: zulu
         java-version: ${{ matrix.java }}
     - if: contains(matrix.os, 'ubuntu')
-      name: Install Wine
+      name: Install Dependencies
       run: |
         sudo rm -vf /etc/apt/sources.list.d/microsoft-prod.list
         sudo apt-get update && sudo apt-get install -y --allow-downgrades libgd3/focal libpcre2-8-0/focal libpcre2-16-0/focal libpcre2-32-0/focal libpcre2-posix2/focal
