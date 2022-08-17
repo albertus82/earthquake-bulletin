@@ -19,5 +19,5 @@ jobs:
         distribution: zulu
         java-version: ${{ matrix.java }}
     - if: matrix.os == 'ubuntu-latest' 
-      run: sudo dpkg --add-architecture i386 && sudo apt-get update && sudo apt-get install -y lib32z1 wine32
+      run: sudo apt-get install aptitude && sudo aptitude install winehq-stable
     - run: ./mvnw clean verify -B -V -e -ntp
