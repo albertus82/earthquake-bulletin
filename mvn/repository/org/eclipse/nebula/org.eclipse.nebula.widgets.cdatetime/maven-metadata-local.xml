@@ -3,10 +3,10 @@
   <groupId>org.eclipse.nebula</groupId>
   <artifactId>org.eclipse.nebula.widgets.cdatetime</artifactId>
   <versioning>
-    <release>1.5.0.202011020719</release>
+    <release>1.5.0.202208171809</release>
     <versions>
-      <version>1.5.0.202011020719</version>
+      <version>1.5.0.202208171809</version>
     </versions>
-    <lastUpdated>20210321100415</lastUpdated>
+    <lastUpdated>20220817192900</lastUpdated>
   </versioning>
 </metadata>
