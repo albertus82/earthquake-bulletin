@@ -7,8 +7,8 @@ jobs:
     name: Build
     strategy:
       matrix:
-        java: 17
-        os: windows-latest
+        java: [ '17' ]
+        os: [ windows-latest ]
     runs-on: ${{ matrix.os }}
     env:
       MAVEN_OPTS: -Dhttp.keepAlive=false
