@@ -1,6 +1,5 @@
 package io.github.albertus82.eqbulletin.model;
 
-import java.io.Serializable;
 import java.net.URI;
 import java.text.NumberFormat;
 import java.time.ZoneId;
@@ -14,9 +13,7 @@ import lombok.NonNull;
 import lombok.Value;
 
 @Value
-public class Earthquake implements Serializable, Comparable<Earthquake> {
-
-	private static final long serialVersionUID = -6959335170582499256L;
+public class Earthquake implements Comparable<Earthquake> {
 
 	// @formatter:off
 	@NonNull String guid;

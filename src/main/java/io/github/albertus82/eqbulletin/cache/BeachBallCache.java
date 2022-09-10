@@ -1,8 +1,8 @@
 package io.github.albertus82.eqbulletin.cache;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.Map;
 
 import io.github.albertus82.eqbulletin.config.EarthquakeBulletinConfig;
 import io.github.albertus82.eqbulletin.gui.preference.Preference;
@@ -45,7 +45,7 @@ public class BeachBallCache implements Cache<String, BeachBall> {
 		return instance;
 	}
 
-	private final Map<String, BeachBall> cache = new LinkedHashMap<>(16, 0.75f, true);
+	private final HashMap<String, BeachBall> cache = new LinkedHashMap<>(16, 0.75f, true);
 
 	@Override
 	public synchronized void put(final String guid, final BeachBall image) {

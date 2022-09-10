@@ -1,6 +1,5 @@
 package io.github.albertus82.eqbulletin.model;
 
-import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 
@@ -9,9 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Value
-public class Depth implements Serializable, Comparable<Depth> {
-
-	private static final long serialVersionUID = 894681925414643001L;
+public class Depth implements Comparable<Depth> {
 
 	private static final int EARTH_RADIUS_KM = 6371;
 

@@ -1,6 +1,5 @@
 package io.github.albertus82.eqbulletin.model;
 
-import java.io.Serializable;
 import java.time.Instant;
 import java.util.Collection;
 
@@ -13,9 +12,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class Bulletin implements Serializable {
-
-	private static final long serialVersionUID = 4656384045849863383L;
+public class Bulletin {
 
 	@NonNull
 	@EqualsAndHashCode.Include
