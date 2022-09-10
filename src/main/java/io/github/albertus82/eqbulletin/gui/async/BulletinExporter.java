@@ -8,9 +8,7 @@ import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -43,8 +41,6 @@ public class BulletinExporter implements IRunnableWithProgress {
 	private static final char CSV_FIELD_SEPARATOR = ';';
 	private static final String[] CSV_FILE_EXTENSIONS = { "*.CSV;*.csv" };
 
-	private static final byte[] UTF8_BOM = { (byte) 0xEF, (byte) 0xBB, (byte) 0xBF };
-
 	@NonNull
 	private final String fileName;
 	@NonNull
@@ -55,9 +51,8 @@ public class BulletinExporter implements IRunnableWithProgress {
 		monitor.beginTask(TASK_NAME, IProgressMonitor.UNKNOWN);
 
 		try {
-			final Path path = Paths.get(fileName);
-			Files.write(path, UTF8_BOM);
-			try (final OutputStream fos = Files.newOutputStream(Paths.get(fileName), StandardOpenOption.APPEND); final OutputStreamWriter osw = new OutputStreamWriter(fos, StandardCharsets.UTF_8); final BufferedWriter bw = new BufferedWriter(osw)) {
+			try (final OutputStream fos = Files.newOutputStream(Paths.get(fileName)); final OutputStreamWriter osw = new OutputStreamWriter(fos, StandardCharsets.UTF_8); final BufferedWriter bw = new BufferedWriter(osw)) {
+				bw.write('\uFEFF');
 				bw.write(data);
 			}
 		}
