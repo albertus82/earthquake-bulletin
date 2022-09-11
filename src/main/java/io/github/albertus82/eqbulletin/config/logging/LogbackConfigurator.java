@@ -103,7 +103,7 @@ public class LogbackConfigurator extends ContextAwareBase implements Configurato
 		levelChangePropagator.start();
 
 		addInfo("Logging configuration reloaded successfully.");
-		return ExecutionStatus.NEUTRAL;
+		return ExecutionStatus.DO_NOT_INVOKE_NEXT_IF_ANY;
 	}
 
 }
