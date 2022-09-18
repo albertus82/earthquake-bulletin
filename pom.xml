@@ -127,7 +127,7 @@
 		<dependency>
 			<groupId>org.eclipse.platform</groupId>
 			<artifactId>org.eclipse.osgi</artifactId>
-			<version>3.18.0</version>
+			<version>3.18.100</version>
 		</dependency>
 		<dependency>
 			<groupId>info.picocli</groupId>
@@ -813,7 +813,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
-				<version>3.2.2</version>
+				<version>3.3.0</version>
 				<configuration>
 					<archive>
 						<manifestEntries>
