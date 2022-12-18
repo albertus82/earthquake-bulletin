@@ -43,6 +43,7 @@
 		<sonar.coverage.jacoco.xmlReportPaths>${project.build.directory}/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
 		<maven.version.rules>${project.baseUri}maven-version-rules.xml</maven.version.rules>
 		<swt.version>3.122.0</swt.version>
+		<jarbundler.version>3.4.0</jarbundler.version>
 		<jface.version>3.28.0</jface.version>
 		<lombok.version>1.18.24</lombok.version>
 		<picocli.version>4.7.0</picocli.version>
@@ -351,7 +352,7 @@
 							<dependency>
 								<groupId>com.ultramixer.jarbundler</groupId>
 								<artifactId>jarbundler-core</artifactId>
-								<version>3.4.0</version>
+								<version>${jarbundler.version}</version>
 								<exclusions>
 									<exclusion>
 										<groupId>*</groupId>
@@ -431,7 +432,7 @@
 							<dependency>
 								<groupId>com.ultramixer.jarbundler</groupId>
 								<artifactId>jarbundler-core</artifactId>
-								<version>3.3.0</version>
+								<version>${jarbundler.version}</version>
 								<exclusions>
 									<exclusion>
 										<groupId>*</groupId>
