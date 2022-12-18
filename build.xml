@@ -118,62 +118,6 @@
 			</sequential>
 		</for>
 
-		<echo file="${project.build.basedir}/win32-win32-x86/innosetup/${project.artifactId}.iss">
-			[Setup]
-			AppName=${project.name}
-			AppVersion=${project.version}
-			VersionInfoVersion=${project.version}
-			AppId=${innoSetup.AppId.x86}
-			AppPublisherURL=${innoSetup.AppPublisherURL}
-			AppSupportURL=${innoSetup.AppSupportURL}
-			AppUpdatesURL=${innoSetup.AppUpdatesURL}
-			AppMutex=${eqbulletin.mainClass}
-			TimeStampsInUTC=yes
-			PrivilegesRequired=lowest
-			PrivilegesRequiredOverridesAllowed=dialog
-			DefaultDirName={autopf32}\${project.name}
-			DefaultGroupName=${project.name}
-			UninstallDisplayIcon={app}\${windows.eqbulletin.exeFileName}
-			Compression=lzma2
-			SolidCompression=yes
-			CloseApplications=no
-			ArchitecturesAllowed=x86
-
-			[Languages]
-			Name: "English"; MessagesFile: "compiler:Default.isl"; LicenseFile: "${project.name}\LICENSE.txt"
-			Name: "Italiano"; MessagesFile: "compiler:Languages\Italian.isl"; LicenseFile: "${project.name}\LICENSE.txt"
-
-			[Run]
-			Filename: "{app}\${windows.eqbulletin.exeFileName}"; Description: "{cm:LaunchProgram,${project.name}}"; Flags: nowait postinstall skipifsilent
-
-			[Tasks]
-			Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
-			Name: "startupicon"; Description: "{cm:AutoStartProgram,${project.name}}"; GroupDescription: "{cm:AutoStartProgramGroupDescription}"; Flags: unchecked
-
-			[Icons]
-			Name: "{group}\${project.name}"; Filename: "{app}\${windows.eqbulletin.exeFileName}"
-			Name: "{group}\{cm:UninstallProgram,${project.name}}"; Filename: "{uninstallexe}"
-			Name: "{autodesktop}\${project.name}"; Filename: "{app}\${windows.eqbulletin.exeFileName}"; Tasks: desktopicon
-			Name: "{userstartup}\${project.name}"; Filename: "{app}\${windows.eqbulletin.exeFileName}"; Tasks: startupicon
-
-			[Files]
-			Source: "${project.name}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
-			Source: "${innoSetup.dependencies.logFileName}"; DestDir: "{autoappdata}\${project.name}"; Flags: ignoreversion overwritereadonly uninsremovereadonly; Attribs: hidden readonly
-
-			[Code]
-			procedure CurStepChanged(CurStep: TSetupStep);
-			var
-				jarFileNames: TArrayOfString;
-				i: Integer;
-			begin
-				if (CurStep = ssInstall) and (LoadStringsFromFile(ExpandConstant('{autoappdata}\${project.name}\${innoSetup.dependencies.logFileName}'), jarFileNames)) then
-				begin
-					for i := 0 to GetArrayLength(jarFileNames) - 1 do
-						DeleteFile(ExpandConstant('{app}\${dependencies.directory}\' + jarFileNames[i]));
-				end;
-			end;
-		</echo>
-
 		<echo file="${project.build.basedir}/win32-win32-x86_64/innosetup/${project.artifactId}.iss">
 			[Setup]
 			AppName=${project.name}
