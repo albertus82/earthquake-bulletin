@@ -27,8 +27,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.source>11</maven.compiler.source>
-		<maven.compiler.target>17</maven.compiler.target>
+		<maven.compiler.release>17</maven.compiler.release>
 		<maven.compiler.showDeprecation>true</maven.compiler.showDeprecation>
 		<maven.compiler.showWarnings>true</maven.compiler.showWarnings>
 		<project.url>${project.url}</project.url>
@@ -218,16 +217,6 @@
 	</dependencyManagement>
 
 	<profiles>
-		<profile>
-			<id>javac-release-option</id>
-			<activation>
-				<jdk>[9,)</jdk>
-			</activation>
-			<properties>
-				<maven.compiler.release>8</maven.compiler.release>
-			</properties>
-		</profile>
-
 		<profile>
 			<id>codeql</id>
 			<properties>
@@ -699,8 +688,8 @@
 				<configuration>
 					<archive>
 						<manifestEntries>
-							<X-Compile-Source-JDK>${maven.compiler.source}</X-Compile-Source-JDK>
-							<X-Compile-Target-JDK>${maven.compiler.target}</X-Compile-Target-JDK>
+							<X-Compile-Source-JDK>${maven.compiler.release}</X-Compile-Source-JDK>
+							<X-Compile-Target-JDK>${maven.compiler.release}</X-Compile-Target-JDK>
 						</manifestEntries>
 						<manifest>
 							<mainClass>${eqbulletin.mainClass}</mainClass>
@@ -724,13 +713,13 @@
 						<configuration>
 							<rules>
 								<requireJavaVersion>
-									<version>${maven.compiler.source}</version>
+									<version>${maven.compiler.release}</version>
 								</requireJavaVersion>
 								<requireMavenVersion>
 									<version>3.5.2</version>
 								</requireMavenVersion>
 								<enforceBytecodeVersion>
-									<maxJdkVersion>${maven.compiler.target}</maxJdkVersion>
+									<maxJdkVersion>${maven.compiler.release}</maxJdkVersion>
 								</enforceBytecodeVersion>
 							</rules>
 						</configuration>
