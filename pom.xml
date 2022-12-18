@@ -888,7 +888,7 @@
 					<execution>
 						<id>cocoa-macosx-aarch64</id>
 						<configuration>
-							<profiles>cocoa-macosx-aarch64,!cocoa-macosx-x86_64,!gtk-linux-aarch64,!gtk-linux-armhf,!gtk-linux-x86,!gtk-linux-x86_64,!win32-win32-x86,!win32-win32-x86_64</profiles>
+							<profiles>cocoa-macosx-aarch64,!cocoa-macosx-x86_64,!gtk-linux-aarch64,!gtk-linux-x86_64,!win32-win32-x86_64</profiles>
 						</configuration>
 						<phase>pre-integration-test</phase>
 						<goals>
@@ -898,7 +898,7 @@
 					<execution>
 						<id>cocoa-macosx-x86_64</id>
 						<configuration>
-							<profiles>!cocoa-macosx-aarch64,cocoa-macosx-x86_64,!gtk-linux-aarch64,!gtk-linux-armhf,!gtk-linux-x86,!gtk-linux-x86_64,!win32-win32-x86,!win32-win32-x86_64</profiles>
+							<profiles>!cocoa-macosx-aarch64,cocoa-macosx-x86_64,!gtk-linux-aarch64,!gtk-linux-x86_64,!win32-win32-x86_64</profiles>
 						</configuration>
 						<phase>pre-integration-test</phase>
 						<goals>
@@ -908,27 +908,7 @@
 					<execution>
 						<id>gtk-linux-aarch64</id>
 						<configuration>
-							<profiles>!cocoa-macosx-aarch64,!cocoa-macosx-x86_64,gtk-linux-aarch64,!gtk-linux-armhf,!gtk-linux-x86,!gtk-linux-x86_64,!win32-win32-x86,!win32-win32-x86_64</profiles>
-						</configuration>
-						<phase>pre-integration-test</phase>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>gtk-linux-armhf</id>
-						<configuration>
-							<profiles>!cocoa-macosx-aarch64,!cocoa-macosx-x86_64,!gtk-linux-aarch64,gtk-linux-armhf,!gtk-linux-x86,!gtk-linux-x86_64,!win32-win32-x86,!win32-win32-x86_64</profiles>
-						</configuration>
-						<phase>pre-integration-test</phase>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>gtk-linux-x86</id>
-						<configuration>
-							<profiles>!cocoa-macosx-aarch64,!cocoa-macosx-x86_64,!gtk-linux-aarch64,!gtk-linux-armhf,gtk-linux-x86,!gtk-linux-x86_64,!win32-win32-x86,!win32-win32-x86_64</profiles>
+							<profiles>!cocoa-macosx-aarch64,!cocoa-macosx-x86_64,gtk-linux-aarch64,!gtk-linux-x86_64,!win32-win32-x86_64</profiles>
 						</configuration>
 						<phase>pre-integration-test</phase>
 						<goals>
@@ -938,17 +918,7 @@
 					<execution>
 						<id>gtk-linux-x86_64</id>
 						<configuration>
-							<profiles>!cocoa-macosx-aarch64,!cocoa-macosx-x86_64,!gtk-linux-aarch64,!gtk-linux-armhf,!gtk-linux-x86,gtk-linux-x86_64,!win32-win32-x86,!win32-win32-x86_64</profiles>
-						</configuration>
-						<phase>pre-integration-test</phase>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>win32-win32-x86</id>
-						<configuration>
-							<profiles>!cocoa-macosx-aarch64,!cocoa-macosx-x86_64,!gtk-linux-aarch64,!gtk-linux-armhf,!gtk-linux-x86,!gtk-linux-x86_64,win32-win32-x86,!win32-win32-x86_64</profiles>
+							<profiles>!cocoa-macosx-aarch64,!cocoa-macosx-x86_64,!gtk-linux-aarch64,gtk-linux-x86_64,!win32-win32-x86_64</profiles>
 						</configuration>
 						<phase>pre-integration-test</phase>
 						<goals>
@@ -958,7 +928,7 @@
 					<execution>
 						<id>win32-win32-x86_64</id>
 						<configuration>
-							<profiles>!cocoa-macosx-aarch64,!cocoa-macosx-x86_64,!gtk-linux-aarch64,!gtk-linux-armhf,!gtk-linux-x86,!gtk-linux-x86_64,!win32-win32-x86,win32-win32-x86_64</profiles>
+							<profiles>!cocoa-macosx-aarch64,!cocoa-macosx-x86_64,!gtk-linux-aarch64,!gtk-linux-x86_64,win32-win32-x86_64</profiles>
 						</configuration>
 						<phase>pre-integration-test</phase>
 						<goals>
