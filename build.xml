@@ -98,13 +98,13 @@
 		<launch4j bindir="${launch4j.bindir}">
 			<config outfile="${project.build.directory}/launch4j/${windows.eqbulletin.exeFileName}" jarpath="${windows.build.finalName}.${project.packaging}" headertype="gui" dontwrapjar="${launch4j.dontWrapJar}" stayalive="${launch4j.stayAlive}" restartoncrash="${launch4j.restartOnCrash}" priority="${launch4j.priority}" errtitle="${launch4j.errTitle}" chdir="." icon="${project.build.iconsSourceDirectory}/windows/${windows.build.finalName}.ico">
 				<singleInstance mutexname="${eqbulletin.mainClass}" windowtitle="${project.name}" />
-				<jre runtimebits="${launch4j.jre.runtimeBits}" minversion="${maven.compiler.target}.0" jdkpreference="${launch4j.jdkPreference}" initialheapsize="${eqbulletin.vm.initialHeapSize}" maxheapsize="${eqbulletin.vm.maxHeapSize}" />
+				<jre requires64Bit="${launch4j.jre.requires64Bit}" path="${launch4j.jre.path}" minversion="${maven.compiler.target}.0" requiresJdk="${launch4j.requiresJdk}" initialheapsize="${eqbulletin.vm.initialHeapSize}" maxheapsize="${eqbulletin.vm.maxHeapSize}" />
 				<versionInfo fileversion="${project.version}.0" txtfileversion="${project.version}" filedescription="${project.name}" copyright="${launch4j.copyright}" productversion="${project.version}.0" txtproductversion="${project.version}" productname="${project.name}" internalname="${project.artifactId}" originalfilename="${windows.eqbulletin.exeFileName}" companyname="${launch4j.companyName}" />
 			</config>
 		</launch4j>
 		<launch4j bindir="${launch4j.bindir}">
 			<config outfile="${project.build.directory}/launch4j/${windows.feregion.exeFileName}" jarpath="${windows.build.finalName}.${project.packaging}" headertype="console" dontwrapjar="${launch4j.dontWrapJar}" stayalive="${launch4j.stayAlive}" restartoncrash="${launch4j.restartOnCrash}" priority="${launch4j.priority}" errtitle="${launch4j.errTitle}" chdir=".">
-				<jre minversion="${maven.compiler.target}.0" jdkpreference="${launch4j.jdkPreference}" initialheapsize="${feregion.vm.initialHeapSize}" maxheapsize="${feregion.vm.maxHeapSize}" />
+				<jre minversion="${maven.compiler.target}.0" path="${launch4j.jre.path}" requiresJdk="${launch4j.requiresJdk}" initialheapsize="${feregion.vm.initialHeapSize}" maxheapsize="${feregion.vm.maxHeapSize}" />
 				<classPath mainclass="${feregion.mainClass}" />
 				<versionInfo fileversion="${project.version}.0" txtfileversion="${project.version}" filedescription="${launch4j.feregion.name}" copyright="${launch4j.copyright}" productversion="${project.version}.0" txtproductversion="${project.version}" productname="${launch4j.feregion.name}" internalname="${launch4j.feregion.name}" originalfilename="${windows.feregion.exeFileName}" companyname="${launch4j.companyName}" />
 			</config>
