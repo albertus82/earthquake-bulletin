@@ -43,7 +43,6 @@
 		<sonar.coverage.jacoco.xmlReportPaths>${project.build.directory}/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
 		<maven.version.rules>${project.baseUri}maven-version-rules.xml</maven.version.rules>
 		<swt.version>3.116.100</swt.version> <!-- Last version compatible with JRE 8 -->
-		<jarbundler.version>3.3.0</jarbundler.version>
 		<jface.version>3.22.200</jface.version> <!-- Last version compatible with JRE 8 -->
 		<lombok.version>1.18.24</lombok.version>
 		<picocli.version>4.7.0</picocli.version>
@@ -128,7 +127,7 @@
 		<dependency>
 			<groupId>org.eclipse.platform</groupId>
 			<artifactId>org.eclipse.osgi</artifactId>
-			<version>3.18.200</version>
+			<version>3.18.100</version>
 		</dependency>
 		<dependency>
 			<groupId>info.picocli</groupId>
@@ -293,7 +292,7 @@
 								<phase>process-sources</phase>
 								<configuration>
 									<target>
-										<ant target="codeql-delombok" />
+										<ant target="codeql-delombok"/>
 									</target>
 								</configuration>
 								<goals>
@@ -305,7 +304,7 @@
 								<phase>process-test-sources</phase>
 								<configuration>
 									<target>
-										<ant target="codeql-delombok-test" />
+										<ant target="codeql-delombok-test"/>
 									</target>
 								</configuration>
 								<goals>
@@ -357,7 +356,7 @@
 							<dependency>
 								<groupId>com.ultramixer.jarbundler</groupId>
 								<artifactId>jarbundler-core</artifactId>
-								<version>${jarbundler.version}</version>
+								<version>3.3.0</version>
 								<exclusions>
 									<exclusion>
 										<groupId>*</groupId>
@@ -375,8 +374,8 @@
 								</goals>
 								<configuration>
 									<target>
-										<taskdef name="jarbundler" classname="com.ultramixer.jarbundler.JarBundler" classpathref="maven.plugin.classpath" />
-										<ant target="jarbundler" />
+										<taskdef name="jarbundler" classname="com.ultramixer.jarbundler.JarBundler" classpathref="maven.plugin.classpath"/>
+										<ant target="jarbundler"/>
 									</target>
 								</configuration>
 							</execution>
@@ -437,7 +436,7 @@
 							<dependency>
 								<groupId>com.ultramixer.jarbundler</groupId>
 								<artifactId>jarbundler-core</artifactId>
-								<version>${jarbundler.version}</version>
+								<version>3.3.0</version>
 								<exclusions>
 									<exclusion>
 										<groupId>*</groupId>
@@ -455,8 +454,8 @@
 								</goals>
 								<configuration>
 									<target>
-										<taskdef name="jarbundler" classname="com.ultramixer.jarbundler.JarBundler" classpathref="maven.plugin.classpath" />
-										<ant target="jarbundler" />
+										<taskdef name="jarbundler" classname="com.ultramixer.jarbundler.JarBundler" classpathref="maven.plugin.classpath"/>
+										<ant target="jarbundler"/>
 									</target>
 								</configuration>
 							</execution>
@@ -606,7 +605,7 @@
 			<properties>
 				<platform>win32-win32-x86</platform>
 				<assembly.descriptor>windows.xml</assembly.descriptor>
-				<launch4j.jre.requires64Bit>false</launch4j.jre.requires64Bit>
+				<launch4j.jre.runtimeBits>32</launch4j.jre.runtimeBits>
 			</properties>
 			<build>
 				<finalName>${windows.build.finalName}</finalName>
@@ -656,7 +655,7 @@
 			<properties>
 				<platform>win32-win32-x86_64</platform>
 				<assembly.descriptor>windows.xml</assembly.descriptor>
-				<launch4j.jre.requires64Bit>true</launch4j.jre.requires64Bit>
+				<launch4j.jre.runtimeBits>64</launch4j.jre.runtimeBits>
 			</properties>
 			<build>
 				<finalName>${windows.build.finalName}</finalName>
@@ -673,7 +672,7 @@
 								</goals>
 								<configuration>
 									<target>
-										<ant target="launch4j" />
+										<ant target="launch4j"/>
 									</target>
 								</configuration>
 							</execution>
@@ -927,7 +926,7 @@
 						<configuration>
 							<skip>${maven.antrun.skip.lombok-config}</skip>
 							<target>
-								<ant target="lombok-config" />
+								<ant target="lombok-config"/>
 							</target>
 						</configuration>
 					</execution>
@@ -939,8 +938,8 @@
 						</goals>
 						<configuration>
 							<target>
-								<taskdef resource="net/sf/antcontrib/antlib.xml" classpathref="maven.plugin.classpath" />
-								<ant target="innosetup" />
+								<taskdef resource="net/sf/antcontrib/antlib.xml" classpathref="maven.plugin.classpath"/>
+								<ant target="innosetup"/>
 							</target>
 						</configuration>
 					</execution>
@@ -952,7 +951,7 @@
 						</goals>
 						<configuration>
 							<target>
-								<ant target="checksums" />
+								<ant target="checksums"/>
 							</target>
 						</configuration>
 					</execution>
