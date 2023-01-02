@@ -7,13 +7,13 @@ import java.util.Locale;
 
 import org.junit.jupiter.api.Test;
 
-class LatitudeTest {
+class LongitudeTest {
 
 	@Test
 	public void testToString_withPositiveValue() {
 		NumberFormat numberFormat = NumberFormat.getInstance(Locale.US);
-		Latitude obj = new Latitude(50.12f);
-		String expected = "50.12\u00B0N";
+		Longitude obj = new Longitude(50.12f);
+		String expected = "50.12\u00B0E";
 		String result = obj.toString(numberFormat);
 		assertEquals(expected, result);
 	}
@@ -21,8 +21,8 @@ class LatitudeTest {
 	@Test
 	public void testToString_withNegativeValue() {
 		NumberFormat numberFormat = NumberFormat.getInstance(Locale.US);
-		Latitude obj = new Latitude(-50.12f);
-		String expected = "50.12\u00B0S";
+		Longitude obj = new Longitude(-50.12f);
+		String expected = "50.12\u00B0W";
 		String result = obj.toString(numberFormat);
 		assertEquals(expected, result);
 	}
