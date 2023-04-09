@@ -46,7 +46,7 @@
 		<jarbundler.version>3.3.0</jarbundler.version>
 		<jface.version>3.22.200</jface.version> <!-- Last version compatible with JRE 8 -->
 		<lombok.version>1.18.26</lombok.version>
-		<picocli.version>4.7.1</picocli.version>
+		<picocli.version>4.7.2</picocli.version>
 		<slf4j.version>2.0.7</slf4j.version>
 		<windows.build.finalName>EarthquakeBulletin</windows.build.finalName>
 		<linux.build.finalName>${project.artifactId}</linux.build.finalName>
