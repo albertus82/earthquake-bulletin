@@ -172,7 +172,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow implements Multilan
 		GridLayoutFactory.swtDefaults().applyTo(sashForm);
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(sashForm);
 
-		resultsTable = new ResultsTable(sashForm, GridDataFactory.fillDefaults().grab(true, true).create());
+		resultsTable = new ResultsTable(sashForm, GridDataFactory.fillDefaults().grab(true, true).create(), searchForm);
 		multilanguages.add(resultsTable);
 
 		mapCanvas = new MapCanvas(sashForm, GridDataFactory.fillDefaults().grab(true, true).create());

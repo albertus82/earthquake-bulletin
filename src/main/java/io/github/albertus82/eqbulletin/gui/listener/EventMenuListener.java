@@ -24,6 +24,7 @@ public class EventMenuListener implements ArmMenuListener {
 		menuBar.getOpenBrowserMenuItem().setEnabled(selection != null && selection.getLink().isPresent());
 		menuBar.getGoogleMapsBrowserMenuItem().setEnabled(selection != null);
 		menuBar.getEpicenterMapPopupMenuItem().setEnabled(selection != null);
+		menuBar.getFindEventsSameAreaMenuItem().setEnabled(selection != null);
 	}
 
 }

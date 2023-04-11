@@ -21,6 +21,7 @@ abstract class AbstractMenu implements Multilanguage {
 	protected static final String LABEL_MENU_ITEM_OPEN_BROWSER = "label.menu.item.open.browser";
 	protected static final String LABEL_MENU_ITEM_SHOW_MAP = "label.menu.item.show.map";
 	protected static final String LABEL_MENU_ITEM_SHOW_MOMENT_TENSOR = "label.menu.item.show.moment.tensor";
+	protected static final String LABEL_MENU_ITEM_FIND_EVENTS_SAME_AREA = "label.menu.item.find.events.same.area";
 
 	protected MenuItem copyLinkMenuItem;
 	protected MenuItem exportCsvMenuItem;
@@ -29,6 +30,7 @@ abstract class AbstractMenu implements Multilanguage {
 	protected MenuItem openBrowserMenuItem;
 	protected MenuItem showMapMenuItem;
 	protected MenuItem showMomentTensorMenuItem;
+	protected MenuItem findEventsSameAreaMenuItem;
 
 	@Getter(AccessLevel.NONE)
 	private final LocalizedWidgets localizedWidgets = new LocalizedWidgets();

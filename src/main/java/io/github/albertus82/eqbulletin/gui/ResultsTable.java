@@ -1,7 +1,6 @@
 package io.github.albertus82.eqbulletin.gui;
 
-import static javax.swing.SortOrder.ASCENDING;
-import static javax.swing.SortOrder.DESCENDING;
+import static javax.swing.SortOrder.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -53,6 +52,7 @@ import io.github.albertus82.eqbulletin.gui.async.MomentTensorAsyncOperation;
 import io.github.albertus82.eqbulletin.gui.listener.CopyLinkSelectionListener;
 import io.github.albertus82.eqbulletin.gui.listener.EpicenterMapSelectionListener;
 import io.github.albertus82.eqbulletin.gui.listener.ExportCsvSelectionListener;
+import io.github.albertus82.eqbulletin.gui.listener.FindEarthquakesSameAreaSelectionListener;
 import io.github.albertus82.eqbulletin.gui.listener.GoogleMapsBrowserSelectionListener;
 import io.github.albertus82.eqbulletin.gui.listener.OpenInBrowserSelectionListener;
 import io.github.albertus82.eqbulletin.gui.listener.ResultsTableContextMenuDetectListener;
@@ -179,6 +179,8 @@ public class ResultsTable implements Multilanguage {
 
 	private final Shell shell;
 
+	private final SearchForm searchForm;
+
 	@Getter
 	private final TableViewer tableViewer;
 	private final EarthquakeViewerComparator comparator;
@@ -189,8 +191,9 @@ public class ResultsTable implements Multilanguage {
 
 	private boolean initialized = false;
 
-	ResultsTable(@NonNull final Composite parent, final Object layoutData) {
+	ResultsTable(@NonNull final Composite parent, final Object layoutData, @NonNull final SearchForm searchForm) {
 		shell = parent.getShell();
+		this.searchForm = searchForm;
 		tableViewer = new TableViewer(parent, SWT.BORDER | SWT.FULL_SELECTION) {
 			// Auto resize columns on content change
 			@Override
@@ -536,6 +539,12 @@ public class ResultsTable implements Multilanguage {
 			// Google Maps in browser...
 			googleMapsBrowserMenuItem = newLocalizedMenuItem(menu, SWT.PUSH, LABEL_MENU_ITEM_GOOGLE_MAPS_BROWSER);
 			googleMapsBrowserMenuItem.addSelectionListener(new GoogleMapsBrowserSelectionListener(() -> rt));
+
+			new MenuItem(menu, SWT.SEPARATOR);
+
+			// Find events in the same area
+			findEventsSameAreaMenuItem = newLocalizedMenuItem(menu, SWT.PUSH, LABEL_MENU_ITEM_FIND_EVENTS_SAME_AREA);
+			findEventsSameAreaMenuItem.addSelectionListener(new FindEarthquakesSameAreaSelectionListener(() -> rt, () -> searchForm));
 
 			new MenuItem(menu, SWT.SEPARATOR);
 

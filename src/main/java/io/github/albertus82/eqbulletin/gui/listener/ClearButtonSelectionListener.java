@@ -20,14 +20,10 @@ public class ClearButtonSelectionListener extends SelectionAdapter {
 		form.getPeriodFromDateTime().notifyListeners(SWT.KeyUp, null);
 		form.getPeriodToDateTime().setSelection(null);
 		form.getPeriodToDateTime().notifyListeners(SWT.KeyUp, null);
-		form.getLatitudeFromText().setText("");
-		form.getLatitudeFromText().notifyListeners(SWT.KeyUp, null);
-		form.getLatitudeToText().setText("");
-		form.getLatitudeToText().notifyListeners(SWT.KeyUp, null);
-		form.getLongitudeFromText().setText("");
-		form.getLongitudeFromText().notifyListeners(SWT.KeyUp, null);
-		form.getLongitudeToText().setText("");
-		form.getLongitudeToText().notifyListeners(SWT.KeyUp, null);
+		form.setLatitudeFrom(null);
+		form.setLatitudeTo(null);
+		form.setLongitudeFrom(null);
+		form.setLongitudeTo(null);
 		form.getMinimumMagnitudeText().setText("");
 		form.getMinimumMagnitudeText().notifyListeners(SWT.KeyUp, null);
 		form.getResultsText().setText("");

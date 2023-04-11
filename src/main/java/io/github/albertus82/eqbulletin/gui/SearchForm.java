@@ -50,6 +50,7 @@ import io.github.albertus82.jface.decoration.ControlValidatorDecoration;
 import io.github.albertus82.jface.i18n.LocalizedWidgets;
 import io.github.albertus82.jface.listener.FloatVerifyListener;
 import io.github.albertus82.jface.listener.IntegerVerifyListener;
+import io.github.albertus82.jface.maps.CoordinateUtils;
 import io.github.albertus82.jface.maps.MapBounds;
 import io.github.albertus82.jface.maps.leaflet.LeafletMapBoundsDialog;
 import io.github.albertus82.jface.maps.leaflet.LeafletMapControl;
@@ -411,6 +412,38 @@ public class SearchForm implements Multilanguage {
 			}
 		}
 		return value;
+	}
+
+	public void setLatitudeFrom(final Number value) {
+		if (value != null && (value.floatValue() < LATITUDE_MIN_VALUE || value.floatValue() > LATITUDE_MAX_VALUE)) {
+			throw new IllegalArgumentException("value must be between " + LATITUDE_MIN_VALUE + " and " + LATITUDE_MAX_VALUE);
+		}
+		latitudeFromText.setText(value == null ? "" : CoordinateUtils.newFormatter().format(value));
+		latitudeFromText.notifyListeners(SWT.KeyUp, null);
+	}
+
+	public void setLatitudeTo(final Number value) {
+		if (value != null && (value.floatValue() < LATITUDE_MIN_VALUE || value.floatValue() > LATITUDE_MAX_VALUE)) {
+			throw new IllegalArgumentException("value must be between " + LATITUDE_MIN_VALUE + " and " + LATITUDE_MAX_VALUE);
+		}
+		latitudeToText.setText(value == null ? "" : CoordinateUtils.newFormatter().format(value));
+		latitudeToText.notifyListeners(SWT.KeyUp, null);
+	}
+
+	public void setLongitudeFrom(final Number value) {
+		if (value != null && (value.floatValue() < LONGITUDE_MIN_VALUE || value.floatValue() > LONGITUDE_MAX_VALUE)) {
+			throw new IllegalArgumentException("value must be between " + LONGITUDE_MIN_VALUE + " and " + LONGITUDE_MAX_VALUE);
+		}
+		longitudeFromText.setText(value == null ? "" : CoordinateUtils.newFormatter().format(value));
+		longitudeFromText.notifyListeners(SWT.KeyUp, null);
+	}
+
+	public void setLongitudeTo(final Number value) {
+		if (value != null && (value.floatValue() < LONGITUDE_MIN_VALUE || value.floatValue() > LONGITUDE_MAX_VALUE)) {
+			throw new IllegalArgumentException("value must be between " + LONGITUDE_MIN_VALUE + " and " + LONGITUDE_MAX_VALUE);
+		}
+		longitudeToText.setText(value == null ? "" : CoordinateUtils.newFormatter().format(value));
+		longitudeToText.notifyListeners(SWT.KeyUp, null);
 	}
 
 }
