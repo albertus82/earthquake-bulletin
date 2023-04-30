@@ -16,6 +16,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import io.github.albertus82.eqbulletin.model.Coordinates;
 import io.github.albertus82.eqbulletin.model.Depth;
 import io.github.albertus82.eqbulletin.model.Earthquake;
 import io.github.albertus82.eqbulletin.model.Latitude;
