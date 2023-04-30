@@ -47,7 +47,7 @@
 		<jarbundler.version>3.3.0</jarbundler.version>
 		<jface.version>3.22.200</jface.version> <!-- Last version compatible with JRE 8 -->
 		<lombok.version>1.18.26</lombok.version>
-		<picocli.version>4.7.2</picocli.version>
+		<picocli.version>4.7.3</picocli.version>
 		<slf4j.version>2.0.7</slf4j.version>
 		<windows.build.finalName>EarthquakeBulletin</windows.build.finalName>
 		<linux.build.finalName>${project.artifactId}</linux.build.finalName>
@@ -114,7 +114,7 @@
 		<dependency>
 			<groupId>org.jsoup</groupId>
 			<artifactId>jsoup</artifactId>
-			<version>1.15.4</version>
+			<version>1.16.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.platform</groupId>
@@ -173,7 +173,7 @@
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
-			<version>1.3.6</version>
+			<version>1.3.7</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
