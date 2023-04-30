@@ -10,12 +10,13 @@ import lombok.extern.slf4j.Slf4j;
 @Value
 public class Depth implements Comparable<Depth> {
 
-	private static final int EARTH_RADIUS_KM = 6371;
+	private static final int EARTH_RADIUS_METERS = 6_371_008;
 
 	private static final LinkedHashMap<Short, Depth> cache = new LinkedHashMap<Short, Depth>(16, 0.75f, true) {
-		private static final long serialVersionUID = -3229317830656593292L;
 
-		private static final short MAX_ENTRIES = 0xFF;
+		private static final long serialVersionUID = -6085284206246682656L;
+
+		private static final short MAX_ENTRIES = 0x3FF;
 
 		@Override
 		protected boolean removeEldestEntry(final Entry<Short, Depth> eldest) {
@@ -33,7 +34,7 @@ public class Depth implements Comparable<Depth> {
 	}
 
 	public static Depth valueOf(final int km) {
-		if (km < 0 || km > EARTH_RADIUS_KM) {
+		if (km < 0 || km > EARTH_RADIUS_METERS / 1000) {
 			throw new IllegalArgumentException(Integer.toString(km));
 		}
 		final Depth cached = cache.get((short) km);
