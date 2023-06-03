@@ -10,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 @Value
 public class Depth implements Comparable<Depth> {
 
-	private static final int EARTH_RADIUS_METERS = 6_371_008;
+	public static final int EARTH_RADIUS_METERS = 6_371_008;
 
 	private static final LinkedHashMap<Short, Depth> cache = new LinkedHashMap<Short, Depth>(16, 0.75f, true) {
 
