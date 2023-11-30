@@ -173,7 +173,7 @@
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
-			<version>1.3.7</version>
+			<version>1.4.12</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -366,8 +366,8 @@
 								</goals>
 								<configuration>
 									<target>
-										<taskdef name="jarbundler" classname="com.ultramixer.jarbundler.JarBundler" classpathref="maven.plugin.classpath" />
-										<ant target="jarbundler" />
+										<taskdef name="jarbundler" classname="com.ultramixer.jarbundler.JarBundler" classpathref="maven.plugin.classpath"/>
+										<ant target="jarbundler"/>
 									</target>
 								</configuration>
 							</execution>
@@ -446,8 +446,8 @@
 								</goals>
 								<configuration>
 									<target>
-										<taskdef name="jarbundler" classname="com.ultramixer.jarbundler.JarBundler" classpathref="maven.plugin.classpath" />
-										<ant target="jarbundler" />
+										<taskdef name="jarbundler" classname="com.ultramixer.jarbundler.JarBundler" classpathref="maven.plugin.classpath"/>
+										<ant target="jarbundler"/>
 									</target>
 								</configuration>
 							</execution>
@@ -664,7 +664,7 @@
 								</goals>
 								<configuration>
 									<target>
-										<ant target="launch4j" />
+										<ant target="launch4j"/>
 									</target>
 								</configuration>
 							</execution>
@@ -919,7 +919,7 @@
 						<configuration>
 							<skip>${maven.antrun.skip.lombok-config}</skip>
 							<target>
-								<ant target="lombok-config" />
+								<ant target="lombok-config"/>
 							</target>
 						</configuration>
 					</execution>
@@ -931,8 +931,8 @@
 						</goals>
 						<configuration>
 							<target>
-								<taskdef resource="net/sf/antcontrib/antlib.xml" classpathref="maven.plugin.classpath" />
-								<ant target="innosetup" />
+								<taskdef resource="net/sf/antcontrib/antlib.xml" classpathref="maven.plugin.classpath"/>
+								<ant target="innosetup"/>
 							</target>
 						</configuration>
 					</execution>
@@ -944,7 +944,7 @@
 						</goals>
 						<configuration>
 							<target>
-								<ant target="checksums" />
+								<ant target="checksums"/>
 							</target>
 						</configuration>
 					</execution>
