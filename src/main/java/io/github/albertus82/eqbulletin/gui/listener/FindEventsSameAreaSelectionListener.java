@@ -79,7 +79,7 @@ public class FindEventsSameAreaSelectionListener extends SelectionAdapter {
 		final double lon1rad = Math.toRadians(lon1deg);
 		final double a = Math.sin(lat1rad) - Math.sin(lat0rad);
 		final double b = lon1rad - lon0rad;
-		final double c = Math.pow(AUTHALIC_RADIUS, 2);
+		final double c = AUTHALIC_RADIUS * AUTHALIC_RADIUS;
 		return a * b * c;
 	}
 
