@@ -224,8 +224,8 @@ public enum Preference implements IPreference {
 	}
 
 	public static LocalizedLabelsAndValues getZoomComboOptions() {
-		final Collection<Integer> values = MapCanvas.getZoomLevels();
-		final LocalizedLabelsAndValues options = new LocalizedLabelsAndValues(values.size());
+		final int[] values = MapCanvas.getZoomLevels();
+		final LocalizedLabelsAndValues options = new LocalizedLabelsAndValues(values.length);
 		for (final int level : values) {
 			final String value = Integer.toString(level);
 			options.add(() -> Messages.get("label.preferences.map.zoom.level." + (level == 0 ? "auto" : "custom"), value), value);

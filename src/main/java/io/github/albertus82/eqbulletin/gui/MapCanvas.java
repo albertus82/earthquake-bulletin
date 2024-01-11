@@ -5,13 +5,9 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.stream.Collectors;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.util.Util;
@@ -61,7 +57,11 @@ public class MapCanvas implements Multilanguage {
 	private static final int AUTO_SCALE = 0;
 	private static final int MAX_HQ_RESIZE_RATIO = 250;
 
-	private static final LinkedList<Integer> zoomLevels = Arrays.stream(new Integer[] { AUTO_SCALE, 10, 12, 15, 20, 25, 30, 40, 50, 60, 80, 100, 120, 150, 200, 250, 300, 400, 500 }).sorted().collect(Collectors.toCollection(LinkedList::new));
+	private static final int[] zoomLevels = { AUTO_SCALE, 10, 12, 15, 20, 25, 30, 40, 50, 60, 80, 100, 120, 150, 200, 250, 300, 400, 500 };
+
+	static {
+		Arrays.sort(zoomLevels);
+	}
 
 	private final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getPreferencesConfiguration();
 
@@ -99,7 +99,7 @@ public class MapCanvas implements Multilanguage {
 		zoomMenuItem.setMenu(zoomSubMenu);
 
 		final Map<Integer, MenuItem> zoomSubMenuItems = new HashMap<>();
-		for (final int level : zoomLevels) {
+		for (final int level : getZoomLevels()) {
 			final MenuItem item = newLocalizedMenuItem(zoomSubMenu, SWT.RADIO, () -> Messages.get("label.menu.item.zoom." + (level == AUTO_SCALE ? "auto" : "custom"), level));
 			zoomSubMenuItems.put(level, item);
 			item.addSelectionListener(new SelectionAdapter() {
@@ -265,8 +265,9 @@ public class MapCanvas implements Multilanguage {
 	}
 
 	static int[] getZoomNearestValues(float value) {
-		value = Math.max(zoomLevels.get(1), Math.min(value, zoomLevels.getLast())); // limit input range
-		final int[] values = new int[] { zoomLevels.get(1), zoomLevels.getLast() };
+		final int[] zoomLevels = getZoomLevels();
+		value = Math.max(zoomLevels[1], Math.min(value, zoomLevels[zoomLevels.length - 1])); // limit input range
+		final int[] values = new int[] { zoomLevels[1], zoomLevels[zoomLevels.length - 1] };
 		for (final int zoomLevel : zoomLevels) {
 			if (zoomLevel != AUTO_SCALE) {
 				if (zoomLevel < value) {
@@ -360,8 +361,8 @@ public class MapCanvas implements Multilanguage {
 		return localizedWidgets.putAndReturn(new MenuItem(parent, style), textSupplier).getKey();
 	}
 
-	public static Collection<Integer> getZoomLevels() {
-		return Collections.unmodifiableCollection(zoomLevels);
+	public static int[] getZoomLevels() {
+		return zoomLevels.clone();
 	}
 
 	public static synchronized void setMapImage(final MapImage mapImage, final Earthquake earthquake) {
