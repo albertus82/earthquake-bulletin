@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.util.Util;
@@ -61,7 +61,7 @@ public class MapCanvas implements Multilanguage {
 	private static final int AUTO_SCALE = 0;
 	private static final int MAX_HQ_RESIZE_RATIO = 250;
 
-	private static final LinkedList<Integer> zoomLevels = new LinkedList<>(new TreeSet<>(Arrays.asList(AUTO_SCALE, 10, 12, 15, 20, 25, 30, 40, 50, 60, 80, 100, 120, 150, 200, 250, 300, 400, 500)));
+	private static final LinkedList<Integer> zoomLevels = Arrays.stream(new Integer[] { AUTO_SCALE, 10, 12, 15, 20, 25, 30, 40, 50, 60, 80, 100, 120, 150, 200, 250, 300, 400, 500 }).sorted().collect(Collectors.toCollection(LinkedList::new));
 
 	private final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getPreferencesConfiguration();
 
