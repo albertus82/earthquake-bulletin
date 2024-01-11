@@ -57,12 +57,6 @@ public class MapCanvas implements Multilanguage {
 	private static final int AUTO_SCALE = 0;
 	private static final int MAX_HQ_RESIZE_RATIO = 250;
 
-	private static final int[] zoomLevels = { AUTO_SCALE, 10, 12, 15, 20, 25, 30, 40, 50, 60, 80, 100, 120, 150, 200, 250, 300, 400, 500 };
-
-	static {
-		Arrays.sort(zoomLevels);
-	}
-
 	private final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getPreferencesConfiguration();
 
 	private final Canvas canvas;
@@ -362,7 +356,9 @@ public class MapCanvas implements Multilanguage {
 	}
 
 	public static int[] getZoomLevels() {
-		return zoomLevels.clone();
+		final int[] a = new int[] { AUTO_SCALE, 10, 12, 15, 20, 25, 30, 40, 50, 60, 80, 100, 120, 150, 200, 250, 300, 400, 500 };
+		Arrays.sort(a);
+		return a;
 	}
 
 	public static synchronized void setMapImage(final MapImage mapImage, final Earthquake earthquake) {
