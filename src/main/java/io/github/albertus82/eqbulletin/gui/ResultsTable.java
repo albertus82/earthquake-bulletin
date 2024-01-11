@@ -52,7 +52,7 @@ import io.github.albertus82.eqbulletin.gui.async.MomentTensorAsyncOperation;
 import io.github.albertus82.eqbulletin.gui.listener.CopyLinkSelectionListener;
 import io.github.albertus82.eqbulletin.gui.listener.EpicenterMapSelectionListener;
 import io.github.albertus82.eqbulletin.gui.listener.ExportCsvSelectionListener;
-import io.github.albertus82.eqbulletin.gui.listener.FindEarthquakesSameAreaSelectionListener;
+import io.github.albertus82.eqbulletin.gui.listener.FindEventsSameAreaSelectionListener;
 import io.github.albertus82.eqbulletin.gui.listener.GoogleMapsBrowserSelectionListener;
 import io.github.albertus82.eqbulletin.gui.listener.OpenInBrowserSelectionListener;
 import io.github.albertus82.eqbulletin.gui.listener.ResultsTableContextMenuDetectListener;
@@ -544,7 +544,7 @@ public class ResultsTable implements Multilanguage {
 
 			// Find events in the same area
 			findEventsSameAreaMenuItem = newLocalizedMenuItem(menu, SWT.PUSH, LABEL_MENU_ITEM_FIND_EVENTS_SAME_AREA);
-			findEventsSameAreaMenuItem.addSelectionListener(new FindEarthquakesSameAreaSelectionListener(() -> rt, () -> searchForm));
+			findEventsSameAreaMenuItem.addSelectionListener(new FindEventsSameAreaSelectionListener(() -> rt, () -> searchForm));
 
 			new MenuItem(menu, SWT.SEPARATOR);
 
