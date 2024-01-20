@@ -1,5 +1,6 @@
 package io.github.albertus82.eqbulletin.gui.listener;
 
+import java.util.Arrays;
 import java.util.function.Supplier;
 
 import org.eclipse.jface.viewers.TableViewer;
@@ -39,37 +40,46 @@ public class FindEventsSameAreaSelectionListener extends SelectionAdapter {
 
 			// Latitude (parallels)
 			final float lat = Math.min(MapBounds.LATITUDE_MAX_VALUE - offset, Math.max(MapBounds.LATITUDE_MIN_VALUE + offset, selection.getLatitude().getValue()));
-			final float lat0 = lat - offset;
-			final float lat1 = lat + offset;
-			form.setLatitudeFrom(lat0);
-			form.setLatitudeTo(lat1);
+			form.setLatitudeFrom(lat - offset);
+			form.setLatitudeTo(lat + offset);
 
 			// Longitude (meridians)
-			final float lon = selection.getLongitude().getValue();
-			float lon0 = lon;
-			float lon1 = lon;
-			final double targetArea = computeArea(-1, 1, -1, 1);
-			double actualArea;
-			do {
-				final float step = 0.01f;
-				lon0 -= step;
-				lon1 += step;
-				actualArea = computeArea(lat0, lat1, lon0, lon1);
-				log.debug("lon0={}, lon1={} -> actualArea={}", lon0, lon1, actualArea);
-			}
-			while (actualArea < targetArea);
-			if (lon0 < -180) {
-				lon0 += 360;
-			}
-			if (lon1 > 180) {
-				lon1 -= 360;
-			}
-			log.debug("lon0={}, lon1={}", lon0, lon1);
-			form.setLongitudeFrom(lon0);
-			form.setLongitudeTo(lon1);
+			final float[] lons = computeLons(lat, selection.getLongitude().getValue(), offset);
+			form.setLongitudeFrom(lons[0]);
+			form.setLongitudeTo(lons[1]);
 
 			form.getSearchButton().notifyListeners(SWT.Selection, null);
 		}
+	}
+
+	private static float[] computeLons(final float lat, final float lon, final float offset) {
+		final float lat0 = lat - offset;
+		final float lat1 = lat + offset;
+		float lon0 = lon;
+		float lon1 = lon;
+		final double targetArea = computeArea(-offset, offset, -offset, offset);
+		log.debug("lat={}, lon={}, offset={}, targetArea={}", lat, lon, offset, targetArea);
+		double actualArea = 0;
+		final float step = 0.01f;
+		for (int i = 0; actualArea < targetArea; i++) {
+			lon0 -= step;
+			lon1 += step;
+			actualArea = computeArea(lat0, lat1, lon0, lon1);
+			log.debug("lat0={}, lat1={}, lon0={}, lon1={} -> actualArea={}", lat0, lat1, lon0, lon1, actualArea);
+			if (i >= 180 / step) { // Full longitude range!
+				lon0 = -180;
+				lon1 = 180;
+				break;
+			}
+		}
+		if (lon0 < -180) {
+			lon0 += 360;
+		}
+		if (lon1 > 180) {
+			lon1 -= 360;
+		}
+		log.debug("lon0={}, lon1={}", lon0, lon1);
+		return new float[] { lon0, lon1 };
 	}
 
 	private static double computeArea(final double lat0deg, final double lat1deg, final double lon0deg, final double lon1deg) {
@@ -81,6 +91,12 @@ public class FindEventsSameAreaSelectionListener extends SelectionAdapter {
 		final double b = lon1rad - lon0rad;
 		final double c = AUTHALIC_RADIUS * AUTHALIC_RADIUS;
 		return a * b * c;
+	}
+
+	public static void main(String[] args) {
+		final int offset = 1;
+		final float lat = Math.min(MapBounds.LATITUDE_MAX_VALUE - offset, Math.max(MapBounds.LATITUDE_MIN_VALUE + offset, 88));
+		System.out.println(Arrays.toString(computeLons(lat, 170, offset)));
 	}
 
 }
