@@ -1,6 +1,5 @@
 package io.github.albertus82.eqbulletin.gui.listener;
 
-import java.util.Arrays;
 import java.util.function.Supplier;
 
 import org.eclipse.jface.viewers.TableViewer;
@@ -9,19 +8,31 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Table;
 
+import io.github.albertus82.eqbulletin.config.EarthquakeBulletinConfig;
 import io.github.albertus82.eqbulletin.gui.ResultsTable;
 import io.github.albertus82.eqbulletin.gui.SearchForm;
+import io.github.albertus82.eqbulletin.gui.preference.Preference;
 import io.github.albertus82.eqbulletin.model.Earthquake;
 import io.github.albertus82.jface.maps.MapBounds;
+import io.github.albertus82.jface.preference.IPreferencesConfiguration;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
-public class FindEventsSameAreaSelectionListener extends SelectionAdapter {
+public class FindSameAreaEventsSelectionListener extends SelectionAdapter {
 
 	private static final double AUTHALIC_RADIUS = 6371.0072;
+
+	@NoArgsConstructor(access = AccessLevel.PRIVATE)
+	public static class Defaults {
+		public static final byte SAME_AREA_EVENTS_LATITUDE_INTERVAL = 1;
+	}
+
+	private final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getPreferencesConfiguration();
 
 	@NonNull
 	private final Supplier<ResultsTable> resultsTableSupplier;
@@ -36,7 +47,7 @@ public class FindEventsSameAreaSelectionListener extends SelectionAdapter {
 		final Table table = tableViewer.getTable();
 		if (selection != null && table != null && !table.isDisposed()) {
 			final SearchForm form = searchFormSupplier.get();
-			final float offset = 1;
+			final float offset = configuration.getByte(Preference.SAME_AREA_EVENTS_LATITUDE_INTERVAL, Defaults.SAME_AREA_EVENTS_LATITUDE_INTERVAL);
 
 			// Latitude (parallels)
 			final float lat = Math.min(MapBounds.LATITUDE_MAX_VALUE - offset, Math.max(MapBounds.LATITUDE_MIN_VALUE + offset, selection.getLatitude().getValue()));
@@ -91,12 +102,6 @@ public class FindEventsSameAreaSelectionListener extends SelectionAdapter {
 		final double b = lon1rad - lon0rad;
 		final double c = AUTHALIC_RADIUS * AUTHALIC_RADIUS;
 		return a * b * c;
-	}
-
-	public static void main(String[] args) {
-		final int offset = 1;
-		final float lat = Math.min(MapBounds.LATITUDE_MAX_VALUE - offset, Math.max(MapBounds.LATITUDE_MIN_VALUE + offset, 88));
-		System.out.println(Arrays.toString(computeLons(lat, 170, offset)));
 	}
 
 }

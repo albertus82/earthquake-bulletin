@@ -1,11 +1,6 @@
 package io.github.albertus82.eqbulletin.gui.preference;
 
-import static io.github.albertus82.eqbulletin.gui.preference.PageDefinition.ADVANCED;
-import static io.github.albertus82.eqbulletin.gui.preference.PageDefinition.CACHE;
-import static io.github.albertus82.eqbulletin.gui.preference.PageDefinition.CONNECTION;
-import static io.github.albertus82.eqbulletin.gui.preference.PageDefinition.CRITERIA;
-import static io.github.albertus82.eqbulletin.gui.preference.PageDefinition.GENERAL;
-import static io.github.albertus82.eqbulletin.gui.preference.PageDefinition.LOGGING;
+import static io.github.albertus82.eqbulletin.gui.preference.PageDefinition.*;
 
 import java.awt.SystemTray;
 import java.net.Proxy;
@@ -33,6 +28,7 @@ import io.github.albertus82.eqbulletin.gui.MomentTensorDialog;
 import io.github.albertus82.eqbulletin.gui.ResultsTable;
 import io.github.albertus82.eqbulletin.gui.SearchForm;
 import io.github.albertus82.eqbulletin.gui.TrayIcon;
+import io.github.albertus82.eqbulletin.gui.listener.FindSameAreaEventsSelectionListener;
 import io.github.albertus82.eqbulletin.model.Format;
 import io.github.albertus82.eqbulletin.resources.Messages;
 import io.github.albertus82.eqbulletin.resources.Messages.Language;
@@ -100,6 +96,7 @@ public enum Preference implements IPreference {
 	CRITERIA_FORMAT(new PreferenceDetailsBuilder(CRITERIA).label(() -> Messages.get("label.form.format")).defaultValue(SearchForm.Defaults.FORMAT.getValue()).build(), new FieldEditorDetailsBuilder(DefaultRadioGroupFieldEditor.class).labelsAndValues(getFormatRadioOptions()).radioNumColumns(2).radioUseGroup(true).build()),
 	CRITERIA_LIMIT(new PreferenceDetailsBuilder(CRITERIA).label(() -> Messages.get("label.form.limit") + " " + Messages.get("label.form.limit.note")).build(), new FieldEditorDetailsBuilder(EnhancedIntegerFieldEditor.class).emptyStringAllowed(true).numberValidRange(SearchForm.RESULTS_MIN_VALUE, SearchForm.RESULTS_MAX_VALUE).build()),
 	CRITERIA_RESTRICT(new PreferenceDetailsBuilder(CRITERIA).defaultValue(SearchForm.Defaults.CRITERIA_RESTRICT).label(() -> Messages.get("label.form.criteria.restrict")).build(), new FieldEditorDetailsBuilder(DefaultBooleanFieldEditor.class).build()),
+	SAME_AREA_EVENTS_LATITUDE_INTERVAL(new PreferenceDetailsBuilder(CRITERIA).defaultValue(FindSameAreaEventsSelectionListener.Defaults.SAME_AREA_EVENTS_LATITUDE_INTERVAL).build(), new FieldEditorDetailsBuilder(ScaleIntegerFieldEditor.class).scaleMinimum(1).scaleMaximum(5).scalePageIncrement(1).build()),
 	AUTOREFRESH_ENABLED(new PreferenceDetailsBuilder(CRITERIA).defaultValue(SearchForm.Defaults.AUTOREFRESH_ENABLED).build(), new FieldEditorDetailsBuilder(DefaultBooleanFieldEditor.class).build()),
 	AUTOREFRESH_MINS(new PreferenceDetailsBuilder(CRITERIA).parent(AUTOREFRESH_ENABLED).label(() -> Messages.get("label.form.button.autorefresh")).build(), new FieldEditorDetailsBuilder(EnhancedIntegerFieldEditor.class).numberMinimum(SearchForm.AUTOREFRESH_MIN_VALUE).emptyStringAllowed(true).textLimit(SearchForm.AUTOREFRESH_TEXT_LIMIT).build()),
 

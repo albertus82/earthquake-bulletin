@@ -30,7 +30,7 @@ abstract class AbstractMenu implements Multilanguage {
 	protected MenuItem openBrowserMenuItem;
 	protected MenuItem showMapMenuItem;
 	protected MenuItem showMomentTensorMenuItem;
-	protected MenuItem findEventsSameAreaMenuItem;
+	protected MenuItem findSameAreaEventsMenuItem;
 
 	@Getter(AccessLevel.NONE)
 	private final LocalizedWidgets localizedWidgets = new LocalizedWidgets();

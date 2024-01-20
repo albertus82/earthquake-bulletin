@@ -16,7 +16,7 @@ import io.github.albertus82.eqbulletin.gui.listener.EventMenuListener;
 import io.github.albertus82.eqbulletin.gui.listener.ExitListener;
 import io.github.albertus82.eqbulletin.gui.listener.ExportCsvSelectionListener;
 import io.github.albertus82.eqbulletin.gui.listener.FileMenuListener;
-import io.github.albertus82.eqbulletin.gui.listener.FindEventsSameAreaSelectionListener;
+import io.github.albertus82.eqbulletin.gui.listener.FindSameAreaEventsSelectionListener;
 import io.github.albertus82.eqbulletin.gui.listener.GoogleMapsBrowserSelectionListener;
 import io.github.albertus82.eqbulletin.gui.listener.OpenInBrowserSelectionListener;
 import io.github.albertus82.eqbulletin.gui.listener.PreferencesListener;
@@ -120,8 +120,8 @@ public class MenuBar extends AbstractMenu {
 		new MenuItem(eventMenu, SWT.SEPARATOR);
 
 		// Find events in the same area
-		findEventsSameAreaMenuItem = newLocalizedMenuItem(eventMenu, SWT.PUSH, LABEL_MENU_ITEM_FIND_EVENTS_SAME_AREA);
-		findEventsSameAreaMenuItem.addSelectionListener(new FindEventsSameAreaSelectionListener(gui::getResultsTable, gui::getSearchForm));
+		findSameAreaEventsMenuItem = newLocalizedMenuItem(eventMenu, SWT.PUSH, LABEL_MENU_ITEM_FIND_EVENTS_SAME_AREA);
+		findSameAreaEventsMenuItem.addSelectionListener(new FindSameAreaEventsSelectionListener(gui::getResultsTable, gui::getSearchForm));
 
 		// Tools
 		final Menu toolsMenu = new Menu(shell, SWT.DROP_DOWN);
