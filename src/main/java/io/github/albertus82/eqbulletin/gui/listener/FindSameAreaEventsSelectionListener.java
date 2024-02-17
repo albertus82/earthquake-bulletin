@@ -2,12 +2,25 @@ package io.github.albertus82.eqbulletin.gui.listener;
 
 import java.util.function.Supplier;
 
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.FocusAdapter;
+import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Scale;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.Text;
 
 import io.github.albertus82.eqbulletin.config.EarthquakeBulletinConfig;
 import io.github.albertus82.eqbulletin.gui.ResultsTable;
@@ -15,6 +28,9 @@ import io.github.albertus82.eqbulletin.gui.SearchForm;
 import io.github.albertus82.eqbulletin.gui.preference.Preference;
 import io.github.albertus82.eqbulletin.model.Earthquake;
 import io.github.albertus82.eqbulletin.resources.Messages;
+import io.github.albertus82.jface.Formatter;
+import io.github.albertus82.jface.JFaceMessages;
+import io.github.albertus82.jface.listener.IntegerVerifyListener;
 import io.github.albertus82.jface.maps.MapBounds;
 import io.github.albertus82.jface.preference.IPreferencesConfiguration;
 import lombok.AccessLevel;
@@ -54,11 +70,11 @@ public class FindSameAreaEventsSelectionListener extends SelectionAdapter {
 			final SearchForm form = searchFormSupplier.get();
 
 			// Ask user for latitude interval
-			final ScaleInputDialog modal = new ScaleInputDialog(table.getShell(), Messages.get("label.sameareaevents.title"), Messages.get("label.sameareaevents.message"), configuration.getByte(Preference.SAME_AREA_EVENTS_LATITUDE_INTERVAL, Defaults.SAME_AREA_EVENTS_LATITUDE_INTERVAL), LATITUDE_INTERVAL_MIN, LATITUDE_INTERVAL_MAX, 1, 1);
-			if (Window.OK != modal.open()) {
+			final ScaleInputDialog dialog = new ScaleInputDialog(table.getShell(), Messages.get("label.sameareaevents.title"), Messages.get("label.sameareaevents.message"), configuration.getByte(Preference.SAME_AREA_EVENTS_LATITUDE_INTERVAL, Defaults.SAME_AREA_EVENTS_LATITUDE_INTERVAL), LATITUDE_INTERVAL_MIN, LATITUDE_INTERVAL_MAX, 1, 1);
+			if (Window.OK != dialog.open()) {
 				return;
 			}
-			final float offset = modal.getValue().floatValue();
+			final float offset = dialog.getValue();
 
 			// Latitude (parallels)
 			final float lat = Math.min(MapBounds.LATITUDE_MAX_VALUE - offset, Math.max(MapBounds.LATITUDE_MIN_VALUE + offset, selection.getLatitude().getValue()));
@@ -113,6 +129,150 @@ public class FindSameAreaEventsSelectionListener extends SelectionAdapter {
 		final double b = lon1rad - lon0rad;
 		final double c = AUTHALIC_RADIUS * AUTHALIC_RADIUS;
 		return a * b * c;
+	}
+
+	private static class ScaleInputDialog extends Dialog {
+
+		private final String title;
+		private final String message;
+
+		private int value;
+
+		private final int minimum;
+		private final int maximum;
+		private final int increment;
+		private final int pageIncrement;
+
+		private Scale scale;
+		private Text text;
+
+		private ScaleInputDialog(@NonNull final Shell parentShell, final String dialogTitle, final String dialogMessage, final int initialValue, final int minimum, final int maximum, final int increment, final int pageIncrement) {
+			super(parentShell);
+			this.title = dialogTitle;
+			this.message = dialogMessage;
+			this.value = initialValue;
+			this.minimum = minimum;
+			this.maximum = maximum;
+			this.increment = increment;
+			this.pageIncrement = pageIncrement;
+		}
+
+		@Override
+		protected void buttonPressed(final int buttonId) {
+			if (buttonId == IDialogConstants.OK_ID) {
+				value = scale.getSelection();
+			}
+			super.buttonPressed(buttonId);
+		}
+
+		@Override
+		protected void configureShell(final Shell shell) {
+			super.configureShell(shell);
+			if (title != null) {
+				shell.setText(title);
+			}
+		}
+
+		@Override
+		protected void createButtonsForButtonBar(final Composite parent) {
+			createButton(parent, IDialogConstants.OK_ID, JFaceMessages.get("lbl.button.ok"), true);
+			createButton(parent, IDialogConstants.CANCEL_ID, JFaceMessages.get("lbl.button.cancel"), false);
+			scale.setFocus();
+			scale.setSelection(value);
+		}
+
+		@Override
+		protected Control createDialogArea(final Composite parent) {
+			final Composite composite = (Composite) super.createDialogArea(parent);
+			if (composite.getLayout() instanceof GridLayout) {
+				((GridLayout) composite.getLayout()).numColumns += 3;
+			}
+
+			if (message != null) {
+				final Label label = new Label(composite, SWT.WRAP);
+				label.setText(message);
+				final GridData data = new GridData(GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL | GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_CENTER);
+				data.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.ENTRY_FIELD_WIDTH);
+				data.horizontalSpan += 3;
+				label.setLayoutData(data);
+				label.setFont(parent.getFont());
+			}
+
+			scale = new Scale(composite, getScaleStyle());
+			scale.setMinimum(minimum);
+			scale.setMaximum(maximum);
+			scale.setIncrement(increment);
+			scale.setPageIncrement(pageIncrement);
+			final GridData data = new GridData(GridData.FILL_HORIZONTAL);
+			data.verticalAlignment = GridData.FILL;
+			data.grabExcessHorizontalSpace = true;
+			scale.setLayoutData(data);
+			scale.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(final SelectionEvent e) {
+					text.setText(Integer.toString(scale.getSelection()));
+				}
+			});
+
+			final Label plusMinusSign = new Label(composite, SWT.NONE);
+			plusMinusSign.setText("\u00B1");
+			GridDataFactory.swtDefaults().applyTo(plusMinusSign);
+			plusMinusSign.setFont(parent.getFont());
+
+			text = new Text(composite, SWT.BORDER | SWT.TRAIL);
+			final int widthHint = new Formatter(getClass()).computeWidth(text, Integer.toString(maximum).length(), SWT.NORMAL);
+			GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).hint(widthHint, SWT.DEFAULT).applyTo(text);
+			text.setTextLimit(Integer.toString(maximum).length());
+			text.setText(Integer.toString(value));
+			text.addFocusListener(new TextFocusListener());
+			text.addVerifyListener(new IntegerVerifyListener(false));
+
+			final Label degreeSign = new Label(composite, SWT.NONE);
+			degreeSign.setText("\u00B0");
+			GridDataFactory.swtDefaults().applyTo(degreeSign);
+			degreeSign.setFont(parent.getFont());
+
+			applyDialogFont(composite);
+			return composite;
+		}
+
+		public int getValue() {
+			return value;
+		}
+
+		/**
+		 * Returns the style bits that should be used for the input text field. Defaults
+		 * to a single line entry. Subclasses may override.
+		 *
+		 * @return the integer style bits that should be used when creating the input
+		 *         text
+		 *
+		 * @since 3.4
+		 */
+		protected int getScaleStyle() {
+			return SWT.HORIZONTAL;
+		}
+
+		private class TextFocusListener extends FocusAdapter {
+			@Override
+			public void focusLost(final FocusEvent fe) {
+				try {
+					int textValue = Integer.parseInt(text.getText());
+					if (textValue > maximum) {
+						textValue = maximum;
+					}
+					if (textValue < minimum) {
+						textValue = minimum;
+					}
+					text.setText(Integer.toString(textValue));
+					scale.setSelection(textValue);
+				}
+				catch (final RuntimeException e) {
+					log.debug("Cannot update the selection (which is the value) of the scale:", e);
+					text.setText(Integer.toString(scale.getSelection()));
+				}
+			}
+		}
 	}
 
 }
