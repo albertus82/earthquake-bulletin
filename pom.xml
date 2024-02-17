@@ -48,7 +48,7 @@
 		<jface.version>3.22.200</jface.version> <!-- Last version compatible with JRE 8 -->
 		<lombok.version>1.18.30</lombok.version>
 		<picocli.version>4.7.5</picocli.version>
-		<slf4j.version>2.0.11</slf4j.version>
+		<slf4j.version>2.0.12</slf4j.version>
 		<windows.build.finalName>EarthquakeBulletin</windows.build.finalName>
 		<linux.build.finalName>${project.artifactId}</linux.build.finalName>
 		<mac.build.finalName>EarthquakeBulletin</mac.build.finalName>
@@ -197,7 +197,7 @@
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter</artifactId>
-			<version>5.10.1</version>
+			<version>5.10.2</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
