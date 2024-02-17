@@ -3,6 +3,7 @@ package io.github.albertus82.eqbulletin.gui.listener;
 import java.util.function.Supplier;
 
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -13,6 +14,7 @@ import io.github.albertus82.eqbulletin.gui.ResultsTable;
 import io.github.albertus82.eqbulletin.gui.SearchForm;
 import io.github.albertus82.eqbulletin.gui.preference.Preference;
 import io.github.albertus82.eqbulletin.model.Earthquake;
+import io.github.albertus82.eqbulletin.resources.Messages;
 import io.github.albertus82.jface.maps.MapBounds;
 import io.github.albertus82.jface.preference.IPreferencesConfiguration;
 import lombok.AccessLevel;
@@ -24,6 +26,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 public class FindSameAreaEventsSelectionListener extends SelectionAdapter {
+
+	public static final byte LATITUDE_INTERVAL_MIN = 1;
+	public static final byte LATITUDE_INTERVAL_MAX = 5;
 
 	private static final double AUTHALIC_RADIUS = 6371.0072;
 
@@ -47,7 +52,13 @@ public class FindSameAreaEventsSelectionListener extends SelectionAdapter {
 		final Table table = tableViewer.getTable();
 		if (selection != null && table != null && !table.isDisposed()) {
 			final SearchForm form = searchFormSupplier.get();
-			final float offset = configuration.getByte(Preference.SAME_AREA_EVENTS_LATITUDE_INTERVAL, Defaults.SAME_AREA_EVENTS_LATITUDE_INTERVAL);
+
+			// Ask user for latitude interval
+			final ScaleInputDialog modal = new ScaleInputDialog(table.getShell(), Messages.get("label.sameareaevents.title"), Messages.get("label.sameareaevents.message"), configuration.getByte(Preference.SAME_AREA_EVENTS_LATITUDE_INTERVAL, Defaults.SAME_AREA_EVENTS_LATITUDE_INTERVAL), LATITUDE_INTERVAL_MIN, LATITUDE_INTERVAL_MAX, 1, 1);
+			if (Window.OK != modal.open()) {
+				return;
+			}
+			final float offset = modal.getValue().floatValue();
 
 			// Latitude (parallels)
 			final float lat = Math.min(MapBounds.LATITUDE_MAX_VALUE - offset, Math.max(MapBounds.LATITUDE_MIN_VALUE + offset, selection.getLatitude().getValue()));

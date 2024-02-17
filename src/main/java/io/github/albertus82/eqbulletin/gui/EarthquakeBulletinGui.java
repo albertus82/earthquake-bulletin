@@ -14,6 +14,7 @@ import org.eclipse.jface.action.StatusLineManager;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.window.ApplicationWindow;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.graphics.Point;
@@ -105,6 +106,7 @@ public class EarthquakeBulletinGui extends ApplicationWindow implements Multilan
 		try {
 			Display.setAppName(getApplicationName());
 			Display.setAppVersion(BuildInfo.getProperty("project.version"));
+			Window.setDefaultImages(Images.getAppIconArray());
 			start();
 		}
 		catch (final RuntimeException | Error e) { // NOSONAR Catch Exception instead of Error. Throwable and Error should not be caught (java:S1181)
@@ -152,7 +154,6 @@ public class EarthquakeBulletinGui extends ApplicationWindow implements Multilan
 	@Override
 	protected void configureShell(final Shell shell) {
 		super.configureShell(shell);
-		shell.setImages(Images.getAppIconArray());
 		shell.setText(getApplicationName());
 	}
 
