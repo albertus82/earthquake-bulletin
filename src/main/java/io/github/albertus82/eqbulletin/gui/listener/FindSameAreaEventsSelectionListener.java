@@ -240,15 +240,6 @@ public class FindSameAreaEventsSelectionListener extends SelectionAdapter {
 			return value;
 		}
 
-		/**
-		 * Returns the style bits that should be used for the input text field. Defaults
-		 * to a single line entry. Subclasses may override.
-		 *
-		 * @return the integer style bits that should be used when creating the input
-		 *         text
-		 *
-		 * @since 3.4
-		 */
 		protected int getScaleStyle() {
 			return SWT.HORIZONTAL;
 		}
