@@ -38,7 +38,6 @@ import io.github.albertus82.jface.EnhancedErrorDialog;
 import io.github.albertus82.jface.Events;
 import io.github.albertus82.jface.Multilanguage;
 import io.github.albertus82.jface.SwtUtils;
-import io.github.albertus82.jface.closeable.CloseableDevice;
 import io.github.albertus82.jface.preference.IPreferencesConfiguration;
 import io.github.albertus82.util.InitializationException;
 import lombok.AccessLevel;
@@ -116,30 +115,28 @@ public class EarthquakeBulletinGui extends ApplicationWindow implements Multilan
 	}
 
 	private static void start() {
-		try (final CloseableDevice<Display> cd = new CloseableDevice<>(Display.getDefault())) {
-			Shell shell = null;
-			try {
-				EarthquakeBulletinConfig.initialize(); // Load configuration and initialize the application
-				final EarthquakeBulletinGui gui = new EarthquakeBulletinGui();
-				gui.open(); // Open main window
-				shell = gui.getShell();
-				loop(shell);
+		Shell shell = null;
+		try {
+			EarthquakeBulletinConfig.initialize(); // Load configuration and initialize the application
+			final EarthquakeBulletinGui gui = new EarthquakeBulletinGui();
+			gui.open(); // Open main window
+			shell = gui.getShell();
+			loop(shell);
+		}
+		catch (final InitializationException e) {
+			EnhancedErrorDialog.openError(shell, getApplicationName(), Messages.get("error.fatal.init"), IStatus.ERROR, e, Images.getAppIconArray());
+			throw e;
+		}
+		catch (final RuntimeException e) {
+			if (shell != null && shell.isDisposed()) {
+				log.debug("An unrecoverable error has occurred:", e);
+				// Do not rethrow, exiting with status OK.
 			}
-			catch (final InitializationException e) {
-				EnhancedErrorDialog.openError(shell, getApplicationName(), Messages.get("error.fatal.init"), IStatus.ERROR, e, Images.getAppIconArray());
+			else {
+				EnhancedErrorDialog.openError(shell, getApplicationName(), Messages.get("error.fatal"), IStatus.ERROR, e, Images.getAppIconArray());
 				throw e;
 			}
-			catch (final RuntimeException e) {
-				if (shell != null && shell.isDisposed()) {
-					log.debug("An unrecoverable error has occurred:", e);
-					// Do not rethrow, exiting with status OK.
-				}
-				else {
-					EnhancedErrorDialog.openError(shell, getApplicationName(), Messages.get("error.fatal"), IStatus.ERROR, e, Images.getAppIconArray());
-					throw e;
-				}
-			}
-		} // Display is disposed before the catch!
+		}
 	}
 
 	private static void loop(@NonNull final Shell shell) {
