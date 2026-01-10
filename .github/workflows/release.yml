@@ -6,6 +6,8 @@ on:
 
 jobs:
   publish:
+    permissions:
+      contents: read
     name: Publish
     runs-on: windows-latest
     permissions:

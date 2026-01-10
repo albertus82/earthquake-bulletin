@@ -4,6 +4,8 @@ on: push
 
 jobs:
   build:
+    permissions:
+      contents: read
     name: Build
     strategy:
       fail-fast: false
