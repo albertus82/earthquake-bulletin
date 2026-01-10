@@ -7,11 +7,9 @@ on:
 jobs:
   publish:
     permissions:
-      contents: read
+      contents: write
     name: Publish
     runs-on: windows-latest
-    permissions:
-      contents: write
     env:
       MAVEN_OPTS: -Dhttp.keepAlive=false
     steps:
