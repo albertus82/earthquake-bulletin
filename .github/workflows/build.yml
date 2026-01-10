@@ -4,9 +4,9 @@ on: push
 
 jobs:
   build:
+    name: Build
     permissions:
       contents: read
-    name: Build
     strategy:
       fail-fast: false
       matrix:
