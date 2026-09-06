@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Optional;
@@ -11,6 +12,7 @@ import java.util.function.BooleanSupplier;
 
 import io.github.albertus82.eqbulletin.model.Earthquake;
 import io.github.albertus82.eqbulletin.model.MapImage;
+import io.github.albertus82.eqbulletin.service.GeofonUtils;
 import io.github.albertus82.util.IOUtils;
 
 public class MapImageDownloader extends StaticResourceDownloader<MapImage> {
@@ -38,7 +40,13 @@ public class MapImageDownloader extends StaticResourceDownloader<MapImage> {
 	}
 
 	private static URL getUrl(final Earthquake earthquake) throws MalformedURLException {
-		return earthquake.getEnclosureUri().orElseThrow(IllegalStateException::new).toURL();
+		URI uri = earthquake.getEnclosureUri().orElseThrow(IllegalStateException::new);
+		// Fix FileNotFoundException for maps when using the "old" URL
+		final String uriStr = uri.toString();
+		if (uriStr.contains(GeofonUtils.OLD_GEOFON_BASE_URL)) {
+			uri = URI.create(uriStr.replace(GeofonUtils.OLD_GEOFON_BASE_URL, GeofonUtils.NEW_GEOFON_BASE_URL));
+		}
+		return uri.toURL();
 	}
 
 }
