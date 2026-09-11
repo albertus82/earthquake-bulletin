@@ -4,6 +4,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -78,7 +79,7 @@ public class NewHtmlBulletinDecoder extends AbstractHtmlBulletinDecoder {
 	}
 
 	private static ZonedDateTime decodeTime(@NonNull final Elements divs) {
-		return dateTimeFormatter.parse(divs.get(6).textNodes().get(0).text().trim(), ZonedDateTime::from);
+		return DateTimeFormatter.ISO_DATE_TIME.parse(divs.get(6).getElementsByTag("time").attr("datetime").trim().replace(' ', 'T'), ZonedDateTime::from);
 	}
 
 	private static String decodeGuid(@NonNull final Element anchor) {

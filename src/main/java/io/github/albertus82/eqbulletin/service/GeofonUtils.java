@@ -23,15 +23,15 @@ public class GeofonUtils {
 	private static final String BEACH_BALL_FILENAME = "bb.png";
 
 	public static URI getEventMapUri(@NonNull final String guid, final int year) throws MalformedURLException, URISyntaxException {
-		return ConnectionUtils.toURI(getEventBaseUrl(guid, year) + guid + ".jpg");
+		return fixOldGeofonBaseUrl(ConnectionUtils.toURI(getEventBaseUrl(guid, year) + guid + ".jpg"));
 	}
 
 	public static URI getEventMomentTensorUri(@NonNull final String guid, final int year) throws MalformedURLException, URISyntaxException {
-		return ConnectionUtils.toURI(getEventBaseUrl(guid, year) + MOMENT_TENSOR_FILENAME);
+		return fixOldGeofonBaseUrl(ConnectionUtils.toURI(getEventBaseUrl(guid, year) + MOMENT_TENSOR_FILENAME));
 	}
 
 	public static URI getBeachBallUri(@NonNull final String guid, final int year) throws MalformedURLException, URISyntaxException {
-		return ConnectionUtils.toURI(getEventBaseUrl(guid, year) + BEACH_BALL_FILENAME);
+		return fixOldGeofonBaseUrl(ConnectionUtils.toURI(getEventBaseUrl(guid, year) + BEACH_BALL_FILENAME));
 	}
 
 	public static String getBulletinBaseUrl() throws MalformedURLException {
@@ -45,6 +45,18 @@ public class GeofonUtils {
 	private static String getBaseUrl() throws MalformedURLException {
 		final String spec = EarthquakeBulletinConfig.getPreferencesConfiguration().getString(Preference.GEOFON_BASE_URL, DEFAULT_GEOFON_BASE_URL);
 		return ConnectionUtils.sanitizeUriString(spec);
+	}
+
+	/**
+	 * Fix FileNotFoundException (404) for resources when using the
+	 * {@link GeofonUtils#OLD_GEOFON_BASE_URL}
+	 */
+	private static URI fixOldGeofonBaseUrl(URI uri) {
+		final String uriStr = uri.toString();
+		if (uriStr.contains(OLD_GEOFON_BASE_URL)) {
+			uri = URI.create(uriStr.replace(OLD_GEOFON_BASE_URL, NEW_GEOFON_BASE_URL));
+		}
+		return uri;
 	}
 
 }
