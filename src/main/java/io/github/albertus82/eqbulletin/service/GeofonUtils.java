@@ -6,6 +6,8 @@ import java.net.URISyntaxException;
 
 import io.github.albertus82.eqbulletin.config.EarthquakeBulletinConfig;
 import io.github.albertus82.eqbulletin.gui.preference.Preference;
+import io.github.albertus82.eqbulletin.model.Format;
+import io.github.albertus82.eqbulletin.service.decode.html.HtmlBulletinVersion;
 import io.github.albertus82.eqbulletin.service.net.ConnectionUtils;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -14,13 +16,16 @@ import lombok.NonNull;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class GeofonUtils {
 
-	public static final String OLD_GEOFON_BASE_URL = "https://geofon.gfz-potsdam.de/old";
-	public static final String NEW_GEOFON_BASE_URL = "https://geofon.gfz-potsdam.de";
+	public static final String GEOFON_BASE_URL = "https://geofon.gfz.de";
 
-	public static final String DEFAULT_GEOFON_BASE_URL = OLD_GEOFON_BASE_URL;
+	public static final String DEFAULT_GEOFON_BASE_URL = GEOFON_BASE_URL;
 
 	public static final String MOMENT_TENSOR_FILENAME = "mt.txt";
 	private static final String BEACH_BALL_FILENAME = "bb.png";
+
+	public static URI getEventLinkUri(@NonNull final String guid) throws MalformedURLException, URISyntaxException {
+		return fixOldGeofonBaseUrl(ConnectionUtils.toURI(getBaseUrl() + "/eqinfo/event.php?id=" + guid));
+	}
 
 	public static URI getEventMapUri(@NonNull final String guid, final int year) throws MalformedURLException, URISyntaxException {
 		return fixOldGeofonBaseUrl(ConnectionUtils.toURI(getEventBaseUrl(guid, year) + guid + ".jpg"));
@@ -34,8 +39,9 @@ public class GeofonUtils {
 		return fixOldGeofonBaseUrl(ConnectionUtils.toURI(getEventBaseUrl(guid, year) + BEACH_BALL_FILENAME));
 	}
 
-	public static String getBulletinBaseUrl() throws MalformedURLException {
-		return getBaseUrl() + "/eqinfo/list.php";
+	public static String getBulletinBaseUrl(@NonNull Format format, HtmlBulletinVersion version) throws MalformedURLException {
+		final String baseUrl = getBaseUrl();
+		return baseUrl + (Format.QUAKEML.equals(format) ? "/fdsnws/event/1/query" : ((HtmlBulletinVersion.OLD.equals(version) && !baseUrl.endsWith("/old") ? "/old" : "") + "/eqinfo/list.php"));
 	}
 
 	private static String getEventBaseUrl(@NonNull final String guid, final int year) throws MalformedURLException {
@@ -47,14 +53,11 @@ public class GeofonUtils {
 		return ConnectionUtils.sanitizeUriString(spec);
 	}
 
-	/**
-	 * Fix FileNotFoundException (404) for resources when using the
-	 * {@link GeofonUtils#OLD_GEOFON_BASE_URL}
-	 */
+	/** Fix FileNotFoundException (404) for resources when using the old base URL */
 	private static URI fixOldGeofonBaseUrl(URI uri) {
 		final String uriStr = uri.toString();
-		if (uriStr.contains(OLD_GEOFON_BASE_URL)) {
-			uri = URI.create(uriStr.replace(OLD_GEOFON_BASE_URL, NEW_GEOFON_BASE_URL));
+		if (uriStr.contains("/old")) {
+			uri = URI.create(uriStr.replace("/old", ""));
 		}
 		return uri;
 	}

@@ -16,7 +16,11 @@ import java.util.Set;
 
 import com.dmurph.URIEncoder;
 
+import io.github.albertus82.eqbulletin.config.EarthquakeBulletinConfig;
+import io.github.albertus82.eqbulletin.gui.preference.Preference;
 import io.github.albertus82.eqbulletin.model.Format;
+import io.github.albertus82.eqbulletin.service.decode.html.HtmlBulletinVersion;
+import io.github.albertus82.jface.preference.IPreferencesConfiguration;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +34,8 @@ import lombok.extern.slf4j.Slf4j;
 public class SearchRequest {
 
 	private static final short DEFAULT_LIMIT = 40;
+
+	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getPreferencesConfiguration();
 
 	private final Format format;
 	private final boolean valid;
@@ -54,7 +60,8 @@ public class SearchRequest {
 	}
 
 	private Set<String> toUrlStrings() throws MalformedURLException {
-		final StringBuilder baseUrl = new StringBuilder(GeofonUtils.getBulletinBaseUrl());
+		final StringBuilder baseUrl = new StringBuilder(GeofonUtils.getBulletinBaseUrl(format, HtmlBulletinVersion.forValue(configuration.getString(Preference.HTML_BULLETIN_VERSION))));
+
 		if (Format.QUAKEML.equals(format)) {
 			if (limit == null || limit < 1) {
 				limit = DEFAULT_LIMIT;

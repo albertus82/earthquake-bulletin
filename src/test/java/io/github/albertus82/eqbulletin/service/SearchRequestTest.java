@@ -27,7 +27,7 @@ class SearchRequestTest {
 
 	@Test
 	void testGenerateUrl() throws URISyntaxException, MalformedURLException {
-		final String baseUrl = GeofonUtils.getBulletinBaseUrl();
+		final String baseUrl = GeofonUtils.getBulletinBaseUrl(Format.RSS, null);
 
 		SearchRequest r = new SearchRequest(Format.RSS, false, null);
 		r.getParameterMap().put("fmt", "rss");

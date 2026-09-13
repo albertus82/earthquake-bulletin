@@ -124,7 +124,7 @@ public class QuakemlBulletinDownloader extends ResilientDownloader implements Bu
 		}
 	}
 
-	private static Collection<Earthquake> decode(final String body) throws JAXBException, MalformedURLException {
+	private static Collection<Earthquake> decode(final String body) throws JAXBException, MalformedURLException, URISyntaxException {
 		final Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 		try (final StringReader sr = new StringReader(body)) {
 			return QuakemlBulletinDecoder.decode(jaxbUnmarshaller.unmarshal(new StreamSource(sr), Quakeml.class).getValue());

@@ -2,6 +2,7 @@ package io.github.albertus82.eqbulletin.service.decode.quakeml;
 
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoField;
 import java.util.ArrayList;
@@ -44,10 +45,11 @@ public final class QuakemlBulletinDecoder {
 	 * @param event QuakeML event
 	 * @return mapped earthquake
 	 * @throws MalformedURLException
+	 * @throws URISyntaxException
 	 * @throws IllegalArgumentException if one of the mandatory Earthquake
 	 *         properties cannot be obtained
 	 */
-	private static Earthquake toEarthquake(final Event event) throws MalformedURLException {
+	private static Earthquake toEarthquake(final Event event) throws MalformedURLException, URISyntaxException {
 		Objects.requireNonNull(event, "event must not be null");
 		final List<JAXBElement<?>> elements = event.getDescriptionOrCommentOrFocalMechanism();
 		final String guid = requireText(event.getPublicID().substring(event.getPublicID().lastIndexOf('/') + 1), "event.publicID");
@@ -59,6 +61,7 @@ public final class QuakemlBulletinDecoder {
 		final Magnitude magnitude = findPreferred(elements, "magnitude", preferredMagnitudeId, Magnitude.class);
 		final TimeQuantity timeQuantity = findTimeQuantity(origin);
 		final ZonedDateTime time = toZonedDateTime(requireTimeValue(timeQuantity, "origin.time"), "origin.time");
+		final int year = time.get(ChronoField.YEAR);
 		final float latitudeValue = requireFiniteFloat(findRealQuantityValue(origin, "latitude"), "origin.latitude");
 		final float longitudeValue = requireFiniteFloat(findRealQuantityValue(origin, "longitude"), "origin.longitude");
 		final double depthMeters = requireFiniteDouble(findRealQuantityValue(origin, "depth"), "origin.depth");
@@ -66,9 +69,9 @@ public final class QuakemlBulletinDecoder {
 		final float magnitudeValue = requireFiniteFloat(findRealQuantityValue(magnitude, "mag"), "magnitude.mag");
 		final String region = findRegion(origin).orElseGet(() -> findDescription(event).orElse(""));
 		final Status status = findStatus(origin, hasMomentTensor);
-		final URI link = URI.create(String.format(GeofonUtils.getBaseUrl().toString() + "/eqinfo/event.php?id=%s", guid).replace("/old/", "/"));
-		final URI enclosureURI = URI.create(String.format(GeofonUtils.getBaseUrl().toString() + "/data/alerts/%d/%s/%s.jpg", time.get(ChronoField.YEAR), guid, guid).replace("/old/", "/"));
-		final URI momentTensorUri = hasMomentTensor ? URI.create(String.format(GeofonUtils.getBaseUrl().toString() + "/data/alerts/%d/%s/mt.txt", time.get(ChronoField.YEAR), guid).replace("/old/", "/")) : null;
+		final URI link = GeofonUtils.getEventLinkUri(guid);
+		final URI enclosureURI = GeofonUtils.getEventMapUri(guid, year);
+		final URI momentTensorUri = hasMomentTensor ? GeofonUtils.getEventMomentTensorUri(guid, year) : null;
 
 		return new Earthquake(guid, time, magnitudeValue, Latitude.valueOf(latitudeValue), Longitude.valueOf(longitudeValue), Depth.valueOf(depthKm), status, region, link, enclosureURI, momentTensorUri);
 	}
@@ -79,7 +82,6 @@ public final class QuakemlBulletinDecoder {
 	 * returned.
 	 */
 	private static <T> T findPreferred(final List<JAXBElement<?>> elements, final String elementName, final String preferredId, final Class<T> type) {
-
 		T first = null;
 
 		for (final JAXBElement<?> element : elements) {
@@ -115,7 +117,6 @@ public final class QuakemlBulletinDecoder {
 	 * Extracts the textual value of an Event-level resource reference.
 	 */
 	private static String findString(final List<JAXBElement<?>> elements, final String elementName) {
-
 		for (final JAXBElement<?> element : elements) {
 			if (elementName.equals(element.getName().getLocalPart())) {
 				final Object value = element.getValue();
@@ -130,17 +131,14 @@ public final class QuakemlBulletinDecoder {
 	}
 
 	private static RealQuantity findRealQuantity(final Origin origin, final String elementName) {
-
 		return findRealQuantity(origin.getCompositeTimeOrCommentOrOriginUncertainty(), elementName);
 	}
 
 	private static RealQuantity findRealQuantity(final Magnitude magnitude, final String elementName) {
-
 		return findRealQuantity(magnitude.getCommentOrStationMagnitudeContributionOrMag(), elementName);
 	}
 
 	private static RealQuantity findRealQuantity(final List<JAXBElement<?>> elements, final String elementName) {
-
 		for (final JAXBElement<?> element : elements) {
 			if (elementName.equals(element.getName().getLocalPart())) {
 				final Object value = element.getValue();
@@ -155,12 +153,10 @@ public final class QuakemlBulletinDecoder {
 	}
 
 	private static Double findRealQuantityValue(final Origin origin, final String elementName) {
-
 		return findRealQuantityValue(findRealQuantity(origin, elementName));
 	}
 
 	private static Double findRealQuantityValue(final Magnitude magnitude, final String elementName) {
-
 		return findRealQuantityValue(findRealQuantity(magnitude, elementName));
 	}
 
@@ -169,13 +165,11 @@ public final class QuakemlBulletinDecoder {
 	 * is the JAXBElement whose local name is "value".
 	 */
 	private static Double findRealQuantityValue(final RealQuantity quantity) {
-
 		if (quantity == null) {
 			return null;
 		}
 
 		for (final JAXBElement<Double> element : quantity.getValueOrUncertaintyOrLowerUncertainty()) {
-
 			if ("value".equals(element.getName().getLocalPart())) {
 				return element.getValue();
 			}
@@ -185,13 +179,11 @@ public final class QuakemlBulletinDecoder {
 	}
 
 	private static XMLGregorianCalendar requireValue(final RealQuantity quantity, final String field) {
-
 		if (quantity == null) {
 			throw new IllegalArgumentException("Missing mandatory field: " + field);
 		}
 
 		for (final JAXBElement<?> element : quantity.getValueOrUncertaintyOrLowerUncertainty()) {
-
 			if ("value".equals(element.getName().getLocalPart())) {
 				final Object value = element.getValue();
 
@@ -205,7 +197,6 @@ public final class QuakemlBulletinDecoder {
 	}
 
 	private static ZonedDateTime toZonedDateTime(final XMLGregorianCalendar calendar, final String field) {
-
 		try {
 			return calendar.toGregorianCalendar().toZonedDateTime();
 		}
@@ -216,7 +207,6 @@ public final class QuakemlBulletinDecoder {
 
 	private static Optional<String> findRegion(final Origin origin) {
 		for (final JAXBElement<?> element : origin.getCompositeTimeOrCommentOrOriginUncertainty()) {
-
 			if ("region".equals(element.getName().getLocalPart())) {
 				final Object value = element.getValue();
 
@@ -231,7 +221,6 @@ public final class QuakemlBulletinDecoder {
 
 	private static Optional<String> findDescription(final Event event) {
 		for (final JAXBElement<?> element : event.getDescriptionOrCommentOrFocalMechanism()) {
-
 			if (!"description".equals(element.getName().getLocalPart())) {
 				continue;
 			}
@@ -310,16 +299,13 @@ public final class QuakemlBulletinDecoder {
 	}
 
 	private static String requireText(final String value, final String field) {
-
 		if (value == null || value.trim().isEmpty()) {
 			throw new IllegalArgumentException("Missing mandatory field: " + field);
 		}
-
 		return value;
 	}
 
 	private static float requireFiniteFloat(final Double value, final String field) {
-
 		if (value == null || !Double.isFinite(value)) {
 			throw new IllegalArgumentException("Missing or invalid field: " + field);
 		}
@@ -334,11 +320,9 @@ public final class QuakemlBulletinDecoder {
 	}
 
 	private static double requireFiniteDouble(final Double value, final String field) {
-
 		if (value == null || !Double.isFinite(value)) {
 			throw new IllegalArgumentException("Missing or invalid field: " + field);
 		}
-
 		return value;
 	}
 
@@ -350,13 +334,11 @@ public final class QuakemlBulletinDecoder {
 		if (depthMeters < 0.0) {
 			throw new IllegalArgumentException("Negative earthquake depth: " + depthMeters);
 		}
-
 		return (int) Math.round(depthMeters / 1000.0);
 	}
 
 	private static TimeQuantity findTimeQuantity(final Origin origin) {
 		for (final JAXBElement<?> element : origin.getCompositeTimeOrCommentOrOriginUncertainty()) {
-
 			if (!"time".equals(element.getName().getLocalPart())) {
 				continue;
 			}
@@ -367,12 +349,10 @@ public final class QuakemlBulletinDecoder {
 				return (TimeQuantity) value;
 			}
 		}
-
 		return null;
 	}
 
 	private static XMLGregorianCalendar requireTimeValue(final TimeQuantity quantity, final String field) {
-
 		if (quantity == null) {
 			throw new IllegalArgumentException("Missing mandatory field: " + field);
 		}
@@ -393,7 +373,7 @@ public final class QuakemlBulletinDecoder {
 		throw new IllegalArgumentException("Missing mandatory value: " + field);
 	}
 
-	public static Collection<Earthquake> decode(final Quakeml quakeml) throws MalformedURLException {
+	public static Collection<Earthquake> decode(final Quakeml quakeml) throws MalformedURLException, URISyntaxException {
 		Objects.requireNonNull(quakeml, "quakeml must not be null");
 		final List<Earthquake> list = new ArrayList<>();
 		for (final Object e : quakeml.getEventParameters().getCommentOrEventOrDescription()) {
