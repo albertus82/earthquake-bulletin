@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLConnection;
@@ -123,7 +124,7 @@ public class QuakemlBulletinDownloader extends ResilientDownloader implements Bu
 		}
 	}
 
-	private static Collection<Earthquake> decode(final String body) throws JAXBException {
+	private static Collection<Earthquake> decode(final String body) throws JAXBException, MalformedURLException {
 		final Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 		try (final StringReader sr = new StringReader(body)) {
 			return QuakemlBulletinDecoder.decode(jaxbUnmarshaller.unmarshal(new StreamSource(sr), Quakeml.class).getValue());

@@ -1,7 +1,9 @@
 package io.github.albertus82.eqbulletin.service.decode.quakeml;
 
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -14,9 +16,7 @@ import org.quakeml.xmlns.bed._1.EvaluationMode;
 import org.quakeml.xmlns.bed._1.EvaluationStatus;
 import org.quakeml.xmlns.bed._1.Event;
 import org.quakeml.xmlns.bed._1.EventDescription;
-import org.quakeml.xmlns.bed._1.FocalMechanism;
 import org.quakeml.xmlns.bed._1.Magnitude;
-import org.quakeml.xmlns.bed._1.MomentTensor;
 import org.quakeml.xmlns.bed._1.Origin;
 import org.quakeml.xmlns.bed._1.RealQuantity;
 import org.quakeml.xmlns.bed._1.TimeQuantity;
@@ -27,6 +27,7 @@ import io.github.albertus82.eqbulletin.model.Earthquake;
 import io.github.albertus82.eqbulletin.model.Latitude;
 import io.github.albertus82.eqbulletin.model.Longitude;
 import io.github.albertus82.eqbulletin.model.Status;
+import io.github.albertus82.eqbulletin.service.GeofonUtils;
 import jakarta.xml.bind.JAXBElement;
 import lombok.extern.slf4j.Slf4j;
 
@@ -42,14 +43,16 @@ public final class QuakemlBulletinDecoder {
 	 *
 	 * @param event QuakeML event
 	 * @return mapped earthquake
+	 * @throws MalformedURLException
 	 * @throws IllegalArgumentException if one of the mandatory Earthquake
 	 *         properties cannot be obtained
 	 */
-	private static Earthquake toEarthquake(final Event event) {
+	private static Earthquake toEarthquake(final Event event) throws MalformedURLException {
 		Objects.requireNonNull(event, "event must not be null");
 		final List<JAXBElement<?>> elements = event.getDescriptionOrCommentOrFocalMechanism();
 		final String guid = requireText(event.getPublicID().substring(event.getPublicID().lastIndexOf('/') + 1), "event.publicID");
 		log.debug("guid={}", guid);
+		final boolean hasMomentTensor = findString(elements, "preferredFocalMechanismID") != null;
 		final String preferredOriginId = findString(elements, "preferredOriginID");
 		final String preferredMagnitudeId = findString(elements, "preferredMagnitudeID");
 		final Origin origin = findPreferred(elements, "origin", preferredOriginId, Origin.class);
@@ -62,12 +65,12 @@ public final class QuakemlBulletinDecoder {
 		final int depthKm = toDepthKilometres(depthMeters);
 		final float magnitudeValue = requireFiniteFloat(findRealQuantityValue(magnitude, "mag"), "magnitude.mag");
 		final String region = findRegion(origin).orElseGet(() -> findDescription(event).orElse(""));
-		final Status status = findStatus(origin);
-		final URI momentTensorUri = findMomentTensorUri(elements, findString(elements, "preferredFocalMechanismID"));
+		final Status status = findStatus(origin, hasMomentTensor);
+		final URI link = URI.create(String.format(GeofonUtils.getBaseUrl().toString() + "/eqinfo/event.php?id=%s", guid).replace("/old/", "/"));
+		final URI enclosureURI = URI.create(String.format(GeofonUtils.getBaseUrl().toString() + "/data/alerts/%d/%s/%s.jpg", time.get(ChronoField.YEAR), guid, guid).replace("/old/", "/"));
+		final URI momentTensorUri = hasMomentTensor ? URI.create(String.format(GeofonUtils.getBaseUrl().toString() + "/data/alerts/%d/%s/mt.txt", time.get(ChronoField.YEAR), guid).replace("/old/", "/")) : null;
 
-		return new Earthquake(guid, time, magnitudeValue, Latitude.valueOf(latitudeValue), Longitude.valueOf(longitudeValue), Depth.valueOf(depthKm), status, region, null, // QuakeML Event has no equivalent "link" field.
-				null, // QuakeML Event has no equivalent enclosure URI.
-				momentTensorUri);
+		return new Earthquake(guid, time, magnitudeValue, Latitude.valueOf(latitudeValue), Longitude.valueOf(longitudeValue), Depth.valueOf(depthKm), status, region, link, enclosureURI, momentTensorUri);
 	}
 
 	/**
@@ -251,7 +254,7 @@ public final class QuakemlBulletinDecoder {
 		return Optional.empty();
 	}
 
-	private static Status findStatus(final Origin origin) {
+	private static Status findStatus(final Origin origin, final boolean hasMomentTensor) {
 		EvaluationMode mode = null;
 		EvaluationStatus evaluationStatus = null;
 
@@ -268,67 +271,14 @@ public final class QuakemlBulletinDecoder {
 			}
 		}
 
-		log.debug("mode={}, evaluationStatus={}", mode, evaluationStatus);
+		log.debug("mode={}, evaluationStatus={}, hasMomentTensor={}", mode, evaluationStatus, hasMomentTensor);
 
 		if (mode == EvaluationMode.AUTOMATIC) {
-			return evaluationStatus == EvaluationStatus.CONFIRMED ? Status.C : Status.A;
+			return evaluationStatus == EvaluationStatus.CONFIRMED || hasMomentTensor ? Status.C : Status.A;
 		}
 
 		if (mode == EvaluationMode.MANUAL) {
 			return Status.M;
-		}
-
-		return null;
-	}
-
-	/**
-	 * The QuakeML MomentTensor itself has a publicID, which is the closest
-	 * representation of the application's momentTensorUri.
-	 */
-	private static URI findMomentTensorUri(final List<JAXBElement<?>> eventElements, final String preferredFocalMechanismId) {
-
-		FocalMechanism first = null;
-		FocalMechanism preferred = null;
-
-		for (final JAXBElement<?> element : eventElements) {
-			if (!"focalMechanism".equals(element.getName().getLocalPart())) {
-				continue;
-			}
-
-			final Object value = element.getValue();
-
-			if (!(value instanceof FocalMechanism)) {
-				continue;
-			}
-
-			final FocalMechanism focalMechanism = (FocalMechanism) value;
-
-			if (first == null) {
-				first = focalMechanism;
-			}
-
-			if (preferredFocalMechanismId != null && preferredFocalMechanismId.equals(focalMechanism.getPublicID())) {
-				preferred = focalMechanism;
-			}
-		}
-
-		final FocalMechanism focalMechanism = preferred != null ? preferred : first;
-
-		if (focalMechanism == null) {
-			return null;
-		}
-
-		for (final JAXBElement<?> element : focalMechanism.getWaveformIDOrCommentOrMomentTensor()) {
-
-			if (!"momentTensor".equals(element.getName().getLocalPart())) {
-				continue;
-			}
-
-			final Object value = element.getValue();
-
-			if (value instanceof MomentTensor) {
-				return toUri(((MomentTensor) value).getPublicID());
-			}
 		}
 
 		return null;
@@ -443,7 +393,7 @@ public final class QuakemlBulletinDecoder {
 		throw new IllegalArgumentException("Missing mandatory value: " + field);
 	}
 
-	public static Collection<Earthquake> decode(final Quakeml quakeml) {
+	public static Collection<Earthquake> decode(final Quakeml quakeml) throws MalformedURLException {
 		Objects.requireNonNull(quakeml, "quakeml must not be null");
 		final List<Earthquake> list = new ArrayList<>();
 		for (final Object e : quakeml.getEventParameters().getCommentOrEventOrDescription()) {

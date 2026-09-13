@@ -42,7 +42,7 @@ public class GeofonUtils {
 		return getBaseUrl() + "/data/alerts/" + year + "/" + guid + "/";
 	}
 
-	private static String getBaseUrl() throws MalformedURLException {
+	public static String getBaseUrl() throws MalformedURLException {
 		final String spec = EarthquakeBulletinConfig.getPreferencesConfiguration().getString(Preference.GEOFON_BASE_URL, DEFAULT_GEOFON_BASE_URL);
 		return ConnectionUtils.sanitizeUriString(spec);
 	}
