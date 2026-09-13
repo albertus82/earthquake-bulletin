@@ -103,7 +103,7 @@ public class QuakemlBulletinDownloader extends ResilientDownloader implements Bu
 		if (canceled != null && canceled.getAsBoolean()) {
 			throw new CancelException();
 		}
-		final StringBuilder uriBuilder = new StringBuilder(request.toURIs().get(0).toString().replace("/old/", "/").replace("/eqinfo/list.php", "/fdsnws/event/1/query"));
+		final StringBuilder uriBuilder = new StringBuilder(request.toURIs().get(0).toString());
 		final URLConnection connection = ConnectionFactory.makeGetRequest(URI.create(uriBuilder.toString()).toURL(), headers);
 		final String responseContentEncoding = connection.getContentEncoding();
 		final boolean gzip = responseContentEncoding != null && responseContentEncoding.toLowerCase(Locale.ROOT).contains("gzip");

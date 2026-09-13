@@ -17,12 +17,12 @@ import lombok.NonNull;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class GeofonUtils {
 
-	public static final String GEOFON_BASE_URL = "https://geofon.gfz.de";
-
-	public static final String DEFAULT_GEOFON_BASE_URL = GEOFON_BASE_URL;
+	public static final String DEFAULT_GEOFON_BASE_URL = "https://geofon.gfz.de";
 
 	public static final String MOMENT_TENSOR_FILENAME = "mt.txt";
 	private static final String BEACH_BALL_FILENAME = "bb.png";
+
+	private static final String EQINFO_LIST_PHP = "/eqinfo/list.php";
 
 	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getPreferencesConfiguration();
 
@@ -43,16 +43,29 @@ public class GeofonUtils {
 	}
 
 	public static String getBulletinBaseUrl(@NonNull Format format) throws MalformedURLException {
-		final String baseUrl = getBaseUrl();
-		final HtmlBulletinVersion version = HtmlBulletinVersion.forValue(configuration.getString(Preference.HTML_BULLETIN_VERSION));
 		if (Format.QUAKEML.equals(format)) {
-			return baseUrl + "/fdsnws/event/1/query";
+			return getBaseUrl() + "/fdsnws/event/1/query";
 		}
 		else if (Format.HTML.equals(format)) {
-			return baseUrl + ((HtmlBulletinVersion.OLD.equals(version) && !baseUrl.endsWith("/old") ? "/old" : "") + "/eqinfo/list.php");
+			String baseUrl = getBaseUrl();
+			final HtmlBulletinVersion version = HtmlBulletinVersion.forValue(configuration.getString(Preference.HTML_BULLETIN_VERSION));
+			switch (version) {
+			case NEW:
+				if (baseUrl.endsWith("/old")) {
+					baseUrl = baseUrl.substring(0, baseUrl.indexOf("/old"));
+				}
+				return baseUrl + EQINFO_LIST_PHP;
+			case OLD:
+				if (!baseUrl.endsWith("/old")) {
+					baseUrl += "/old";
+				}
+				return baseUrl + EQINFO_LIST_PHP;
+			default:
+				throw new UnsupportedOperationException(String.valueOf(version));
+			}
 		}
 		else {
-			return baseUrl + "/eqinfo/list.php";
+			return getBaseUrl() + EQINFO_LIST_PHP;
 		}
 	}
 
@@ -60,7 +73,7 @@ public class GeofonUtils {
 		return getBaseUrl() + "/data/alerts/" + year + "/" + guid + "/";
 	}
 
-	public static String getBaseUrl() throws MalformedURLException {
+	private static String getBaseUrl() throws MalformedURLException {
 		final String spec = EarthquakeBulletinConfig.getPreferencesConfiguration().getString(Preference.GEOFON_BASE_URL, DEFAULT_GEOFON_BASE_URL);
 		return ConnectionUtils.sanitizeUriString(spec);
 	}
