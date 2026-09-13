@@ -55,20 +55,23 @@ public class SearchAsyncOperation extends AsyncOperation {
 		request.setValid(form.isValid());
 		request.setDelay(getDelay(form));
 		if (request.isValid()) {
+			final Format format = getFormat(form);
 			final Map<String, String> params = request.getParameterMap();
-			params.put(Format.KEY, getFormatValue(form));
-			params.put("mode", form.getRestrictButton().getSelection() ? "mt" : "");
+			params.put(Format.KEY, format.getValue());
+			if (!Format.QUAKEML.equals(format)) {
+				params.put("mode", form.getRestrictButton().getSelection() ? "mt" : "");
+			}
 			if (form.getPeriodFromDateTime().isEnabled() && form.getPeriodFromDateTime().getSelection() != null) {
-				params.put("datemin", form.getPeriodFromDateTime().getText());
+				params.put(Format.QUAKEML.equals(format) ? "start" : "datemin", form.getPeriodFromDateTime().getText());
 			}
 			if (form.getPeriodToDateTime().isEnabled() && form.getPeriodToDateTime().getSelection() != null) {
-				params.put("datemax", form.getPeriodToDateTime().getText());
+				params.put(Format.QUAKEML.equals(format) ? "end" : "datemax", form.getPeriodToDateTime().getText());
 			}
-			params.put("latmin", form.getLatitudeFromText().getText());
-			params.put("latmax", form.getLatitudeToText().getText());
-			params.put("lonmin", form.getLongitudeFromText().getText());
-			params.put("lonmax", form.getLongitudeToText().getText());
-			params.put("magmin", form.getMinimumMagnitudeText().getText());
+			params.put(Format.QUAKEML.equals(format) ? "minlatitude" : "latmin", form.getLatitudeFromText().getText());
+			params.put(Format.QUAKEML.equals(format) ? "maxlatitude" : "latmax", form.getLatitudeToText().getText());
+			params.put(Format.QUAKEML.equals(format) ? "minlongitude" : "lonmin", form.getLongitudeFromText().getText());
+			params.put(Format.QUAKEML.equals(format) ? "maxlongitude" : "lonmax", form.getLongitudeToText().getText());
+			params.put(Format.QUAKEML.equals(format) ? "minmagnitude" : "magmin", form.getMinimumMagnitudeText().getText());
 			if (form.getResultsText().isEnabled() && !form.getResultsText().getText().isEmpty()) {
 				request.setLimit(Short.valueOf(form.getResultsText().getText()));
 			}
@@ -76,13 +79,13 @@ public class SearchAsyncOperation extends AsyncOperation {
 		return request;
 	}
 
-	private static String getFormatValue(final SearchForm form) {
+	private static Format getFormat(final SearchForm form) {
 		for (final Entry<Format, Button> entry : form.getFormatRadios().entrySet()) {
 			if (entry.getValue().getSelection()) {
-				return entry.getKey().getValue();
+				return entry.getKey();
 			}
 		}
-		return SearchForm.Defaults.FORMAT.getValue();
+		return SearchForm.Defaults.FORMAT;
 	}
 
 	private static Long getDelay(final SearchForm form) {

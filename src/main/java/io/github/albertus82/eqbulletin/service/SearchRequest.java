@@ -54,27 +54,38 @@ public class SearchRequest {
 
 	private Set<String> toUrlStrings() throws MalformedURLException {
 		final StringBuilder baseUrl = new StringBuilder(GeofonUtils.getBulletinBaseUrl());
-		baseUrl.append('?').append(Format.KEY).append('=').append(getFormat().getValue());
-		for (final Entry<String, String> param : parameterMap.entrySet()) {
-			if (param.getValue() != null && !param.getValue().isEmpty() && !Format.KEY.equals(param.getKey())) {
-				baseUrl.append('&').append(param.getKey()).append('=').append(URIEncoder.encodeURI(param.getValue()));
-			}
-		}
-		if (limit != null) {
-			final PaginationParameters pp = new PaginationParameters(limit);
-			if (pp.getPages() == 1) {
-				return Collections.singleton(baseUrl.append("&nmax=").append(pp.getNmax()).toString());
-			}
-			else {
-				final Set<String> urls = new LinkedHashSet<>();
-				for (short page = 1; page <= pp.getPages(); page++) {
-					urls.add(baseUrl + "&page=" + page + "&nmax=" + pp.getNmax()); // Don't append to the StringBuilder here!
+		if (Format.QUAKEML.getValue().equals(parameterMap.get(Format.KEY.toString()))) {
+			baseUrl.append("?limit=").append(limit == null || limit < 1 ? 3 : limit);
+			for (final Entry<String, String> param : parameterMap.entrySet()) {
+				if (param.getValue() != null && !param.getValue().isEmpty() && !Format.KEY.equals(param.getKey())) {
+					baseUrl.append('&').append(param.getKey()).append('=').append(URIEncoder.encodeURI(param.getValue()));
 				}
-				return urls;
 			}
+			return Collections.singleton(baseUrl.toString());
 		}
 		else {
-			return Collections.singleton(baseUrl.toString());
+			baseUrl.append('?').append(Format.KEY).append('=').append(getFormat().getValue());
+			for (final Entry<String, String> param : parameterMap.entrySet()) {
+				if (param.getValue() != null && !param.getValue().isEmpty() && !Format.KEY.equals(param.getKey())) {
+					baseUrl.append('&').append(param.getKey()).append('=').append(URIEncoder.encodeURI(param.getValue()));
+				}
+			}
+			if (limit != null) {
+				final PaginationParameters pp = new PaginationParameters(limit);
+				if (pp.getPages() == 1) {
+					return Collections.singleton(baseUrl.append("&nmax=").append(pp.getNmax()).toString());
+				}
+				else {
+					final Set<String> urls = new LinkedHashSet<>();
+					for (short page = 1; page <= pp.getPages(); page++) {
+						urls.add(baseUrl + "&page=" + page + "&nmax=" + pp.getNmax()); // Don't append to the StringBuilder here!
+					}
+					return urls;
+				}
+			}
+			else {
+				return Collections.singleton(baseUrl.toString());
+			}
 		}
 	}
 
