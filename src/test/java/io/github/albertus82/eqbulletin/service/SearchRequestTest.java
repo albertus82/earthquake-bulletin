@@ -27,15 +27,17 @@ class SearchRequestTest {
 
 	@Test
 	void testGenerateUrl() throws URISyntaxException, MalformedURLException {
-		final String baseUrl = GeofonUtils.getBulletinBaseUrl(Format.RSS, null);
+		final String baseUrlRss = GeofonUtils.getBulletinBaseUrl(Format.RSS);
 
 		SearchRequest r = new SearchRequest(Format.RSS, false, null);
 		r.getParameterMap().put("fmt", "rss");
-		Assertions.assertEquals(baseUrl + "?fmt=rss", r.toURIs().get(0).toString());
+		Assertions.assertEquals(baseUrlRss + "?fmt=rss", r.toURIs().get(0).toString());
+
+		final String baseUrlHtml = GeofonUtils.getBulletinBaseUrl(Format.HTML);
 
 		r = new SearchRequest(Format.HTML, false, null);
 		r.getParameterMap().put("fmt", "html");
-		Assertions.assertEquals(baseUrl + "?fmt=html", r.toURIs().get(0).toString());
+		Assertions.assertEquals(baseUrlHtml + "?fmt=html", r.toURIs().get(0).toString());
 	}
 
 	@Test

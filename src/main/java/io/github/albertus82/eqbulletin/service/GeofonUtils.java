@@ -9,6 +9,7 @@ import io.github.albertus82.eqbulletin.gui.preference.Preference;
 import io.github.albertus82.eqbulletin.model.Format;
 import io.github.albertus82.eqbulletin.service.decode.html.HtmlBulletinVersion;
 import io.github.albertus82.eqbulletin.service.net.ConnectionUtils;
+import io.github.albertus82.jface.preference.IPreferencesConfiguration;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -22,6 +23,8 @@ public class GeofonUtils {
 
 	public static final String MOMENT_TENSOR_FILENAME = "mt.txt";
 	private static final String BEACH_BALL_FILENAME = "bb.png";
+
+	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getPreferencesConfiguration();
 
 	public static URI getEventLinkUri(@NonNull final String guid) throws MalformedURLException, URISyntaxException {
 		return fixOldGeofonBaseUrl(ConnectionUtils.toURI(getBaseUrl() + "/eqinfo/event.php?id=" + guid));
@@ -39,9 +42,18 @@ public class GeofonUtils {
 		return fixOldGeofonBaseUrl(ConnectionUtils.toURI(getEventBaseUrl(guid, year) + BEACH_BALL_FILENAME));
 	}
 
-	public static String getBulletinBaseUrl(@NonNull Format format, HtmlBulletinVersion version) throws MalformedURLException {
+	public static String getBulletinBaseUrl(@NonNull Format format) throws MalformedURLException {
 		final String baseUrl = getBaseUrl();
-		return baseUrl + (Format.QUAKEML.equals(format) ? "/fdsnws/event/1/query" : ((HtmlBulletinVersion.OLD.equals(version) && !baseUrl.endsWith("/old") ? "/old" : "") + "/eqinfo/list.php"));
+		final HtmlBulletinVersion version = HtmlBulletinVersion.forValue(configuration.getString(Preference.HTML_BULLETIN_VERSION));
+		if (Format.QUAKEML.equals(format)) {
+			return baseUrl + "/fdsnws/event/1/query";
+		}
+		else if (Format.HTML.equals(format)) {
+			return baseUrl + ((HtmlBulletinVersion.OLD.equals(version) && !baseUrl.endsWith("/old") ? "/old" : "") + "/eqinfo/list.php");
+		}
+		else {
+			return baseUrl + "/eqinfo/list.php";
+		}
 	}
 
 	private static String getEventBaseUrl(@NonNull final String guid, final int year) throws MalformedURLException {

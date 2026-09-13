@@ -7,10 +7,11 @@
 
 	<groupId>io.github.albertus82</groupId>
 	<artifactId>earthquake-bulletin</artifactId>
-	<version>2.5.0</version>
+	<version>3.0.0</version>
 	<name>Earthquake Bulletin</name>
 	<url>https://github.com/albertus82/earthquake-bulletin</url>
-	<description>A desktop client for GEOFON Program GFZ Potsdam Earthquake Bulletin.</description>
+	<description>A desktop client for GEOFON Program GFZ Potsdam Earthquake
+		Bulletin.</description>
 
 	<licenses>
 		<license>
@@ -20,8 +21,10 @@
 	</licenses>
 
 	<scm>
-		<connection>scm:git:https://github.com/albertus82/earthquake-bulletin.git</connection>
-		<developerConnection>scm:git:https://github.com/albertus82/earthquake-bulletin.git</developerConnection>
+		<connection>
+			scm:git:https://github.com/albertus82/earthquake-bulletin.git</connection>
+		<developerConnection>
+			scm:git:https://github.com/albertus82/earthquake-bulletin.git</developerConnection>
 		<url>https://github.com/albertus82/earthquake-bulletin</url>
 	</scm>
 
@@ -41,11 +44,14 @@
 		<assembly.finalName>${project.artifactId}-${project.version}-${platform}</assembly.finalName>
 		<dependencies.directory>lib</dependencies.directory>
 		<thirdparty.license.directory>3rdparty</thirdparty.license.directory>
-		<sonar.coverage.jacoco.xmlReportPaths>${project.build.directory}/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+		<sonar.coverage.jacoco.xmlReportPaths>
+			${project.build.directory}/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
 		<maven.version.rules>${project.baseUri}maven-version-rules.xml</maven.version.rules>
-		<swt.version>3.116.100</swt.version> <!-- Last version compatible with JRE 8 -->
+		<swt.version>3.116.100</swt.version> <!-- Last version compatible with
+		JRE 8 -->
 		<jarbundler.version>3.3.0</jarbundler.version>
-		<jface.version>3.22.200</jface.version> <!-- Last version compatible with JRE 8 -->
+		<jface.version>3.22.200</jface.version> <!-- Last version compatible with
+		JRE 8 -->
 		<lombok.version>1.18.48</lombok.version>
 		<picocli.version>4.7.7</picocli.version>
 		<slf4j.version>2.0.19</slf4j.version>
@@ -213,7 +219,8 @@
 			<dependency>
 				<groupId>org.eclipse.platform</groupId>
 				<artifactId>org.eclipse.equinox.common</artifactId>
-				<version>3.14.100</version> <!-- Last version compatible with JRE 8 -->
+				<version>3.14.100</version> <!-- Last version compatible with JRE
+				8 -->
 			</dependency>
 			<dependency>
 				<groupId>io.vavr</groupId>
@@ -232,8 +239,10 @@
 		<profile>
 			<id>codeql</id>
 			<properties>
-				<lombok.outputDirectory>${project.build.directory}/generated-sources/delombok</lombok.outputDirectory>
-				<lombok.testOutputDirectory>${project.build.directory}/generated-test-sources/delombok</lombok.testOutputDirectory>
+				<lombok.outputDirectory>
+					${project.build.directory}/generated-sources/delombok</lombok.outputDirectory>
+				<lombok.testOutputDirectory>
+					${project.build.directory}/generated-test-sources/delombok</lombok.testOutputDirectory>
 			</properties>
 			<build>
 				<plugins>
@@ -249,7 +258,8 @@
 									<goal>delombok</goal>
 								</goals>
 								<configuration>
-									<sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
+									<sourceDirectory>
+										${project.build.sourceDirectory}</sourceDirectory>
 								</configuration>
 							</execution>
 							<execution>
@@ -259,7 +269,8 @@
 									<goal>testDelombok</goal>
 								</goals>
 								<configuration>
-									<sourceDirectory>${project.build.testSourceDirectory}</sourceDirectory>
+									<sourceDirectory>
+										${project.build.testSourceDirectory}</sourceDirectory>
 								</configuration>
 							</execution>
 						</executions>
@@ -284,7 +295,7 @@
 								<phase>process-sources</phase>
 								<configuration>
 									<target>
-										<ant target="codeql-delombok"/>
+										<ant target="codeql-delombok" />
 									</target>
 								</configuration>
 								<goals>
@@ -296,7 +307,7 @@
 								<phase>process-test-sources</phase>
 								<configuration>
 									<target>
-										<ant target="codeql-delombok-test"/>
+										<ant target="codeql-delombok-test" />
 									</target>
 								</configuration>
 								<goals>
@@ -330,7 +341,8 @@
 						<configuration>
 							<includeScope>runtime</includeScope>
 							<useBaseVersion>false</useBaseVersion>
-							<outputDirectory>${project.build.directory}/${dependencies.directory}</outputDirectory>
+							<outputDirectory>
+								${project.build.directory}/${dependencies.directory}</outputDirectory>
 						</configuration>
 						<executions>
 							<execution>
@@ -366,8 +378,10 @@
 								</goals>
 								<configuration>
 									<target>
-										<taskdef name="jarbundler" classname="com.ultramixer.jarbundler.JarBundler" classpathref="maven.plugin.classpath"/>
-										<ant target="jarbundler"/>
+										<taskdef name="jarbundler"
+											classname="com.ultramixer.jarbundler.JarBundler"
+											classpathref="maven.plugin.classpath" />
+										<ant target="jarbundler" />
 									</target>
 								</configuration>
 							</execution>
@@ -410,7 +424,8 @@
 						<configuration>
 							<includeScope>runtime</includeScope>
 							<useBaseVersion>false</useBaseVersion>
-							<outputDirectory>${project.build.directory}/${dependencies.directory}</outputDirectory>
+							<outputDirectory>
+								${project.build.directory}/${dependencies.directory}</outputDirectory>
 						</configuration>
 						<executions>
 							<execution>
@@ -446,8 +461,10 @@
 								</goals>
 								<configuration>
 									<target>
-										<taskdef name="jarbundler" classname="com.ultramixer.jarbundler.JarBundler" classpathref="maven.plugin.classpath"/>
-										<ant target="jarbundler"/>
+										<taskdef name="jarbundler"
+											classname="com.ultramixer.jarbundler.JarBundler"
+											classpathref="maven.plugin.classpath" />
+										<ant target="jarbundler" />
 									</target>
 								</configuration>
 							</execution>
@@ -614,7 +631,7 @@
 								</goals>
 								<configuration>
 									<target>
-										<ant target="launch4j"/>
+										<ant target="launch4j" />
 									</target>
 								</configuration>
 							</execution>
@@ -664,7 +681,7 @@
 								</goals>
 								<configuration>
 									<target>
-										<ant target="launch4j"/>
+										<ant target="launch4j" />
 									</target>
 								</configuration>
 							</execution>
@@ -752,9 +769,9 @@
 					<version>3.11.0</version>
 				</plugin>
 				<plugin>
-				    <groupId>org.sonarsource.scanner.maven</groupId>
-				    <artifactId>sonar-maven-plugin</artifactId>
-				    <version>5.7.0.6970</version>
+					<groupId>org.sonarsource.scanner.maven</groupId>
+					<artifactId>sonar-maven-plugin</artifactId>
+					<version>5.7.0.6970</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
@@ -787,11 +804,11 @@
 				<configuration>
 					<compilerArgument>-Xlint:all</compilerArgument>
 					<annotationProcessorPaths>
-					    <path>
-					        <groupId>org.projectlombok</groupId>
-					        <artifactId>lombok</artifactId>
-					        <version>${lombok.version}</version>
-					    </path>
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+							<version>${lombok.version}</version>
+						</path>
 					</annotationProcessorPaths>
 				</configuration>
 			</plugin>
@@ -932,7 +949,7 @@
 						<configuration>
 							<skip>${maven.antrun.skip.lombok-config}</skip>
 							<target>
-								<ant target="lombok-config"/>
+								<ant target="lombok-config" />
 							</target>
 						</configuration>
 					</execution>
@@ -944,8 +961,9 @@
 						</goals>
 						<configuration>
 							<target>
-								<taskdef resource="net/sf/antcontrib/antlib.xml" classpathref="maven.plugin.classpath"/>
-								<ant target="innosetup"/>
+								<taskdef resource="net/sf/antcontrib/antlib.xml"
+									classpathref="maven.plugin.classpath" />
+								<ant target="innosetup" />
 							</target>
 						</configuration>
 					</execution>
@@ -957,7 +975,7 @@
 						</goals>
 						<configuration>
 							<target>
-								<ant target="checksums"/>
+								<ant target="checksums" />
 							</target>
 						</configuration>
 					</execution>
@@ -1007,7 +1025,8 @@
 					<execution>
 						<id>cocoa-macosx-aarch64</id>
 						<configuration>
-							<profiles>cocoa-macosx-aarch64,!cocoa-macosx-x86_64,!gtk-linux-aarch64,!gtk-linux-armhf,!gtk-linux-x86,!gtk-linux-x86_64,!win32-win32-x86,!win32-win32-x86_64</profiles>
+							<profiles>
+								cocoa-macosx-aarch64,!cocoa-macosx-x86_64,!gtk-linux-aarch64,!gtk-linux-armhf,!gtk-linux-x86,!gtk-linux-x86_64,!win32-win32-x86,!win32-win32-x86_64</profiles>
 						</configuration>
 						<phase>pre-integration-test</phase>
 						<goals>
@@ -1017,7 +1036,8 @@
 					<execution>
 						<id>cocoa-macosx-x86_64</id>
 						<configuration>
-							<profiles>!cocoa-macosx-aarch64,cocoa-macosx-x86_64,!gtk-linux-aarch64,!gtk-linux-armhf,!gtk-linux-x86,!gtk-linux-x86_64,!win32-win32-x86,!win32-win32-x86_64</profiles>
+							<profiles>
+								!cocoa-macosx-aarch64,cocoa-macosx-x86_64,!gtk-linux-aarch64,!gtk-linux-armhf,!gtk-linux-x86,!gtk-linux-x86_64,!win32-win32-x86,!win32-win32-x86_64</profiles>
 						</configuration>
 						<phase>pre-integration-test</phase>
 						<goals>
@@ -1027,7 +1047,8 @@
 					<execution>
 						<id>gtk-linux-aarch64</id>
 						<configuration>
-							<profiles>!cocoa-macosx-aarch64,!cocoa-macosx-x86_64,gtk-linux-aarch64,!gtk-linux-armhf,!gtk-linux-x86,!gtk-linux-x86_64,!win32-win32-x86,!win32-win32-x86_64</profiles>
+							<profiles>
+								!cocoa-macosx-aarch64,!cocoa-macosx-x86_64,gtk-linux-aarch64,!gtk-linux-armhf,!gtk-linux-x86,!gtk-linux-x86_64,!win32-win32-x86,!win32-win32-x86_64</profiles>
 						</configuration>
 						<phase>pre-integration-test</phase>
 						<goals>
@@ -1037,7 +1058,8 @@
 					<execution>
 						<id>gtk-linux-armhf</id>
 						<configuration>
-							<profiles>!cocoa-macosx-aarch64,!cocoa-macosx-x86_64,!gtk-linux-aarch64,gtk-linux-armhf,!gtk-linux-x86,!gtk-linux-x86_64,!win32-win32-x86,!win32-win32-x86_64</profiles>
+							<profiles>
+								!cocoa-macosx-aarch64,!cocoa-macosx-x86_64,!gtk-linux-aarch64,gtk-linux-armhf,!gtk-linux-x86,!gtk-linux-x86_64,!win32-win32-x86,!win32-win32-x86_64</profiles>
 						</configuration>
 						<phase>pre-integration-test</phase>
 						<goals>
@@ -1047,7 +1069,8 @@
 					<execution>
 						<id>gtk-linux-x86</id>
 						<configuration>
-							<profiles>!cocoa-macosx-aarch64,!cocoa-macosx-x86_64,!gtk-linux-aarch64,!gtk-linux-armhf,gtk-linux-x86,!gtk-linux-x86_64,!win32-win32-x86,!win32-win32-x86_64</profiles>
+							<profiles>
+								!cocoa-macosx-aarch64,!cocoa-macosx-x86_64,!gtk-linux-aarch64,!gtk-linux-armhf,gtk-linux-x86,!gtk-linux-x86_64,!win32-win32-x86,!win32-win32-x86_64</profiles>
 						</configuration>
 						<phase>pre-integration-test</phase>
 						<goals>
@@ -1057,7 +1080,8 @@
 					<execution>
 						<id>gtk-linux-x86_64</id>
 						<configuration>
-							<profiles>!cocoa-macosx-aarch64,!cocoa-macosx-x86_64,!gtk-linux-aarch64,!gtk-linux-armhf,!gtk-linux-x86,gtk-linux-x86_64,!win32-win32-x86,!win32-win32-x86_64</profiles>
+							<profiles>
+								!cocoa-macosx-aarch64,!cocoa-macosx-x86_64,!gtk-linux-aarch64,!gtk-linux-armhf,!gtk-linux-x86,gtk-linux-x86_64,!win32-win32-x86,!win32-win32-x86_64</profiles>
 						</configuration>
 						<phase>pre-integration-test</phase>
 						<goals>
@@ -1067,7 +1091,8 @@
 					<execution>
 						<id>win32-win32-x86</id>
 						<configuration>
-							<profiles>!cocoa-macosx-aarch64,!cocoa-macosx-x86_64,!gtk-linux-aarch64,!gtk-linux-armhf,!gtk-linux-x86,!gtk-linux-x86_64,win32-win32-x86,!win32-win32-x86_64</profiles>
+							<profiles>
+								!cocoa-macosx-aarch64,!cocoa-macosx-x86_64,!gtk-linux-aarch64,!gtk-linux-armhf,!gtk-linux-x86,!gtk-linux-x86_64,win32-win32-x86,!win32-win32-x86_64</profiles>
 						</configuration>
 						<phase>pre-integration-test</phase>
 						<goals>
@@ -1077,7 +1102,8 @@
 					<execution>
 						<id>win32-win32-x86_64</id>
 						<configuration>
-							<profiles>!cocoa-macosx-aarch64,!cocoa-macosx-x86_64,!gtk-linux-aarch64,!gtk-linux-armhf,!gtk-linux-x86,!gtk-linux-x86_64,!win32-win32-x86,win32-win32-x86_64</profiles>
+							<profiles>
+								!cocoa-macosx-aarch64,!cocoa-macosx-x86_64,!gtk-linux-aarch64,!gtk-linux-armhf,!gtk-linux-x86,!gtk-linux-x86_64,!win32-win32-x86,win32-win32-x86_64</profiles>
 						</configuration>
 						<phase>pre-integration-test</phase>
 						<goals>

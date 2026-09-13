@@ -35,7 +35,6 @@ public class SearchRequest {
 
 	private static final short DEFAULT_LIMIT = 40;
 
-	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getPreferencesConfiguration();
 
 	private final Format format;
 	private final boolean valid;
@@ -60,7 +59,7 @@ public class SearchRequest {
 	}
 
 	private Set<String> toUrlStrings() throws MalformedURLException {
-		final StringBuilder baseUrl = new StringBuilder(GeofonUtils.getBulletinBaseUrl(format, HtmlBulletinVersion.forValue(configuration.getString(Preference.HTML_BULLETIN_VERSION))));
+		final StringBuilder baseUrl = new StringBuilder(GeofonUtils.getBulletinBaseUrl(format));
 
 		if (Format.QUAKEML.equals(format)) {
 			if (limit == null || limit < 1) {
