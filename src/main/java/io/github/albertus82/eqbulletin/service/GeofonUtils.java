@@ -27,19 +27,19 @@ public class GeofonUtils {
 	private static final IPreferencesConfiguration configuration = EarthquakeBulletinConfig.getPreferencesConfiguration();
 
 	public static URI getEventLinkUri(@NonNull final String guid) throws MalformedURLException, URISyntaxException {
-		return fixOldGeofonBaseUrl(ConnectionUtils.toURI(getBaseUrl() + "/eqinfo/event.php?id=" + guid));
+		return ConnectionUtils.toURI(getBaseUrl() + "/eqinfo/event.php?id=" + guid);
 	}
 
 	public static URI getEventMapUri(@NonNull final String guid, final int year) throws MalformedURLException, URISyntaxException {
-		return fixOldGeofonBaseUrl(ConnectionUtils.toURI(getEventBaseUrl(guid, year) + guid + ".jpg"));
+		return ConnectionUtils.toURI(getEventBaseUrl(guid, year) + guid + ".jpg");
 	}
 
 	public static URI getEventMomentTensorUri(@NonNull final String guid, final int year) throws MalformedURLException, URISyntaxException {
-		return fixOldGeofonBaseUrl(ConnectionUtils.toURI(getEventBaseUrl(guid, year) + MOMENT_TENSOR_FILENAME));
+		return ConnectionUtils.toURI(getEventBaseUrl(guid, year) + MOMENT_TENSOR_FILENAME);
 	}
 
 	public static URI getBeachBallUri(@NonNull final String guid, final int year) throws MalformedURLException, URISyntaxException {
-		return fixOldGeofonBaseUrl(ConnectionUtils.toURI(getEventBaseUrl(guid, year) + BEACH_BALL_FILENAME));
+		return ConnectionUtils.toURI(getEventBaseUrl(guid, year) + BEACH_BALL_FILENAME);
 	}
 
 	public static String getBulletinBaseUrl(@NonNull Format format) throws MalformedURLException {
@@ -51,9 +51,6 @@ public class GeofonUtils {
 			final HtmlBulletinVersion version = HtmlBulletinVersion.forValue(configuration.getString(Preference.HTML_BULLETIN_VERSION));
 			switch (version) {
 			case NEW:
-				if (baseUrl.endsWith("/old")) {
-					baseUrl = baseUrl.substring(0, baseUrl.indexOf("/old"));
-				}
 				return baseUrl + EQINFO_LIST_PHP;
 			case OLD:
 				if (!baseUrl.endsWith("/old")) {
@@ -76,15 +73,6 @@ public class GeofonUtils {
 	private static String getBaseUrl() throws MalformedURLException {
 		final String spec = EarthquakeBulletinConfig.getPreferencesConfiguration().getString(Preference.GEOFON_BASE_URL, DEFAULT_GEOFON_BASE_URL);
 		return ConnectionUtils.sanitizeUriString(spec);
-	}
-
-	/** Fix FileNotFoundException (404) for resources when using the old base URL */
-	private static URI fixOldGeofonBaseUrl(URI uri) {
-		final String uriStr = uri.toString();
-		if (uriStr.contains("/old")) {
-			uri = URI.create(uriStr.replace("/old", ""));
-		}
-		return uri;
 	}
 
 }

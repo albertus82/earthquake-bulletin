@@ -1,5 +1,8 @@
 package io.github.albertus82.eqbulletin.gui.async;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
@@ -60,18 +63,48 @@ public class SearchAsyncOperation extends AsyncOperation {
 				params.put("mode", form.getRestrictButton().getSelection() ? "mt" : "");
 			}
 			if (form.getPeriodFromDateTime().isEnabled() && form.getPeriodFromDateTime().getSelection() != null) {
-				params.put(Format.QUAKEML.equals(format) ? "start" : "datemin", form.getPeriodFromDateTime().getText());
+				try {
+					final LocalDate date = LocalDate.parse(form.getPeriodFromDateTime().getText().trim());
+					params.put(Format.QUAKEML.equals(format) ? "start" : "datemin", date.toString());
+				}
+				catch (final DateTimeParseException e) {
+					log.info("Invalid start date:", e);
+				}
 			}
 			if (form.getPeriodToDateTime().isEnabled() && form.getPeriodToDateTime().getSelection() != null) {
-				params.put(Format.QUAKEML.equals(format) ? "end" : "datemax", form.getPeriodToDateTime().getText());
+				try {
+					final LocalDate date = LocalDate.parse(form.getPeriodToDateTime().getText().trim());
+					params.put(Format.QUAKEML.equals(format) ? "end" : "datemax", Format.QUAKEML.equals(format) ? date.plus(1, ChronoUnit.DAYS).toString() : date.toString());
+				}
+				catch (final DateTimeParseException e) {
+					log.info("Invalid end date:", e);
+				}
 			}
-			params.put(Format.QUAKEML.equals(format) ? "minlatitude" : "latmin", form.getLatitudeFromText().getText());
-			params.put(Format.QUAKEML.equals(format) ? "maxlatitude" : "latmax", form.getLatitudeToText().getText());
-			params.put(Format.QUAKEML.equals(format) ? "minlongitude" : "lonmin", form.getLongitudeFromText().getText());
-			params.put(Format.QUAKEML.equals(format) ? "maxlongitude" : "lonmax", form.getLongitudeToText().getText());
-			params.put(Format.QUAKEML.equals(format) ? "minmagnitude" : "magmin", form.getMinimumMagnitudeText().getText());
-			if (form.getResultsText().isEnabled() && !form.getResultsText().getText().isEmpty()) {
-				request.setLimit(Short.valueOf(form.getResultsText().getText()));
+			final String latmin = form.getLatitudeFromText().getText();
+			if (latmin != null && !latmin.trim().isEmpty()) {
+				params.put(Format.QUAKEML.equals(format) ? "minlatitude" : "latmin", latmin.trim());
+			}
+			final String latmax = form.getLatitudeToText().getText();
+			if (latmax != null && !latmax.trim().isEmpty()) {
+				params.put(Format.QUAKEML.equals(format) ? "maxlatitude" : "latmax", latmax.trim());
+			}
+			final String lonmin = form.getLongitudeFromText().getText();
+			if (lonmin != null && !lonmin.trim().isEmpty()) {
+				params.put(Format.QUAKEML.equals(format) ? "minlongitude" : "lonmin", lonmin.trim());
+			}
+			final String lonmax = form.getLongitudeToText().getText();
+			if (lonmax != null && !lonmax.trim().isEmpty()) {
+				params.put(Format.QUAKEML.equals(format) ? "maxlongitude" : "lonmax", lonmax.trim());
+			}
+			final String magmin = form.getMinimumMagnitudeText().getText();
+			if (magmin != null && !magmin.trim().isEmpty()) {
+				params.put(Format.QUAKEML.equals(format) ? "minmagnitude" : "magmin", magmin.trim());
+			}
+			if (form.getResultsText().isEnabled()) {
+				final String limit = form.getResultsText().getText();
+				if (limit != null && !limit.trim().isEmpty()) {
+					request.setLimit(Short.valueOf(limit.trim()));
+				}
 			}
 		}
 		return request;
