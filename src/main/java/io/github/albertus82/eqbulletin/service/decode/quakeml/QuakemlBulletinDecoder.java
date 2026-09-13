@@ -48,7 +48,8 @@ public final class QuakemlBulletinDecoder {
 	private static Earthquake toEarthquake(final Event event) {
 		Objects.requireNonNull(event, "event must not be null");
 		final List<JAXBElement<?>> elements = event.getDescriptionOrCommentOrFocalMechanism();
-		final String guid = requireText(event.getPublicID(), "event.publicID");
+		final String guid = requireText(event.getPublicID().substring(event.getPublicID().lastIndexOf('/') + 1), "event.publicID");
+		log.debug("guid={}", guid);
 		final String preferredOriginId = findString(elements, "preferredOriginID");
 		final String preferredMagnitudeId = findString(elements, "preferredMagnitudeID");
 		final Origin origin = findPreferred(elements, "origin", preferredOriginId, Origin.class);
@@ -250,13 +251,6 @@ public final class QuakemlBulletinDecoder {
 		return Optional.empty();
 	}
 
-	/**
-	 * Maps QuakeML's evaluation information to the application's much smaller
-	 * Status enum.
-	 *
-	 * Confirmed/reviewed/final/rejected are treated as confirmed unless the origin
-	 * is explicitly automatic. Manual origins are treated as manually revised.
-	 */
 	private static Status findStatus(final Origin origin) {
 		EvaluationMode mode = null;
 		EvaluationStatus evaluationStatus = null;
@@ -274,20 +268,14 @@ public final class QuakemlBulletinDecoder {
 			}
 		}
 
+		log.debug("mode={}, evaluationStatus={}", mode, evaluationStatus);
+
 		if (mode == EvaluationMode.AUTOMATIC) {
-			return Status.A;
+			return evaluationStatus == EvaluationStatus.CONFIRMED ? Status.C : Status.A;
 		}
 
 		if (mode == EvaluationMode.MANUAL) {
-			if (evaluationStatus == EvaluationStatus.CONFIRMED || evaluationStatus == EvaluationStatus.REVIEWED || evaluationStatus == EvaluationStatus.FINAL) {
-				return Status.C;
-			}
-
 			return Status.M;
-		}
-
-		if (evaluationStatus == EvaluationStatus.CONFIRMED || evaluationStatus == EvaluationStatus.REVIEWED || evaluationStatus == EvaluationStatus.FINAL) {
-			return Status.C;
 		}
 
 		return null;
