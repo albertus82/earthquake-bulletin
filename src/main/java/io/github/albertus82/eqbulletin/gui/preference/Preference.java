@@ -93,7 +93,7 @@ public enum Preference implements IPreference {
 	CRITERIA_LONGITUDE_FROM(new PreferenceDetailsBuilder(CRITERIA).label(() -> Messages.get("label.form.criteria.longitude") + " " + Messages.get("label.form.criteria.longitude.from") + " " + Messages.get("label.form.criteria.longitude.from.note")).build(), new FieldEditorDetailsBuilder(FloatFieldEditor.class).numberValidRange(SearchForm.LONGITUDE_MIN_VALUE, SearchForm.LONGITUDE_MAX_VALUE).emptyStringAllowed(true).textLimit(SearchForm.COORDINATES_TEXT_LIMIT).build()),
 	CRITERIA_LONGITUDE_TO(new PreferenceDetailsBuilder(CRITERIA).label(() -> Messages.get("label.form.criteria.longitude") + " " + Messages.get("label.form.criteria.longitude.to") + " " + Messages.get("label.form.criteria.longitude.to.note")).build(), new FieldEditorDetailsBuilder(FloatFieldEditor.class).numberValidRange(SearchForm.LONGITUDE_MIN_VALUE, SearchForm.LONGITUDE_MAX_VALUE).emptyStringAllowed(true).textLimit(SearchForm.COORDINATES_TEXT_LIMIT).build()),
 	CRITERIA_MAGNITUDE(new PreferenceDetailsBuilder(CRITERIA).label(() -> Messages.get("label.form.criteria.magnitude")).build(), new FieldEditorDetailsBuilder(FloatFieldEditor.class).numberValidRange(SearchForm.MAGNITUDE_MIN_VALUE, SearchForm.MAGNITUDE_MAX_VALUE).emptyStringAllowed(true).textLimit(SearchForm.MAGNITUDE_TEXT_LIMIT).build()),
-	CRITERIA_FORMAT(new PreferenceDetailsBuilder(CRITERIA).label(() -> Messages.get("label.form.format")).defaultValue(SearchForm.Defaults.FORMAT.getValue()).build(), new FieldEditorDetailsBuilder(DefaultRadioGroupFieldEditor.class).labelsAndValues(getFormatRadioOptions()).radioNumColumns(2).radioUseGroup(true).build()),
+	CRITERIA_FORMAT(new PreferenceDetailsBuilder(CRITERIA).label(() -> Messages.get("label.form.format")).defaultValue(SearchForm.Defaults.FORMAT.name()).build(), new FieldEditorDetailsBuilder(DefaultRadioGroupFieldEditor.class).labelsAndValues(getFormatRadioOptions()).radioNumColumns(2).radioUseGroup(true).build()),
 	CRITERIA_LIMIT(new PreferenceDetailsBuilder(CRITERIA).label(() -> Messages.get("label.form.limit") + " " + Messages.get("label.form.limit.note")).build(), new FieldEditorDetailsBuilder(EnhancedIntegerFieldEditor.class).emptyStringAllowed(true).numberValidRange(SearchForm.RESULTS_MIN_VALUE, SearchForm.RESULTS_MAX_VALUE).build()),
 	CRITERIA_RESTRICT(new PreferenceDetailsBuilder(CRITERIA).defaultValue(SearchForm.Defaults.CRITERIA_RESTRICT).label(() -> Messages.get("label.form.criteria.restrict")).build(), new FieldEditorDetailsBuilder(DefaultBooleanFieldEditor.class).build()),
 	SAME_AREA_EVENTS_LATITUDE_INTERVAL(new PreferenceDetailsBuilder(CRITERIA).defaultValue(FindSameAreaEventsSelectionListener.Defaults.SAME_AREA_EVENTS_LATITUDE_INTERVAL).build(), new FieldEditorDetailsBuilder(ScaleIntegerFieldEditor.class).scaleMinimum(FindSameAreaEventsSelectionListener.LATITUDE_INTERVAL_MIN).scaleMaximum(FindSameAreaEventsSelectionListener.LATITUDE_INTERVAL_MAX).scalePageIncrement(1).build()),
@@ -204,7 +204,7 @@ public enum Preference implements IPreference {
 		final Format[] values = Format.values();
 		final LocalizedLabelsAndValues options = new LocalizedLabelsAndValues(values.length);
 		for (final Format format : values) {
-			final String value = format.getValue();
+			final String value = format.name();
 			options.add(format::getLabel, value);
 		}
 		return options;

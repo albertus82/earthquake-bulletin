@@ -13,34 +13,27 @@ class SearchRequestTest {
 
 	@Test
 	void testGetFormat() {
-		final SearchRequest r = new SearchRequest();
+		SearchRequest r = new SearchRequest(Format.DEFAULT, false, null);
 		Assertions.assertEquals(Format.DEFAULT, r.getFormat());
 
-		r.getParameterMap().put("fmt", "rss");
+		r = new SearchRequest(Format.RSS, false, null);
 		Assertions.assertEquals(Format.RSS, r.getFormat());
-		Assertions.assertEquals("rss", r.getFormat().getValue());
+		Assertions.assertEquals("rss", r.getFormat().getParamValue());
 
-		r.getParameterMap().put("fmt", "html");
+		r = new SearchRequest(Format.HTML, false, null);
 		Assertions.assertEquals(Format.HTML, r.getFormat());
-		Assertions.assertEquals("html", r.getFormat().getValue());
-
-		r.getParameterMap().put("fmt", "");
-		Assertions.assertEquals(Format.DEFAULT, r.getFormat());
-
-		r.getParameterMap().put("fmt", "qwerty");
-		Assertions.assertEquals(Format.DEFAULT, r.getFormat());
+		Assertions.assertEquals("html", r.getFormat().getParamValue());
 	}
 
 	@Test
 	void testGenerateUrl() throws URISyntaxException, MalformedURLException {
 		final String baseUrl = GeofonUtils.getBulletinBaseUrl();
 
-		final SearchRequest r = new SearchRequest();
-		Assertions.assertEquals(baseUrl + "?fmt=html", r.toURIs().get(0).toString());
-
+		SearchRequest r = new SearchRequest(Format.RSS, false, null);
 		r.getParameterMap().put("fmt", "rss");
 		Assertions.assertEquals(baseUrl + "?fmt=rss", r.toURIs().get(0).toString());
 
+		r = new SearchRequest(Format.HTML, false, null);
 		r.getParameterMap().put("fmt", "html");
 		Assertions.assertEquals(baseUrl + "?fmt=html", r.toURIs().get(0).toString());
 	}

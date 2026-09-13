@@ -51,14 +51,12 @@ public class SearchAsyncOperation extends AsyncOperation {
 	}
 
 	private static SearchRequest evaluateForm(final SearchForm form) {
-		final SearchRequest request = new SearchRequest();
-		request.setValid(form.isValid());
-		request.setDelay(getDelay(form));
+		final Format format = getFormat(form);
+		final SearchRequest request = new SearchRequest(format, form.isValid(), getDelay(form));
 		if (request.isValid()) {
-			final Format format = getFormat(form);
 			final Map<String, String> params = request.getParameterMap();
-			params.put(Format.KEY, format.getValue());
 			if (!Format.QUAKEML.equals(format)) {
+				params.put(Format.PARAM_NAME, format.getParamValue());
 				params.put("mode", form.getRestrictButton().getSelection() ? "mt" : "");
 			}
 			if (form.getPeriodFromDateTime().isEnabled() && form.getPeriodFromDateTime().getSelection() != null) {

@@ -12,26 +12,15 @@ public enum Format {
 
 	HTML("html"),
 	RSS("rss"),
-	QUAKEML("quakeml");
+	QUAKEML(null);
 
-	public static final String KEY = "fmt";
+	public static final String PARAM_NAME = "fmt";
 	public static final Format DEFAULT = HTML;
 
-	private final String value;
+	private final String paramValue;
 
 	public String getLabel() {
 		return Messages.get("label.form.format." + name().toLowerCase(Locale.ROOT));
-	}
-
-	public static Format forValue(final String value) {
-		if (value != null) {
-			for (final Format format : values()) {
-				if (value.equals(format.getValue())) {
-					return format;
-				}
-			}
-		}
-		return DEFAULT;
 	}
 
 }

@@ -19,16 +19,21 @@ import com.dmurph.URIEncoder;
 import io.github.albertus82.eqbulletin.model.Format;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Getter
 @Setter
+@RequiredArgsConstructor
 public class SearchRequest {
 
-	private boolean valid;
-	private Long delay;
+	private static final short DEFAULT_LIMIT = 40;
+
+	private final Format format;
+	private final boolean valid;
+	private final Long delay;
 	private Short limit;
 	private final Map<String, String> parameterMap = new LinkedHashMap<>();
 
@@ -38,10 +43,6 @@ public class SearchRequest {
 
 	public Optional<Short> getLimit() {
 		return Optional.ofNullable(limit);
-	}
-
-	public Format getFormat() {
-		return Format.forValue(parameterMap.get(Format.KEY));
 	}
 
 	public List<URI> toURIs() throws URISyntaxException, MalformedURLException {
@@ -54,19 +55,22 @@ public class SearchRequest {
 
 	private Set<String> toUrlStrings() throws MalformedURLException {
 		final StringBuilder baseUrl = new StringBuilder(GeofonUtils.getBulletinBaseUrl());
-		if (Format.QUAKEML.getValue().equals(parameterMap.get(Format.KEY.toString()))) {
-			baseUrl.append("?limit=").append(limit == null || limit < 1 ? 3 : limit);
+		if (Format.QUAKEML.equals(format)) {
+			if (limit == null || limit < 1) {
+				limit = DEFAULT_LIMIT;
+			}
+			baseUrl.append("?limit=").append(limit);
 			for (final Entry<String, String> param : parameterMap.entrySet()) {
-				if (param.getValue() != null && !param.getValue().isEmpty() && !Format.KEY.equals(param.getKey())) {
+				if (param.getValue() != null && !param.getValue().isEmpty() && !Format.PARAM_NAME.equals(param.getKey())) {
 					baseUrl.append('&').append(param.getKey()).append('=').append(URIEncoder.encodeURI(param.getValue()));
 				}
 			}
 			return Collections.singleton(baseUrl.toString());
 		}
 		else {
-			baseUrl.append('?').append(Format.KEY).append('=').append(getFormat().getValue());
+			baseUrl.append('?').append(Format.PARAM_NAME).append('=').append(getFormat().getParamValue());
 			for (final Entry<String, String> param : parameterMap.entrySet()) {
-				if (param.getValue() != null && !param.getValue().isEmpty() && !Format.KEY.equals(param.getKey())) {
+				if (param.getValue() != null && !param.getValue().isEmpty() && !Format.PARAM_NAME.equals(param.getKey())) {
 					baseUrl.append('&').append(param.getKey()).append('=').append(URIEncoder.encodeURI(param.getValue()));
 				}
 			}
