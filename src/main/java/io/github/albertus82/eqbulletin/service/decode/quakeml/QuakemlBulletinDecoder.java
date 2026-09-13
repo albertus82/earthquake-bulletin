@@ -28,7 +28,9 @@ import io.github.albertus82.eqbulletin.model.Latitude;
 import io.github.albertus82.eqbulletin.model.Longitude;
 import io.github.albertus82.eqbulletin.model.Status;
 import jakarta.xml.bind.JAXBElement;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public final class QuakemlBulletinDecoder {
 
 	private QuakemlBulletinDecoder() {
@@ -43,7 +45,7 @@ public final class QuakemlBulletinDecoder {
 	 * @throws IllegalArgumentException if one of the mandatory Earthquake
 	 *         properties cannot be obtained
 	 */
-	public static Earthquake toEarthquake(final Event event) {
+	private static Earthquake toEarthquake(final Event event) {
 		Objects.requireNonNull(event, "event must not be null");
 		final List<JAXBElement<?>> elements = event.getDescriptionOrCommentOrFocalMechanism();
 		final String guid = requireText(event.getPublicID(), "event.publicID");
@@ -453,18 +455,18 @@ public final class QuakemlBulletinDecoder {
 		throw new IllegalArgumentException("Missing mandatory value: " + field);
 	}
 
-	public static Collection<Earthquake> decode(Quakeml unmarshal) {
+	public static Collection<Earthquake> decode(final Quakeml quakeml) {
+		Objects.requireNonNull(quakeml, "quakeml must not be null");
 		final List<Earthquake> list = new ArrayList<>();
-		List<Object> x = unmarshal.getEventParameters().getCommentOrEventOrDescription();
-		for (final Object e : x) {
+		for (final Object e : quakeml.getEventParameters().getCommentOrEventOrDescription()) {
 			if (e instanceof Event) {
 				list.add(toEarthquake((Event) e));
 			}
 			else {
-				throw new IllegalStateException(String.valueOf(e));
+				log.error("Ignored QuakeML element: {}", e);
 			}
 		}
-		System.out.println(x);
 		return list;
 	}
+
 }

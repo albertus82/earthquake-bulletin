@@ -12,7 +12,7 @@ public enum Format {
 
 	HTML("html"),
 	RSS("rss"),
-	QUAKEML(null);
+	QUAKEML("quakeml");
 
 	public static final String KEY = "fmt";
 	public static final Format DEFAULT = HTML;

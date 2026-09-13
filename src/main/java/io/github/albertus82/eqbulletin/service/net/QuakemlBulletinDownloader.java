@@ -102,7 +102,22 @@ public class QuakemlBulletinDownloader extends ResilientDownloader implements Bu
 		if (canceled != null && canceled.getAsBoolean()) {
 			throw new CancelException();
 		}
-		final URLConnection connection = ConnectionFactory.makeGetRequest(URI.create("https://geofon.gfz.de/fdsnws/event/1/query?end=2026-09-14&limit=40").toURL(), headers);
+		final StringBuilder uriBuilder = new StringBuilder(request.toURIs().get(0).toString().replace("/old/", "/").replace("/eqinfo/list.php", "/fdsnws/event/1/query").replace("fmt=quakeml", "")
+		// @formatter:off	
+				.replace("datemin", "start")
+				.replace("datemax", "end")
+				.replace("lonmin" , "minlongitude")
+				.replace("lonmax" , "maxlongitude")
+				.replace("latmin" , "minlatitude")
+				.replace("latmax" , "maxlatitude")
+				.replace("magmin" , "minmagnitude")
+				.replace("nmax"   , "limit")
+		// @formatter:on
+		);
+		if (uriBuilder.indexOf("limit=") == -1) {
+			uriBuilder.append(uriBuilder.indexOf("?") == -1 ? "?limit=40" : "&limit=40");
+		}
+		final URLConnection connection = ConnectionFactory.makeGetRequest(URI.create(uriBuilder.toString()).toURL(), headers);
 		final String responseContentEncoding = connection.getContentEncoding();
 		final boolean gzip = responseContentEncoding != null && responseContentEncoding.toLowerCase(Locale.ROOT).contains("gzip");
 		try (final InputStream raw = connection.getInputStream(); final InputStream in = gzip ? new GZIPInputStream(raw) : raw) {
@@ -118,15 +133,14 @@ public class QuakemlBulletinDownloader extends ResilientDownloader implements Bu
 	private static String fetch(final InputStream in, final Charset charset) throws IOException {
 		try (final InputStreamReader isr = new InputStreamReader(in, charset); final StringWriter sw = new StringWriter()) {
 			IOUtils.copy(isr, sw, BUFFER_SIZE);
-			return sw.toString().replace("geofon:mt", "geofon_mt");
+			return sw.toString();
 		}
 	}
 
 	private static Collection<Earthquake> decode(final String body) throws JAXBException {
 		final Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 		try (final StringReader sr = new StringReader(body)) {
-			//return EarthquakeMapper.decode( jaxbUnmarshaller.unmarshal( new StreamSource(sr),Quakeml.class).getValue());
-			return QuakemlBulletinDecoder.decode((Quakeml) jaxbUnmarshaller.unmarshal(sr));
+			return QuakemlBulletinDecoder.decode(jaxbUnmarshaller.unmarshal(new StreamSource(sr), Quakeml.class).getValue());
 		}
 	}
 
