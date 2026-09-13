@@ -11,7 +11,8 @@ import lombok.RequiredArgsConstructor;
 public enum Format {
 
 	HTML("html"),
-	RSS("rss");
+	RSS("rss"),
+	QUAKEML(null);
 
 	public static final String KEY = "fmt";
 	public static final Format DEFAULT = HTML;

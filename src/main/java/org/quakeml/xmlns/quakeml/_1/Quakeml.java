@@ -9,13 +9,17 @@ package org.quakeml.xmlns.quakeml._1;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.xml.namespace.QName;
+
+import org.quakeml.xmlns.bed._1.EventParameters;
+
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlAnyAttribute;
 import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
-import org.quakeml.xmlns.bed._1.EventParameters;
 
 
 /**
@@ -42,6 +46,7 @@ import org.quakeml.xmlns.bed._1.EventParameters;
 @XmlType(name = "Quakeml", propOrder = {
 
 })
+@XmlRootElement(name = "quakeml")
 public class Quakeml {
 
     @XmlElement(namespace = "http://quakeml.org/xmlns/bed/1.2")
