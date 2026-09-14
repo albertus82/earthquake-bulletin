@@ -358,13 +358,11 @@ public final class QuakemlBulletinDecoder {
 		}
 
 		for (final JAXBElement<?> element : quantity.getValueOrUncertaintyOrLowerUncertainty()) {
-
 			if (!"value".equals(element.getName().getLocalPart())) {
 				continue;
 			}
 
 			final Object value = element.getValue();
-
 			if (value instanceof XMLGregorianCalendar) {
 				return (XMLGregorianCalendar) value;
 			}
