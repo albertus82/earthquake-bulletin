@@ -19,6 +19,7 @@ import org.quakeml.xmlns.bed._1.Event;
 import org.quakeml.xmlns.bed._1.EventDescription;
 import org.quakeml.xmlns.bed._1.Magnitude;
 import org.quakeml.xmlns.bed._1.Origin;
+import org.quakeml.xmlns.bed._1.OriginDepthType;
 import org.quakeml.xmlns.bed._1.RealQuantity;
 import org.quakeml.xmlns.bed._1.TimeQuantity;
 import org.quakeml.xmlns.quakeml._1.Quakeml;
@@ -246,6 +247,7 @@ public final class QuakemlBulletinDecoder {
 	private static Status findStatus(final Origin origin, final boolean hasMomentTensor) {
 		EvaluationMode mode = null;
 		EvaluationStatus evaluationStatus = null;
+		OriginDepthType depthType = null;
 
 		for (final JAXBElement<?> element : origin.getCompositeTimeOrCommentOrOriginUncertainty()) {
 
@@ -258,12 +260,15 @@ public final class QuakemlBulletinDecoder {
 			else if ("evaluationStatus".equals(name) && value instanceof EvaluationStatus) {
 				evaluationStatus = (EvaluationStatus) value;
 			}
+			else if ("depthType".equals(name) && value instanceof OriginDepthType) {
+				depthType = (OriginDepthType) value;
+			}
 		}
 
 		log.debug("mode={}, evaluationStatus={}, hasMomentTensor={}", mode, evaluationStatus, hasMomentTensor);
 
 		if (mode == EvaluationMode.AUTOMATIC) {
-			return evaluationStatus == EvaluationStatus.CONFIRMED || hasMomentTensor ? Status.C : Status.A;
+			return EvaluationStatus.CONFIRMED.equals(evaluationStatus) || hasMomentTensor || OriginDepthType.OPERATOR_ASSIGNED.equals(depthType) ? Status.C : Status.A;
 		}
 
 		if (mode == EvaluationMode.MANUAL) {
