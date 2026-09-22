@@ -179,24 +179,6 @@ public final class QuakemlBulletinDecoder {
 		return null;
 	}
 
-	private static XMLGregorianCalendar requireValue(final RealQuantity quantity, final String field) {
-		if (quantity == null) {
-			throw new IllegalArgumentException("Missing mandatory field: " + field);
-		}
-
-		for (final JAXBElement<?> element : quantity.getValueOrUncertaintyOrLowerUncertainty()) {
-			if ("value".equals(element.getName().getLocalPart())) {
-				final Object value = element.getValue();
-
-				if (value instanceof XMLGregorianCalendar) {
-					return (XMLGregorianCalendar) value;
-				}
-			}
-		}
-
-		throw new IllegalArgumentException("Missing mandatory value: " + field);
-	}
-
 	private static ZonedDateTime toZonedDateTime(final XMLGregorianCalendar calendar, final String field) {
 		try {
 			return calendar.toGregorianCalendar().toZonedDateTime();
