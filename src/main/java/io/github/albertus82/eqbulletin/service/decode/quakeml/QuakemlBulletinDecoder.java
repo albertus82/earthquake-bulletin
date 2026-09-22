@@ -265,7 +265,7 @@ public final class QuakemlBulletinDecoder {
 			}
 		}
 
-		log.debug("mode={}, evaluationStatus={}, hasMomentTensor={}", mode, evaluationStatus, hasMomentTensor);
+		log.debug("mode={}, evaluationStatus={}, depthType={}, hasMomentTensor={}", mode, evaluationStatus, depthType, hasMomentTensor);
 
 		if (mode == EvaluationMode.AUTOMATIC) {
 			return EvaluationStatus.CONFIRMED.equals(evaluationStatus) || hasMomentTensor || OriginDepthType.OPERATOR_ASSIGNED.equals(depthType) ? Status.C : Status.A;
