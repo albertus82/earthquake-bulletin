@@ -9,6 +9,7 @@ import io.github.albertus82.eqbulletin.service.decode.html.HtmlBulletinDecoderFa
 import io.github.albertus82.eqbulletin.service.net.BulletinDownloader;
 import io.github.albertus82.eqbulletin.service.net.FetchException;
 import io.github.albertus82.eqbulletin.service.net.HtmlBulletinDownloader;
+import io.github.albertus82.eqbulletin.service.net.QuakemlBulletinDownloader;
 import io.github.albertus82.eqbulletin.service.net.RssBulletinDownloader;
 import lombok.NonNull;
 
@@ -24,6 +25,9 @@ public class GeofonBulletinProvider implements BulletinProvider {
 			return downloader.download(request, canceled);
 		case RSS:
 			downloader = new RssBulletinDownloader();
+			return downloader.download(request, canceled);
+		case QUAKEML:
+			downloader = new QuakemlBulletinDownloader();
 			return downloader.download(request, canceled);
 		default:
 			throw new UnsupportedOperationException(request.toString());

@@ -6,7 +6,7 @@
 .settings/
 /bin/
 /target/
-hs_err_pid*.log
+*.log
 interpolated-pom.xml
 junit*.properties
 lombok.config

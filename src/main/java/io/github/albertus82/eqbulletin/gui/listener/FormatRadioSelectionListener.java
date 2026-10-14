@@ -26,6 +26,8 @@ public class FormatRadioSelectionListener extends SelectionAdapter {
 	public void widgetSelected(final SelectionEvent e) {
 		if (radio.getSelection()) {
 			if (Format.RSS.equals(format)) {
+				form.getRestrictButton().setEnabled(true);
+
 				form.getPeriodLabel().setEnabled(false);
 				form.getPeriodFromLabel().setEnabled(false);
 				form.getPeriodFromDateTime().setEnabled(false);
@@ -35,6 +37,7 @@ public class FormatRadioSelectionListener extends SelectionAdapter {
 				form.getPeriodToNote().setEnabled(false);
 				form.getResultsLabel().setEnabled(false);
 				form.getResultsText().setEnabled(false);
+
 				for (final ControlValidator<Text> cv : form.getValidators()) {
 					if (form.getResultsText().equals(cv.getControl()) && !cv.isValid()) {
 						form.getResultsText().setText("");
@@ -42,7 +45,22 @@ public class FormatRadioSelectionListener extends SelectionAdapter {
 					}
 				}
 			}
+			else if (Format.QUAKEML.equals(format)) {
+				form.getRestrictButton().setEnabled(false);
+
+				form.getPeriodLabel().setEnabled(true);
+				form.getPeriodFromLabel().setEnabled(true);
+				form.getPeriodFromDateTime().setEnabled(true);
+				form.getPeriodFromNote().setEnabled(true);
+				form.getPeriodToLabel().setEnabled(true);
+				form.getPeriodToDateTime().setEnabled(true);
+				form.getPeriodToNote().setEnabled(true);
+				form.getResultsLabel().setEnabled(true);
+				form.getResultsText().setEnabled(true);
+			}
 			else {
+				form.getRestrictButton().setEnabled(true);
+
 				form.getPeriodLabel().setEnabled(true);
 				form.getPeriodFromLabel().setEnabled(true);
 				form.getPeriodFromDateTime().setEnabled(true);
